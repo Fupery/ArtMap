@@ -1,0 +1,37 @@
+name: Artiste
+main: me.Fupery.Artiste.StartClass
+version: 0.0.1-SNAPSHOT
+description: Create and share pixel art!
+depends: [Vault]
+author: Fupery
+commands:
+  artmap:
+    usage:  |
+      <command> define <x> <y> <z> : Defines the canvas region
+      <command> remove : Removes the canvas region
+      <command> info : Returns information about the canvas
+      <command> approve <title> : Approves a player’s publish request
+      <command> claim : Claim the canvas for use
+      <command> addmember <playerName> : Add player to canvas
+      <command> unclaim : Leave the canvas for others to claim
+      <command> reset [colour|list] : Reset the canvas to a block colour
+      <command> save <title> : Save your artwork
+      <command> publish <title> : Request to publish your artwork as a public map
+      <command> edit <title> : Load your artwork to the canvas
+      <command> list [private|public|all] [page] : List artworks
+      permissions:
+  artiste.playerTier1:
+    description: Lower tier players can only publish private artworks
+    children:
+      artiste.claim: true
+  artiste.playerTier2:
+    description: Upper tier players can publish private and public artworks
+    children:
+      artiste.claim: true
+      artiste.publicMapCreation: true
+  artiste.staff:
+    description: Gives access to moderator commands involved with canvas creation
+    children:
+      artiste.canvas: true
+      artiste.publicMapCreation: true
+      artiste.override: true
