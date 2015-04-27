@@ -15,6 +15,7 @@ import org.bukkit.map.MapView;
 
 /**Renders to a MapView for the given artwork,
  * only Artwork objects may be rendered */
+@Deprecated
 public class ArtRenderer extends MapRenderer {
 	
 	public int mapSize;
@@ -65,9 +66,15 @@ public class ArtRenderer extends MapRenderer {
 	private byte colourConvert(DyeColor color){
 			Color c = color.getColor();
 			int r = c.getRed(), g = c.getGreen(), b = c.getBlue();
-			@SuppressWarnings("deprecation")
 			byte code = MapPalette.matchColor(r, g, b);
 			return code;
 	}
 }
+
+//To run renderer ~
+//MapView m = Bukkit.getServer().createMap(((Player) sender).getWorld());
+//if(!m.getRenderers().isEmpty()){
+//	for(MapRenderer r : m.getRenderers()){
+//		m.removeRenderer(r); }
+//}
 

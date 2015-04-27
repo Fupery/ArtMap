@@ -5,15 +5,11 @@ import java.util.UUID;
 
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.IO.Artist;
-import me.Fupery.Artiste.Tasks.ArtRenderer;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapView;
 
 public abstract class Artwork extends AbstractMapArt implements Serializable {
 
@@ -32,22 +28,16 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 			a.decrement();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void buy(CommandSender sender){
 			
 		Player player = (Player) sender;
-				
-		AbstractMapArt map = StartClass.artList.get(title);
-				
-		MapView m = Bukkit.getMap(mapId);
-				
-		ArtRenderer r = new ArtRenderer(map, sender);
-				
-		r.initialize(m);
-		m.addRenderer(r);
-				
+		
 		ItemStack i = new ItemStack(Material.MAP, 1, mapId);
+		
 		player.getInventory().addItem(i);
+		
+		if(this instanceof PublicMap)
+			((PublicMap) this ).incrementBuys();
 	}
 	
 	public String getTitle() {

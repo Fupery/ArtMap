@@ -9,21 +9,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ClaimTimer extends BukkitRunnable{
 	public CommandSender sender;
-	private StartClass plugin;
 	
 	public ClaimTimer(CommandSender sender, StartClass plugin){
 		this.sender = sender;
-		this.plugin = plugin;
 	}
 
 	@Override
 	public void run() {
-		Canvas c = Canvas.findCanvas();
+		Canvas c = StartClass.canvas;
 		
 		sender.sendMessage(ChatColor.AQUA + "[ArtMap]" +
 		ChatColor.GOLD + "Your time using the canvas is up!");
 		
-		c.unclaim(sender, plugin);
+		c.clear(c.getOwner());
 	}
 
 }

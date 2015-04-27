@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import me.Fupery.Artiste.Canvas;
+import me.Fupery.Artiste.StartClass;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,7 +24,7 @@ public class EasyDraw implements Listener {
 	@EventHandler
 	public void onRightClick(PlayerInteractEvent evt) {
 		
-		Canvas c = Canvas.findCanvas();
+		Canvas c = StartClass.canvas;
 		
 		if(checkPos(evt, c) && checkItem(evt)){
 			

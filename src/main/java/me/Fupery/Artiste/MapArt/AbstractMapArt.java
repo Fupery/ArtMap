@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import me.Fupery.Artiste.Canvas;
+import me.Fupery.Artiste.StartClass;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -20,7 +21,7 @@ public abstract class AbstractMapArt implements Serializable{
 	@SuppressWarnings("deprecation")
 	public void save() {
 		
-		Canvas c = Canvas.findCanvas();
+		Canvas c = StartClass.canvas;
 		if(c != null){
 			
 			Location l = c.getPos1().clone();
@@ -39,7 +40,7 @@ public abstract class AbstractMapArt implements Serializable{
 						
 					} else this.map[i] = null;
 				}
-			}// end for loops
+			}
 			
 		}
 	}
@@ -47,11 +48,9 @@ public abstract class AbstractMapArt implements Serializable{
 	@SuppressWarnings("deprecation")
 	public void edit(){
 		
-		Canvas c = Canvas.findCanvas();
+		Canvas c = StartClass.canvas;
 		
 		if(c!= null){
-			
-			//sender.sendMessage(ChatColor.GOLD+"Loading "+ title);
 			
 			if (map != null) {
 				
@@ -73,10 +72,9 @@ public abstract class AbstractMapArt implements Serializable{
 							if (b.getData() != d.getData()) b.setData(d.getData());
 						}
 					}
-				}// end for loops
+				}
 			}
-		}
-		
+		}	
 	}
 	
 	public UUID getArtist() {
@@ -99,19 +97,13 @@ public abstract class AbstractMapArt implements Serializable{
 	public void setMapSize(int mapSize) {
 		this.mapSize = mapSize;
 	}
-
-	public boolean isPublicMap() {
-		if(this instanceof PublicMap)
-			return true;
-		else return false;
-	}
 	public validMapType getType(){
 		
 		if(this instanceof PrivateMap){
 			
 			if(( (PrivateMap) this).isQueued())
 				
-				return validMapType.PRIVATE_QUEUED;
+				return validMapType.QUEUED;
 			
 			else return validMapType.PRIVATE; 
 		}
@@ -125,6 +117,6 @@ public abstract class AbstractMapArt implements Serializable{
 		return null;
 	}
 	public enum validMapType{
-		PRIVATE, PRIVATE_QUEUED, PUBLIC, BUFFER, TEMPLATE
+		PRIVATE, QUEUED, PUBLIC, BUFFER, TEMPLATE
 	}
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.IO.Artist;
+import me.Fupery.Artiste.Tasks.MapReflection;
 import me.Fupery.Artiste.Command.Error;
 
 import org.bukkit.Bukkit;
@@ -12,19 +13,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.map.MapRenderer;
-import org.bukkit.map.MapView;
-
 public class PrivateMap extends Artwork {
 	
 	private static final long serialVersionUID = -1668200457941039767L;
 	private boolean queued;
+	private boolean denied;
 
+	@SuppressWarnings("deprecation")
 	public PrivateMap(CommandSender sender, String title) {
 		
 		UUID id = ((Player) sender).getUniqueId();
 		Artist a = StartClass.artistList.get(id);
-		Canvas c = Canvas.findCanvas();
+		Canvas c = StartClass.canvas;
 		
 		a.evalMaxArtworks();
 			
@@ -35,17 +35,14 @@ public class PrivateMap extends Artwork {
 			artist = ((Player) sender).getUniqueId();
 			this.title = title.toLowerCase();
 			
+			this.mapId = Bukkit.createMap(Bukkit.getWorld(StartClass.canvas.worldname)).getId();
+			
 			save();
-			
-			MapView m = Bukkit.getServer().createMap(((Player) sender).getWorld());
-			
-			if(!m.getRenderers().isEmpty()){
-				for(MapRenderer r : m.getRenderers()){
-					m.removeRenderer(r); }
-			}
 			
 			StartClass.artList.put(title.toLowerCase(), this);
 			a.increment();
+			
+			new MapReflection(title);
 			
 			sender.sendMessage(ChatColor.GOLD + "Successfully saved " + ChatColor.AQUA +
 			title + ChatColor.GOLD + " as a private artwork");
@@ -61,5 +58,12 @@ public class PrivateMap extends Artwork {
 		this.queued = queued;
 	}
 
+	public boolean isDenied() {
+		return denied;
+	}
+
+	public void deny() {
+		this.denied = true;
+	}
 	
 }

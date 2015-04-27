@@ -4,6 +4,7 @@ package me.Fupery.Artiste.MapArt;
 import java.io.Serializable;
 
 import me.Fupery.Artiste.Canvas;
+import me.Fupery.Artiste.StartClass;
 
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,7 @@ public class Buffer extends AbstractMapArt implements Serializable{
 
 	public Buffer(CommandSender sender) {
 		
-		Canvas c = Canvas.findCanvas();
+		Canvas c = StartClass.canvas;
 		artist = ( (Player) sender).getUniqueId();
 		mapSize = c.getSize();
 		map = new DyeColor[(mapSize*mapSize)+mapSize-1];
