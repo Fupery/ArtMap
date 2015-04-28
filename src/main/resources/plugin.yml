@@ -1,7 +1,7 @@
-name: Artiste
+name: ${project.name}
 main: me.Fupery.Artiste.StartClass
-version: 0.0.2-SNAPSHOT
-description: Create and share pixel art in-game!
+version: ${project.version}
+description: ${project.description}
 depends: [Vault]
 author: Fupery
 commands:

@@ -6,3 +6,13 @@
 .project
 
 .classpath
+
+dependency-reduced-pom.xml
+
+*.jar
+
+*.properties
+
+*.lst
+
+target/
