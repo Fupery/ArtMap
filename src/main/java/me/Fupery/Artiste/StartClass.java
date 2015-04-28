@@ -104,7 +104,7 @@ public final class StartClass extends JavaPlugin {
 	// had these suckers in their own class but onDisable couldn't seem to find
 	// them
 	public static void save(File saveFile, Object object) {
-
+		
 		try {
 			if (!saveFile.exists())
 				saveFile.createNewFile();

@@ -11,8 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,8 +20,7 @@ import org.bukkit.entity.Player;
  * interact with the canvas in-game.
  */
 public class Canvas implements Serializable {
-	// TODO - Fix buffer system, clean this class up, Replace Canvas list with
-	// static reference
+	
 	private static final long serialVersionUID = -1867329677480940178L;
 
 	private UUID owner;
@@ -45,82 +42,7 @@ public class Canvas implements Serializable {
 		setPos1(position1);
 		setPos2(position2);
 
-		worldname = position1.getWorld().getName(); // much hacks wow
-	}
-
-	// Admin Commands
-	public static boolean defineCanvas(CommandSender sender, double xpos,
-			double ypos, double zpos) {
-
-		if (StartClass.canvas == null) {
-
-			int size = StartClass.config.getInt("canvasSize");
-			if (size == 0)
-				size = 64;
-
-			if (!evalSize(size)) {
-
-				sender.sendMessage(ChatColor.DARK_RED
-						+ "Invalid map size set in config!");
-				return false;
-			}
-
-			int mapSize = (size - 1);
-			Player player = (Player) sender;
-			World w = player.getWorld();
-			WorldBorder wb = w.getWorldBorder();
-
-			Location canvasPos = new Location(w, xpos, ypos, zpos);
-
-			if (wb == null) {
-				sender.sendMessage(ChatColor.DARK_RED
-						+ "No world border found!");
-				return false;
-			}
-
-			// Check if world border interferes with canvas
-			if ((wb.getSize() - (canvasPos.getBlockX() + size)) <= 0
-					|| (wb.getSize() - (canvasPos.getBlockZ() + size) <= 0)) {
-				sender.sendMessage(ChatColor.DARK_RED
-						+ "Canvas obstructed by World Border");
-				return false;
-			}
-			// For loops check if area is obstructed
-			Location endPos = new Location(w, xpos + mapSize, ypos, zpos
-					+ mapSize);
-			Location l = canvasPos.clone();
-
-			for (; l.getBlockX() <= (endPos.getBlockX()); l.add(1, 0, 0)) {
-
-				for (; l.getBlockZ() <= endPos.getBlockZ(); l.add(0, 0, 1)) {
-
-					if (w.getHighestBlockYAt(l) > canvasPos.getBlockY()
-							&& w.getHighestBlockYAt(l) < (canvasPos.getBlockY() + 2)) {
-
-						Material m = w.getHighestBlockAt(l).getType();
-
-						if (m != Material.WOOL && m != Material.WATER) {
-
-							Integer x = l.getBlockX(), y = l.getBlockY(), z = l
-									.getBlockZ();
-
-							sender.sendMessage(ChatColor.DARK_RED
-									+ "Canvas obstructed at " + ChatColor.RED
-									+ x + ", " + y + ", " + z + ".");
-
-							return false;
-						}
-					}
-				}
-			}// end for loops
-			sender.sendMessage(ChatColor.GOLD + "No Obstruction found");
-			StartClass.canvas = new Canvas(canvasPos, endPos, size);
-			return true;
-		} else {
-			sender.sendMessage(ChatColor.DARK_RED
-					+ "Error : Multiple canvases detected");
-		}
-		return false;
+		worldname = position1.getWorld().getName(); 
 	}
 
 	public void removeCanvas(CommandSender sender) {
@@ -166,21 +88,6 @@ public class Canvas implements Serializable {
 				if (b.getData() != colour.getData())
 					b.setData(colour.getData());
 			}
-		}
-	}
-
-	public static boolean evalSize(int mapSize) {
-		switch (mapSize) {
-		case 16:
-			return true;
-		case 32:
-			return true;
-		case 64:
-			return true;
-		case 128:
-			return true;
-		default:
-			return false;
 		}
 	}
 
