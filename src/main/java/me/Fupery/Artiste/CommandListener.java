@@ -1,8 +1,11 @@
 package me.Fupery.Artiste;
 
+import me.Fupery.Artiste.Command.AbstractCommand;
 import me.Fupery.Artiste.Command.Help;
 import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
+import me.Fupery.test.Test;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,6 +15,7 @@ public class CommandListener implements CommandExecutor{
 	
 	private CommandSender sender;
 	private String[] args;
+	private AbstractCommand cmd;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
@@ -20,7 +24,11 @@ public class CommandListener implements CommandExecutor{
 		this.sender = sender;
 		this.args = args;
 		
-		if(args.length == 0) return false;
+		if(args.length == 0){
+			
+			sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
+			return true;
+		}
 		
 		switch (args[0].toLowerCase()){
 		
@@ -33,9 +41,9 @@ public class CommandListener implements CommandExecutor{
 		
 		case "remove"    : new Remove(this).check(); break;
 		
-		case "approve"   : new Info(this).check(); break;
+		case "approve"   : new PublishEval(this).check(); break;
 		
-		case "deny"      : new Info(this).check(); break;
+		case "deny"      : new PublishEval(this).check(); break;
 		
 		//Canvas commands
 		case "claim"     : new Claim(this).check(); break;
@@ -57,8 +65,13 @@ public class CommandListener implements CommandExecutor{
 		
 		case "publish"   : new Publish(this).check(); break;
 		
+		case "list"      : new List(this).check(); break;
+		
+		case "test" : new Test(this).check();
+		
 		default : sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 		}
+		
 		return true;
 	}
 
@@ -68,6 +81,14 @@ public class CommandListener implements CommandExecutor{
 
 	public String[] getArgs() {
 		return args;
+	}
+
+	public AbstractCommand getCmd() {
+		return cmd;
+	}
+
+	public void setCmd(AbstractCommand cmd) {
+		this.cmd = cmd;
 	}
 
 	

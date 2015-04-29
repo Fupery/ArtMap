@@ -9,7 +9,7 @@ public class PublishEval extends MapArtCommand {
 
 	private boolean approve;
 
-	protected PublishEval(CommandListener listener) {
+	public PublishEval(CommandListener listener) {
 
 		super(listener);
 		usage = "<approve|deny> <title>";
@@ -20,15 +20,15 @@ public class PublishEval extends MapArtCommand {
 
 		if (!getCmd())
 			return false;
-		
+
 		PrivateMap map = (PrivateMap) art;
 
 		if (approve && !map.isDenied())
 
 			new PublicMap(sender, map);
-		
+
 		else
-			
+
 			map.deny();
 
 		return true;
@@ -37,6 +37,9 @@ public class PublishEval extends MapArtCommand {
 	protected String evaluate() {
 
 		error = super.evaluate();
+
+		if (error != null)
+			return error;
 
 		switch (type) {
 

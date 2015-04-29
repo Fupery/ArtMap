@@ -39,6 +39,10 @@ public class Edit extends MapArtCommand {
 
 		error = super.evaluate();
 
+		if (error != null)
+			
+			return error;
+
 		this.canvas = StartClass.canvas;
 
 		if (canvas != null)
@@ -47,7 +51,7 @@ public class Edit extends MapArtCommand {
 
 				error = Error.notOwner;
 
-		return null;
+		return error;
 	}
 
 }

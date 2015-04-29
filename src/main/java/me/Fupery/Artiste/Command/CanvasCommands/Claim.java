@@ -56,7 +56,13 @@ public class Claim extends CanvasCommand {
 	}
 
 	protected String evaluate() {
+
 		error = super.evaluate();
+
+		if (error != null)
+			
+			return error;
+
 		Player p = canvas.getOwner();
 
 		if (p == (Player) sender) {

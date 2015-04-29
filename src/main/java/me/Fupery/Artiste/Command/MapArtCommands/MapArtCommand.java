@@ -28,28 +28,28 @@ public class MapArtCommand extends AbstractCommand {
 	}
 
 	protected String evaluate() {
-
+		
 		error = super.evaluate();
 
 		if (error != null)
-
+			
 			return error;
 
 		art = StartClass.artList.get(args[1]);
 
-		type = art.getType();
-
 		if (art == null)
 
-			return Error.noArtwork;
+			return String.format(Error.noMap, args[1]);
 
-		if (authorRequired
+		type = art.getType();
+
+		if (authorRequired && sender instanceof Player
 				&& art.getArtist() != ((Player) sender).getUniqueId())
 
 			if (art instanceof Artwork)
 
-				return Error.noEdit;
+			return Error.noEdit;
 
-		return null;
+		return error;
 	}
 }

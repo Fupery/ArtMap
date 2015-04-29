@@ -5,6 +5,7 @@ import me.Fupery.Artiste.Command.Error;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.Command.AbstractCommand;
+
 import org.bukkit.entity.Player;
 
 public class CanvasCommand extends AbstractCommand {
@@ -23,15 +24,19 @@ public class CanvasCommand extends AbstractCommand {
 
 		error = super.evaluate();
 
+		if (error != null)
+			
+			return error;
+
 		this.canvas = StartClass.canvas;
 
-		if (canvas != null) {
+		if (canvas != null && sender instanceof Player) {
 
 			if (claimRequired && canvas.getOwner() != (Player) sender)
 				error = Error.notOwner;
 		}
 
-		return null;
+		return error;
 	}
 
 }

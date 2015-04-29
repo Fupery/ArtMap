@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -11,7 +12,6 @@ import me.Fupery.Artiste.IO.*;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.Tasks.EasyDraw;
 import me.Fupery.Artiste.Command.Error;
-
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -29,9 +29,11 @@ public final class StartClass extends JavaPlugin {
 
 	public static HashMap<String, AbstractMapArt> artList;
 	public static HashMap<UUID, Artist> artistList;
+	
 	public static Canvas canvas;
 	public static String[] idList;
 	public static StartClass plugin;
+	public static List<Short> recyclingBin;
 
 	@Override
 	public void onEnable() {

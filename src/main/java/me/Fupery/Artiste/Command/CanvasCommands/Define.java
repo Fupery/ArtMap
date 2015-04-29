@@ -31,7 +31,7 @@ public class Define extends CanvasCommand {
 		minArgs = 4;
 		maxArgs = 4;
 		
-		int size = StartClass.config.getInt("canvasSize");
+		size = StartClass.config.getInt("canvasSize");
 		if (size == 0)
 			size = 64;
 	}
@@ -39,6 +39,10 @@ public class Define extends CanvasCommand {
 	protected String evaluate() {
 
 		error = super.evaluate();
+
+		if (error != null)
+			
+			return error;
 
 		if (StartClass.canvas != null)
 			return error = Error.alreadyDef;

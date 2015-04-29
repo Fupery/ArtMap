@@ -27,6 +27,10 @@ public class Publish extends MapArtCommand {
 
 		error = super.evaluate();
 
+		if (error != null)
+			
+			return error;
+
 		if (!sender.hasPermission("artiste.publicMapCreation")) {
 
 			return Error.noPubPermission;
@@ -35,7 +39,11 @@ public class Publish extends MapArtCommand {
 		switch (type) {
 
 		case PRIVATE:
-
+			
+			if(( (PrivateMap) art).isDenied())
+				
+				return error = "This artwork has already been denied!";
+				
 			return null;
 
 		case QUEUED:

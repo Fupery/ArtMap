@@ -16,3 +16,7 @@ dependency-reduced-pom.xml
 *.lst
 
 target/
+
+plugin.yml
+
+config.yml

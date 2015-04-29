@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
  * interact with the canvas in-game.
  */
 public class Canvas implements Serializable {
-	
+
 	private static final long serialVersionUID = -1867329677480940178L;
 
 	private UUID owner;
@@ -42,7 +42,7 @@ public class Canvas implements Serializable {
 		setPos1(position1);
 		setPos2(position2);
 
-		worldname = position1.getWorld().getName(); 
+		worldname = position1.getWorld().getName();
 	}
 
 	public void removeCanvas(CommandSender sender) {
@@ -68,10 +68,8 @@ public class Canvas implements Serializable {
 	@SuppressWarnings("deprecation")
 	public void reset(CommandSender sender, DyeColor colour) {
 
-		sender.sendMessage(ChatColor.GOLD + "Resetting Canvas to "
-				+ ChatColor.AQUA + colour.toString() + ChatColor.GOLD + " wool");
+		Location f = this.getPos2().clone();
 
-		Location f = this.getPos2().clone(); // end position
 		Location l = this.getPos1().clone();
 
 		for (int x = this.getPos1().getBlockX(); x <= (f.getBlockX()); x++) {
@@ -80,12 +78,15 @@ public class Canvas implements Serializable {
 
 				l.setX(x);
 				l.setZ(z);
+
 				Block b = l.getBlock();
 
 				if (b.getType() != Material.WOOL)
+
 					b.setType(Material.WOOL);
 
 				if (b.getData() != colour.getData())
+
 					b.setData(colour.getData());
 			}
 		}

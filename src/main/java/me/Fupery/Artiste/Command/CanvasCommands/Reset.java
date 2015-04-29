@@ -11,7 +11,9 @@ public class Reset extends CanvasCommand {
 	private DyeColor colour;
 
 	public Reset(CommandListener listener) {
+		
 		super(listener);
+		
 		claimRequired = !sender.hasPermission("Artiste.admin");
 		usage = "reset <colour|list>";
 		maxArgs = 2;
@@ -19,14 +21,18 @@ public class Reset extends CanvasCommand {
 	}
 
 	protected boolean run() {
-
+		
 		canvas.reset(sender, colour);
 		return true;
 	}
 
 	protected String evaluate() {
 
-		super.evaluate();
+		error = super.evaluate();
+
+		if (error != null)
+			
+			return error;
 
 		if (args.length > 1) {
 
@@ -47,7 +53,8 @@ public class Reset extends CanvasCommand {
 			return null;
 
 		} else
-			return Error.colours;
+			error = Error.colours;
+		return error;
 	}
 
 }

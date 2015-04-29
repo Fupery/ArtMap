@@ -27,6 +27,7 @@ public class AbstractCommand {
 
 		this.sender = listener.getSender();
 		this.args = listener.getArgs();
+		listener.setCmd(this);
 
 		if (sender instanceof Player)
 			artist = StartClass.artistList.get(((Player) sender).getUniqueId());
@@ -43,6 +44,7 @@ public class AbstractCommand {
 					success();
 				return;
 			}
+		
 		error();
 	}
 

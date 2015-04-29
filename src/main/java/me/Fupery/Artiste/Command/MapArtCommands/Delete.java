@@ -1,8 +1,11 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.CommandListener;
+import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.Command.Error;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class Delete extends MapArtCommand {
@@ -14,20 +17,40 @@ public class Delete extends MapArtCommand {
 
 	protected boolean run() {
 
-		if (sender instanceof Player) {
+		success = ChatColor.GOLD + "Artwork " + ChatColor.AQUA + title
+				+ ChatColor.GOLD + " has been removed";
 
-			Player player = (Player) sender;
-
-			if (player.getUniqueId() != art.getArtist()
-					&& !(player.hasPermission("artiste.override")))
-				return false;
-		}
 		if (art instanceof Artwork) {
 
 			((Artwork) art).delete(sender);
-			return true;
+
 		}
 		return true;
+	}
+
+	protected String evaluate() {
+
+		error = super.evaluate();
+
+		if (error != null)
+
+			return error;
+
+		if (sender instanceof Player && !sender.hasPermission("artiste.admin")) {
+
+			if (((Player) sender).getUniqueId() != art.getArtist())
+
+				return Error.noPermission;
+
+		}
+
+		artist = StartClass.artistList.get(art.getArtist());
+
+		if (!artist.delArtwork(title))
+
+			return error = String.format(Error.noMap, title);
+
+		return error;
 	}
 
 }
