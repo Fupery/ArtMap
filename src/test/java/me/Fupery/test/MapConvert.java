@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.IO;
+package me.Fupery.test;
 
 import java.io.File;
 import java.io.FileInputStream;

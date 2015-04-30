@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.IO;
+package me.Fupery.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -60,10 +60,10 @@ public class MapSave {
 			if (!saveFile.exists())
 				saveFile.createNewFile();
 
-			GZIPOutputStream out = new GZIPOutputStream(new FileOutputStream(
-					saveFile));
+			ObjectOutputStream out = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(
+					saveFile)));
 
-			// out.writeObject( (Object) object);
+			out.writeObject(object);
 
 			out.flush();
 			out.close();

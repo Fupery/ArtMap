@@ -4,7 +4,6 @@ import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Buffer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class Unclaim extends CanvasCommand {
@@ -30,7 +29,7 @@ public class Unclaim extends CanvasCommand {
 
 		canvas.clear(sender);
 
-		Bukkit.getServer().getScheduler().cancelTasks(StartClass.plugin);
+		StartClass.claimTimer.cancel();
 
 		return true;
 	}

@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Tasks;
+package me.Fupery.test;
 
 
 import me.Fupery.Artiste.StartClass;

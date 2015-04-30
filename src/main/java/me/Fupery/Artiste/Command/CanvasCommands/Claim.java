@@ -1,13 +1,15 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
+import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Buffer;
-import me.Fupery.Artiste.Tasks.ClaimTimer;
-import me.Fupery.Artiste.Tasks.TimeRemaining;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class Claim extends CanvasCommand {
 
@@ -40,14 +42,17 @@ public class Claim extends CanvasCommand {
 
 			int ticks = claimTime * 60 * 20;
 
+			StartClass.claimTimer = (BukkitTask) new TimerA(sender)
+					.runTaskLater(StartClass.plugin, ticks);
+
 			if (claimTime > 5) {
+				
 				int warning = ticks - (5 * 60 * 20);
-				new TimeRemaining(sender).runTaskLater(StartClass.plugin,
-						warning);
+				
+				((TimerA) StartClass.claimTimer).setNotify(new TimerB()
+						.runTaskLater(StartClass.plugin, warning));
 
 			}
-			new ClaimTimer(sender, StartClass.plugin).runTaskLater(
-					StartClass.plugin, ticks);
 
 		} else
 			success = ChatColor.GOLD + "Canvas claimed!";
@@ -60,7 +65,7 @@ public class Claim extends CanvasCommand {
 		error = super.evaluate();
 
 		if (error != null)
-			
+
 			return error;
 
 		Player p = canvas.getOwner();
@@ -76,4 +81,45 @@ public class Claim extends CanvasCommand {
 		return error;
 	}
 
+	class TimerA extends BukkitRunnable {
+
+		private CommandSender sender;
+		private BukkitTask notify;
+
+		public TimerA(CommandSender sender) {
+			this.sender = sender;
+		}
+
+		@Override
+		public void run() {
+			Canvas c = StartClass.canvas;
+
+			sender.sendMessage(ChatColor.AQUA + "[ArtMap]" + ChatColor.GOLD
+					+ "Your time using the canvas is up!");
+
+			c.clear(c.getOwner());
+		}
+		
+		@Override
+		public void cancel(){
+			
+			notify.cancel();
+			super.cancel();
+			
+		}
+
+		public void setNotify(BukkitTask bukkitTask) {
+			this.notify = bukkitTask;
+		}
+	}
+
+	class TimerB extends BukkitRunnable {
+
+		@Override
+		public void run() {
+
+			sender.sendMessage(ChatColor.AQUA + "[ArtMap] " + ChatColor.GOLD
+					+ "5 Minutes remaining with the canvas!");
+		}
+	}
 }

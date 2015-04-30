@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Tasks;
+package me.Fupery.test;
 
 import me.Fupery.Artiste.Canvas;
 
@@ -7,33 +7,44 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Scheduler extends BukkitRunnable {
-private CommandSender sender;
-private String process;
+	private CommandSender sender;
+	private String process;
+
 	@Override
 	public void run() {
-		switch(this.process){
-			case "define" : ;
+		switch (this.process) {
+		case "define":
+			;
 			break;
-			case "reset" :
-					
+		case "reset":
+
 			break;
-			case "publish" : ;
+		case "publish":
+			;
 			break;
-			case "edit" : ;
+		case "edit":
+			;
 			break;
-			case "test" : ;
-			default : break;
+		case "test":
+			;
+		default:
+			break;
 		}
 	}
-	public void setProcess(String process){
+
+	public void setProcess(String process) {
 		this.process = process;
 	}
-	public void initializeLoop(CommandSender sender, Canvas c, int x, Location l, Location f){
+
+	public void initializeLoop(CommandSender sender, Canvas c, int x,
+			Location l, Location f) {
 		this.setSender(sender);
 	}
+
 	public CommandSender getSender() {
 		return sender;
 	}
+
 	public void setSender(CommandSender sender) {
 		this.sender = sender;
 	}

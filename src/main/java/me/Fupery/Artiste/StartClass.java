@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public final class StartClass extends JavaPlugin {
 
@@ -34,6 +35,7 @@ public final class StartClass extends JavaPlugin {
 	public static String[] idList;
 	public static StartClass plugin;
 	public static List<Short> recyclingBin;
+	public static BukkitTask claimTimer;
 
 	@Override
 	public void onEnable() {
@@ -64,7 +66,7 @@ public final class StartClass extends JavaPlugin {
 	@Override
 	public void onDisable() {
 
-		// override();
+		StartClass.claimTimer.cancel();
 
 		if (canvas != null) {
 			Canvas c = canvas;
@@ -101,10 +103,6 @@ public final class StartClass extends JavaPlugin {
 		return econ != null;
 	}
 
-	// ☠
-
-	// had these suckers in their own class but onDisable couldn't seem to find
-	// them
 	public static void save(File saveFile, Object object) {
 		
 		try {

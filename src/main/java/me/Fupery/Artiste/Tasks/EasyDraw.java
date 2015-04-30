@@ -18,7 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 
 
-//TODO - Event handling cancels other playerinteractevents
+//TODO - Event handling cancels other playerinteractevents?
 public class EasyDraw implements Listener {
 
 	@EventHandler

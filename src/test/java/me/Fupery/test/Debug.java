@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Command;
+package me.Fupery.test;
 
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 
 import me.Fupery.Artiste.CommandListener;
+import me.Fupery.Artiste.Command.AbstractCommand;
 
 public class Debug {
 
