@@ -14,12 +14,12 @@ import java.util.zip.GZIPOutputStream;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Artwork;
 
-public class ArtList {
+public class ArtIO {
 	
 	private File file;
 	private StartClass plugin;
 	
-	public ArtList(){
+	public ArtIO(){
 		
 		plugin = StartClass.plugin;
 		File dir = plugin.getDataFolder();
@@ -27,7 +27,7 @@ public class ArtList {
 		
 	}
 
-	public void archiveMap() {
+	public void archiveArtList() {
 
 		Set<String> keys = StartClass.artList.keySet();
 

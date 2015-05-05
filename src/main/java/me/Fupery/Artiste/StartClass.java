@@ -11,7 +11,9 @@ import java.util.logging.Logger;
 import me.Fupery.Artiste.IO.*;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.Tasks.EasyDraw;
+import me.Fupery.Artiste.Tasks.OnLogout;
 import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.CanvasCommands.Unclaim;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -19,7 +21,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public final class StartClass extends JavaPlugin {
 
@@ -30,12 +32,12 @@ public final class StartClass extends JavaPlugin {
 
 	public static HashMap<String, AbstractMapArt> artList;
 	public static HashMap<UUID, Artist> artistList;
-	
+
 	public static Canvas canvas;
 	public static String[] idList;
 	public static StartClass plugin;
 	public static List<Short> recyclingBin;
-	public static BukkitTask claimTimer;
+	public static BukkitRunnable claimTimer;
 
 	@Override
 	public void onEnable() {
@@ -43,22 +45,23 @@ public final class StartClass extends JavaPlugin {
 		plugin = this;
 
 		PluginManager pluginManager = getServer().getPluginManager();
-		
+
 		this.getCommand("artmap").setExecutor(new CommandListener());
-		
+
 		pluginManager.registerEvents((new EasyDraw()), this);
+		pluginManager.registerEvents(new OnLogout(), this);
 
 		Load.setupRegistry(this, log);
-		
+
 		this.saveDefaultConfig();
-		
+
 		config = getConfig();
 
 		if (!setupEconomy()) {
-			
+
 			log.info(Error.noEcon);
 			economyOn = false;
-			
+
 		} else
 			economyOn = true;
 	}
@@ -66,45 +69,48 @@ public final class StartClass extends JavaPlugin {
 	@Override
 	public void onDisable() {
 
-		StartClass.claimTimer.cancel();
+		if (StartClass.claimTimer != null)
+			StartClass.claimTimer.cancel();
 
 		if (canvas != null) {
 			Canvas c = canvas;
 
-			if (c != null && c.getOwner() != null) {
-				
-				c.clear(c.getOwner());
-				
-				Bukkit.getScheduler().cancelTasks(this);
+			if (c.getOwner() != null) {
+
+				Unclaim.unclaim();
+
 			}
 		}
 		save(new File(getDataFolder(), "MapArt.dat"), artList);
-		
+
 		save(new File(getDataFolder(), "Artist.dat"), artistList);
-		
+
 		save(new File(getDataFolder(), "Artiste.dat"), canvas, idList);
+		
+
+		Bukkit.getScheduler().cancelTasks(this);
 	}
 
 	private boolean setupEconomy() {
-		
+
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
-			
+
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer()
 				.getServicesManager().getRegistration(Economy.class);
-		
+
 		if (rsp == null) {
-			
+
 			return false;
 		}
 		econ = rsp.getProvider();
-		
+
 		return econ != null;
 	}
 
 	public static void save(File saveFile, Object object) {
-		
+
 		try {
 			if (!saveFile.exists())
 				saveFile.createNewFile();

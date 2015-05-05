@@ -67,7 +67,7 @@ public class CommandListener implements CommandExecutor{
 		
 		case "list"      : new List(this).check(); break;
 		
-		case "test" : new Test(this).check();
+		case "test" : new Test(this).check(); break;
 		
 		default : sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 		}

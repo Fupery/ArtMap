@@ -1,10 +1,13 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
+import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.MapArt.Buffer;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class Unclaim extends CanvasCommand {
 
@@ -21,17 +24,38 @@ public class Unclaim extends CanvasCommand {
 
 	protected boolean run() {
 
+		unclaim();
+
+		return true;
+	}
+
+	public static void unclaim() {
+
+		Canvas c = StartClass.canvas;
+
+		if (c == null)
+			return;
+
+		Player p = c.getOwner();
+
+		if (p == null)
+			return;
+
+		Artist artist = StartClass.artistList.get(p.getUniqueId());
+
 		if (artist.getBuffer() != null) {
 
 			artist.clearBuffer();
 		}
-		artist.setBuffer(new Buffer(sender));
+		artist.setBuffer(new Buffer(p));
 
-		canvas.clear(sender);
+		if (StartClass.canvas != null)
 
-		StartClass.claimTimer.cancel();
+			StartClass.canvas.clear(p);
 
-		return true;
+		if (StartClass.claimTimer != null)
+
+			StartClass.claimTimer.cancel();
 	}
 
 }

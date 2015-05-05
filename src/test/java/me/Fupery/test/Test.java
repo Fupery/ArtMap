@@ -9,8 +9,7 @@ import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.Command.AbstractCommand;
-import me.Fupery.Artiste.MapArt.AbstractMapArt;
-import me.Fupery.Artiste.Tasks.ColourConvert;
+import me.Fupery.Artiste.Tasks.Archive;
 
 public class Test extends AbstractCommand {
 
@@ -19,27 +18,11 @@ public class Test extends AbstractCommand {
 	public Test(CommandListener listener) {
 
 		super(listener);
-		maxArgs = 2;
 	}
 
 	protected boolean run() {
 
-		String title = args[1];
-		AbstractMapArt art = StartClass.artList.get(title);
-
-		if (art != null) {
-			sender.sendMessage("getting map");
-			DyeColor[] m = art.getMap();
-			sender.sendMessage("converting to byte");
-			byte[] b = new ColourConvert().byteConvert(m, art.getMapSize());
-			sender.sendMessage("converting to DyeColor");
-			map = new ColourConvert().dyeConvert(b, art.getMapSize());
-			sender.sendMessage("loading to the canvas");
-			edit();
-			sender.sendMessage("done!");
-
-		} else
-			sender.sendMessage("art not found");
+		new Archive().runTask(StartClass.plugin);
 		return true;
 	}
 

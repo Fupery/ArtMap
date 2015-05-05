@@ -13,6 +13,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class Claim extends CanvasCommand {
 
+	// TODO - move TimerA,B to their own task class
+
 	public Claim(CommandListener listener) {
 
 		super(listener);
@@ -42,13 +44,14 @@ public class Claim extends CanvasCommand {
 
 			int ticks = claimTime * 60 * 20;
 
-			StartClass.claimTimer = (BukkitTask) new TimerA(sender)
-					.runTaskLater(StartClass.plugin, ticks);
+			TimerA timer = new TimerA(sender);
+			StartClass.claimTimer = timer;
+			timer.runTaskLater(StartClass.plugin, ticks);
 
 			if (claimTime > 5) {
-				
+
 				int warning = ticks - (5 * 60 * 20);
-				
+
 				((TimerA) StartClass.claimTimer).setNotify(new TimerB()
 						.runTaskLater(StartClass.plugin, warning));
 
@@ -99,13 +102,13 @@ public class Claim extends CanvasCommand {
 
 			c.clear(c.getOwner());
 		}
-		
+
 		@Override
-		public void cancel(){
-			
+		public void cancel() {
+
 			notify.cancel();
 			super.cancel();
-			
+
 		}
 
 		public void setNotify(BukkitTask bukkitTask) {
