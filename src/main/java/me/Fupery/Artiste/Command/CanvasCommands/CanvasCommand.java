@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 public class CanvasCommand extends AbstractCommand {
 
 	protected boolean claimRequired;
+	protected boolean coolOffRequired;
 	protected Canvas canvas;
 
 	public CanvasCommand(CommandListener listener) {
@@ -35,6 +36,8 @@ public class CanvasCommand extends AbstractCommand {
 			if (claimRequired && canvas.getOwner() != (Player) sender)
 				error = Error.notOwner;
 		}
+		if(coolOffRequired && canvas.isCoolingOff())
+			error = Error.coolOff;
 
 		return error;
 	}

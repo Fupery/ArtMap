@@ -40,7 +40,7 @@ public class Edit extends MapArtCommand {
 		error = super.evaluate();
 
 		if (error != null)
-			
+
 			return error;
 
 		this.canvas = StartClass.canvas;
@@ -50,6 +50,11 @@ public class Edit extends MapArtCommand {
 			if (claimRequired && canvas.getOwner() != (Player) sender)
 
 				error = Error.notOwner;
+
+		if (StartClass.plugin.getConfig().getInt("coolOffTime") > 0
+				&& canvas.isCoolingOff())
+
+			error = Error.coolOff;
 
 		return error;
 	}

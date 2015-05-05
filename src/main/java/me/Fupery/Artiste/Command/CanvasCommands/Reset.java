@@ -1,6 +1,7 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
 import me.Fupery.Artiste.CommandListener;
+import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.Command.Error;
 
 import org.bukkit.ChatColor;
@@ -11,9 +12,11 @@ public class Reset extends CanvasCommand {
 	private DyeColor colour;
 
 	public Reset(CommandListener listener) {
-		
+
 		super(listener);
-		
+
+		coolOffRequired = (!sender.hasPermission("Artiste.admin") && StartClass.plugin
+				.getConfig().getInt("coolOffTime") > 0);
 		claimRequired = !sender.hasPermission("Artiste.admin");
 		usage = "reset <colour|list>";
 		maxArgs = 2;
@@ -21,8 +24,9 @@ public class Reset extends CanvasCommand {
 	}
 
 	protected boolean run() {
-		
+
 		canvas.reset(sender, colour);
+		canvas.startCoolOff();
 		return true;
 	}
 
@@ -31,7 +35,7 @@ public class Reset extends CanvasCommand {
 		error = super.evaluate();
 
 		if (error != null)
-			
+
 			return error;
 
 		if (args.length > 1) {

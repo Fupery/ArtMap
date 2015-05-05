@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Represents 3d position of the ArtMap canvas, contains static methods to
@@ -28,6 +29,7 @@ public class Canvas implements Serializable {
 
 	private int size;
 	private boolean canClaim;
+	private boolean cooloff;
 
 	private CanvasLocation pos1;
 	private CanvasLocation pos2;
@@ -38,7 +40,8 @@ public class Canvas implements Serializable {
 		owner = null;
 		member = new ArrayList<UUID>();
 		this.size = size;
-		setCanClaim(false);
+		canClaim = true;
+		cooloff = false;
 		setPos1(position1);
 		setPos2(position2);
 
@@ -60,6 +63,7 @@ public class Canvas implements Serializable {
 
 		owner = null;
 		this.member.clear();
+		this.cooloff = false;
 		this.reset(sender, DyeColor.WHITE);
 	}
 
@@ -143,5 +147,33 @@ public class Canvas implements Serializable {
 
 	public void setOwner(UUID owner) {
 		this.owner = owner;
+	}
+
+	public boolean isCoolingOff() {
+		return cooloff;
+	}
+
+	public void startCoolOff() {
+
+		int delay = StartClass.plugin.getConfig().getInt("coolOffTime");
+
+		if (delay > 0) {
+
+			ResetTimer t = new ResetTimer();
+
+			t.runTaskLater(StartClass.plugin, delay * 60 * 20);
+
+			cooloff = true;
+		}
+		else cooloff = false;
+	}
+
+	class ResetTimer extends BukkitRunnable {
+
+		@Override
+		public void run() {
+
+			StartClass.canvas.cooloff = false;
+		}
 	}
 }
