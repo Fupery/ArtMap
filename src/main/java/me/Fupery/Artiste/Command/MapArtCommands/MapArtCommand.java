@@ -2,8 +2,8 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
-import me.Fupery.Artiste.Command.Error;
 import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
@@ -25,14 +25,17 @@ public class MapArtCommand extends AbstractCommand {
 		minArgs = 2;
 		maxArgs = 2;
 		artistRequired = true;
+
+		if (args.length > 1)
+			title = args[1];
 	}
 
 	protected String evaluate() {
-		
+
 		error = super.evaluate();
 
 		if (error != null)
-			
+
 			return error;
 
 		art = StartClass.artList.get(args[1]);
@@ -43,12 +46,13 @@ public class MapArtCommand extends AbstractCommand {
 
 		type = art.getType();
 
-		if (authorRequired && sender instanceof Player
-				&& art.getArtist() != ((Player) sender).getUniqueId())
+		if (authorRequired
+				&& sender instanceof Player
+				&& art.getArtist().compareTo(((Player) sender).getUniqueId()) != 0)
 
 			if (art instanceof Artwork)
 
-			return Error.noEdit;
+				return Error.noEdit;
 
 		return error;
 	}

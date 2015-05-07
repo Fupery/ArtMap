@@ -1,7 +1,9 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Ban;
 import me.Fupery.Artiste.Command.Help;
+import me.Fupery.Artiste.Command.List;
 import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
 import me.Fupery.test.Test;
@@ -11,8 +13,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class CommandListener implements CommandExecutor{
-	
+public class CommandListener implements CommandExecutor {
+
 	private CommandSender sender;
 	private String[] args;
 	private AbstractCommand cmd;
@@ -20,17 +22,17 @@ public class CommandListener implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
-		
+
 		this.sender = sender;
 		this.args = args;
-		
-		if(args.length == 0){
-			
+
+		if (args.length == 0) {
+
 			sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 			return true;
 		}
-		
-		switch (args[0].toLowerCase()){
+
+		switch (args[0].toLowerCase()) {
 		
 		case "help"      : new Help(this).check(); break;
 		
@@ -41,16 +43,22 @@ public class CommandListener implements CommandExecutor{
 		
 		case "remove"    : new Remove(this).check(); break;
 		
-		case "approve"   : new PublishEval(this).check(); break;
+		case "approve"   : ;
 		
 		case "deny"      : new PublishEval(this).check(); break;
+		
+		case "ban"       : ;
+		
+		case "unban"     : new Ban(this).check(); break;
 		
 		//Canvas commands
 		case "claim"     : new Claim(this).check(); break;
 		
 		case "unclaim"   : new Unclaim(this).check(); break;
 		
-		case "addmember" : new AddMember(this).check(); break;
+		case "addmember" : ;
+		
+		case "delmember" : new AddMember(this).check(); break;
 		
 		case "reset"     : new Reset(this).check(); break;
 		
@@ -71,7 +79,7 @@ public class CommandListener implements CommandExecutor{
 		
 		default : sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 		}
-		
+
 		return true;
 	}
 
@@ -91,5 +99,4 @@ public class CommandListener implements CommandExecutor{
 		this.cmd = cmd;
 	}
 
-	
 }

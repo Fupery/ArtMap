@@ -1,8 +1,9 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PrivateMap;
+
 import org.bukkit.ChatColor;
 
 public class Publish extends MapArtCommand {
@@ -12,10 +13,13 @@ public class Publish extends MapArtCommand {
 		super(listener);
 
 		usage = "publish <title>";
-		success = String.format("%s has been submitted for approval!",
-				ChatColor.AQUA + args[1] + ChatColor.GOLD);
 		authorRequired = true;
 		playerRequired = true;
+		if(args.length == 2)
+
+			success = String.format("%s has been submitted for approval!",
+					ChatColor.AQUA + args[1] + ChatColor.GOLD);
+			
 	}
 
 	protected boolean run() {

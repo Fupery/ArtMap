@@ -3,6 +3,7 @@ package me.Fupery.Artiste.Command;
 import org.bukkit.ChatColor;
 
 import me.Fupery.Artiste.CommandListener;
+import me.Fupery.Artiste.Command.Utils.Error;
 
 public class Help extends AbstractCommand {
 
@@ -48,7 +49,7 @@ public class Help extends AbstractCommand {
 
 			sender.sendMessage(page1);
 
-			page = ((Integer) p++).toString();
+			page = "2";
 			break;
 
 		case 2:
@@ -95,6 +96,8 @@ public class Help extends AbstractCommand {
 					+ " Save your progress and unclaim" + c + " |",
 			c + "•" + a + "  /artmap addmember <playername>" + c + " |" + b
 					+ " Add a player" + c + " |",
+			c + "•" + a + "  /artmap delmember <playername>" + c + " |" + b
+					+ " Remove a player" + c + " |",
 			c + "•" + a + "  /artmap reset [colour|list]" + c + " |" + b
 					+ " Reset the canvas to a colour" + c + " |",
 			c + "•" + a + "  /artmap save <title> " + c + " |" + b
@@ -125,8 +128,8 @@ public class Help extends AbstractCommand {
 					+ " Return info on the canvas" + c + " |",
 			c + "•" + a + "  /artmap list [queued] [p]" + c + " |" + b
 					+ " List publish requests" + c + " |",
-			c + "•" + a + "  /artmap approve" + c + " |" + b
-					+ " Approve a requested publish" + c + " |",
-			c + "•" + a + "  /artmap deny" + c + " |" + b
-					+ " Deny a requested publish" + c + " |", };
+			c + "•" + a + "  /artmap <approve|deny>" + c + " |" + b
+					+ " Handle a publish request" + c + " |",
+			c + "•" + a + "  /artmap <ban|unban>" + c + " |" + b
+					+ " Ban a player from making artworks" + c + " |", };
 }

@@ -1,10 +1,11 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Artwork;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,7 @@ public class Edit extends MapArtCommand {
 		playerRequired = true;
 		claimRequired = true;
 		canvasRequired = true;
+		authorRequired = true;
 
 		if (art != null)
 
@@ -30,9 +32,14 @@ public class Edit extends MapArtCommand {
 	}
 
 	protected boolean run() {
+		
+		if (art instanceof Artwork) {
+			Artwork a = (Artwork) art;
+			a.edit(a.getMap());
 
-		art.edit();
-		return true;
+			return true;
+		} else
+			return false;
 	}
 
 	protected String evaluate() {

@@ -8,7 +8,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 

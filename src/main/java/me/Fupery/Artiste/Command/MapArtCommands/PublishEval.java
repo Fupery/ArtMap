@@ -2,7 +2,7 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.MapArt.PrivateMap;
-import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PublicMap;
 
 public class PublishEval extends MapArtCommand {

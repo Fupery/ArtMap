@@ -1,10 +1,10 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.Command.Error;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.entity.Player;
 

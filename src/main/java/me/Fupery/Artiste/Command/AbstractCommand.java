@@ -2,7 +2,9 @@ package me.Fupery.Artiste.Command;
 
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.IO.Artist;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -44,11 +46,26 @@ public class AbstractCommand {
 					success();
 				return;
 			}
-		
+
 		error();
 	}
 
 	protected String evaluate() {
+
+		if (sender instanceof Player) {
+			
+			if (artist == null) {
+
+				artist = new Artist(((Player) sender).getUniqueId());
+
+				StartClass.artistList.put(((Player) sender).getUniqueId(),
+						artist);
+
+			}
+			else
+				if(artistRequired && artist.isBanned())
+					return error = "You have been banned from creating artworks.";
+		}
 
 		if (args.length < minArgs || args.length > maxArgs)
 
@@ -65,18 +82,6 @@ public class AbstractCommand {
 		if (canvasRequired && StartClass.canvas == null)
 
 			return Error.noDef;
-
-		if (artistRequired && artist == null) {
-
-			if (sender instanceof Player) {
-
-				artist = new Artist(((Player) sender).getUniqueId());
-				StartClass.artistList.put(((Player) sender).getUniqueId(),
-						artist);
-
-			} else
-				return Error.noConsole;
-		}
 
 		return null;
 	}

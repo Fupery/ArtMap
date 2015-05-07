@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Command.MapArtCommands;
+package me.Fupery.Artiste.Command;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,8 +10,7 @@ import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
 import me.Fupery.Artiste.MapArt.PublicMap;
-import me.Fupery.Artiste.Command.AbstractCommand;
-import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,7 +30,6 @@ public class List extends AbstractCommand {
 
 		maxArgs = 3;
 		playerRequired = true;
-		artistRequired = true;
 
 		usage = "list <private|public> [pg]";
 
@@ -53,7 +51,7 @@ public class List extends AbstractCommand {
 		error = super.evaluate();
 
 		if (error != null)
-			
+
 			return error;
 
 		if (StartClass.artList.isEmpty())

@@ -2,6 +2,7 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -16,11 +17,22 @@ public class Buy extends MapArtCommand {
 	Economy econ;
 
 	public Buy(CommandListener listener) {
+
 		super(listener);
+
 		playerRequired = true;
 		usage = "buy <title>";
+
 		this.cost = StartClass.config.getDouble("artworkPrice");
 		this.econ = StartClass.econ;
+
+		if (args.length == 2) {
+
+			AbstractMapArt a = StartClass.artList.get(args[1]);
+			
+			if (a != null)
+				authorRequired = !(a.getType() == AbstractMapArt.validMapType.PUBLIC);
+		}
 	}
 
 	protected boolean run() {
