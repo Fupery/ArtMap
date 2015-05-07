@@ -3,17 +3,16 @@ package me.Fupery.Artiste;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
+import java.util.zip.GZIPOutputStream;
 
 import me.Fupery.Artiste.IO.*;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.Tasks.EasyDraw;
 import me.Fupery.Artiste.Tasks.OnLogout;
-import me.Fupery.Artiste.Command.Error;
-import me.Fupery.Artiste.Command.CanvasCommands.Unclaim;
+import me.Fupery.Artiste.Command.Utils.Error;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -25,7 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public final class StartClass extends JavaPlugin {
 
-	private Logger log = this.getLogger();
 	public static boolean economyOn;
 	public static Economy econ = null;
 	public static FileConfiguration config;
@@ -34,9 +32,8 @@ public final class StartClass extends JavaPlugin {
 	public static HashMap<UUID, Artist> artistList;
 
 	public static Canvas canvas;
-	public static String[] idList;
 	public static StartClass plugin;
-	public static List<Short> recyclingBin;
+	public static ArrayList<Short> recyclingBin;
 	public static BukkitRunnable claimTimer;
 
 	@Override
@@ -51,7 +48,7 @@ public final class StartClass extends JavaPlugin {
 		pluginManager.registerEvents((new EasyDraw()), this);
 		pluginManager.registerEvents(new OnLogout(), this);
 
-		Load.setupRegistry(this, log);
+		Load.setupRegistry(this, getLogger());
 
 		this.saveDefaultConfig();
 
@@ -59,7 +56,7 @@ public final class StartClass extends JavaPlugin {
 
 		if (!setupEconomy()) {
 
-			log.info(Error.noEcon);
+			getLogger().info(Error.noEcon);
 			economyOn = false;
 
 		} else
@@ -73,20 +70,14 @@ public final class StartClass extends JavaPlugin {
 			StartClass.claimTimer.cancel();
 
 		if (canvas != null) {
-			Canvas c = canvas;
 
-			if (c.getOwner() != null) {
+			if (canvas.getOwner() != null) {
 
-				Unclaim.unclaim();
+				canvas.clear(canvas.getOwner());
 
 			}
 		}
-		save(new File(getDataFolder(), "MapArt.dat"), artList);
-
-		save(new File(getDataFolder(), "Artist.dat"), artistList);
-
-		save(new File(getDataFolder(), "Artiste.dat"), canvas, idList);
-		
+		save(new File(getDataFolder(), "Artiste.dat"));
 
 		Bukkit.getScheduler().cancelTasks(this);
 	}
@@ -109,36 +100,19 @@ public final class StartClass extends JavaPlugin {
 		return econ != null;
 	}
 
-	public static void save(File saveFile, Object object) {
+	public static void save(File saveFile) {
 
 		try {
 			if (!saveFile.exists())
 				saveFile.createNewFile();
 
 			ObjectOutputStream out = new ObjectOutputStream(
-					new FileOutputStream(saveFile));
+					new GZIPOutputStream(new FileOutputStream(saveFile)));
 
-			out.writeObject((Object) object);
-
-			out.flush();
-			out.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void save(File saveFile, Canvas c, String[] id) {
-
-		try {
-			if (!saveFile.exists())
-				saveFile.createNewFile();
-
-			ObjectOutputStream out = new ObjectOutputStream(
-					new FileOutputStream(saveFile));
-
-			out.writeObject((Object) c);
-			out.writeObject((Object) id);
+			out.writeObject((Object) StartClass.canvas);
+			out.writeObject((Object) StartClass.recyclingBin);
+			out.writeObject((Object) StartClass.artistList);
+			out.writeObject((Object) StartClass.artList);
 
 			out.flush();
 			out.close();

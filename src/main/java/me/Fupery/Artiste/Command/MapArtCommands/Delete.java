@@ -3,16 +3,20 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Artwork;
-import me.Fupery.Artiste.Command.Error;
+import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
+// Fix title success message, permission
 public class Delete extends MapArtCommand {
 
 	public Delete(CommandListener listener) {
 		super(listener);
 		usage = "delete <title>";
+
+		authorRequired = !sender.hasPermission("Artiste.admin");
+		playerRequired = authorRequired;
+		artistRequired = authorRequired;
 	}
 
 	protected boolean run() {
@@ -23,6 +27,8 @@ public class Delete extends MapArtCommand {
 		if (art instanceof Artwork) {
 
 			((Artwork) art).delete(sender);
+
+			StartClass.artistList.get(art.getArtist()).delArtwork(title);
 
 		}
 		return true;
@@ -35,14 +41,6 @@ public class Delete extends MapArtCommand {
 		if (error != null)
 
 			return error;
-
-		if (sender instanceof Player && !sender.hasPermission("artiste.admin")) {
-
-			if (((Player) sender).getUniqueId() != art.getArtist())
-
-				return Error.noPermission;
-
-		}
 
 		artist = StartClass.artistList.get(art.getArtist());
 

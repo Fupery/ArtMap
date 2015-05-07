@@ -94,4 +94,5 @@ public class ColourConvert {
 		DyeColor d = DyeColor.getByColor(bc);
 		return d;
 	}
+
 }

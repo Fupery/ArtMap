@@ -7,88 +7,130 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.bukkit.DyeColor;
+
 import me.Fupery.Artiste.StartClass;
-import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.MapArt.Buffer;
 
 public class ArtIO {
-	
-	private File file;
-	private StartClass plugin;
-	
-	public ArtIO(){
-		
-		plugin = StartClass.plugin;
-		File dir = plugin.getDataFolder();
-		this.file = (new File(dir, "Art.dat"));
-		
-	}
 
-	public void archiveArtList() {
+	static File data = new File(StartClass.plugin.getDataFolder(), "data");
+	static File buffer = new File(StartClass.plugin.getDataFolder(), "buffer");
 
-		Set<String> keys = StartClass.artList.keySet();
-
-		try {
-			if (!file.exists())
-				file.createNewFile();
-
-			ObjectOutputStream out = new ObjectOutputStream(
-					new GZIPOutputStream(new FileOutputStream(file)));
-
-			for (String k : keys)
-
-				out.writeObject(StartClass.artList.get(k));
-
-			out.flush();
-			out.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public boolean loadMap(String title)
+	public static boolean saveMap(DyeColor[] map, String title)
 			throws FileNotFoundException, IOException {
-		
-		if(!file.exists())
-			
-			return false;
 
-		ObjectInputStream in = null;
-		Object o;
+		if (!data.exists())
 
-		in = new ObjectInputStream(new GZIPInputStream(
-				new FileInputStream(file)));
+			data.mkdir();
 
-		try {
-			while (true) {
+		File f = new File(data, title + ".dat");
 
-				o = in.readObject();
+		if (f.exists())
+			f.delete();
 
-				if (o instanceof Artwork
-						&& ((Artwork) o).getTitle().equalsIgnoreCase(title));
+		ObjectOutputStream out = new ObjectOutputStream(new GZIPOutputStream(
+				new FileOutputStream(f, true)));
+
+		out.writeObject(map);
+		out.flush();
+		out.close();
+
+		return true;
+	}
+
+	public static DyeColor[] loadMap(String title) throws ClassNotFoundException,
+			IOException {
+
+		if (!data.exists())
+
+			return null;
+
+		File b = null;
+
+		for (File f : data.listFiles())
+
+			if (f.getName().equalsIgnoreCase(title + ".dat")) {
+				b = f;
 				break;
 			}
 
-		} catch (ClassNotFoundException | IOException e) {
+		if (b == null)
 
-			o = null;
+			return null;
 
-			e.printStackTrace();
-			
-			return false;
-		}
+		ObjectInputStream in = new ObjectInputStream(new GZIPInputStream(
+				new FileInputStream(b)));
+
+		Object o = in.readObject();
 
 		in.close();
-		Artwork a = (Artwork) o;
-		
-		StartClass.artList.put(a.getTitle(), a);
-		
-		return true;
 
+		DyeColor[] map = (DyeColor[]) o;
+
+		return map;
 	}
 
+	public static boolean saveBuffer(Buffer art, Artist a)
+			throws FileNotFoundException, IOException {
+
+		if (!buffer.exists())
+
+			buffer.mkdir();
+
+		File f = new File(buffer, a.getArtistID() + ".dat");
+
+		if (f.exists())
+			f.delete();
+
+		ObjectOutputStream out = new ObjectOutputStream(new GZIPOutputStream(
+				new FileOutputStream(f, true)));
+
+		out.writeObject(art);
+		out.flush();
+		out.close();
+
+		return true;
+	}
+
+	public static Buffer loadBuffer(Artist a) throws ClassNotFoundException,
+			IOException {
+
+		if (!buffer.exists())
+
+			return null;
+
+		File b = null;
+
+		for (File f : buffer.listFiles())
+
+			if (f.getName().contains(a.getArtistID().toString())) {
+				b = f;
+				break;
+			}
+
+		if (b == null)
+
+			return null;
+
+		ObjectInputStream in = new ObjectInputStream(new GZIPInputStream(
+				new FileInputStream(b)));
+
+		Object o = in.readObject();
+
+		in.close();
+
+		Buffer art = (Buffer) o;
+
+		if (art.getMapSize() == StartClass.canvas.getSize())
+
+			return art;
+		else {
+			b.delete();
+			return null;
+		}
+	}
 }

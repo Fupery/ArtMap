@@ -1,6 +1,5 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
-import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.MapArt.Buffer;
@@ -34,8 +33,7 @@ public class Claim extends CanvasCommand {
 
 		if (m != null) {
 
-			m.edit();
-			artist.clearBuffer();
+			m.edit(m.getMap());
 		}
 		if (claimTime > 0) {
 
@@ -95,12 +93,11 @@ public class Claim extends CanvasCommand {
 
 		@Override
 		public void run() {
-			Canvas c = StartClass.canvas;
 
 			sender.sendMessage(ChatColor.AQUA + "[ArtMap]" + ChatColor.GOLD
 					+ "Your time using the canvas is up!");
 
-			c.clear(c.getOwner());
+			Unclaim.unclaim();
 		}
 
 		@Override

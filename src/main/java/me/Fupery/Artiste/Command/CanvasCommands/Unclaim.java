@@ -43,11 +43,7 @@ public class Unclaim extends CanvasCommand {
 
 		Artist artist = StartClass.artistList.get(p.getUniqueId());
 
-		if (artist.getBuffer() != null) {
-
-			artist.clearBuffer();
-		}
-		artist.setBuffer(new Buffer(p));
+		artist.setBuffer(new Buffer());
 
 		if (StartClass.canvas != null)
 

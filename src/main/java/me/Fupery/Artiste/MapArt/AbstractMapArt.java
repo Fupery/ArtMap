@@ -16,10 +16,11 @@ public abstract class AbstractMapArt implements Serializable {
 	private static final long serialVersionUID = 3778228012180388020L;
 	protected UUID artist;
 	protected int mapSize;
-	protected DyeColor[] map;
 
 	@SuppressWarnings("deprecation")
-	public void save() {
+	public DyeColor[] save() {
+
+		DyeColor[] map = new DyeColor[(mapSize * mapSize) + mapSize - 1];
 
 		Canvas c = StartClass.canvas;
 		if (c != null) {
@@ -38,17 +39,18 @@ public abstract class AbstractMapArt implements Serializable {
 
 					if (b.getType() == Material.WOOL) {
 
-						this.map[i] = DyeColor.getByData(b.getData());
+						map[i] = DyeColor.getByData(b.getData());
 
 					} else
-						this.map[i] = null;
+						map[i] = null;
 				}
 			}
 		}
+		return map;
 	}
 
 	@SuppressWarnings("deprecation")
-	public void edit() {
+	public void edit(DyeColor[] map) {
 
 		Canvas c = StartClass.canvas;
 
@@ -88,14 +90,6 @@ public abstract class AbstractMapArt implements Serializable {
 		this.artist = artist;
 	}
 
-	public DyeColor[] getMap() {
-		return map;
-	}
-
-	public void setMap(DyeColor[] map) {
-		this.map = map;
-	}
-
 	public int getMapSize() {
 		return mapSize;
 	}
@@ -122,7 +116,7 @@ public abstract class AbstractMapArt implements Serializable {
 		else if (this instanceof Buffer)
 
 			return validMapType.BUFFER;
-		
+
 		return null;
 	}
 

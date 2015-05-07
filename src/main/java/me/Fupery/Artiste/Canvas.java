@@ -137,6 +137,10 @@ public class Canvas implements Serializable {
 		member.add(player.getUniqueId());
 	}
 
+	public void delMember(Player player) {
+		member.remove(player.getUniqueId());
+	}
+
 	public boolean canClaim() {
 		return canClaim;
 	}
@@ -164,8 +168,8 @@ public class Canvas implements Serializable {
 			t.runTaskLater(StartClass.plugin, delay * 60 * 20);
 
 			cooloff = true;
-		}
-		else cooloff = false;
+		} else
+			cooloff = false;
 	}
 
 	class ResetTimer extends BukkitRunnable {

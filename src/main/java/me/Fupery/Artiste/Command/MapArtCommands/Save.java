@@ -4,8 +4,8 @@ import org.bukkit.ChatColor;
 
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
-import me.Fupery.Artiste.Command.Error;
 import me.Fupery.Artiste.Command.CanvasCommands.CanvasCommand;
+import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PrivateMap;
 import me.Fupery.Artiste.Tasks.MapReflection;
 
@@ -54,6 +54,10 @@ public class Save extends CanvasCommand {
 
 			return Error.invalSave;
 
+		if (!checkTitle())
+
+			return Error.invalSave;
+
 		if (StartClass.artList.get(title) != null)
 
 			return Error.alreadySaved;
@@ -64,4 +68,25 @@ public class Save extends CanvasCommand {
 
 		return error;
 	}
+
+	private boolean checkTitle() {
+
+		for (char c : title.toCharArray()) {
+
+			if (!Character.isDigit(c) && !Character.isLetter(c)
+					&& c != "_".toCharArray()[0])
+
+				return false;
+		}
+		for (String s : filter) {
+
+			if (title.contains(s))
+				return false;
+		}
+
+		return true;
+	}
+
+	String[] filter = new String[] { "fuck", "shit", "cunt", "cock", "faggot",
+			"dyke", "gay", "pussy", "rape", "bitch" }; // rude
 }

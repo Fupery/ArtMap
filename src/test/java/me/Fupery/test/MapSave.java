@@ -30,7 +30,7 @@ public class MapSave {
 	public void privateArtworkSave(File saveFile) throws IOException {
 		
 		PrivateMap a = (PrivateMap) art;
-		byte[] map = serialize(art.getMap());
+		byte[] map = serialize(a.getMap());
 		byte queued = (a.isQueued()) ? (byte) 1 : (byte) 0;
 		byte denied = (a.isQueued()) ? (byte) 1 : (byte) 0;
 

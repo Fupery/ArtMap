@@ -1,14 +1,21 @@
 package me.Fupery.Artiste.MapArt;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.UUID;
 
 import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.IO.ArtIO;
 import me.Fupery.Artiste.IO.Artist;
+
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class Artwork extends AbstractMapArt implements Serializable {
 
@@ -19,7 +26,7 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 	public void delete(CommandSender sender) {
 
 		UUID id = artist;
-		
+
 		Artist a = StartClass.artistList.get(id);
 
 		StartClass.artList.remove(title);
@@ -33,10 +40,48 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 		ItemStack i = new ItemStack(Material.MAP, 1, mapId);
 
+		ItemMeta im = i.getItemMeta();
+
+		im.setDisplayName(String.format("'%s'", title));
+
+		im.setLore(Arrays.asList(ChatColor.GOLD + "by " + ChatColor.YELLOW
+				+ player.getName()));
+
+		i.setItemMeta(im);
+
 		player.getInventory().addItem(i);
 
 		if (this instanceof PublicMap)
+
 			((PublicMap) this).incrementBuys();
+	}
+
+	public DyeColor[] getMap() {
+
+		DyeColor[] d;
+
+		try {
+			d = ArtIO.loadMap(title);
+			
+		} catch (ClassNotFoundException | IOException e) {
+			
+			d = null;
+		}
+
+		return d;
+	}
+
+	public boolean setMap(DyeColor[] map) {
+
+		try {
+			ArtIO.saveMap(map, title);
+			
+			return true;
+	
+		} catch (IOException e) {
+			
+			return false;
+		}
 	}
 
 	public String getTitle() {

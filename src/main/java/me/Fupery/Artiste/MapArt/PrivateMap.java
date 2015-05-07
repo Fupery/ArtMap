@@ -1,14 +1,11 @@
 package me.Fupery.Artiste.MapArt;
 
-import java.util.UUID;
-
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.Tasks.MapReflection;
 
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,19 +18,18 @@ public class PrivateMap extends Artwork {
 	@SuppressWarnings("deprecation")
 	public PrivateMap(CommandSender sender, String title) {
 
-		UUID id = ((Player) sender).getUniqueId();
-		Artist a = StartClass.artistList.get(id);
 		Canvas c = StartClass.canvas;
 
 		mapSize = c.getSize();
-		map = new DyeColor[(mapSize * mapSize) + mapSize - 1];
-		artist = ((Player) sender).getUniqueId();
+		this.artist = ((Player) sender).getUniqueId();
 		this.title = title.toLowerCase();
+
+		Artist a = StartClass.artistList.get(artist);
 
 		this.mapId = Bukkit.createMap(
 				Bukkit.getWorld(StartClass.canvas.worldname)).getId();
 
-		save();
+		setMap(save());
 
 		StartClass.artList.put(title.toLowerCase(), this);
 		a.addArtwork(title);

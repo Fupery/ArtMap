@@ -1,7 +1,8 @@
 package me.Fupery.Artiste.IO;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import me.Fupery.Artiste.StartClass;
@@ -18,16 +19,19 @@ public class Artist implements Serializable {
 
 	private static final long serialVersionUID = -2144942731017270259L;
 	private UUID artistID;
-	private Buffer buffer;
-	private String[] artworks;
+	private ArrayList<String> artworks;
+	private boolean banned;
 
 	public Artist(UUID uuid) {
+		
 		if (!StartClass.artistList.containsKey(uuid)) {
 			this.artistID = uuid;
-			evalMaxArtworks();
 		}
+		artworks = new ArrayList<String>();
 	}
-	public void evalMaxArtworks() {
+
+	private int maxArt() {
+
 		Player p = Bukkit.getPlayer(artistID);
 		int i = 0;
 
@@ -40,41 +44,28 @@ public class Artist implements Serializable {
 		if (p.hasPermission("artiste.staff"))
 			i = StartClass.config.getInt("maxMaps.admin");
 
-		if (artworks == null)
-			artworks = new String[i];
-		
-		if(artworks.length != i)
-			
-			artworks = Arrays.copyOf(artworks, i);
+		return i;
 
 	}
 
 	public boolean addArtwork(String title) {
 
-		if (artworks != null)
+		if (artworks.size() >= maxArt())
 
-			for (int i = 0; i < artworks.length; i++)
+			return false;
 
-				if (artworks[i] == null) {
+		artworks.add(title);
 
-					artworks[i] = title;
-					return true;
-				}
-		return false;
+		return true;
 	}
 
 	public boolean delArtwork(String title) {
 
-		if (artworks != null)
-
-			for (int i = 0; i < artworks.length; i++)
-
-				if (artworks[i] == title) {
-
-					artworks[i] = null;
-					return true;
-				}
-		return false;
+		if (!artworks.remove(title))
+			
+			return false;
+		
+		return true;
 	}
 
 	public UUID getArtistID() {
@@ -86,14 +77,34 @@ public class Artist implements Serializable {
 	}
 
 	public Buffer getBuffer() {
-		return buffer;
+
+		try {
+
+			return (Buffer) ArtIO.loadBuffer(this);
+
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public void setBuffer(Buffer buffer) {
-		this.buffer = buffer;
+	public void setBuffer(Buffer b) {
+
+		try {
+
+			ArtIO.saveBuffer(b, this);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 
-	public void clearBuffer() {
-		this.buffer = null;
+	public boolean isBanned() {
+		return banned;
+	}
+
+	public void setBanned(boolean banned) {
+		this.banned = banned;
 	}
 }

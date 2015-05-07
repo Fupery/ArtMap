@@ -26,7 +26,7 @@ public class ArtRenderer extends MapRenderer {
 	
 	public ArtRenderer(AbstractMapArt mapArt, CommandSender sender) {
 		this.sender = sender;
-		this.map = mapArt.getMap();
+		//this.map = mapArt.getMap();
 		this.mapSize = mapArt.getMapSize();
 		this.mapArt = mapArt;
 	}
