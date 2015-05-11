@@ -13,13 +13,16 @@ public class OnLogout implements Listener {
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
-
+		
 		Canvas c = StartClass.canvas;
+		
+		if (c != null) {
 
-		Player player = event.getPlayer();
+			Player player = event.getPlayer();
 
-		if (c.getOwner() != null && c.getOwner() == player)
+			if (c.getOwner() != null && c.getOwner() == player)
 
-			Unclaim.unclaim();
+				Unclaim.unclaim();
+		}
 	}
 }

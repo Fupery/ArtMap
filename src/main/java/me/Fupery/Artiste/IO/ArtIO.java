@@ -42,8 +42,8 @@ public class ArtIO {
 		return true;
 	}
 
-	public static DyeColor[] loadMap(String title) throws ClassNotFoundException,
-			IOException {
+	public static DyeColor[] loadMap(String title)
+			throws ClassNotFoundException, IOException {
 
 		if (!data.exists())
 
@@ -72,6 +72,17 @@ public class ArtIO {
 		DyeColor[] map = (DyeColor[]) o;
 
 		return map;
+	}
+
+	public static boolean deleteMap(String title) {
+
+		if (!data.exists())
+
+			return false;
+
+		File f = new File(data, title + ".dat");
+
+		return f.delete();
 	}
 
 	public static boolean saveBuffer(Buffer art, Artist a)
@@ -132,5 +143,36 @@ public class ArtIO {
 			b.delete();
 			return null;
 		}
+	}
+	public static DyeColor[] loadResource(String title)
+			throws ClassNotFoundException, IOException {
+
+		if (!data.exists())
+
+			return null;
+
+		File b = null;
+
+		for (File f : data.listFiles())
+
+			if (f.getName().equalsIgnoreCase(title + ".dat")) {
+				b = f;
+				break;
+			}
+
+		if (b == null)
+
+			return null;
+
+		ObjectInputStream in = new ObjectInputStream(new GZIPInputStream(
+				new FileInputStream(b)));
+
+		Object o = in.readObject();
+
+		in.close();
+
+		DyeColor[] map = (DyeColor[]) o;
+
+		return map;
 	}
 }

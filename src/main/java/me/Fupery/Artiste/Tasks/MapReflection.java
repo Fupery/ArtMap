@@ -4,11 +4,12 @@ import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.IO.Load;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
 
 import org.bukkit.Bukkit;
-
+import org.bukkit.World;
 import org.bukkit.map.MapView;
 
 public class MapReflection {
@@ -16,9 +17,14 @@ public class MapReflection {
 	private Logger log;
 	private MapView m;
 	private byte[] mapOutput;
+	private World world;
 
 	@SuppressWarnings("deprecation")
 	public MapReflection(String title) {
+
+		if (StartClass.canvas != null)
+
+			this.world = Bukkit.getWorld(StartClass.canvas.worldname);
 
 		this.log = Bukkit.getLogger();
 
@@ -32,10 +38,6 @@ public class MapReflection {
 			this.m = m;
 			this.mapOutput = new ColourConvert().byteConvert(art.getMap(),
 					art.getMapSize());
-
-			colorsOverride();
-			dimensionOverride();
-
 		} else
 			log.warning("invalid title");
 	}
@@ -105,4 +107,53 @@ public class MapReflection {
 		return (dimension != -5);
 	}
 
+	@SuppressWarnings("deprecation")
+	public boolean worldMapOverride(short inputId) {
+
+		if (world == null)
+
+			return false;
+
+		Field worldMap;
+		Field overrideMap;
+		short outputId;
+
+		AbstractMapArt a = StartClass.artList.get("default");
+
+		if (a == null)
+
+			a = Load.setupDefault();
+
+		outputId = ((Artwork) a).getMapId();
+
+		MapView mapIn = Bukkit.getMap(inputId);
+
+		MapView mapOut = Bukkit.getMap(outputId);
+
+		if (mapIn == null || mapOut == null) {
+
+			log.info("map delete error - 'default' map may be corrupted");
+			return false;
+		}
+
+		try {
+			worldMap = mapIn.getClass().getDeclaredField("worldMap");
+
+			worldMap.setAccessible(true);
+
+			overrideMap = mapOut.getClass().getDeclaredField("worldMap");
+
+			overrideMap.setAccessible(true);
+
+			worldMap.set(mapIn, overrideMap.get(mapOut));
+
+		} catch (NoSuchFieldException | SecurityException
+				| IllegalArgumentException | IllegalAccessException e) {
+
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
 }

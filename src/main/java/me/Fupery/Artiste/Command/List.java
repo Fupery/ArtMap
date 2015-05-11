@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
+//fix errors for no canvas
 public class List extends AbstractCommand {
 
 	private validMapType type;
@@ -56,7 +57,7 @@ public class List extends AbstractCommand {
 
 		if (StartClass.artList.isEmpty())
 
-			error = String.format(Error.noArtwork, "private");
+			error = String.format(Error.noArtwork, "");
 
 		return error;
 	}

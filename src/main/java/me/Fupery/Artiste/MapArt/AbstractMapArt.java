@@ -54,7 +54,7 @@ public abstract class AbstractMapArt implements Serializable {
 
 		Canvas c = StartClass.canvas;
 
-		if (c != null && map != null) {
+		if (c != null && map != null && this.mapSize == c.getSize()) {
 
 			Location l = c.getPos1().clone();
 
@@ -116,6 +116,10 @@ public abstract class AbstractMapArt implements Serializable {
 		else if (this instanceof Buffer)
 
 			return validMapType.BUFFER;
+		
+		else if (this instanceof Template)
+			
+			return validMapType.TEMPLATE;
 
 		return null;
 	}

@@ -10,10 +10,10 @@ commands:
       <command> define <x> <y> <z> : Defines the canvas region
       <command> remove : Removes the canvas region
       <command> info : Returns information about the canvas
-      <command> approve <title> : Approves a player’s publish request
-      <command> deny <title> : Denies a player’s publish request
+      <command> <approve|deny> <title> : Approves/denies a player’s publish request
+      <command> <ban|unban> <playername> : Bans/unbans a player from using the canvas
       <command> claim : Claim the canvas for use
-      <command> addmember <playerName> : Add player to canvas
+      <command> <addmember|delmember> <playerName> : Add/remove player to canvas
       <command> unclaim : Leave the canvas for others to claim
       <command> reset [colour|list] : Reset the canvas to a block colour
       <command> save <title> : Save your artwork
@@ -30,7 +30,7 @@ permissions:
     children:
       artiste.claim: true
       artiste.publicMapCreation: true
-  artiste.staff:
+  artiste.admin:
     description: Gives access to moderator commands involved with canvas creation
     children:
       artiste.canvas: true

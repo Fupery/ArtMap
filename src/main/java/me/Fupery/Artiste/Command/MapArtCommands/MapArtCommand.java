@@ -40,7 +40,7 @@ public class MapArtCommand extends AbstractCommand {
 
 		art = StartClass.artList.get(args[1]);
 
-		if (art == null)
+		if (art == null || art.getArtist() == null)
 
 			return String.format(Error.noMap, args[1]);
 

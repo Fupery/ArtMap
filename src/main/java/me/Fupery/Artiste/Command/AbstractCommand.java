@@ -2,6 +2,7 @@ package me.Fupery.Artiste.Command;
 
 import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Command.Utils.Conditions;
 import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.IO.Artist;
 
@@ -24,6 +25,8 @@ public class AbstractCommand {
 
 	protected String[] args;
 	protected CommandSender sender;
+	
+	protected Conditions conditions;
 
 	protected AbstractCommand(CommandListener listener) {
 
@@ -38,6 +41,8 @@ public class AbstractCommand {
 	public void check() {
 
 		error = evaluate();
+		
+		conditions.clear();
 
 		if (error == null)
 
@@ -53,7 +58,7 @@ public class AbstractCommand {
 	protected String evaluate() {
 
 		if (sender instanceof Player) {
-			
+
 			if (artist == null) {
 
 				artist = new Artist(((Player) sender).getUniqueId());
@@ -61,10 +66,8 @@ public class AbstractCommand {
 				StartClass.artistList.put(((Player) sender).getUniqueId(),
 						artist);
 
-			}
-			else
-				if(artistRequired && artist.isBanned())
-					return error = "You have been banned from creating artworks.";
+			} else if (artistRequired && artist.isBanned())
+				return error = "You have been banned from creating artworks.";
 		}
 
 		if (args.length < minArgs || args.length > maxArgs)

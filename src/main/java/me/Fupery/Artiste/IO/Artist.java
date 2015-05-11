@@ -41,7 +41,7 @@ public class Artist implements Serializable {
 		if (p.hasPermission("artiste.playerTier2"))
 			i = StartClass.config.getInt("maxMaps.playerTier2");
 
-		if (p.hasPermission("artiste.staff"))
+		if (p.hasPermission("artiste.admin"))
 			i = StartClass.config.getInt("maxMaps.admin");
 
 		return i;

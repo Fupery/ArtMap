@@ -3,7 +3,6 @@ package me.Fupery.Artiste;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
@@ -33,7 +32,7 @@ public final class StartClass extends JavaPlugin {
 
 	public static Canvas canvas;
 	public static StartClass plugin;
-	public static ArrayList<Short> recyclingBin;
+	
 	public static BukkitRunnable claimTimer;
 
 	@Override
@@ -110,7 +109,6 @@ public final class StartClass extends JavaPlugin {
 					new GZIPOutputStream(new FileOutputStream(saveFile)));
 
 			out.writeObject((Object) StartClass.canvas);
-			out.writeObject((Object) StartClass.recyclingBin);
 			out.writeObject((Object) StartClass.artistList);
 			out.writeObject((Object) StartClass.artList);
 

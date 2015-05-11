@@ -7,7 +7,6 @@ import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.Command.CanvasCommands.CanvasCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PrivateMap;
-import me.Fupery.Artiste.Tasks.MapReflection;
 
 public class Save extends CanvasCommand {
 
@@ -35,7 +34,6 @@ public class Save extends CanvasCommand {
 				+ args[1] + ChatColor.GOLD + " as a private artwork";
 
 		new PrivateMap(sender, title);
-		new MapReflection(title);
 		return true;
 	}
 

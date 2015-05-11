@@ -1,6 +1,5 @@
 package me.Fupery.Artiste.MapArt;
 
-import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.StartClass;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.Tasks.MapReflection;
@@ -18,11 +17,9 @@ public class PrivateMap extends Artwork {
 	@SuppressWarnings("deprecation")
 	public PrivateMap(CommandSender sender, String title) {
 
-		Canvas c = StartClass.canvas;
-
-		mapSize = c.getSize();
 		this.artist = ((Player) sender).getUniqueId();
 		this.title = title.toLowerCase();
+		this.mapSize = StartClass.canvas.getSize();
 
 		Artist a = StartClass.artistList.get(artist);
 
@@ -34,7 +31,10 @@ public class PrivateMap extends Artwork {
 		StartClass.artList.put(title.toLowerCase(), this);
 		a.addArtwork(title);
 
-		new MapReflection(title);
+		MapReflection r = new MapReflection(title);
+
+		r.colorsOverride();
+		r.dimensionOverride();
 
 	}
 

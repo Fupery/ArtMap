@@ -44,7 +44,7 @@ public class Delete extends MapArtCommand {
 
 		artist = StartClass.artistList.get(art.getArtist());
 
-		if (!artist.delArtwork(title))
+		if (art.getArtist() == null || !artist.delArtwork(title))
 
 			return error = String.format(Error.noMap, title);
 

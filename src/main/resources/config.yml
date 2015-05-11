@@ -1,10 +1,8 @@
-#Artiste Config
-#---------------------------
-canvasSize: 64     #Size of canvas in one axis (will be squared) - acceptable values - 32, 64, 128
-artworkPrice: 350  #Price to purchase a map via /artwork buy in Economy currency
-claimTime: 60      #Amount of time, in minutes, a player can claim a canvas for - 0 for unlimited use
-cooldownTime: 1    #Amount of time, in minutes, between when a player can use /artmap edit or /artmap reset
-maxMaps:    #number of private artworks allowed to be stored for different player groups
+canvasSize: 64     #Width of canvas; acceptable values: 32, 64, 128
+artworkPrice: 350  #Price to purchase a map in vault $
+claimTime: 60      #Minutes a player can claim a canvas for; 0 for unlimited use
+cooldownTime: 1    #Minutes between when the map can be reset
+maxMaps:           #max number of private artworks
   playerTier1: 3
   playerTier2: 5
   admin: 10
