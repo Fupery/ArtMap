@@ -3,7 +3,7 @@ package me.Fupery.Artiste.Tasks;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.Load;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
@@ -22,13 +22,13 @@ public class MapReflection {
 	@SuppressWarnings("deprecation")
 	public MapReflection(String title) {
 
-		if (StartClass.canvas != null)
+		if (Artiste.canvas != null)
 
-			this.world = Bukkit.getWorld(StartClass.canvas.worldname);
+			this.world = Bukkit.getWorld(Artiste.canvas.worldname);
 
 		this.log = Bukkit.getLogger();
 
-		AbstractMapArt a = StartClass.artList.get(title);
+		AbstractMapArt a = Artiste.artList.get(title);
 
 		if (a != null && a instanceof Artwork) {
 
@@ -118,7 +118,7 @@ public class MapReflection {
 		Field overrideMap;
 		short outputId;
 
-		AbstractMapArt a = StartClass.artList.get("default");
+		AbstractMapArt a = Artiste.artList.get("default");
 
 		if (a == null)
 

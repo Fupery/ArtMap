@@ -2,22 +2,17 @@ package me.Fupery.Artiste.Command.CanvasCommands;
 
 import java.util.UUID;
 
-import me.Fupery.Artiste.CommandListener;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class Info extends CanvasCommand {
 
-	public Info(CommandListener listener) {
+	public void initialize() {
 
-		super(listener);
 		usage = "info";
-		successMsg = false;
-
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
 		if (sender.hasPermission("Artiste.admin")) {
 

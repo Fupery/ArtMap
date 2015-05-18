@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
@@ -25,15 +24,22 @@ public class List extends AbstractCommand {
 	private AbstractMapArt art;
 	private int pages;
 
-	public List(CommandListener listener) {
-
-		super(listener);
-
+	public void initialize() {
+		
 		maxArgs = 3;
 		playerRequired = true;
 
 		usage = "list <private|public> [pg]";
 
+	}
+
+	@Override
+	public String conditions() {
+
+		if (Artiste.artList.isEmpty())
+
+			error = String.format(Error.noArtwork, "");
+		
 		if (args.length == 3) {
 			try {
 				pages = Integer.parseInt(args[2]);
@@ -45,26 +51,12 @@ public class List extends AbstractCommand {
 
 		type = resolveType();
 
-	}
-
-	protected String evaluate() {
-
-		error = super.evaluate();
-
-		if (error != null)
-
-			return error;
-
-		if (StartClass.artList.isEmpty())
-
-			error = String.format(Error.noArtwork, "");
-
 		return error;
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
-		keys = StartClass.artList.keySet();
+		keys = Artiste.artList.keySet();
 
 		if (!sort() || list.size() < 1) {
 
@@ -137,7 +129,7 @@ public class List extends AbstractCommand {
 
 		while (compiler.hasNext()) {
 
-			AbstractMapArt m = StartClass.artList.get(compiler.next());
+			AbstractMapArt m = Artiste.artList.get(compiler.next());
 
 			if (m.getType() == type) {
 
@@ -177,5 +169,7 @@ public class List extends AbstractCommand {
 		else
 			return type.name().toLowerCase();
 	}
+
+
 
 }

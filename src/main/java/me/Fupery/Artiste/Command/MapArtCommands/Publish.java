@@ -1,6 +1,5 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
-import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PrivateMap;
 
@@ -8,32 +7,24 @@ import org.bukkit.ChatColor;
 
 public class Publish extends MapArtCommand {
 
-	public Publish(CommandListener listener) {
-
-		super(listener);
+	public void initialize() {
 
 		usage = "publish <title>";
 		authorRequired = true;
 		playerRequired = true;
-		if(args.length == 2)
+		if (args.length == 2)
 
 			success = String.format("%s has been submitted for approval!",
 					ChatColor.AQUA + args[1] + ChatColor.GOLD);
-			
 	}
 
-	protected boolean run() {
+	public boolean run() {
 		((PrivateMap) art).setQueued(true);
 		return true;
 	}
 
-	protected String evaluate() {
-
-		error = super.evaluate();
-
-		if (error != null)
-			
-			return error;
+	@Override
+	public String conditions() {
 
 		if (!sender.hasPermission("artiste.publicMapCreation")) {
 
@@ -43,11 +34,11 @@ public class Publish extends MapArtCommand {
 		switch (type) {
 
 		case PRIVATE:
-			
-			if(( (PrivateMap) art).isDenied())
-				
+
+			if (((PrivateMap) art).isDenied())
+
 				return error = "This artwork has already been denied!";
-				
+
 			return null;
 
 		case QUEUED:
@@ -66,5 +57,4 @@ public class Publish extends MapArtCommand {
 		}
 		return error;
 	}
-
 }

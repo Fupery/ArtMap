@@ -3,7 +3,7 @@ package me.Fupery.Artiste.MapArt;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Tasks.MapReflection;
 
 public class Template extends Artwork {
@@ -15,19 +15,19 @@ public class Template extends Artwork {
 
 		boolean d = title.equalsIgnoreCase("default");
 
-		if (StartClass.canvas != null) {
+		if (Artiste.canvas != null) {
 
-			this.mapSize = (d) ? 64 : StartClass.canvas.getSize();
+			this.mapSize = (d) ? 64 : Artiste.canvas.getSize();
 
 			this.title = title;
 
 			mapId = Bukkit.getServer()
-					.createMap(Bukkit.getWorld(StartClass.canvas.worldname))
+					.createMap(Bukkit.getWorld(Artiste.canvas.worldname))
 					.getId();
 
 			setMap(map);
 
-			StartClass.artList.put(title, this);
+			Artiste.artList.put(title, this);
 
 			MapReflection r = new MapReflection(title);
 
@@ -39,21 +39,21 @@ public class Template extends Artwork {
 	@SuppressWarnings("deprecation")
 	public Template(String title) {
 
-		if (StartClass.canvas != null) {
+		if (Artiste.canvas != null) {
 
-			this.mapSize = StartClass.canvas.getSize();
+			this.mapSize = Artiste.canvas.getSize();
 
 			this.title = title;
 
 			mapId = Bukkit.getServer()
-					.createMap(Bukkit.getWorld(StartClass.canvas.worldname))
+					.createMap(Bukkit.getWorld(Artiste.canvas.worldname))
 					.getId();
 
 			if (getMap() == null)
 
 				setMap(save());
 
-			StartClass.artList.put(title, this);
+			Artiste.artList.put(title, this);
 
 			MapReflection r = new MapReflection(title);
 

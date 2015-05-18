@@ -16,7 +16,6 @@ public class Debug {
 
 	public Debug(CommandListener listener) {
 		
-		cmd = listener.getCmd();
 		log = Bukkit.getLogger();
 
 		fields = cmd.getClass().getDeclaredFields();

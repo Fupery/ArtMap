@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.Artwork;
 
 import org.bukkit.Bukkit;
@@ -57,7 +57,7 @@ public class MapConvert {
 
 	private File mapOverride() {
 		String mapFile = name + ".dat";
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 
 		File wf = Bukkit.getWorld(c.worldname).getWorldFolder();
 		File dir = new File(wf.getAbsolutePath() + File.separator + "data");

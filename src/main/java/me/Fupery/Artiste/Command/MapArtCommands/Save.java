@@ -2,8 +2,7 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 
 import org.bukkit.ChatColor;
 
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Command.CanvasCommands.CanvasCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PrivateMap;
@@ -12,8 +11,8 @@ public class Save extends CanvasCommand {
 
 	String title;
 
-	public Save(CommandListener listener) {
-		super(listener);
+	public void initialize() {
+		
 		usage = "save <title>";
 
 		minArgs = 2;
@@ -28,7 +27,7 @@ public class Save extends CanvasCommand {
 			title = args[1];
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
 		success = ChatColor.GOLD + "Successfully saved " + ChatColor.AQUA
 				+ args[1] + ChatColor.GOLD + " as a private artwork";
@@ -37,13 +36,10 @@ public class Save extends CanvasCommand {
 		return true;
 	}
 
-	protected String evaluate() {
+	@Override
+	public String conditions() {
 
-		error = super.evaluate();
-
-		if (error != null)
-
-			return error;
+	
 
 		int t = title.length();
 
@@ -56,7 +52,7 @@ public class Save extends CanvasCommand {
 
 			return Error.invalSave;
 
-		if (StartClass.artList.get(title) != null)
+		if (Artiste.artList.get(title) != null)
 
 			return Error.alreadySaved;
 
@@ -85,6 +81,6 @@ public class Save extends CanvasCommand {
 		return true;
 	}
 
-	String[] filter = new String[] { "fuck", "shit", "cunt", "cock", "faggot",
+	String[] filter = new String[] { "fuck", "shit", "cunt", "cock", "slut", "faggot",
 			"dyke", "gay", "pussy", "rape", "bitch" }; // rude
 }

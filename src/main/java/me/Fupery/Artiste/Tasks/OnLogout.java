@@ -1,7 +1,7 @@
 package me.Fupery.Artiste.Tasks;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Command.CanvasCommands.Unclaim;
 
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ public class OnLogout implements Listener {
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
 		
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 		
 		if (c != null) {
 

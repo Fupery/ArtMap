@@ -12,13 +12,13 @@ import java.util.zip.GZIPOutputStream;
 
 import org.bukkit.DyeColor;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.Buffer;
 
 public class ArtIO {
 
-	static File data = new File(StartClass.plugin.getDataFolder(), "data");
-	static File buffer = new File(StartClass.plugin.getDataFolder(), "buffer");
+	static File data = new File(Artiste.plugin.getDataFolder(), "data");
+	static File buffer = new File(Artiste.plugin.getDataFolder(), "buffer");
 
 	public static boolean saveMap(DyeColor[] map, String title)
 			throws FileNotFoundException, IOException {
@@ -136,7 +136,7 @@ public class ArtIO {
 
 		Buffer art = (Buffer) o;
 
-		if (art.getMapSize() == StartClass.canvas.getSize())
+		if (art.getMapSize() == Artiste.canvas.getSize())
 
 			return art;
 		else {

@@ -3,7 +3,7 @@ package me.Fupery.Artiste.MapArt;
 import java.io.Serializable;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 
 import org.bukkit.DyeColor;
 
@@ -15,7 +15,7 @@ public class Buffer extends AbstractMapArt implements Serializable {
 
 	public Buffer() {
 
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 		mapSize = c.getSize();
 
 		map = save();

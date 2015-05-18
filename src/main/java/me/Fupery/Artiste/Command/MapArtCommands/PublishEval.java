@@ -1,6 +1,5 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
-import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.MapArt.PrivateMap;
 import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PublicMap;
@@ -9,14 +8,13 @@ public class PublishEval extends MapArtCommand {
 
 	private boolean approve;
 
-	public PublishEval(CommandListener listener) {
+	public void initialize() {
 
-		super(listener);
 		usage = "<approve|deny> <title>";
 		adminRequired = true;
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
 		if (!getCmd())
 			return false;
@@ -34,12 +32,8 @@ public class PublishEval extends MapArtCommand {
 		return true;
 	}
 
-	protected String evaluate() {
-
-		error = super.evaluate();
-
-		if (error != null)
-			return error;
+	@Override
+	public String conditions() {
 
 		switch (type) {
 

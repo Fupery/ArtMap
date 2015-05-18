@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.Buffer;
 
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ public class Artist implements Serializable {
 
 	public Artist(UUID uuid) {
 		
-		if (!StartClass.artistList.containsKey(uuid)) {
+		if (!Artiste.artistList.containsKey(uuid)) {
 			this.artistID = uuid;
 		}
 		artworks = new ArrayList<String>();
@@ -36,13 +36,13 @@ public class Artist implements Serializable {
 		int i = 0;
 
 		if (p.hasPermission("artiste.playerTier1"))
-			i = StartClass.config.getInt("maxMaps.playerTier1");
+			i = Artiste.config.getInt("maxMaps.playerTier1");
 
 		if (p.hasPermission("artiste.playerTier2"))
-			i = StartClass.config.getInt("maxMaps.playerTier2");
+			i = Artiste.config.getInt("maxMaps.playerTier2");
 
 		if (p.hasPermission("artiste.admin"))
-			i = StartClass.config.getInt("maxMaps.admin");
+			i = Artiste.config.getInt("maxMaps.admin");
 
 		return i;
 

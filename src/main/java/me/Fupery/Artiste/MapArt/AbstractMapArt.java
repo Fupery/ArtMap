@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -22,7 +22,7 @@ public abstract class AbstractMapArt implements Serializable {
 
 		DyeColor[] map = new DyeColor[(mapSize * mapSize) + mapSize - 1];
 
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 		if (c != null) {
 
 			Location l = c.getPos1().clone();
@@ -52,7 +52,7 @@ public abstract class AbstractMapArt implements Serializable {
 	@SuppressWarnings("deprecation")
 	public void edit(DyeColor[] map) {
 
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 
 		if (c != null && map != null && this.mapSize == c.getSize()) {
 

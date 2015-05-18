@@ -18,8 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Command.AbstractCommand;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
@@ -29,17 +28,16 @@ public class Test extends AbstractCommand {
 	private DyeColor[] map;
 	private File data;
 
-	public Test(CommandListener listener) {
+	public void initialize() {
 
-		super(listener);
 		usage = "test <save|load>";
 		success = "success!";
 		maxArgs = 2;
 		minArgs = 2;
-		data = new File(StartClass.plugin.getDataFolder(), "data");
+		data = new File(Artiste.plugin.getDataFolder(), "data");
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
 		switch (args[1]) {
 		case "save":
@@ -67,7 +65,7 @@ public class Test extends AbstractCommand {
 	@SuppressWarnings("deprecation")
 	public void edit() {
 
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 
 		if (c != null && map != null) {
 
@@ -98,7 +96,7 @@ public class Test extends AbstractCommand {
 	}
 	public void archiveArtList() throws IOException {
 
-		Set<String> keys = StartClass.artList.keySet();
+		Set<String> keys = Artiste.artList.keySet();
 
 		if (keys.size() == 0)
 			return;
@@ -108,7 +106,7 @@ public class Test extends AbstractCommand {
 
 		for (String key : keys) {
 
-			art = StartClass.artList.get(key);
+			art = Artiste.artList.get(key);
 
 			if (art instanceof Artwork)
 
@@ -147,7 +145,7 @@ public class Test extends AbstractCommand {
 
 			if (f.getName().contains(".dat")) {
 
-				StartClass.plugin.getLogger().info(f.getAbsolutePath());
+				Artiste.plugin.getLogger().info(f.getAbsolutePath());
 
 				ObjectInputStream in = new ObjectInputStream(
 						new GZIPInputStream(new FileInputStream(f)));
@@ -161,8 +159,10 @@ public class Test extends AbstractCommand {
 				in.close();
 			}
 		}
-		StartClass.artList = artList;
+		Artiste.artList = artList;
 		return true;
 	}
+
+
 
 }

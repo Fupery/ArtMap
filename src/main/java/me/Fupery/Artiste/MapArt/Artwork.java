@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.UUID;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.ArtIO;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.Tasks.MapReflection;
@@ -28,11 +28,11 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 		UUID id = artist;
 
-		Artist a = StartClass.artistList.get(id);
+		Artist a = Artiste.artistList.get(id);
 
 		new MapReflection(title).worldMapOverride(mapId);
 
-		StartClass.artList.remove(title);
+		Artiste.artList.remove(title);
 
 		a.delArtwork(title);
 		

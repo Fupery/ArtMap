@@ -28,11 +28,9 @@ public class Canvas implements Serializable {
 	private ArrayList<UUID> member;
 
 	private int size;
-	private boolean canClaim;
-	private boolean cooloff;
+	private boolean canClaim, cooloff;
 
-	private CanvasLocation pos1;
-	private CanvasLocation pos2;
+	private CanvasLocation pos1, pos2;
 	public String worldname;
 
 	public Canvas(Location position1, Location position2, int size) {
@@ -54,7 +52,7 @@ public class Canvas implements Serializable {
 		member.clear();
 		setPos1(null);
 		setPos2(null);
-		StartClass.canvas = null;
+		Artiste.canvas = null;
 
 		sender.sendMessage(ChatColor.DARK_AQUA + "Canvas removed successfully!");
 	}
@@ -159,13 +157,13 @@ public class Canvas implements Serializable {
 
 	public void startCoolOff() {
 
-		int delay = StartClass.plugin.getConfig().getInt("coolOffTime");
+		int delay = Artiste.plugin.getConfig().getInt("coolOffTime");
 
 		if (delay > 0) {
 
 			ResetTimer t = new ResetTimer();
 
-			t.runTaskLater(StartClass.plugin, delay * 60 * 20);
+			t.runTaskLater(Artiste.plugin, delay * 60 * 20);
 
 			cooloff = true;
 		} else
@@ -177,7 +175,7 @@ public class Canvas implements Serializable {
 		@Override
 		public void run() {
 
-			StartClass.canvas.cooloff = false;
+			Artiste.canvas.cooloff = false;
 		}
 	}
 }

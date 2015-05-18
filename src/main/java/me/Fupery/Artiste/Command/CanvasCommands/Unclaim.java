@@ -1,8 +1,7 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.MapArt.Buffer;
 
@@ -11,9 +10,8 @@ import org.bukkit.entity.Player;
 
 public class Unclaim extends CanvasCommand {
 
-	public Unclaim(CommandListener listener) {
-
-		super(listener);
+	public void initialize() {
+		
 		claimRequired = true;
 		artistRequired = true;
 		usage = "unclaim";
@@ -22,7 +20,7 @@ public class Unclaim extends CanvasCommand {
 				+ "your work will be saved for later!";
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
 		unclaim();
 
@@ -31,7 +29,7 @@ public class Unclaim extends CanvasCommand {
 
 	public static void unclaim() {
 
-		Canvas c = StartClass.canvas;
+		Canvas c = Artiste.canvas;
 
 		if (c == null)
 			return;
@@ -41,17 +39,16 @@ public class Unclaim extends CanvasCommand {
 		if (p == null)
 			return;
 
-		Artist artist = StartClass.artistList.get(p.getUniqueId());
+		Artist artist = Artiste.artistList.get(p.getUniqueId());
 
 		artist.setBuffer(new Buffer());
 
-		if (StartClass.canvas != null)
+		if (Artiste.canvas != null)
 
-			StartClass.canvas.clear(p);
+			Artiste.canvas.clear(p);
 
-		if (StartClass.claimTimer != null)
+		if (Artiste.claimTimer != null)
 
-			StartClass.claimTimer.cancel();
+			Artiste.claimTimer.cancel();
 	}
-
 }

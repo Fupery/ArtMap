@@ -1,7 +1,6 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.Buffer;
 
 import org.bukkit.ChatColor;
@@ -14,9 +13,8 @@ public class Claim extends CanvasCommand {
 
 	// TODO - move TimerA,B to their own task class
 
-	public Claim(CommandListener listener) {
+	public void initialize() {
 
-		super(listener);
 		playerRequired = true;
 		artistRequired = true;
 		usage = "claim";
@@ -24,7 +22,7 @@ public class Claim extends CanvasCommand {
 
 	public boolean run() {
 
-		int claimTime = StartClass.config.getInt("claimTime");
+		int claimTime = Artiste.config.getInt("claimTime");
 
 		Player player = (Player) sender;
 
@@ -43,15 +41,15 @@ public class Claim extends CanvasCommand {
 			int ticks = claimTime * 60 * 20;
 
 			TimerA timer = new TimerA(sender);
-			StartClass.claimTimer = timer;
-			timer.runTaskLater(StartClass.plugin, ticks);
+			Artiste.claimTimer = timer;
+			timer.runTaskLater(Artiste.plugin, ticks);
 
 			if (claimTime > 5) {
 
 				int warning = ticks - (5 * 60 * 20);
 
-				((TimerA) StartClass.claimTimer).setNotify(new TimerB()
-						.runTaskLater(StartClass.plugin, warning));
+				((TimerA) Artiste.claimTimer).setNotify(new TimerB()
+						.runTaskLater(Artiste.plugin, warning));
 
 			}
 
@@ -61,13 +59,8 @@ public class Claim extends CanvasCommand {
 		return true;
 	}
 
-	protected String evaluate() {
-
-		error = super.evaluate();
-
-		if (error != null)
-
-			return error;
+	@Override
+	public String conditions() {
 
 		Player p = canvas.getOwner();
 
@@ -105,7 +98,6 @@ public class Claim extends CanvasCommand {
 
 			notify.cancel();
 			super.cancel();
-
 		}
 
 		public void setNotify(BukkitTask bukkitTask) {

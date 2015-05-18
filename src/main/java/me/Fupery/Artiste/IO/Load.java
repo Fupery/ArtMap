@@ -14,13 +14,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Template;
 
 public class Load {
 
-	public static void setupRegistry(StartClass plugin, Logger log) {
+	public static void setupRegistry(Artiste plugin, Logger log) {
 
 		File dir = plugin.getDataFolder();
 		File artDir = new File(dir, "data");
@@ -39,8 +39,8 @@ public class Load {
 		if (!load(new File(dir, "Artiste.dat"))) {
 
 			log.info("Artiste.dat not found ... creating new Artist registry");
-			StartClass.artistList = new HashMap<UUID, Artist>();
-			StartClass.artList = new HashMap<String, AbstractMapArt>();
+			Artiste.artistList = new HashMap<UUID, Artist>();
+			Artiste.artList = new HashMap<String, AbstractMapArt>();
 
 			setupDefault();
 		}
@@ -57,9 +57,9 @@ public class Load {
 				in = new ObjectInputStream(new GZIPInputStream(
 						new FileInputStream(loadFile)));
 
-				StartClass.canvas = (Canvas) in.readObject();
-				StartClass.artistList = (HashMap<UUID, Artist>) in.readObject();
-				StartClass.artList = (HashMap<String, AbstractMapArt>) in
+				Artiste.canvas = (Canvas) in.readObject();
+				Artiste.artistList = (HashMap<UUID, Artist>) in.readObject();
+				Artiste.artList = (HashMap<String, AbstractMapArt>) in
 						.readObject();
 
 				in.close();
@@ -77,10 +77,10 @@ public class Load {
 
 	public static Template setupDefault() {
 
-		if (StartClass.canvas == null)
+		if (Artiste.canvas == null)
 			return null;
 
-		File dir = StartClass.plugin.getDataFolder();
+		File dir = Artiste.plugin.getDataFolder();
 		File artDir = new File(dir, "data");
 
 		Logger log = Bukkit.getLogger();
@@ -112,9 +112,9 @@ public class Load {
 
 		Template t = new Template("default", map);
 
-		StartClass.artList.put("default", t);
+		Artiste.artList.put("default", t);
 
-		log.info(StartClass.artList.get("default").toString());
+		log.info(Artiste.artList.get("default").toString());
 
 		return t;
 	}

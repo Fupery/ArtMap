@@ -6,7 +6,7 @@ import me.Fupery.Artiste.Command.Help;
 import me.Fupery.Artiste.Command.List;
 import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
-import me.Fupery.test.Test;
+import me.Fupery.Artiste.Command.Utils.Test;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,7 +17,6 @@ public class CommandListener implements CommandExecutor {
 
 	private CommandSender sender;
 	private String[] args;
-	private AbstractCommand cmd;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
@@ -31,51 +30,51 @@ public class CommandListener implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 			return true;
 		}
-
+		
 		switch (args[0].toLowerCase()) {
 		
-		case "help"      : new Help(this).check(); break;
+		case "help"      : add(new Help()); break;
 		
-		case "info"      : new Info(this).check(); break;
+		case "info"      : add(new Info()); break;
 		
 		//Staff commands
-		case "define"    : new Define(this).check(); break;
+		case "define"    : add(new Define()); break;
 		
-		case "remove"    : new Remove(this).check(); break;
+		case "remove"    : add(new Remove()); break;
 		
 		case "approve"   : ;
 		
-		case "deny"      : new PublishEval(this).check(); break;
+		case "deny"      : add(new PublishEval()); break;
 		
 		case "ban"       : ;
 		
-		case "unban"     : new Ban(this).check(); break;
+		case "unban"     : add(new Ban()); break;
 		
 		//Canvas commands
-		case "claim"     : new Claim(this).check(); break;
+		case "claim"     : add(new Claim()); break;
 		
-		case "unclaim"   : new Unclaim(this).check(); break;
+		case "unclaim"   : add(new Unclaim()); break;
 		
 		case "addmember" : ;
 		
-		case "delmember" : new AddMember(this).check(); break;
+		case "delmember" : add(new AddMember()); break;
 		
-		case "reset"     : new Reset(this).check(); break;
+		case "reset"     : add(new Reset()); break;
 		
 		//MapArt commands
-		case "save"      : new Save(this).check(); break;
+		case "save"      : add(new Save()); break;
 		
-		case "delete"    : new Delete(this).check(); break;
+		case "delete"    : add(new Delete()); break;
 		
-		case "edit"      : new Edit(this).check(); break;
+		case "edit"      : add(new Edit()); break;
 		
-		case "buy"       : new Buy(this).check(); break;
+		case "buy"       : add(new Buy()); break;
 		
-		case "publish"   : new Publish(this).check(); break;
+		case "publish"   : add(new Publish()); break;
 		
-		case "list"      : new List(this).check(); break;
+		case "list"      : add(new List()); break;
 		
-		case "test" : new Test(this).check(); break;
+		case "test"      : add(new Test()); break;
 		
 		default : sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 		}
@@ -83,20 +82,13 @@ public class CommandListener implements CommandExecutor {
 		return true;
 	}
 
-	public CommandSender getSender() {
-		return sender;
-	}
+	public void add(AbstractCommand command) {
 
-	public String[] getArgs() {
-		return args;
-	}
+		command.pass(this.sender, this.args);
+		
+		command.initialize();
 
-	public AbstractCommand getCmd() {
-		return cmd;
-	}
+		command.check();
 
-	public void setCmd(AbstractCommand cmd) {
-		this.cmd = cmd;
 	}
-
 }

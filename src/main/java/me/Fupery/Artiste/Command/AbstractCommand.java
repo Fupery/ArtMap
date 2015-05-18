@@ -1,72 +1,77 @@
 package me.Fupery.Artiste.Command;
 
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
-import me.Fupery.Artiste.Command.Utils.Conditions;
-import me.Fupery.Artiste.Command.Utils.Error;
+import me.Fupery.Artiste.Canvas;
+import me.Fupery.Artiste.Command.Utils.*;
 import me.Fupery.Artiste.IO.Artist;
+import me.Fupery.Artiste.MapArt.AbstractMapArt;
+import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
+import me.Fupery.Artiste.MapArt.Artwork;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class AbstractCommand {
+import me.Fupery.Artiste.Artiste;
+
+import static me.Fupery.Artiste.Command.Utils.Error.*;
+
+public abstract class AbstractCommand implements ArtisteCommand {
 
 	protected boolean playerRequired, canvasRequired, adminRequired,
-			artistRequired;
-	protected boolean successMsg = true;
+			artistRequired, claimRequired, coolOffRequired, authorRequired,
+			artRequired;
 
-	protected String usage, error, success;
+	protected String usage, error, success, title;
 
 	protected Artist artist;
+	protected Canvas canvas;
+	protected AbstractMapArt art;
+	protected validMapType type;
 
 	protected int minArgs = 1, maxArgs = 1;
 
 	protected String[] args;
 	protected CommandSender sender;
-	
-	protected Conditions conditions;
 
-	protected AbstractCommand(CommandListener listener) {
+	protected AbstractCommand() {
 
-		this.sender = listener.getSender();
-		this.args = listener.getArgs();
-		listener.setCmd(this);
-
-		if (sender instanceof Player)
-			artist = StartClass.artistList.get(((Player) sender).getUniqueId());
+		this.canvas = Artiste.canvas;
 	}
 
 	public void check() {
 
-		error = evaluate();
-		
-		conditions.clear();
+		error = preconditions();
+
+		if (error == null)
+
+			error = conditions();
 
 		if (error == null)
 
 			if (run()) {
-				if (successMsg = true)
-					success();
+
+				success();
 				return;
 			}
 
 		error();
 	}
 
-	protected String evaluate() {
+	public String preconditions() {
 
 		if (sender instanceof Player) {
 
+			artist = Artiste.artistList.get(((Player) sender).getUniqueId());
+			
 			if (artist == null) {
 
 				artist = new Artist(((Player) sender).getUniqueId());
 
-				StartClass.artistList.put(((Player) sender).getUniqueId(),
-						artist);
+				Artiste.artistList.put(((Player) sender).getUniqueId(), artist);
 
 			} else if (artistRequired && artist.isBanned())
+
 				return error = "You have been banned from creating artworks.";
 		}
 
@@ -76,25 +81,66 @@ public class AbstractCommand {
 
 		if (playerRequired && !(sender instanceof Player))
 
-			return Error.noConsole;
+			return noConsole;
 
 		if (adminRequired && !(sender.hasPermission("Artiste.admin")))
 
-			return Error.noPermission;
+			return noPermission;
 
-		if (canvasRequired && StartClass.canvas == null)
+		if (canvasRequired) {
 
-			return Error.noDef;
+			if (canvas == null)
+
+				return noDef;
+
+			if (sender instanceof Player) {
+
+				if (claimRequired && canvas.getOwner() != (Player) sender)
+
+					return notOwner;
+			} else
+
+			if (canvas.getOwner() == null)
+
+				return "The canvas has not been claimed!";
+
+			if (coolOffRequired && canvas.isCoolingOff())
+
+				return coolOff;
+		}
+
+		if (artRequired) {
+
+			art = Artiste.artList.get(args[1]);
+
+			if (art == null || art.getArtist() == null)
+
+				return String.format(noMap, args[1]);
+
+			type = art.getType();
+
+			if (art instanceof Artwork)
+
+				title = ((Artwork) art).getTitle();
+
+			if (authorRequired
+					&& sender instanceof Player
+					&& art.getArtist().compareTo(
+							((Player) sender).getUniqueId()) != 0)
+
+				if (art instanceof Artwork)
+
+					return noEdit;
+
+			if (args.length > 1)
+				title = args[1];
+		}
 
 		return null;
 	}
 
-	protected boolean run() {
-
-		if (error != null)
-			return false;
-
-		return true;
+	public String conditions() {
+		return null;
 	}
 
 	protected void error() {
@@ -130,5 +176,14 @@ public class AbstractCommand {
 				: usage;
 
 		return "/artmap " + msg;
+	}
+
+	public void pass(CommandSender sender, String[] args) {
+		this.sender = sender;
+		this.args = args;
+	}
+
+	public static void eval() {
+
 	}
 }

@@ -2,8 +2,7 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Command.Utils.Error;
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.Artwork;
 
 import org.bukkit.ChatColor;
@@ -14,8 +13,7 @@ public class Edit extends MapArtCommand {
 	private boolean claimRequired;
 	private Canvas canvas;
 
-	public Edit(CommandListener listener) {
-		super(listener);
+	public void initialize() {
 
 		usage = "edit <title>";
 
@@ -31,7 +29,7 @@ public class Edit extends MapArtCommand {
 					+ "to the canvas";
 	}
 
-	protected boolean run() {
+	public boolean run() {
 		
 		if (art instanceof Artwork) {
 			Artwork a = (Artwork) art;
@@ -42,15 +40,10 @@ public class Edit extends MapArtCommand {
 			return false;
 	}
 
-	protected String evaluate() {
+	@Override
+	public String conditions() {
 
-		error = super.evaluate();
-
-		if (error != null)
-
-			return error;
-
-		this.canvas = StartClass.canvas;
+		this.canvas = Artiste.canvas;
 
 		if (canvas != null)
 
@@ -58,12 +51,11 @@ public class Edit extends MapArtCommand {
 
 				error = Error.notOwner;
 
-		if (StartClass.plugin.getConfig().getInt("coolOffTime") > 0
+		if (Artiste.plugin.getConfig().getInt("coolOffTime") > 0
 				&& canvas.isCoolingOff())
 
 			error = Error.coolOff;
 
 		return error;
 	}
-
 }

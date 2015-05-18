@@ -2,7 +2,7 @@ package me.Fupery.Artiste.Tasks;
 
 import java.util.logging.Logger;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -23,7 +23,7 @@ public class ColourConvert {
 		byte[] mapOutput = new byte[128 * 128];
 
 		if (mapSize == 0) {
-			mapSize = StartClass.config.getInt("mapSize");
+			mapSize = Artiste.config.getInt("mapSize");
 			log.info("no mapSize found!");
 		}
 
@@ -56,7 +56,7 @@ public class ColourConvert {
 		DyeColor[] mapOutput = new DyeColor[(mapSize * mapSize) + mapSize - 1];
 
 		if (mapSize == 0) {
-			mapSize = StartClass.config.getInt("mapSize");
+			mapSize = Artiste.config.getInt("mapSize");
 			log.info("no mapSize found!");
 		}
 

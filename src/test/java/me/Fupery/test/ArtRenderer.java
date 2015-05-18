@@ -1,7 +1,7 @@
 package me.Fupery.test;
 
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 
 import org.bukkit.Color;
@@ -35,7 +35,7 @@ public class ArtRenderer extends MapRenderer {
 	public void render(MapView map, MapCanvas canvas, Player player) {
 		if(this.update){
 			if(mapSize == 0)
-				mapSize = StartClass.config.getInt("mapSize");
+				mapSize = Artiste.config.getInt("mapSize");
 
 			int i = 0;
 			int s = mapSize;

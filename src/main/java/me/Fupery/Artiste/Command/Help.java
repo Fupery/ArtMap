@@ -2,7 +2,6 @@ package me.Fupery.Artiste.Command;
 
 import org.bukkit.ChatColor;
 
-import me.Fupery.Artiste.CommandListener;
 import me.Fupery.Artiste.Command.Utils.Error;
 
 public class Help extends AbstractCommand {
@@ -10,9 +9,7 @@ public class Help extends AbstractCommand {
 	private static ChatColor a = ChatColor.DARK_AQUA, b = ChatColor.AQUA,
 			c = ChatColor.GOLD;
 
-	public Help(CommandListener listener) {
-
-		super(listener);
+	public void initialize() {
 
 		maxArgs = 2;
 
@@ -20,7 +17,7 @@ public class Help extends AbstractCommand {
 
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
 		int p;
 		String page = null;
@@ -58,8 +55,6 @@ public class Help extends AbstractCommand {
 			if (sender.hasPermission("Artiste.admin"))
 
 				page = "admin";
-
-			successMsg = false;
 			break;
 
 		case 3:
@@ -70,7 +65,6 @@ public class Help extends AbstractCommand {
 			}
 
 			sender.sendMessage(page3);
-			successMsg = false;
 			break;
 		default:
 			return false;
@@ -132,4 +126,6 @@ public class Help extends AbstractCommand {
 					+ " Handle a publish request" + c + " |",
 			c + "•" + a + "  /artmap <ban|unban>" + c + " |" + b
 					+ " Ban a player from making artworks" + c + " |", };
+
+
 }

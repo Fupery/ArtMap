@@ -1,7 +1,5 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
-import me.Fupery.Artiste.CommandListener;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -11,9 +9,8 @@ public class AddMember extends CanvasCommand {
 	Server s;
 	String player;
 
-	public AddMember(CommandListener listener) {
+	public void initialize() {
 
-		super(listener);
 		usage = "<addMember|delMember> <playername>";
 		claimRequired = true;
 		minArgs = 2;
@@ -21,7 +18,7 @@ public class AddMember extends CanvasCommand {
 	}
 
 	@SuppressWarnings("deprecation")
-	protected boolean run() {
+	public boolean run() {
 
 		Player p = s.getPlayer(player);
 
@@ -50,21 +47,16 @@ public class AddMember extends CanvasCommand {
 		return true;
 	}
 
-	protected String evaluate() {
-		
-		error = super.evaluate();
-
-		if (error != null)
-
-			return error;
+	@Override
+	public String conditions() {
 
 		String player = args[1];
 
 		Server s = sender.getServer();
-		
-		if(canvas.getOwner().getName() == player)
-			
-			return error = "You have already claimed the canvas!";
+
+		if (canvas.getOwner().getName() == player)
+
+			return "You have already claimed the canvas!";
 
 		if (!s.getOnlinePlayers().contains(player))
 
@@ -72,5 +64,4 @@ public class AddMember extends CanvasCommand {
 
 		return error;
 	}
-
 }

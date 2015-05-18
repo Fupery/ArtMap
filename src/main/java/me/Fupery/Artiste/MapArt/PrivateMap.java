@@ -1,6 +1,6 @@
 package me.Fupery.Artiste.MapArt;
 
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.Tasks.MapReflection;
 
@@ -19,16 +19,16 @@ public class PrivateMap extends Artwork {
 
 		this.artist = ((Player) sender).getUniqueId();
 		this.title = title.toLowerCase();
-		this.mapSize = StartClass.canvas.getSize();
+		this.mapSize = Artiste.canvas.getSize();
 
-		Artist a = StartClass.artistList.get(artist);
+		Artist a = Artiste.artistList.get(artist);
 
 		this.mapId = Bukkit.createMap(
-				Bukkit.getWorld(StartClass.canvas.worldname)).getId();
+				Bukkit.getWorld(Artiste.canvas.worldname)).getId();
 
 		setMap(save());
 
-		StartClass.artList.put(title.toLowerCase(), this);
+		Artiste.artList.put(title.toLowerCase(), this);
 		a.addArtwork(title);
 
 		MapReflection r = new MapReflection(title);

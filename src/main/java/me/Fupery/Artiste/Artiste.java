@@ -21,7 +21,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public final class StartClass extends JavaPlugin {
+public final class Artiste extends JavaPlugin {
 
 	public static boolean economyOn;
 	public static Economy econ = null;
@@ -31,7 +31,7 @@ public final class StartClass extends JavaPlugin {
 	public static HashMap<UUID, Artist> artistList;
 
 	public static Canvas canvas;
-	public static StartClass plugin;
+	public static Artiste plugin;
 	
 	public static BukkitRunnable claimTimer;
 
@@ -65,8 +65,8 @@ public final class StartClass extends JavaPlugin {
 	@Override
 	public void onDisable() {
 
-		if (StartClass.claimTimer != null)
-			StartClass.claimTimer.cancel();
+		if (Artiste.claimTimer != null)
+			Artiste.claimTimer.cancel();
 
 		if (canvas != null) {
 
@@ -108,9 +108,9 @@ public final class StartClass extends JavaPlugin {
 			ObjectOutputStream out = new ObjectOutputStream(
 					new GZIPOutputStream(new FileOutputStream(saveFile)));
 
-			out.writeObject((Object) StartClass.canvas);
-			out.writeObject((Object) StartClass.artistList);
-			out.writeObject((Object) StartClass.artList);
+			out.writeObject((Object) Artiste.canvas);
+			out.writeObject((Object) Artiste.artistList);
+			out.writeObject((Object) Artiste.artList);
 
 			out.flush();
 			out.close();

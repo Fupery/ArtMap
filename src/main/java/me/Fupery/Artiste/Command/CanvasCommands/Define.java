@@ -9,8 +9,7 @@ import org.bukkit.entity.Player;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Command.Utils.Error;
-import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.StartClass;
+import me.Fupery.Artiste.Artiste;
 
 public class Define extends CanvasCommand {
 
@@ -18,33 +17,27 @@ public class Define extends CanvasCommand {
 	private int size;
 	private Location canvasPos, endPos;
 
-	public Define(CommandListener listener) {
+	public void initialize() {
 
-		super(listener);
 		usage = "define <x><y><z>";
 		success = ChatColor.GOLD + "No Obstruction found";
-		
+
 		canvasRequired = false;
 		adminRequired = true;
 		playerRequired = true;
-		
+
 		minArgs = 4;
 		maxArgs = 4;
-		
-		size = StartClass.config.getInt("canvasSize");
+
+		size = Artiste.config.getInt("canvasSize");
 		if (size == 0)
 			size = 64;
 	}
 
-	protected String evaluate() {
+	@Override
+	public String conditions() {
 
-		error = super.evaluate();
-
-		if (error != null)
-			
-			return error;
-
-		if (StartClass.canvas != null)
+		if (Artiste.canvas != null)
 			return error = Error.alreadyDef;
 
 		double pos1, pos2, pos3;
@@ -112,9 +105,9 @@ public class Define extends CanvasCommand {
 		return error;
 	}
 
-	protected boolean run() {
+	public boolean run() {
 
-		StartClass.canvas = new Canvas(canvasPos, endPos, size);
+		Artiste.canvas = new Canvas(canvasPos, endPos, size);
 
 		return true;
 	}
@@ -133,4 +126,5 @@ public class Define extends CanvasCommand {
 			return false;
 		}
 	}
+
 }
