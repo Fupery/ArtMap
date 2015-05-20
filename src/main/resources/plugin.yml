@@ -19,7 +19,7 @@ commands:
       <command> save <title> : Save your artwork
       <command> publish <title> : Request to publish your artwork as a public map
       <command> edit <title> : Load your artwork to the canvas
-      <command> list [private|public|all] [page] : List artworks
+      <command> list [private|public|queued|all] [page] : List artworks
 permissions:
   artiste.playerTier1:
     description: Lower tier players can only publish private artworks
@@ -31,8 +31,8 @@ permissions:
       artiste.claim: true
       artiste.publicMapCreation: true
   artiste.admin:
-    description: Gives access to moderator commands involved with canvas creation
+    description: Allows administrative commands
     children:
-      artiste.canvas: true
+      artiste.claim: true
       artiste.publicMapCreation: true
-      artiste.override: true
+      artiste.admin: true

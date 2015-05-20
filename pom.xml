@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.Fupery</groupId>
 	<artifactId>Artiste</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<description>Create and share pixel art in-game!</description>
 
 	<build>
@@ -28,29 +28,6 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<minimizeJar>true</minimizeJar>
-							<relocations>
-								<relocation>
-									<pattern>com.evilco.mc.nbt</pattern>
-									<shadedPattern>me.Fupery.Artiste.nbt</shadedPattern>
-								</relocation>
-							</relocations>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -61,10 +38,6 @@
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-		</repository>
-		<repository>
-			<id>evil-co</id>
-			<url>http://nexus.evil-co.org/content/repositories/free/</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -80,12 +53,6 @@
 			<artifactId>VaultAPI</artifactId>
 			<version>1.5</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.evilco.mc</groupId>
-			<artifactId>nbt</artifactId>
-			<version>1.0.2</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
