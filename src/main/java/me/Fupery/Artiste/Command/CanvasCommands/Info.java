@@ -14,7 +14,7 @@ public class Info extends CanvasCommand {
 
 	public boolean run() {
 
-		if (sender.hasPermission("Artiste.admin")) {
+		if (sender.hasPermission("artiste.admin")) {
 
 			sender.sendMessage(new String[] {
 

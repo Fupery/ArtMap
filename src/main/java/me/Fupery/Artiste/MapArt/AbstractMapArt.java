@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.Tasks.SetCanvas;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -49,37 +50,8 @@ public abstract class AbstractMapArt implements Serializable {
 		return map;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void edit(DyeColor[] map) {
-
-		Canvas c = Artiste.canvas;
-
-		if (c != null && map != null && this.mapSize == c.getSize()) {
-
-			Location l = c.getPos1().clone();
-
-			int i = 0;
-			for (int x = c.getPos1().getBlockX(); x <= c.getPos2().getBlockX(); x++, i++) {
-
-				for (int z = c.getPos1().getBlockZ(); z <= c.getPos2()
-						.getBlockZ(); z++, i++) {
-
-					l.setX(x);
-					l.setZ(z);
-					Block b = l.getBlock();
-
-					if (map[i] != null) {
-
-						DyeColor d = map[i];
-
-						if (b.getType() != Material.WOOL)
-							b.setType(Material.WOOL);
-						if (b.getData() != d.getData())
-							b.setData(d.getData());
-					}
-				}
-			}
-		}
+		new SetCanvas(map).runTask(Artiste.plugin);
 	}
 
 	public UUID getArtist() {

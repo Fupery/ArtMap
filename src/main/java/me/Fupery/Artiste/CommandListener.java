@@ -7,6 +7,7 @@ import me.Fupery.Artiste.Command.List;
 import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
 import me.Fupery.Artiste.Command.Utils.Test;
+import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -27,7 +28,7 @@ public class CommandListener implements CommandExecutor {
 
 		if (args.length == 0) {
 
-			sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
+			sender.sendMessage(Error.usage);
 			return true;
 		}
 		

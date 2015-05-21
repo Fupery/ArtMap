@@ -23,16 +23,15 @@ commands:
 permissions:
   artiste.playerTier1:
     description: Lower tier players can only publish private artworks
-    children:
-      artiste.claim: true
+    default: op
   artiste.playerTier2:
     description: Upper tier players can publish private and public artworks
+    default: op
     children:
-      artiste.claim: true
-      artiste.publicMapCreation: true
+      artiste.playerTier1: true
   artiste.admin:
     description: Allows administrative commands
     children:
-      artiste.claim: true
-      artiste.publicMapCreation: true
-      artiste.admin: true
+      artiste.playerTier1: true
+      artiste.playerTier2: true
+    default: op

@@ -17,7 +17,6 @@ public class AddMember extends CanvasCommand {
 		maxArgs = 2;
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean run() {
 
 		Player p = s.getPlayer(player);

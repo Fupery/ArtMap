@@ -1,13 +1,22 @@
 package me.Fupery.Artiste.Command.Utils;
 
-public class Test extends TestCommand {
-	
-	public void initialize(){
+import org.bukkit.DyeColor;
+
+import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Tasks.SetCanvas;
+
+public class Test extends AbstractCommand {
+
+	public void initialize() {
 		success = "test";
 	}
 
 	@Override
 	public boolean run() {
-		return false;
+
+		new SetCanvas(DyeColor.PINK).runTask(Artiste.plugin);
+
+		return true;
 	}
 }

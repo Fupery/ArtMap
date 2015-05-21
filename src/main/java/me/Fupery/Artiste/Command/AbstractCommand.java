@@ -16,6 +16,11 @@ import me.Fupery.Artiste.Artiste;
 
 import static me.Fupery.Artiste.Command.Utils.Error.*;
 
+/**
+ * Framework for commands, flag precondition booleans etc. as true in initialize().
+ * <p>
+ * Command body in run(), optionally add more conditions/checks with conditions().
+ */
 public abstract class AbstractCommand implements ArtisteCommand {
 
 	protected boolean playerRequired, canvasRequired, adminRequired,
@@ -63,7 +68,7 @@ public abstract class AbstractCommand implements ArtisteCommand {
 		if (sender instanceof Player) {
 
 			artist = Artiste.artistList.get(((Player) sender).getUniqueId());
-			
+
 			if (artist == null) {
 
 				artist = new Artist(((Player) sender).getUniqueId());
@@ -83,7 +88,7 @@ public abstract class AbstractCommand implements ArtisteCommand {
 
 			return noConsole;
 
-		if (adminRequired && !(sender.hasPermission("Artiste.admin")))
+		if (adminRequired && !(sender.hasPermission("artiste.admin")))
 
 			return noPermission;
 

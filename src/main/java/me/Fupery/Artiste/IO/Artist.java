@@ -23,7 +23,7 @@ public class Artist implements Serializable {
 	private boolean banned;
 
 	public Artist(UUID uuid) {
-		
+
 		if (!Artiste.artistList.containsKey(uuid)) {
 			this.artistID = uuid;
 		}
@@ -62,9 +62,9 @@ public class Artist implements Serializable {
 	public boolean delArtwork(String title) {
 
 		if (!artworks.remove(title))
-			
+
 			return false;
-		
+
 		return true;
 	}
 

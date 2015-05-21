@@ -34,6 +34,7 @@ public class Edit extends MapArtCommand {
 		if (art instanceof Artwork) {
 			Artwork a = (Artwork) art;
 			a.edit(a.getMap());
+			canvas.startCoolOff();
 
 			return true;
 		} else

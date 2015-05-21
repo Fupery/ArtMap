@@ -12,7 +12,7 @@ public class Save extends CanvasCommand {
 	String title;
 
 	public void initialize() {
-		
+
 		usage = "save <title>";
 
 		minArgs = 2;
@@ -38,8 +38,6 @@ public class Save extends CanvasCommand {
 
 	@Override
 	public String conditions() {
-
-	
 
 		int t = title.length();
 
@@ -81,6 +79,6 @@ public class Save extends CanvasCommand {
 		return true;
 	}
 
-	String[] filter = new String[] { "fuck", "shit", "cunt", "cock", "slut", "faggot",
-			"dyke", "gay", "pussy", "rape", "bitch" }; // rude
+	String[] filter = new String[] { "fuck", "shit", "cunt", "cock", "slut",
+			"faggot", "dyke", "gay", "pussy", "rape", "bitch" }; // rude
 }

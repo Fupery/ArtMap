@@ -59,14 +59,14 @@ public class Buy extends MapArtCommand {
 				player.getInventory().removeItem(
 						new ItemStack(Material.EMERALD, 5));
 
-				sender.sendMessage(ChatColor.AQUA + "[Artiste] "
+				sender.sendMessage(ChatColor.AQUA + "[ArtMap] "
 						+ ChatColor.GOLD + "Purchased for 5 emeralds!");
 
 				return true;
 
 			} else {
 
-				sender.sendMessage(ChatColor.AQUA + "[Artiste] "
+				sender.sendMessage(ChatColor.AQUA + "[ArtMap] "
 						+ ChatColor.GOLD + "It costs 5 emeralds to buy a map.");
 
 				return false;
@@ -78,14 +78,14 @@ public class Buy extends MapArtCommand {
 
 			if (r.transactionSuccess()) {
 
-				sender.sendMessage(ChatColor.AQUA + "[Artiste] "
+				sender.sendMessage(ChatColor.AQUA + "[ArtMap] "
 						+ ChatColor.GOLD + "Purchased for " + r.amount);
 
 				return true;
 
 			} else {
 
-				sender.sendMessage(ChatColor.AQUA + "[Artiste] "
+				sender.sendMessage(ChatColor.AQUA + "[ArtMap] "
 						+ ChatColor.RED
 						+ "You don't have enough money to buy this artwork!");
 

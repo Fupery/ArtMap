@@ -9,6 +9,7 @@ import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
 import me.Fupery.Artiste.MapArt.PublicMap;
+import me.Fupery.Artiste.MapArt.Template;
 import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.Bukkit;
@@ -93,6 +94,15 @@ public class List extends AbstractCommand {
 			art = list.get(i);
 
 			Artwork a = (Artwork) art;
+			
+			String name;
+			
+			if(a instanceof Template)
+				
+				name = "template";
+			
+			else name = Bukkit.getPlayer(a.getArtist()).getName();
+				
 
 			if (a != null)
 				if (a.getType() == validMapType.PUBLIC)
@@ -102,7 +112,7 @@ public class List extends AbstractCommand {
 			sender.sendMessage(ChatColor.GOLD + "•  " + ChatColor.AQUA
 					+ a.getTitle() + ChatColor.GOLD + " by "
 					+ ChatColor.DARK_AQUA
-					+ Bukkit.getPlayer(a.getArtist()).getName() + buys);
+					+ name + buys);
 
 		}
 		if (list.size() > (dS + line))

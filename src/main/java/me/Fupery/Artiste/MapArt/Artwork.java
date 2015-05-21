@@ -8,7 +8,7 @@ import java.util.UUID;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.ArtIO;
 import me.Fupery.Artiste.IO.Artist;
-import me.Fupery.Artiste.Tasks.MapReflection;
+import me.Fupery.Artiste.IO.MapReflection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -30,7 +30,7 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 		Artist a = Artiste.artistList.get(id);
 
-		new MapReflection(title).worldMapOverride(mapId);
+		new MapReflection(title).delete();
 
 		Artiste.artList.remove(title);
 

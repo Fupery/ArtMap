@@ -2,9 +2,10 @@ package me.Fupery.Artiste.MapArt;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.World;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Tasks.MapReflection;
+import me.Fupery.Artiste.IO.MapReflection;
 
 public class Template extends Artwork {
 
@@ -29,10 +30,7 @@ public class Template extends Artwork {
 
 			Artiste.artList.put(title, this);
 
-			MapReflection r = new MapReflection(title);
-
-			r.colorsOverride();
-			r.dimensionOverride();
+			new MapReflection(title).override();
 		}
 	}
 
@@ -42,11 +40,15 @@ public class Template extends Artwork {
 		if (Artiste.canvas != null) {
 
 			this.mapSize = Artiste.canvas.getSize();
+			
+			World w = Bukkit.getWorld(Artiste.canvas.worldname);
 
 			this.title = title;
+			
+			this.artist = w.getUID();
 
 			mapId = Bukkit.getServer()
-					.createMap(Bukkit.getWorld(Artiste.canvas.worldname))
+					.createMap(w)
 					.getId();
 
 			if (getMap() == null)
@@ -55,10 +57,7 @@ public class Template extends Artwork {
 
 			Artiste.artList.put(title, this);
 
-			MapReflection r = new MapReflection(title);
-
-			r.colorsOverride();
-			r.dimensionOverride();
+			new MapReflection(title).override();
 		}
 	}
 }

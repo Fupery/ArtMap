@@ -139,7 +139,7 @@ public class Test extends AbstractCommand {
 
 			return false;
 
-		HashMap<String, AbstractMapArt> artList = new HashMap<String, AbstractMapArt>();
+		HashMap<String, Artwork> artList = new HashMap<String, Artwork>();
 
 		for (File f : files) {
 

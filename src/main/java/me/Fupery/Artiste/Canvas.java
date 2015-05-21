@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import me.Fupery.Artiste.IO.CanvasLocation;
+import me.Fupery.Artiste.Tasks.SetCanvas;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -62,36 +61,7 @@ public class Canvas implements Serializable {
 		owner = null;
 		this.member.clear();
 		this.cooloff = false;
-		this.reset(sender, DyeColor.WHITE);
-	}
-
-	// TODO - implement task scheduling
-
-	@SuppressWarnings("deprecation")
-	public void reset(CommandSender sender, DyeColor colour) {
-
-		Location f = this.getPos2().clone();
-
-		Location l = this.getPos1().clone();
-
-		for (int x = this.getPos1().getBlockX(); x <= (f.getBlockX()); x++) {
-
-			for (int z = this.getPos1().getBlockZ(); z <= (f.getBlockZ()); z++) {
-
-				l.setX(x);
-				l.setZ(z);
-
-				Block b = l.getBlock();
-
-				if (b.getType() != Material.WOOL)
-
-					b.setType(Material.WOOL);
-
-				if (b.getData() != colour.getData())
-
-					b.setData(colour.getData());
-			}
-		}
+		new SetCanvas(DyeColor.WHITE).runTask(Artiste.plugin);
 	}
 
 	public Location getPos1() {

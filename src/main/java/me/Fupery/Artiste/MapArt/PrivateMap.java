@@ -2,7 +2,7 @@ package me.Fupery.Artiste.MapArt;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.Artist;
-import me.Fupery.Artiste.Tasks.MapReflection;
+import me.Fupery.Artiste.IO.MapReflection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -11,8 +11,7 @@ import org.bukkit.entity.Player;
 public class PrivateMap extends Artwork {
 
 	private static final long serialVersionUID = -1668200457941039767L;
-	private boolean queued;
-	private boolean denied;
+	private boolean queued, denied;
 
 	@SuppressWarnings("deprecation")
 	public PrivateMap(CommandSender sender, String title) {
@@ -23,18 +22,15 @@ public class PrivateMap extends Artwork {
 
 		Artist a = Artiste.artistList.get(artist);
 
-		this.mapId = Bukkit.createMap(
-				Bukkit.getWorld(Artiste.canvas.worldname)).getId();
+		this.mapId = Bukkit
+				.createMap(Bukkit.getWorld(Artiste.canvas.worldname)).getId();
 
 		setMap(save());
 
 		Artiste.artList.put(title.toLowerCase(), this);
 		a.addArtwork(title);
 
-		MapReflection r = new MapReflection(title);
-
-		r.colorsOverride();
-		r.dimensionOverride();
+		new MapReflection(title).override();
 
 	}
 

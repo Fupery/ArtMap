@@ -2,6 +2,7 @@ package me.Fupery.Artiste.Command.CanvasCommands;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.Buffer;
+import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -71,6 +72,11 @@ public class Claim extends CanvasCommand {
 		if (p != (Player) sender && p != null)
 
 			error = "Someone else is using the canvas!";
+
+		if (sender instanceof Player
+				&& !((Player) sender).hasPermission("artiste.playerTier1"))
+
+			error = Error.noPermission;
 
 		return error;
 	}

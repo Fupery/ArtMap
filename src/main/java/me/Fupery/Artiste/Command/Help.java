@@ -52,14 +52,14 @@ public class Help extends AbstractCommand {
 		case 2:
 
 			sender.sendMessage(page2);
-			if (sender.hasPermission("Artiste.admin"))
+			if (sender.hasPermission("artiste.admin"))
 
 				page = "admin";
 			break;
 
 		case 3:
 
-			if (!sender.hasPermission("Artiste.admin")) {
+			if (!sender.hasPermission("artiste.admin")) {
 				error = Error.noPermission;
 				return false;
 			}

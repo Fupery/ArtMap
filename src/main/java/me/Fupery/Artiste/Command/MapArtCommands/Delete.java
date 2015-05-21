@@ -13,7 +13,7 @@ public class Delete extends MapArtCommand {
 		
 		usage = "delete <title>";
 
-		authorRequired = !sender.hasPermission("Artiste.admin");
+		authorRequired = !sender.hasPermission("artiste.admin");
 		playerRequired = authorRequired;
 		artistRequired = authorRequired;
 	}
@@ -35,6 +35,7 @@ public class Delete extends MapArtCommand {
 
 	@Override
 	public String conditions() {
+		
 		artist = Artiste.artistList.get(art.getArtist());
 
 		if (art.getArtist() == null || !artist.delArtwork(title))

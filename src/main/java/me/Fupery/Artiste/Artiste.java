@@ -8,7 +8,8 @@ import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
 import me.Fupery.Artiste.IO.*;
-import me.Fupery.Artiste.MapArt.AbstractMapArt;
+import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.Tasks.CraftCancelling;
 import me.Fupery.Artiste.Tasks.EasyDraw;
 import me.Fupery.Artiste.Tasks.OnLogout;
 import me.Fupery.Artiste.Command.Utils.Error;
@@ -27,12 +28,12 @@ public final class Artiste extends JavaPlugin {
 	public static Economy econ = null;
 	public static FileConfiguration config;
 
-	public static HashMap<String, AbstractMapArt> artList;
+	public static HashMap<String, Artwork> artList;
 	public static HashMap<UUID, Artist> artistList;
 
 	public static Canvas canvas;
 	public static Artiste plugin;
-	
+
 	public static BukkitRunnable claimTimer;
 
 	@Override
@@ -46,6 +47,7 @@ public final class Artiste extends JavaPlugin {
 
 		pluginManager.registerEvents((new EasyDraw()), this);
 		pluginManager.registerEvents(new OnLogout(), this);
+		pluginManager.registerEvents(new CraftCancelling(), this);
 
 		Load.setupRegistry(this, getLogger());
 

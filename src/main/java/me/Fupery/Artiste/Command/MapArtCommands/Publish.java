@@ -26,7 +26,7 @@ public class Publish extends MapArtCommand {
 	@Override
 	public String conditions() {
 
-		if (!sender.hasPermission("artiste.publicMapCreation")) {
+		if (!sender.hasPermission("artiste.playerTier2")) {
 
 			return Error.noPubPermission;
 		}
@@ -37,7 +37,7 @@ public class Publish extends MapArtCommand {
 
 			if (((PrivateMap) art).isDenied())
 
-				return error = "This artwork has already been denied!";
+				return Error.alreadyDenied;
 
 			return null;
 

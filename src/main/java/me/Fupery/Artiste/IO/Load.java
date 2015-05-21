@@ -15,7 +15,7 @@ import org.bukkit.DyeColor;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.MapArt.AbstractMapArt;
+import me.Fupery.Artiste.MapArt.Artwork;
 import me.Fupery.Artiste.MapArt.Template;
 
 public class Load {
@@ -40,7 +40,7 @@ public class Load {
 
 			log.info("Artiste.dat not found ... creating new Artist registry");
 			Artiste.artistList = new HashMap<UUID, Artist>();
-			Artiste.artList = new HashMap<String, AbstractMapArt>();
+			Artiste.artList = new HashMap<String, Artwork>();
 
 			setupDefault();
 		}
@@ -59,7 +59,7 @@ public class Load {
 
 				Artiste.canvas = (Canvas) in.readObject();
 				Artiste.artistList = (HashMap<UUID, Artist>) in.readObject();
-				Artiste.artList = (HashMap<String, AbstractMapArt>) in
+				Artiste.artList = (HashMap<String, Artwork>) in
 						.readObject();
 
 				in.close();
