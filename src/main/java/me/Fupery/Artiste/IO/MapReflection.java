@@ -1,12 +1,12 @@
-package me.Fupery.Artiste.Tasks;
+package me.Fupery.Artiste.IO;
 
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.Load;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.Tasks.ColourConvert;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -42,60 +42,31 @@ public class MapReflection {
 			log.warning("invalid title");
 	}
 
-	public boolean colorsOverride() {
+	public boolean override() {
 
-		Field worldMap;
-		Field field;
-		byte[] colors;
-
-		try {
-
-			worldMap = m.getClass().getDeclaredField("worldMap");
-
-			worldMap.setAccessible(true);
-
-			Object o = worldMap.get(m);
-
-			field = o.getClass().getDeclaredField("colors");
-
-			field.setAccessible(true);
-
-			colors = (byte[]) field.get(o);
-
-			field.set(o, mapOutput);
-
-		} catch (NoSuchFieldException | SecurityException
-				| IllegalArgumentException | IllegalAccessException e1) {
-
-			colors = null;
-			log.info(e1.getMessage());
-
-		}
-
-		return (colors != null);
-	}
-
-	public boolean dimensionOverride() {
-
-		Field worldMap;
-		Field field;
 		byte dimension;
 
 		try {
 
-			worldMap = m.getClass().getDeclaredField("worldMap");
+			Field worldMapField = m.getClass().getDeclaredField("worldMap");
 
-			worldMap.setAccessible(true);
+			worldMapField.setAccessible(true);
 
-			Object o = worldMap.get(m);
+			Object worldMap = worldMapField.get(m);
 
-			field = o.getClass().getDeclaredField("map");
+			Field dimensionField = worldMap.getClass().getDeclaredField("map");
 
-			field.setAccessible(true);
+			dimensionField.setAccessible(true);
 
-			dimension = field.getByte(o);
+			dimension = dimensionField.getByte(worldMap);
 
-			field.setByte(o, (byte) 5);
+			dimensionField.setByte(worldMap, (byte) 5);
+
+			Field colorsField = worldMap.getClass().getDeclaredField("colors");
+
+			colorsField.setAccessible(true);
+
+			colorsField.set(worldMap, mapOutput);
 
 		} catch (NoSuchFieldException | SecurityException
 				| IllegalArgumentException | IllegalAccessException e1) {
@@ -106,17 +77,38 @@ public class MapReflection {
 
 		return (dimension != -5);
 	}
+	
+	public boolean delete(){
 
-	@SuppressWarnings("deprecation")
+		try {
+
+			Field worldMapField = m.getClass().getDeclaredField("worldMap");
+
+			worldMapField.setAccessible(true);
+
+			Object worldMap = worldMapField.get(m);
+
+			Field colorsField = worldMap.getClass().getDeclaredField("colors");
+
+			colorsField.setAccessible(true);
+
+			colorsField.set(worldMap, new byte[128*128]);
+
+		} catch (NoSuchFieldException | SecurityException
+				| IllegalArgumentException | IllegalAccessException e1) {
+
+			log.warning(e1.getMessage());
+		}
+
+		return true;
+	}
+
+	@Deprecated
 	public boolean worldMapOverride(short inputId) {
 
 		if (world == null)
 
 			return false;
-
-		Field worldMap;
-		Field overrideMap;
-		short outputId;
 
 		AbstractMapArt a = Artiste.artList.get("default");
 
@@ -124,28 +116,36 @@ public class MapReflection {
 
 			a = Load.setupDefault();
 
-		outputId = ((Artwork) a).getMapId();
+		short outputId = ((Artwork) a).getMapId();
 
-		MapView mapIn = Bukkit.getMap(inputId);
+		log.info(((Short) inputId).toString());
 
-		MapView mapOut = Bukkit.getMap(outputId);
+		log.info(((Short) outputId).toString());
 
-		if (mapIn == null || mapOut == null) {
+		MapView mapA = Bukkit.getMap(inputId);
+
+		MapView mapB = Bukkit.getMap(outputId);
+
+		if (mapA == null || mapB == null) {
 
 			log.info("map delete error - 'default' map may be corrupted");
 			return false;
 		}
 
 		try {
-			worldMap = mapIn.getClass().getDeclaredField("worldMap");
+			Field worldMapField = mapA.getClass().getDeclaredField("worldMap");
 
-			worldMap.setAccessible(true);
+			worldMapField.setAccessible(true);
 
-			overrideMap = mapOut.getClass().getDeclaredField("worldMap");
+			Object worldMapA = worldMapField.get(mapA);
 
-			overrideMap.setAccessible(true);
+			Field idField = worldMapA.getClass().getDeclaredField("id");
 
-			worldMap.set(mapIn, overrideMap.get(mapOut));
+			idField.setAccessible(true);
+
+			String s = "map_" + (((Short) outputId).toString());
+
+			idField.set(mapA, s);
 
 		} catch (NoSuchFieldException | SecurityException
 				| IllegalArgumentException | IllegalAccessException e) {
