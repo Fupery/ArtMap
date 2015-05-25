@@ -1,11 +1,11 @@
 package me.Fupery.Artiste;
 
-import me.Fupery.Artiste.Command.AbstractCommand;
 import me.Fupery.Artiste.Command.Ban;
 import me.Fupery.Artiste.Command.Help;
 import me.Fupery.Artiste.Command.List;
 import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Test;
 import me.Fupery.Artiste.Command.Utils.Error;
 

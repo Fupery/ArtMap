@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Tasks;
+package me.Fupery.Artiste.Event;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import me.Fupery.Artiste.Command.Utils.Error;
 
 /** Disallows players from copying Artiste maps in the crafting table */
-public class CraftCancelling implements Listener {
+public class PlayerCraftListener implements Listener {
 
 	@EventHandler
 	public void onPlayerCraftEvent(CraftItemEvent event) {

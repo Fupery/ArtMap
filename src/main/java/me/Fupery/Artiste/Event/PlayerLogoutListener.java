@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Tasks;
+package me.Fupery.Artiste.Event;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Artiste;
@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class OnLogout implements Listener {
+public class PlayerLogoutListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
