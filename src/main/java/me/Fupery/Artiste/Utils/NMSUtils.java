@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Tasks;
+package me.Fupery.Artiste.Utils;
 
 import net.minecraft.server.v1_8_R2.BlockPosition;
 import net.minecraft.server.v1_8_R2.ChunkCoordIntPair;

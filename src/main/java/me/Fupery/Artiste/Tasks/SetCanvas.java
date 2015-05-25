@@ -15,7 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.Fupery.Artiste.Tasks.NMSUtils.*;
+import static me.Fupery.Artiste.Utils.NMSUtils.*;
 
 public class SetCanvas extends BukkitRunnable {
 	int mapSize;

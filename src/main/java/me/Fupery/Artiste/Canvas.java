@@ -61,7 +61,7 @@ public class Canvas implements Serializable {
 		owner = null;
 		this.member.clear();
 		this.cooloff = false;
-		new SetCanvas(DyeColor.WHITE).runTask(Artiste.plugin);
+		new SetCanvas(DyeColor.WHITE).run();
 	}
 
 	public Location getPos1() {
