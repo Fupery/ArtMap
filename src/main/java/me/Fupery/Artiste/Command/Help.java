@@ -2,6 +2,7 @@ package me.Fupery.Artiste.Command;
 
 import org.bukkit.ChatColor;
 
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
 
 public class Help extends AbstractCommand {

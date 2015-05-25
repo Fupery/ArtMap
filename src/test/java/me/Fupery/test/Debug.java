@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 
 import me.Fupery.Artiste.CommandListener;
-import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 
 public class Debug {
 

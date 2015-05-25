@@ -1,7 +1,6 @@
 package me.Fupery.Artiste.MapArt;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.IO.MapReflection;
 
 import org.bukkit.Bukkit;
@@ -20,15 +19,12 @@ public class PrivateMap extends Artwork {
 		this.title = title.toLowerCase();
 		this.mapSize = Artiste.canvas.getSize();
 
-		Artist a = Artiste.artistList.get(artist);
-
 		this.mapId = Bukkit
 				.createMap(Bukkit.getWorld(Artiste.canvas.worldname)).getId();
 
 		setMap(save());
 
 		Artiste.artList.put(title.toLowerCase(), this);
-		a.addArtwork(title);
 
 		new MapReflection(title).override();
 

@@ -16,8 +16,7 @@ public class PublicMap extends Artwork{
 			mapSize = pm.getMapSize();
 			artist = pm.getArtist();
 			mapId = pm.getMapId();
-			title = pm.getTitle();	
-			Artiste.artistList.get(artist).delArtwork(title);
+			title = pm.getTitle();
 			buys = 0;
 			sender.sendMessage(ChatColor.GOLD + "Successfully published " + ChatColor.AQUA +
 			title + ChatColor.GOLD + " as a public artwork");

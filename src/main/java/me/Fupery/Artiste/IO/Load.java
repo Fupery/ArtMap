@@ -70,7 +70,6 @@ public class Load {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 			return false;
 		}
 	}

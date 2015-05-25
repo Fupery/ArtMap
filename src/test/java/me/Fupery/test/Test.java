@@ -19,7 +19,7 @@ import org.bukkit.block.Block;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
 

@@ -3,11 +3,9 @@ package me.Fupery.Artiste.MapArt;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.UUID;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.ArtIO;
-import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.IO.MapReflection;
 
 import org.bukkit.ChatColor;
@@ -26,15 +24,9 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 	public void delete(CommandSender sender) {
 
-		UUID id = artist;
-
-		Artist a = Artiste.artistList.get(id);
-
 		new MapReflection(title).delete();
 
 		Artiste.artList.remove(title);
-
-		a.delArtwork(title);
 		
 		ArtIO.deleteMap(title);
 	}

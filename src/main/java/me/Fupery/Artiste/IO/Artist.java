@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.MapArt.Artwork;
 import me.Fupery.Artiste.MapArt.Buffer;
+import me.Fupery.Artiste.MapArt.PrivateMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -48,9 +50,28 @@ public class Artist implements Serializable {
 
 	}
 
+	public String getName() {
+		return Bukkit.getPlayer(artistID).getName();
+	}
+
+	public ArrayList<String> getArtworks() {
+		return artworks;
+	}
+
 	public boolean addArtwork(String title) {
 
-		if (artworks.size() >= maxArt())
+		int priv = 0;
+
+		for (String s : artworks) {
+
+			Artwork a = Artiste.artList.get(s);
+
+			if (a != null && a instanceof PrivateMap)
+
+				priv++;
+		}
+
+		if (priv >= maxArt())
 
 			return false;
 

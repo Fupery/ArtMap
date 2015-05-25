@@ -9,10 +9,11 @@ import java.util.zip.GZIPOutputStream;
 
 import me.Fupery.Artiste.IO.*;
 import me.Fupery.Artiste.MapArt.Artwork;
-import me.Fupery.Artiste.Tasks.CraftCancelling;
-import me.Fupery.Artiste.Tasks.EasyDraw;
-import me.Fupery.Artiste.Tasks.OnLogout;
 import me.Fupery.Artiste.Command.Utils.Error;
+import me.Fupery.Artiste.Event.PlayerCraftListener;
+import me.Fupery.Artiste.Event.PlayerInteractListener;
+import me.Fupery.Artiste.Event.PlayerLogoutListener;
+import me.Fupery.Artiste.Event.PlayerPaintListener;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -45,9 +46,10 @@ public final class Artiste extends JavaPlugin {
 
 		this.getCommand("artmap").setExecutor(new CommandListener());
 
-		pluginManager.registerEvents((new EasyDraw()), this);
-		pluginManager.registerEvents(new OnLogout(), this);
-		pluginManager.registerEvents(new CraftCancelling(), this);
+		pluginManager.registerEvents((new PlayerInteractListener()), this);
+		pluginManager.registerEvents((new PlayerPaintListener()), this);
+		pluginManager.registerEvents(new PlayerLogoutListener(), this);
+		pluginManager.registerEvents(new PlayerCraftListener(), this);
 
 		Load.setupRegistry(this, getLogger());
 

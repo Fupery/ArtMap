@@ -1,6 +1,6 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
-import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 
 public abstract class CanvasCommand extends AbstractCommand {
 

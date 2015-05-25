@@ -1,6 +1,6 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
-import me.Fupery.Artiste.Command.AbstractCommand;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 
 public abstract class MapArtCommand extends AbstractCommand {
 

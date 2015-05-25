@@ -1,7 +1,6 @@
-package me.Fupery.Artiste.Command;
+package me.Fupery.Artiste.Command.Utils;
 
 import me.Fupery.Artiste.Canvas;
-import me.Fupery.Artiste.Command.Utils.*;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;

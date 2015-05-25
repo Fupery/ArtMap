@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.IO.Artist;
 
 public class Ban extends AbstractCommand {

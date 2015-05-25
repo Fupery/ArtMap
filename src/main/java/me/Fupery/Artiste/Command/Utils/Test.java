@@ -3,7 +3,6 @@ package me.Fupery.Artiste.Command.Utils;
 import org.bukkit.DyeColor;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Command.AbstractCommand;
 import me.Fupery.Artiste.Tasks.SetCanvas;
 
 public class Test extends AbstractCommand {

@@ -1,37 +1,33 @@
 package me.Fupery.Artiste.Command;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
 import me.Fupery.Artiste.MapArt.PublicMap;
 import me.Fupery.Artiste.MapArt.Template;
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
+import static me.Fupery.Artiste.Utils.Formatting.*;
 
 //fix errors for no canvas
 public class List extends AbstractCommand {
 
 	private validMapType type;
-	private Set<String> keys;
-	private ArrayList<AbstractMapArt> list;
-	private AbstractMapArt art;
-	private int pages;
+	private ArrayList<Artwork> list;
+	private int pages, maxLines;
+	String[] returnList;
 
 	public void initialize() {
-		
+
 		maxArgs = 3;
+		maxLines = 7;
 		playerRequired = true;
 
 		usage = "list <private|public> [pg]";
-
+		returnList = new String[maxLines + 2];
 	}
 
 	@Override
@@ -40,126 +36,112 @@ public class List extends AbstractCommand {
 		if (Artiste.artList.isEmpty())
 
 			error = String.format(Error.noArtwork, "");
-		
-		if (args.length == 3) {
-			try {
-				pages = Integer.parseInt(args[2]);
-			} catch (NumberFormatException e) {
-				pages = 0;
-			}
-		} else
-			pages = 0;
 
-		type = resolveType();
+		for (int i = 1; i < args.length; i++) {
+
+			if (isNumber(args[i]))
+
+				pages = Integer.parseInt(args[i]);
+
+			else if (resolveType(args[i]) != null)
+
+				type = resolveType(args[i]);
+		}
+		if (type == null)
+
+			type = validMapType.PRIVATE;
+
+		if (!sort() || list.size() < 1)
+
+			error = String.format(Error.noArtwork, type.toString()
+					.toLowerCase());
 
 		return error;
 	}
 
 	public boolean run() {
 
-		keys = Artiste.artList.keySet();
-
-		if (!sort() || list.size() < 1) {
-
-			error = String.format(Error.noArtwork, type.toString()
-					.toLowerCase());
-			return false;
-
-		}
-
 		int line;
-		int dS = 7; // max lines to send
 
-		if ((pages * dS) < list.size())
-
-			line = pages * dS;
-
+		if ((pages * maxLines) < list.size())
+			line = pages * maxLines;
 		else {
 			line = 0;
 			pages = 0;
 		}
 
-		Integer l = (Integer) (pages + 1);
-		String buys = "";
+		returnList[0] = header();
 
-		sender.sendMessage(String.format(ChatColor.GOLD
-				+ "Showing %s%s artworks", header(), ChatColor.GOLD));
+		int i, k, l;
+		l = (Integer) (pages + 1);
 
-		sender.sendMessage(ChatColor.DARK_PURPLE + "--------"
-				+ ChatColor.LIGHT_PURPLE + "[pg " + pages + "]"
-				+ ChatColor.DARK_PURPLE + "--------");
+		for (i = line, k = 1; i < list.size() && i < (pages + maxLines); i++, k++) {
 
-		for (int i = line; i < list.size() && i < (pages + dS); i++) {
+			Artwork a = list.get(i);
 
-			art = list.get(i);
+			String name = (a instanceof Template) ? "template" : artist
+					.getName();
 
-			Artwork a = (Artwork) art;
-			
-			String name;
-			
-			if(a instanceof Template)
-				
-				name = "template";
-			
-			else name = Bukkit.getPlayer(a.getArtist()).getName();
-				
+			String buys = (a instanceof PublicMap) ? ((PublicMap) a).getBuys()
+					+ " buys" : null;
 
-			if (a != null)
-				if (a.getType() == validMapType.PUBLIC)
-					buys = ChatColor.DARK_PURPLE + "  "
-							+ ((PublicMap) a).getBuys() + " buys";
+			returnList[k] = format(a.getTitle(), name, buys);
 
-			sender.sendMessage(ChatColor.GOLD + "•  " + ChatColor.AQUA
-					+ a.getTitle() + ChatColor.GOLD + " by "
-					+ ChatColor.DARK_AQUA
-					+ name + buys);
+			if (list.size() > (maxLines + line))
 
+				returnList[k + 1] = footer(l);
 		}
-		if (list.size() > (dS + line))
-			sender.sendMessage(String.format(
+		for (String s : returnList)
 
-			ChatColor.DARK_PURPLE + "/artmap list "
-					+ type.toString().toLowerCase() + ChatColor.LIGHT_PURPLE
-					+ " [%s] " + ChatColor.DARK_AQUA + "to see more", l));
-		list = null;
+			if (s != null)
+
+				sender.sendMessage(s);
 
 		return true;
-
 	}
 
 	private boolean sort() {
 
-		if (keys.size() == 0)
+		if (Artiste.artList.size() == 0)
 
 			return false;
 
-		Iterator<String> compiler = keys.iterator();
+		list = new ArrayList<Artwork>();
 
-		list = new ArrayList<AbstractMapArt>();
+		switch (type) {
 
-		while (compiler.hasNext()) {
+		case PRIVATE:
 
-			AbstractMapArt m = Artiste.artList.get(compiler.next());
+			if (artist.getArtworks().size() == 0)
 
-			if (m.getType() == type) {
+				return false;
 
-				if (m.getType() == validMapType.PRIVATE) {
+			for (String s : artist.getArtworks())
 
-					if (Bukkit.getOfflinePlayer(m.getArtist()) == (OfflinePlayer) sender) {
+				list.add(Artiste.artList.get(s));
 
-						list.add(m);
-					}
-				} else
-					list.add(m);
+			break;
+
+		default:
+
+			Set<String> keys = Artiste.artList.keySet();
+
+			for (String s : keys) {
+
+				Artwork a = Artiste.artList.get(s);
+
+				if (a.getType() == type)
+
+					list.add(a);
 			}
+			break;
 		}
 		return true;
 	}
 
-	private validMapType resolveType() {
-		if (args.length < 2)
-			return validMapType.PRIVATE;
-		switch (args[1].toLowerCase()) {
+	private validMapType resolveType(String s) {
+
+		switch (s.toLowerCase()) {
 		case "private":
 			return validMapType.PRIVATE;
 		case "public":
@@ -169,17 +151,41 @@ public class List extends AbstractCommand {
 		case "queued":
 			return validMapType.QUEUED;
 		default:
-			return validMapType.PRIVATE;
+			return null;
 		}
 	}
 
 	private String header() {
+		String s;
 		if (type.name().equalsIgnoreCase("private"))
-			return ChatColor.AQUA + sender.getName() + "'s";
+			s = colourC + sender.getName() + "'s";
 		else
-			return type.name().toLowerCase();
+			s = type.name().toLowerCase();
+		return colourA + String.format("Showing %s artworks", s + colourA);
 	}
 
+	private String footer(int l) {
 
+		return String.format(colourD + "/artmap list %s %s[%s]%s to see more",
+				type.toString().toLowerCase(), colourE, l, colourB);
+	}
 
+	private String format(String title, String name, String buys) {
+
+		String s = String.format("%s•  %s%s %sby %s%s ", colourA,
+				evalColour(title), title, colourA, colourB, name);
+
+		return (buys == null) ? s : s + colourD + buys;
+	}
+
+	private boolean isNumber(String s) {
+
+		for (Character c : s.toCharArray())
+
+			if (!Character.isDigit(c))
+
+				return false;
+
+		return true;
+	}
 }
