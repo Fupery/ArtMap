@@ -166,7 +166,7 @@ public class List extends AbstractCommand {
 
 	private String footer(int l) {
 
-		return String.format(colourD + "/artmap list %s %s[%s]%s to see more",
+		return String.format(colourD + "/artmap list %s %s[%s]%s for more",
 				type.toString().toLowerCase(), colourE, l, colourB);
 	}
 

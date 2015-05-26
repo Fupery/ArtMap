@@ -5,6 +5,7 @@ import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.Utils.Formatting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,17 +17,19 @@ import me.Fupery.Artiste.Artiste;
 import static me.Fupery.Artiste.Command.Utils.Error.*;
 
 /**
- * Framework for commands, flag precondition booleans etc. as true in initialize().
+ * Framework for commands, flag precondition booleans etc. as true in
+ * initialize().
  * <p>
- * Command body in run(), optionally add more conditions/checks with conditions().
+ * Command body in run(), optionally add more conditions/checks with
+ * conditions().
  */
 public abstract class AbstractCommand implements ArtisteCommand {
 
 	protected boolean playerRequired, canvasRequired, adminRequired,
 			artistRequired, claimRequired, coolOffRequired, authorRequired,
-			artRequired;
+			artRequired, disablePrefix;
 
-	protected String usage, error, success, title;
+	protected String usage, error, success, title, prefix;
 
 	protected Artist artist;
 	protected Canvas canvas;
@@ -41,6 +44,7 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	protected AbstractCommand() {
 
 		this.canvas = Artiste.canvas;
+		prefix = Formatting.prefix;
 	}
 
 	public void check() {
@@ -144,7 +148,7 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	}
 
 	public String conditions() {
-		return null;
+		return error;
 	}
 
 	protected void error() {
@@ -162,15 +166,17 @@ public abstract class AbstractCommand implements ArtisteCommand {
 
 	protected void success() {
 
+		String s = (disablePrefix) ? success : prefix + success;
+
 		if (success != null) {
 
 			if (sender instanceof Player)
 
-				sender.sendMessage(success);
+				sender.sendMessage(s);
 
 			else
 
-				Bukkit.getLogger().info(success);
+				Bukkit.getLogger().info(s);
 		}
 	}
 
@@ -185,9 +191,5 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	public void pass(CommandSender sender, String[] args) {
 		this.sender = sender;
 		this.args = args;
-	}
-
-	public static void eval() {
-
 	}
 }

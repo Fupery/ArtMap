@@ -8,7 +8,6 @@ import me.Fupery.Artiste.IO.CanvasLocation;
 import me.Fupery.Artiste.Tasks.SetCanvas;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -52,8 +51,6 @@ public class Canvas implements Serializable {
 		setPos1(null);
 		setPos2(null);
 		Artiste.canvas = null;
-
-		sender.sendMessage(ChatColor.DARK_AQUA + "Canvas removed successfully!");
 	}
 
 	public void clear(CommandSender sender) {

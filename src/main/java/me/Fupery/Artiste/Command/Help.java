@@ -1,20 +1,19 @@
 package me.Fupery.Artiste.Command;
 
 import org.bukkit.ChatColor;
+import static me.Fupery.Artiste.Utils.Formatting.*;
 
 import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
 
 public class Help extends AbstractCommand {
 
-	private static ChatColor a = ChatColor.DARK_AQUA, b = ChatColor.AQUA,
-			c = ChatColor.GOLD;
-
 	public void initialize() {
 
 		maxArgs = 2;
 
 		usage = "help <page-number|admin>";
+		disablePrefix = true;
 
 	}
 
@@ -40,6 +39,8 @@ public class Help extends AbstractCommand {
 				}
 		} else
 			p = 1;
+
+		sender.sendMessage(header(((Integer) p).toString()));
 
 		switch (p) {
 
@@ -83,50 +84,33 @@ public class Help extends AbstractCommand {
 	}
 
 	public static final String[] page1 = new String[] {
+			helpFormat("claim", "Define the canvas"),
+			helpFormat("unclaim", "Remove the canvas"),
+			helpFormat("addmember <playername>", "Add a player"),
+			helpFormat("delmember <playername>", "Remove a player"),
+			helpFormat("reset [colour|list]", "Reset the canvas to a colour"),
+			helpFormat("save <title>", "Save your artwork") };
 
-			c + "¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬ ArtMap Help [1] ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬",
-			c + "•" + a + "  /artmap claim" + c + " |" + b
-					+ " Claim the canvas" + c + " |",
-			c + "•" + a + "  /artmap unclaim" + c + " |" + b
-					+ " Save your progress and unclaim" + c + " |",
-			c + "•" + a + "  /artmap addmember <playername>" + c + " |" + b
-					+ " Add a player" + c + " |",
-			c + "•" + a + "  /artmap delmember <playername>" + c + " |" + b
-					+ " Remove a player" + c + " |",
-			c + "•" + a + "  /artmap reset [colour|list]" + c + " |" + b
-					+ " Reset the canvas to a colour" + c + " |",
-			c + "•" + a + "  /artmap save <title> " + c + " |" + b
-					+ " Save your artwork" + c + " |"
-
-	};
 	public static final String[] page2 = new String[] {
+			helpFormat("publish <title>", "Make your artwork public"),
+			helpFormat("list [public|private] [p]", "List available artworks"),
+			helpFormat("edit <title>", "Load a saved artwork to the canvas"),
+			helpFormat("buy <title>", "Purchase an artwork as a map item"),
+			helpFormat("delete <title>", "Delete an artwork") };
 
-			c + "¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬ ArtMap Help [2] ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬",
-			c + "•" + a + "  /artmap publish <title> " + c + " |" + b
-					+ " Make your artwork public" + c + " |",
-			c + "•" + a + "  /artmap list [public|private] [p]" + c + " |" + b
-					+ " List available artworks" + c + " |",
-			c + "•" + a + "  /artmap edit <title>" + c + " |" + b
-					+ " Load a saved artwork to the canvas" + c + " |",
-			c + "•" + a + "  /artmap buy <title>" + c + " |" + b
-					+ " Purchase an artwork as a map item" + c + " |",
-			c + "•" + a + "  /artmap delete <title>" + c + " |" + b
-					+ " Delete an artwork" + c + " |", };
 	public static final String[] page3 = new String[] {
+			helpFormat("define <x><y><z>", "Define the canvas"),
+			helpFormat("remove", "Remove the canvas"),
+			helpFormat("list [queued] [p]", "List all publish requests"),
+			helpFormat("<approve|deny>", "Handle a publish request"),
+			helpFormat("<ban|unban>", "Ban a player from making art"), };
 
-			c + "¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬ ArtMap Help [3] ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬",
-			c + "•" + a + "  /artmap define <x><y><z>" + c + " |" + b
-					+ " Define the canvas" + c + " |",
-			c + "•" + a + "  /artmap remove" + c + " |" + b
-					+ " Remove the canvas object" + c + " |",
-			c + "•" + a + "  /artmap info" + c + " |" + b
-					+ " Return info on the canvas" + c + " |",
-			c + "•" + a + "  /artmap list [queued] [p]" + c + " |" + b
-					+ " List publish requests" + c + " |",
-			c + "•" + a + "  /artmap <approve|deny>" + c + " |" + b
-					+ " Handle a publish request" + c + " |",
-			c + "•" + a + "  /artmap <ban|unban>" + c + " |" + b
-					+ " Ban a player from making artworks" + c + " |", };
+	private static String header(String page) {
+		return String.format("%s --- ArtMap Help [%s] ---", colourA, page);
+	}
 
-
+	private static String helpFormat(String usage, String description) {
+		return String.format("%s•  %s/artmap %s %s| %s%s %s|", colourA,
+				colourB, usage, colourA, colourC, description, colourA);
+	}
 }

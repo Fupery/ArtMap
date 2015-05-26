@@ -4,6 +4,8 @@ import me.Fupery.Artiste.Artiste;
 
 import org.bukkit.ChatColor;
 
+
+/** Convenience class to standardize text colours */
 public class Formatting {
 
 	public static ChatColor colourA = ChatColor.GOLD,
@@ -13,14 +15,14 @@ public class Formatting {
 	public static String prefix = ChatColor.AQUA + "[ArtMap] ";
 
 	public static ChatColor evalColour(String title) {
-		
+
 		switch (Artiste.artList.get(title).getType()) {
 		case PRIVATE:
 			return ChatColor.AQUA;
 		case PUBLIC:
 			return ChatColor.YELLOW;
 		case QUEUED:
-			return ChatColor.BLUE;
+			return ChatColor.GREEN;
 		default:
 			return ChatColor.DARK_AQUA;
 		}
