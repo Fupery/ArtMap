@@ -6,8 +6,9 @@ import java.util.Arrays;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.ArtIO;
-import me.Fupery.Artiste.IO.MapReflection;
+import me.Fupery.Artiste.IO.WorldMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -22,12 +23,13 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 	protected String title;
 	protected short mapId;
 
+	@SuppressWarnings("deprecation")
 	public void delete(CommandSender sender) {
 
-		new MapReflection(title).delete();
+		new WorldMap(Bukkit.getMap(mapId)).delete();
 
 		Artiste.artList.remove(title);
-		
+
 		ArtIO.deleteMap(title);
 	}
 
@@ -59,9 +61,9 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 		try {
 			d = ArtIO.loadMap(title);
-			
+
 		} catch (ClassNotFoundException | IOException e) {
-			
+
 			d = null;
 		}
 
@@ -72,11 +74,11 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 		try {
 			ArtIO.saveMap(map, title);
-			
+
 			return true;
-	
+
 		} catch (IOException e) {
-			
+
 			return false;
 		}
 	}

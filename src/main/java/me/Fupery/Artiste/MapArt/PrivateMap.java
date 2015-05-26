@@ -1,7 +1,8 @@
 package me.Fupery.Artiste.MapArt;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.MapReflection;
+import me.Fupery.Artiste.IO.WorldMap;
+import me.Fupery.Artiste.Tasks.ColourConvert;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -26,8 +27,9 @@ public class PrivateMap extends Artwork {
 
 		Artiste.artList.put(title.toLowerCase(), this);
 
-		new MapReflection(title).override();
+		byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
 
+		new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 	}
 
 	public boolean isQueued() {

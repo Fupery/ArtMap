@@ -5,7 +5,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.World;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.MapReflection;
+import me.Fupery.Artiste.IO.WorldMap;
+import me.Fupery.Artiste.Tasks.ColourConvert;
 
 public class Template extends Artwork {
 
@@ -30,7 +31,9 @@ public class Template extends Artwork {
 
 			Artiste.artList.put(title, this);
 
-			new MapReflection(title).override();
+			byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
+
+			new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 		}
 	}
 
@@ -57,7 +60,9 @@ public class Template extends Artwork {
 
 			Artiste.artList.put(title, this);
 
-			new MapReflection(title).override();
+			byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
+
+			new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 		}
 	}
 }

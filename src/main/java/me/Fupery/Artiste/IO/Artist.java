@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 /**
  * Serializable representation of the player's interaction with Artiste.
+ * <p>
  * Contains max number of artworks and a personal canvas buffer
  */
 public class Artist implements Serializable {
