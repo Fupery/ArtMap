@@ -17,6 +17,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import static me.Fupery.Artiste.Utils.NMSUtils.*;
 
+/**
+ * Resets the canvas to wool blocks via NMS
+ */
 public class SetCanvas extends BukkitRunnable {
 	int mapSize;
 	ArrayList<Chunk> update;

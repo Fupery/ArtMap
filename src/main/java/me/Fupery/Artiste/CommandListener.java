@@ -6,8 +6,8 @@ import me.Fupery.Artiste.Command.List;
 import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
 import me.Fupery.Artiste.Command.Utils.AbstractCommand;
-import me.Fupery.Artiste.Command.Utils.Test;
 import me.Fupery.Artiste.Command.Utils.Error;
+import me.Fupery.test.Test;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

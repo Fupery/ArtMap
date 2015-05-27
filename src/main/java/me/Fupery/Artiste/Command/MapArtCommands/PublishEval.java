@@ -51,7 +51,7 @@ public class PublishEval extends MapArtCommand {
 			error = String.format(Error.alreadyPub, args[1]);
 
 		default:
-			error = usage;
+			error = String.format(Error.notQueued, args[1]);
 		}
 
 		return error;

@@ -23,6 +23,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static me.Fupery.Artiste.IO.Load.*;
+
 public final class Artiste extends JavaPlugin {
 
 	public static boolean economyOn;
@@ -51,7 +53,7 @@ public final class Artiste extends JavaPlugin {
 		pluginManager.registerEvents(new PlayerLogoutListener(), this);
 		pluginManager.registerEvents(new PlayerCraftListener(), this);
 
-		Load.setupRegistry(this, getLogger());
+		setupRegistry(this, getLogger());
 
 		this.saveDefaultConfig();
 
@@ -70,16 +72,13 @@ public final class Artiste extends JavaPlugin {
 	public void onDisable() {
 
 		if (Artiste.claimTimer != null)
+
 			Artiste.claimTimer.cancel();
 
-		if (canvas != null) {
+		if (canvas != null && canvas.getOwner() != null)
 
-			if (canvas.getOwner() != null) {
+			canvas.clear(canvas.getOwner());
 
-				canvas.clear(canvas.getOwner());
-
-			}
-		}
 		save(new File(getDataFolder(), "Artiste.dat"));
 
 		Bukkit.getScheduler().cancelTasks(this);

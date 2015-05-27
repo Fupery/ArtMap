@@ -1,4 +1,6 @@
-package me.Fupery.Artiste.Command.Utils;
+package me.Fupery.test;
+
+import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 
 import org.bukkit.Bukkit;
 
