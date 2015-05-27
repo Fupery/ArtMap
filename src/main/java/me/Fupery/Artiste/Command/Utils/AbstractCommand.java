@@ -35,116 +35,96 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	protected Canvas canvas;
 	protected AbstractMapArt art;
 	protected validMapType type;
-
 	protected int minArgs = 1, maxArgs = 1;
-
 	protected String[] args;
 	protected CommandSender sender;
 
 	protected AbstractCommand() {
-
 		this.canvas = Artiste.canvas;
 		prefix = Formatting.prefix;
 	}
 
 	public void check() {
-
 		error = preconditions();
 
-		if (error == null)
-
+		if (error == null) {
 			error = conditions();
-
-		if (error == null)
-
+		}
+		if (error == null) {
 			if (run()) {
-
 				success();
 				return;
 			}
-
+		}
 		error();
 	}
 
 	public String preconditions() {
 
 		if (sender instanceof Player) {
-
 			artist = Artiste.artistList.get(((Player) sender).getUniqueId());
 
 			if (artist == null) {
-
 				artist = new Artist(((Player) sender).getUniqueId());
-
 				Artiste.artistList.put(((Player) sender).getUniqueId(), artist);
 
-			} else if (artistRequired && artist.isBanned())
-
+			} else if (artistRequired && artist.isBanned()) {
 				return error = "You have been banned from creating artworks.";
+			}
 		}
 
-		if (args.length < minArgs || args.length > maxArgs)
-
+		if (args.length < minArgs || args.length > maxArgs) {
 			return ChatColor.RED + "/artmap " + usage;
-
-		if (playerRequired && !(sender instanceof Player))
-
+		}
+		if (playerRequired && !(sender instanceof Player)) {
 			return noConsole;
-
-		if (adminRequired && !(sender.hasPermission("artiste.admin")))
-
+		}
+		if (adminRequired && !(sender.hasPermission("artiste.admin"))) {
 			return noPermission;
-
+		}
 		if (canvasRequired) {
 
-			if (canvas == null)
-
+			if (canvas == null) {
 				return noDef;
-
+			}
 			if (sender instanceof Player) {
-
-				if (claimRequired && canvas.getOwner() != (Player) sender)
-
+				if (claimRequired && canvas.getOwner() != (Player) sender) {
 					return notOwner;
-			} else
+				}
+			} else {
 
-			if (canvas.getOwner() == null)
-
-				return "The canvas has not been claimed!";
-
-			if (coolOffRequired && canvas.isCoolingOff())
-
+				if (canvas.getOwner() == null) {
+					return "The canvas has not been claimed!";
+				}
+			}
+			if (coolOffRequired && canvas.isCoolingOff()) {
 				return coolOff;
+			}
 		}
 
 		if (artRequired) {
 
 			art = Artiste.artList.get(args[1]);
-
-			if (art == null || art.getArtist() == null)
-
+			if (art == null || art.getArtist() == null) {
 				return String.format(noMap, args[1]);
-
+			}
 			type = art.getType();
 
-			if (art instanceof Artwork)
-
+			if (art instanceof Artwork) {
 				title = ((Artwork) art).getTitle();
-
+			}
 			if (authorRequired
 					&& sender instanceof Player
 					&& art.getArtist().compareTo(
-							((Player) sender).getUniqueId()) != 0)
-
-				if (art instanceof Artwork)
-
+							((Player) sender).getUniqueId()) != 0) {
+				if (art instanceof Artwork) {
 					return noEdit;
-
+				}
+			}
 			if (args.length > 1)
 				title = args[1];
 		}
-
-		return null;
+		return error;
 	}
 
 	public String conditions() {
@@ -152,39 +132,28 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	}
 
 	protected void error() {
-
 		String msg = (error == null) ? usage() : error;
-
-		if (sender instanceof Player)
-
+		if (sender instanceof Player) {
 			sender.sendMessage(ChatColor.RED + msg);
-
-		else
-
+		} else {
 			Bukkit.getLogger().info(msg);
+		}
 	}
 
 	protected void success() {
-
 		String s = (disablePrefix) ? success : prefix + success;
-
 		if (success != null) {
-
-			if (sender instanceof Player)
-
+			if (sender instanceof Player) {
 				sender.sendMessage(s);
-
-			else
-
+			} else {
 				Bukkit.getLogger().info(s);
+			}
 		}
 	}
 
 	protected String usage() {
-
 		String msg = (usage == null) ? "help for a full list of commands"
 				: usage;
-
 		return "/artmap " + msg;
 	}
 

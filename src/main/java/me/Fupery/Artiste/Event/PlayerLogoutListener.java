@@ -15,31 +15,24 @@ public class PlayerLogoutListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
-
 		Canvas c = Artiste.canvas;
-
 		if (c != null) {
-
 			Player player = event.getPlayer();
-
-			if (c.getOwner() != null && c.getOwner() == player)
-
+			if (c.getOwner() != null && c.getOwner() == player) {
 				Unclaim.unclaim();
-
-			if (c.getMembers() != null && isMember(player))
-
+			}
+			if (c.getMembers() != null && isMember(player)) {
 				c.delMember(player);
+			}
 		}
 	}
 
 	private boolean isMember(Player p) {
-
-		for (UUID id : Artiste.canvas.getMembers())
-
-			if (p.getUniqueId().compareTo(id) == 0)
-
+		for (UUID id : Artiste.canvas.getMembers()) {
+			if (p.getUniqueId().compareTo(id) == 0) {
 				return true;
+			}
+		}
 		return false;
-
 	}
 }

@@ -22,15 +22,12 @@ public abstract class AbstractMapArt implements Serializable {
 	public DyeColor[] save() {
 
 		DyeColor[] map = new DyeColor[(mapSize * mapSize) + mapSize - 1];
-
 		Canvas c = Artiste.canvas;
 		if (c != null) {
-
 			Location l = c.getPos1().clone();
 			int i = 0;
 
 			for (int x = c.getPos1().getBlockX(); x <= c.getPos2().getBlockX(); x++, i++) {
-
 				for (int z = c.getPos1().getBlockZ(); z <= c.getPos2()
 						.getBlockZ(); z++, i++) {
 
@@ -39,11 +36,10 @@ public abstract class AbstractMapArt implements Serializable {
 					Block b = l.getBlock();
 
 					if (b.getType() == Material.WOOL) {
-
 						map[i] = DyeColor.getByData(b.getData());
-
-					} else
+					} else {
 						map[i] = null;
+					}
 				}
 			}
 		}
@@ -73,26 +69,18 @@ public abstract class AbstractMapArt implements Serializable {
 	public validMapType getType() {
 
 		if (this instanceof PrivateMap) {
-
-			if (((PrivateMap) this).isQueued())
-
+			if (((PrivateMap) this).isQueued()) {
 				return validMapType.QUEUED;
-
-			else
+			} else {
 				return validMapType.PRIVATE;
-
-		} else if (this instanceof PublicMap)
-
+			}
+		} else if (this instanceof PublicMap) {
 			return validMapType.PUBLIC;
-
-		else if (this instanceof Buffer)
-
+		} else if (this instanceof Buffer) {
 			return validMapType.BUFFER;
-		
-		else if (this instanceof Template)
-			
+		} else if (this instanceof Template) {
 			return validMapType.TEMPLATE;
-
+		}
 		return null;
 	}
 

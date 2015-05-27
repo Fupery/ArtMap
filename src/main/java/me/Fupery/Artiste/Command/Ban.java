@@ -26,7 +26,6 @@ public class Ban extends AbstractCommand {
 		switch (args[0].toLowerCase()) {
 
 		case "ban":
-
 			success = ChatColor.GOLD
 					+ String.format(
 							"%s has been banned from creating artworks",
@@ -35,7 +34,6 @@ public class Ban extends AbstractCommand {
 			return true;
 
 		case "unban":
-
 			success = ChatColor.GOLD
 					+ String.format("%s has been given artwork privileges",
 							args[1]);
@@ -43,7 +41,6 @@ public class Ban extends AbstractCommand {
 			return true;
 
 		default:
-
 			return false;
 		}
 	}
@@ -53,20 +50,14 @@ public class Ban extends AbstractCommand {
 	public String conditions() {
 		
 		OfflinePlayer p = Bukkit.getServer().getOfflinePlayer(args[1]);
-
-		if (p == null)
-
+		if (p == null) {
 			return error = String.format("Player '%s' not found.", args[1]);
-
+		}
 		artist = Artiste.artistList.get(p.getUniqueId());
-
 		if (artist == null) {
-
 			artist = new Artist(p.getUniqueId());
-
 			Artiste.artistList.put(artist.getArtistID(), artist);
 		}
-
 		return error;
 	}
 }

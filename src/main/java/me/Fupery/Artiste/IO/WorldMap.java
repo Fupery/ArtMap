@@ -18,7 +18,6 @@ public class WorldMap {
 			Field wm = mapView.getClass().getDeclaredField("worldMap");
 			wm.setAccessible(true);
 			worldMap = (net.minecraft.server.v1_8_R2.WorldMap) wm.get(mapView);
-
 		} catch (NoSuchFieldException | SecurityException
 				| IllegalArgumentException | IllegalAccessException e) {
 			worldMap = null;
@@ -28,49 +27,32 @@ public class WorldMap {
 	public boolean setMap(byte[] mapOutput) {
 
 		byte dimension;
-
 		try {
-
 			Field dimensionField = worldMap.getClass().getDeclaredField("map");
-
 			dimensionField.setAccessible(true);
-
 			dimension = dimensionField.getByte(worldMap);
-
 			dimensionField.setByte(worldMap, (byte) 5);
-
 			Field colorsField = worldMap.getClass().getDeclaredField("colors");
-
 			colorsField.setAccessible(true);
-
 			colorsField.set(worldMap, mapOutput);
-
 		} catch (NoSuchFieldException | SecurityException
 				| IllegalArgumentException | IllegalAccessException e1) {
-
 			dimension = -5;
 			Bukkit.getLogger().warning(e1.getMessage());
 		}
-
 		return (dimension != -5);
 	}
 
 	public boolean delete() {
-
+		
 		try {
-
 			Field colorsField = worldMap.getClass().getDeclaredField("colors");
-
 			colorsField.setAccessible(true);
-
 			colorsField.set(worldMap, new byte[128 * 128]);
-
 		} catch (NoSuchFieldException | SecurityException
 				| IllegalArgumentException | IllegalAccessException e1) {
-
 			Bukkit.getLogger().warning(e1.getMessage());
 		}
-
 		return true;
 	}
 

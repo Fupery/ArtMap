@@ -19,13 +19,11 @@ public final class PlayerPaintEvent extends Event {
 
 	public PlayerPaintEvent(Player player, Action action, Block block,
 			ItemStack item) {
-
 		this.player = player;
 		this.action = action;
 		this.item = item;
 		this.block = block;
 		this.location = block.getLocation();
-
 	}
 
 	public HandlerList getHandlers() {

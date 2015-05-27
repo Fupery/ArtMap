@@ -14,20 +14,16 @@ public class Buffer extends AbstractMapArt implements Serializable {
 	private DyeColor[] map;
 
 	public Buffer() {
-
 		Canvas c = Artiste.canvas;
 		mapSize = c.getSize();
-
 		map = save();
 	}
 
 	public DyeColor[] getMap() {
-		
 		return map;
 	}
 
 	public void setMap(DyeColor[] map) {
-
 		this.map = map;
 	}
 

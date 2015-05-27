@@ -19,16 +19,11 @@ public class PrivateMap extends Artwork {
 		this.artist = ((Player) sender).getUniqueId();
 		this.title = title.toLowerCase();
 		this.mapSize = Artiste.canvas.getSize();
-
 		this.mapId = Bukkit
 				.createMap(Bukkit.getWorld(Artiste.canvas.worldname)).getId();
-
 		setMap(save());
-
 		Artiste.artList.put(title.toLowerCase(), this);
-
 		byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
-
 		new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 	}
 

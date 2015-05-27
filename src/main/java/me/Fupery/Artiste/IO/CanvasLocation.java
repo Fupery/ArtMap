@@ -26,7 +26,6 @@ public class CanvasLocation implements Serializable {
 		x = location.getBlockX();
 		y = location.getBlockY();
 		z = location.getBlockZ();
-
 		world = location.getWorld().getUID();
 	}
 
@@ -37,7 +36,6 @@ public class CanvasLocation implements Serializable {
 
 	public World getWorld() {
 		return Bukkit.getWorld(world);
-
 	}
 
 }

@@ -28,22 +28,21 @@ public class PlayerPaintListener implements Listener {
 		this.event = event;
 		c = Artiste.canvas;
 
-		if (!evalOwner())
+		if (!evalOwner()) {
 			return;
-
+		}
 		switch (event.getItem().getType()) {
 
 		case INK_SACK:
 
-			if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
-
+			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				draw();
+			}
 			return;
 
 		case WATER_BUCKET:
 
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-
 				splash();
 				Bukkit.getLogger().info("bucket");
 			}
@@ -55,62 +54,50 @@ public class PlayerPaintListener implements Listener {
 	}
 
 	private boolean evalOwner() {
-
 		Player p = event.getPlayer();
 		ArrayList<UUID> mem = c.getMembers();
-
-		if (p == c.getOwner())
+		if (p == c.getOwner()) {
 			return true;
-
-		for (UUID m : mem)
-			if (p == Bukkit.getPlayer(m))
+		}
+		for (UUID m : mem) {
+			if (p == Bukkit.getPlayer(m)) {
 				return true;
-
+			}
+		}
 		return false;
 	}
 
 	// Sets the right-clicked block to the color of the dye used
 	@SuppressWarnings("deprecation")
 	private void draw() {
-
 		Block b = event.getBlock();
 		ItemStack i = event.getItem();
-
 		if (b.getType() == Material.WOOL) {
-
 			if (b.getData() != (15 - i.getDurability()))
-
 				b.setData((byte) (15 - i.getDurability()));
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	private void splash() {
-
 		Block b = event.getBlock();
 		byte d = b.getData();
-
-		for (int f = 0; f < 7; f++)
-
+		for (int f = 0; f < 7; f++) {
 			new Splash(f, b, d).runTaskLater(Artiste.plugin, (5 * f));
-
+		}
 	}
 }
 
 class Splash extends BukkitRunnable {
-
 	int f, cx, cz;
 	Block b;
 	byte d;
 
 	Splash(int f, Block b, byte d) {
-
 		this.f = f;
 		this.d = d;
 		this.b = b;
-
 		Location l = b.getLocation();
-
 		cx = l.getBlockX();
 		cz = l.getBlockZ();
 	}
@@ -120,18 +107,18 @@ class Splash extends BukkitRunnable {
 	public void run() {
 
 		Location l = b.getLocation();
-
-		for (int x = 0; x <= cx + f; x++)
+		for (int x = 0; x <= cx + f; x++) {
 
 			for (int z = 0; z <= cz + f; z++) {
 
 				l.add(x, 0, z);
 
-				if (abs(x) + abs(z) <= f)
+				if (abs(x) + abs(z) <= f) {
 
 					l.getBlock().setData(d);
+				}
 			}
-
+		}
 	}
 
 	int abs(int i) {

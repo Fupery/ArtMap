@@ -10,7 +10,7 @@ public class AddMember extends CanvasCommand {
 	String player;
 
 	public void initialize() {
-
+		
 		usage = "<addMember|delMember> <playername>";
 		claimRequired = true;
 		minArgs = 2;
@@ -21,28 +21,23 @@ public class AddMember extends CanvasCommand {
 
 		Player p = s.getPlayer(player);
 
-		switch (args[0]) {
+		switch (args[0].toLowerCase()) {
 
 		case "addMember":
-
 			canvas.addMember(p);
 			success = String.format("%s%s has been added as an artist!",
 					ChatColor.AQUA + player, ChatColor.GOLD);
 			break;
 
 		case "deleteMember":
-
 			canvas.delMember(p);
-
 			success = String.format("%s%s has been removed.", ChatColor.AQUA
 					+ player, ChatColor.GOLD);
 			break;
 
 		default:
-
 			return false;
 		}
-
 		return true;
 	}
 
@@ -53,14 +48,14 @@ public class AddMember extends CanvasCommand {
 
 		Server s = sender.getServer();
 
-		if (canvas.getOwner().getName() == player)
+		if (canvas.getOwner().getName() == player) {
 
 			return "You have already claimed the canvas!";
-
-		if (!s.getOnlinePlayers().contains(player))
+		}
+		if (!s.getOnlinePlayers().contains(player)) {
 
 			error = "That player isn't online!";
-
+		}
 		return error;
 	}
 }

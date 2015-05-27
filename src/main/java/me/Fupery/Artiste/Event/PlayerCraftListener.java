@@ -17,11 +17,9 @@ public class PlayerCraftListener implements Listener {
 	public void onPlayerCraftEvent(CraftItemEvent event) {
 
 		ItemStack items[];
-
 		items = event.getInventory().getMatrix();
 
-		for (ItemStack i : items)
-
+		for (ItemStack i : items) {
 			if (i != null
 					&& i.getItemMeta() != null
 					&& i.getItemMeta().getLore() != null
@@ -36,5 +34,6 @@ public class PlayerCraftListener implements Listener {
 
 				return;
 			}
+		}
 	}
 }

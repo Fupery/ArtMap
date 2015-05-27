@@ -24,97 +24,72 @@ public class Load {
 
 		File dir = plugin.getDataFolder();
 		File artDir = new File(dir, "data");
-
-		if (!dir.exists())
-
+		
+		if (!dir.exists()) {
 			if (!dir.mkdir())
 				System.out.println("Error: Could not create plugin directory");
-
-		if (!artDir.exists())
-
+		}
+		if (!artDir.exists()) {
 			artDir.mkdir();
-
+		}
 		log.info("Loading Artiste.dat");
-
 		if (!load(new File(dir, "Artiste.dat"))) {
-
 			log.info("Artiste.dat not found ... creating new Artist registry");
 			Artiste.artistList = new HashMap<UUID, Artist>();
 			Artiste.artList = new HashMap<String, Artwork>();
-
 			setupDefault();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public static boolean load(File loadFile) {
-
 		ObjectInputStream in;
-
 		try {
 			if (loadFile.exists()) {
-
 				in = new ObjectInputStream(new GZIPInputStream(
 						new FileInputStream(loadFile)));
-
 				Artiste.canvas = (Canvas) in.readObject();
 				Artiste.artistList = (HashMap<UUID, Artist>) in.readObject();
 				Artiste.artList = (HashMap<String, Artwork>) in
 						.readObject();
-
 				in.close();
 				return true;
-
-			} else
+			} else {
 				return false;
-
+			}
 		} catch (Exception e) {
-
 			return false;
 		}
 	}
 
 	public static Template setupDefault() {
 
-		if (Artiste.canvas == null)
+		if (Artiste.canvas == null) {
 			return null;
-
+		}
 		File dir = Artiste.plugin.getDataFolder();
 		File artDir = new File(dir, "data");
-
 		Logger log = Bukkit.getLogger();
-
 		File defaultMap = new File(artDir, "default.dat");
-
-		if (defaultMap.exists())
+		if (defaultMap.exists()) {
 			return null;
-
+		}
 		InputStream in = new Load().getClass().getResourceAsStream(
 				"/resources/default.dat");
-
 		Object o;
-
 		try {
-
 			ObjectInputStream ob = new ObjectInputStream(
 					new GZIPInputStream(in));
-
 			o = ob.readObject();
 			ob.close();
-
 		} catch (IOException | ClassNotFoundException e) {
-
 			o = null;
 			e.printStackTrace();
 		}
 		DyeColor[] map = (DyeColor[]) o;
-
 		Template t = new Template("default", map);
-
 		Artiste.artList.put("default", t);
-
 		log.info(Artiste.artList.get("default").toString());
-
 		return t;
 	}
 }

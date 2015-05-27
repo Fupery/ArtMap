@@ -11,52 +11,44 @@ public class Help extends AbstractCommand {
 	public void initialize() {
 
 		maxArgs = 2;
-
 		usage = "help <page-number|admin>";
 		disablePrefix = true;
-
 	}
 
 	public boolean run() {
 
 		int p;
 		String page = null;
-
+		
 		if (args.length > 1) {
-
-			if (args[1].equalsIgnoreCase("admin"))
-
+			if (args[1].equalsIgnoreCase("admin")) {
 				p = 3;
-
-			else
+			} else {
 				try {
-
 					p = Integer.parseInt(args[1]);
-
 				} catch (Exception e) {
-
 					return false;
 				}
-		} else
+			}
+		} else {
 			p = 1;
+		}
 
 		sender.sendMessage(header(((Integer) p).toString()));
 
 		switch (p) {
 
 		case 1:
-
 			sender.sendMessage(page1);
-
 			page = "2";
 			break;
 
 		case 2:
 
 			sender.sendMessage(page2);
-			if (sender.hasPermission("artiste.admin"))
-
+			if (sender.hasPermission("artiste.admin")) {
 				page = "admin";
+			}
 			break;
 
 		case 3:
@@ -65,27 +57,27 @@ public class Help extends AbstractCommand {
 				error = Error.noPermission;
 				return false;
 			}
-
 			sender.sendMessage(page3);
 			break;
+
 		default:
 			return false;
 		}
-		if (page != null)
+		if (page != null) {
 
 			success = String.format(ChatColor.DARK_PURPLE
 					+ "/artmap help %s[%s]%s for more", ChatColor.LIGHT_PURPLE,
 					page, ChatColor.DARK_AQUA);
 
-		else
+		} else {
 			success = null;
-
+		}
 		return true;
 	}
 
 	public static final String[] page1 = new String[] {
-			helpFormat("claim", "Define the canvas"),
-			helpFormat("unclaim", "Remove the canvas"),
+			helpFormat("claim", "Claim the canvas"),
+			helpFormat("unclaim", "Unclaim the canvas & save your work"),
 			helpFormat("addmember <playername>", "Add a player"),
 			helpFormat("delmember <playername>", "Remove a player"),
 			helpFormat("reset [colour|list]", "Reset the canvas to a colour"),

@@ -25,7 +25,6 @@ public class List extends AbstractCommand {
 		maxArgs = 3;
 		maxLines = 7;
 		playerRequired = true;
-
 		usage = "list <private|public> [pg]";
 		returnList = new String[maxLines + 2];
 	}
@@ -33,29 +32,26 @@ public class List extends AbstractCommand {
 	@Override
 	public String conditions() {
 
-		if (Artiste.artList.isEmpty())
-
+		if (Artiste.artList.isEmpty()) {
 			error = String.format(Error.noArtwork, "");
-
+		}
 		for (int i = 1; i < args.length; i++) {
 
-			if (isNumber(args[i]))
-
+			if (isNumber(args[i])) {
 				pages = Integer.parseInt(args[i]);
 
-			else if (resolveType(args[i]) != null)
-
+			} else if (resolveType(args[i]) != null) {
 				type = resolveType(args[i]);
+			}
 		}
-		if (type == null)
-
+		if (type == null) {
 			type = validMapType.PRIVATE;
+		}
 
-		if (!sort() || list.size() < 1)
-
+		if (!sort() || list.size() < 1) {
 			error = String.format(Error.noArtwork, type.toString()
 					.toLowerCase());
-
+		}
 		return error;
 	}
 
@@ -63,76 +59,63 @@ public class List extends AbstractCommand {
 
 		int line;
 
-		if ((pages * maxLines) < list.size())
+		if ((pages * maxLines) < list.size()) {
 			line = pages * maxLines;
-		else {
+		} else {
 			line = 0;
 			pages = 0;
 		}
-
 		returnList[0] = header();
-
 		int i, k, l;
 		l = (Integer) (pages + 1);
 
 		for (i = line, k = 1; i < list.size() && i < (pages + maxLines); i++, k++) {
 
 			Artwork a = list.get(i);
-
 			String name = (a instanceof Template) ? "template" : artist
 					.getName();
-
 			String buys = (a instanceof PublicMap) ? ((PublicMap) a).getBuys()
 					+ " buys" : null;
-
 			returnList[k] = format(a.getTitle(), name, buys);
 
-			if (list.size() > (maxLines + line))
-
+			if (list.size() > (maxLines + line)) {
 				returnList[k + 1] = footer(l);
+			}
 		}
-		for (String s : returnList)
-
-			if (s != null)
-
+		for (String s : returnList) {
+			if (s != null) {
 				sender.sendMessage(s);
-
+			}
+		}
 		return true;
 	}
 
 	private boolean sort() {
 
-		if (Artiste.artList.size() == 0)
-
+		if (Artiste.artList.size() == 0) {
 			return false;
-
+		}
 		list = new ArrayList<Artwork>();
 
 		switch (type) {
 
 		case PRIVATE:
-
-			if (artist.getArtworks().size() == 0)
-
+			if (artist.getArtworks().size() == 0) {
 				return false;
-
-			for (String s : artist.getArtworks())
-
+			}
+			for (String s : artist.getArtworks()) {
 				list.add(Artiste.artList.get(s));
-
+			}
 			break;
 
 		default:
-
 			Set<String> keys = Artiste.artList.keySet();
 
 			for (String s : keys) {
-
 				Artwork a = Artiste.artList.get(s);
-
-				if (a.getType() == type)
-
+				if (a.getType() == type) {
 					list.add(a);
+				}
 			}
 			break;
 		}
@@ -141,14 +124,14 @@ public class List extends AbstractCommand {
 
 	private validMapType resolveType(String s) {
 
-		switch (s.toLowerCase()) {
-		case "private":
+		switch (validMapType.valueOf(s)) {
+		case PRIVATE:
 			return validMapType.PRIVATE;
-		case "public":
+		case PUBLIC:
 			return validMapType.PUBLIC;
-		case "template":
+		case TEMPLATE:
 			return validMapType.TEMPLATE;
-		case "queued":
+		case QUEUED:
 			return validMapType.QUEUED;
 		default:
 			return null;
@@ -157,21 +140,20 @@ public class List extends AbstractCommand {
 
 	private String header() {
 		String s;
-		if (type.name().equalsIgnoreCase("private"))
+		if (type.name().equalsIgnoreCase("private")) {
 			s = colourC + sender.getName() + "'s";
-		else
+		} else {
 			s = type.name().toLowerCase();
+		}
 		return colourA + String.format("Showing %s artworks", s + colourA);
 	}
 
 	private String footer(int l) {
-
 		return String.format(colourD + "/artmap list %s %s[%s]%s for more",
 				type.toString().toLowerCase(), colourE, l, colourB);
 	}
 
 	private String format(String title, String name, String buys) {
-
 		String s = String.format("%s•  %s%s %sby %s%s ", colourA,
 				evalColour(title), title, colourA, colourB, name);
 
@@ -179,13 +161,12 @@ public class List extends AbstractCommand {
 	}
 
 	private boolean isNumber(String s) {
-
-		for (Character c : s.toCharArray())
-
-			if (!Character.isDigit(c))
-
+		
+		for (Character c : s.toCharArray()) {
+			if (!Character.isDigit(c)) {
 				return false;
-
+			}
+		}
 		return true;
 	}
 }

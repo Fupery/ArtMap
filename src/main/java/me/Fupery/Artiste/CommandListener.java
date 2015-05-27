@@ -7,7 +7,6 @@ import me.Fupery.Artiste.Command.CanvasCommands.*;
 import me.Fupery.Artiste.Command.MapArtCommands.*;
 import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
-import me.Fupery.test.Test;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,9 +24,7 @@ public class CommandListener implements CommandExecutor {
 
 		this.sender = sender;
 		this.args = args;
-
 		if (args.length == 0) {
-
 			sender.sendMessage(Error.usage);
 			return true;
 		}
@@ -75,21 +72,14 @@ public class CommandListener implements CommandExecutor {
 		
 		case "list"      : add(new List()); break;
 		
-		case "test"      : add(new Test()); break;
-		
 		default : sender.sendMessage(ChatColor.RED + "/artmap help for more commands");
 		}
-
 		return true;
 	}
 
 	public void add(AbstractCommand command) {
-
 		command.pass(this.sender, this.args);
-		
 		command.initialize();
-
 		command.check();
-
 	}
 }

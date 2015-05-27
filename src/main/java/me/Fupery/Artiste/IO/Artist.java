@@ -26,7 +26,6 @@ public class Artist implements Serializable {
 	private boolean banned;
 
 	public Artist(UUID uuid) {
-
 		if (!Artiste.artistList.containsKey(uuid)) {
 			this.artistID = uuid;
 		}
@@ -37,18 +36,16 @@ public class Artist implements Serializable {
 
 		Player p = Bukkit.getPlayer(artistID);
 		int i = 0;
-
-		if (p.hasPermission("artiste.playerTier1"))
+		if (p.hasPermission("artiste.playerTier1")) {
 			i = Artiste.config.getInt("maxMaps.playerTier1");
-
-		if (p.hasPermission("artiste.playerTier2"))
+		}
+		if (p.hasPermission("artiste.playerTier2")) {
 			i = Artiste.config.getInt("maxMaps.playerTier2");
-
-		if (p.hasPermission("artiste.admin"))
+		}
+		if (p.hasPermission("artiste.admin")) {
 			i = Artiste.config.getInt("maxMaps.admin");
-
+		}
 		return i;
-
 	}
 
 	public String getName() {
@@ -62,31 +59,25 @@ public class Artist implements Serializable {
 	public boolean addArtwork(String title) {
 
 		int priv = 0;
-
 		for (String s : artworks) {
-
 			Artwork a = Artiste.artList.get(s);
-
-			if (a != null && a instanceof PrivateMap)
-
+			if (a != null && a instanceof PrivateMap) {
 				priv++;
+			}
 		}
 
-		if (priv >= maxArt())
-
+		if (priv >= maxArt()) {
 			return false;
-
+		}
 		artworks.add(title);
-
 		return true;
 	}
 
 	public boolean delArtwork(String title) {
-
-		if (!artworks.remove(title))
-
+		
+		if (!artworks.remove(title)) {
 			return false;
-
+		}
 		return true;
 	}
 
@@ -101,9 +92,7 @@ public class Artist implements Serializable {
 	public Buffer getBuffer() {
 
 		try {
-
 			return (Buffer) ArtIO.loadBuffer(this);
-
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 			return null;
@@ -113,11 +102,8 @@ public class Artist implements Serializable {
 	public void setBuffer(Buffer b) {
 
 		try {
-
 			ArtIO.saveBuffer(b, this);
-
 		} catch (IOException e) {
-
 			e.printStackTrace();
 		}
 	}

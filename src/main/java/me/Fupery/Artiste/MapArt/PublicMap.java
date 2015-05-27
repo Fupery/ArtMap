@@ -12,7 +12,6 @@ public class PublicMap extends Artwork{
 	private int buys;
 
 	public PublicMap(CommandSender sender, PrivateMap pm) {
-			
 			mapSize = pm.getMapSize();
 			artist = pm.getArtist();
 			mapId = pm.getMapId();
@@ -20,14 +19,11 @@ public class PublicMap extends Artwork{
 			buys = 0;
 			sender.sendMessage(ChatColor.GOLD + "Successfully published " + ChatColor.AQUA +
 			title + ChatColor.GOLD + " as a public artwork");
-				
 			Artiste.artList.put(title.toLowerCase(), this);
 	}
-
 	public int getBuys() {
 		return buys;
 	}
-
 	public void incrementBuys() {
 		buys ++;
 	}

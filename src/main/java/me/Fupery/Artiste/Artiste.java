@@ -43,81 +43,66 @@ public final class Artiste extends JavaPlugin {
 	public void onEnable() {
 
 		plugin = this;
-
 		PluginManager pluginManager = getServer().getPluginManager();
-
 		this.getCommand("artmap").setExecutor(new CommandListener());
-
+		
 		pluginManager.registerEvents((new PlayerInteractListener()), this);
 		pluginManager.registerEvents((new PlayerPaintListener()), this);
 		pluginManager.registerEvents(new PlayerLogoutListener(), this);
 		pluginManager.registerEvents(new PlayerCraftListener(), this);
 
 		setupRegistry(this, getLogger());
-
 		this.saveDefaultConfig();
-
 		config = getConfig();
 
 		if (!setupEconomy()) {
-
 			getLogger().info(Error.noEcon);
 			economyOn = false;
-
-		} else
+		} else {
 			economyOn = true;
+		}
 	}
 
 	@Override
 	public void onDisable() {
 
-		if (Artiste.claimTimer != null)
-
+		if (Artiste.claimTimer != null) {
 			Artiste.claimTimer.cancel();
-
-		if (canvas != null && canvas.getOwner() != null)
-
+		}
+		if (canvas != null && canvas.getOwner() != null) {
 			canvas.clear(canvas.getOwner());
-
+		}
 		save(new File(getDataFolder(), "Artiste.dat"));
-
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 
 	private boolean setupEconomy() {
 
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
-
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer()
 				.getServicesManager().getRegistration(Economy.class);
-
 		if (rsp == null) {
-
 			return false;
 		}
 		econ = rsp.getProvider();
-
 		return econ != null;
 	}
 
 	public static void save(File saveFile) {
 
 		try {
-			if (!saveFile.exists())
+			if (!saveFile.exists()) {
 				saveFile.createNewFile();
-
+			}
 			ObjectOutputStream out = new ObjectOutputStream(
 					new GZIPOutputStream(new FileOutputStream(saveFile)));
-
 			out.writeObject((Object) Artiste.canvas);
 			out.writeObject((Object) Artiste.artistList);
 			out.writeObject((Object) Artiste.artList);
-
 			out.flush();
 			out.close();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

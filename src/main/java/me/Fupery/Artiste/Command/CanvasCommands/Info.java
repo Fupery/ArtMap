@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 public class Info extends CanvasCommand {
 
 	public void initialize() {
-
 		usage = "info";
 	}
 
@@ -17,7 +16,6 @@ public class Info extends CanvasCommand {
 		if (sender.hasPermission("artiste.admin")) {
 
 			sender.sendMessage(new String[] {
-
 					ChatColor.GOLD + "Canvas Pos1: " + ChatColor.DARK_AQUA
 							+ canvas.getPos1().toString(),
 
@@ -29,25 +27,19 @@ public class Info extends CanvasCommand {
 
 			sender.sendMessage(ChatColor.GOLD + "Claimed by: "
 					+ ChatColor.DARK_AQUA + canvas.getOwner().getName());
-
 			String members = ChatColor.GOLD + "Members: ";
 
-			if (!canvas.getMembers().isEmpty())
-
+			if (!canvas.getMembers().isEmpty()) {
 				for (UUID p : canvas.getMembers()) {
-
 					members += (ChatColor.GRAY + Bukkit.getPlayer(p).getName()
 							+ ChatColor.GOLD + ", ");
-
 				}
-
+			}
 			sender.sendMessage(members);
-
-		} else
-
+		} else {
 			sender.sendMessage(ChatColor.GOLD
 					+ "The canvas is not currently claimed!");
-
+		}
 		return true;
 	}
 

@@ -40,7 +40,6 @@ public class Canvas implements Serializable {
 		cooloff = false;
 		setPos1(position1);
 		setPos2(position2);
-
 		worldname = position1.getWorld().getName();
 	}
 
@@ -125,23 +124,19 @@ public class Canvas implements Serializable {
 	public void startCoolOff() {
 
 		int delay = Artiste.plugin.getConfig().getInt("coolOffTime");
-
 		if (delay > 0) {
-
 			ResetTimer t = new ResetTimer();
-
 			t.runTaskLater(Artiste.plugin, delay * 60 * 20);
-
 			cooloff = true;
-		} else
+		} else {
 			cooloff = false;
+		}
 	}
 
 	class ResetTimer extends BukkitRunnable {
 
 		@Override
 		public void run() {
-
 			Artiste.canvas.cooloff = false;
 		}
 	}

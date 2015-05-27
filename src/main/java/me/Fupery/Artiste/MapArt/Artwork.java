@@ -27,46 +27,34 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 	public void delete(CommandSender sender) {
 
 		new WorldMap(Bukkit.getMap(mapId)).delete();
-
 		Artiste.artList.remove(title);
-
 		ArtIO.deleteMap(title);
 	}
 
 	public void buy(CommandSender sender) {
 
 		Player player = (Player) sender;
-
 		ItemStack i = new ItemStack(Material.MAP, 1, mapId);
-
 		ItemMeta im = i.getItemMeta();
-
 		im.setDisplayName(String.format("'%s'", title));
-
 		im.setLore(Arrays.asList(ChatColor.GOLD + "by " + ChatColor.YELLOW
 				+ player.getName()));
-
 		i.setItemMeta(im);
-
 		player.getInventory().addItem(i);
-
-		if (this instanceof PublicMap)
-
+		
+		if (this instanceof PublicMap) {
 			((PublicMap) this).incrementBuys();
+		}
 	}
 
 	public DyeColor[] getMap() {
 
 		DyeColor[] d;
-
 		try {
 			d = ArtIO.loadMap(title);
-
 		} catch (ClassNotFoundException | IOException e) {
-
 			d = null;
 		}
-
 		return d;
 	}
 
@@ -74,11 +62,8 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 		try {
 			ArtIO.saveMap(map, title);
-
 			return true;
-
 		} catch (IOException e) {
-
 			return false;
 		}
 	}

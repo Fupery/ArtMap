@@ -24,39 +24,29 @@ public class Claim extends CanvasCommand {
 	public boolean run() {
 
 		int claimTime = Artiste.config.getInt("claimTime");
-
 		Player player = (Player) sender;
-
 		canvas.setOwner(player);
 		Buffer m = artist.getBuffer();
 
 		if (m != null) {
-
 			m.edit(m.getMap());
 		}
 		if (claimTime > 0) {
-
 			success = ChatColor.GOLD + "Canvas claimed for " + ChatColor.YELLOW
 					+ claimTime + ChatColor.GOLD + " minutes!";
-
 			int ticks = claimTime * 60 * 20;
-
 			TimerA timer = new TimerA(sender);
 			Artiste.claimTimer = timer;
 			timer.runTaskLater(Artiste.plugin, ticks);
 
 			if (claimTime > 5) {
-
 				int warning = ticks - (5 * 60 * 20);
-
 				((TimerA) Artiste.claimTimer).setNotify(new TimerB()
 						.runTaskLater(Artiste.plugin, warning));
-
 			}
-
-		} else
+		} else {
 			success = ChatColor.GOLD + "Canvas claimed!";
-
+		}
 		return true;
 	}
 
@@ -66,18 +56,15 @@ public class Claim extends CanvasCommand {
 		Player p = canvas.getOwner();
 
 		if (p == (Player) sender) {
-
 			error = "You have already claimed the canvas!";
 		}
-		if (p != (Player) sender && p != null)
-
+		if (p != (Player) sender && p != null) {
 			error = "Someone else is using the canvas!";
-
+		}
 		if (sender instanceof Player
-				&& !((Player) sender).hasPermission("artiste.playerTier1"))
-
+				&& !((Player) sender).hasPermission("artiste.playerTier1")) {
 			error = Error.noPermission;
-
+		}
 		return error;
 	}
 
@@ -92,20 +79,16 @@ public class Claim extends CanvasCommand {
 
 		@Override
 		public void run() {
-
 			sender.sendMessage(ChatColor.AQUA + "[ArtMap]" + ChatColor.GOLD
 					+ "Your time using the canvas is up!");
-
 			Unclaim.unclaim();
 		}
 
 		@Override
 		public void cancel() {
-
 			notify.cancel();
 			super.cancel();
 		}
-
 		public void setNotify(BukkitTask bukkitTask) {
 			this.notify = bukkitTask;
 		}
@@ -115,7 +98,6 @@ public class Claim extends CanvasCommand {
 
 		@Override
 		public void run() {
-
 			sender.sendMessage(ChatColor.AQUA + "[ArtMap] " + ChatColor.GOLD
 					+ "5 Minutes remaining with the canvas!");
 		}

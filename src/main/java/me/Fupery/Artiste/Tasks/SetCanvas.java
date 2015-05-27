@@ -48,35 +48,25 @@ public class SetCanvas extends BukkitRunnable {
 
 		Canvas c = Artiste.canvas;
 		update = new ArrayList<Chunk>();
-
 		if (c != null && this.mapSize == c.getSize()) {
-
 			Location l = c.getPos1().clone();
-
 			int i = 0;
 
 			for (int x = c.getPos1().getBlockX(); x <= c.getPos2().getBlockX(); x++, i++) {
-
 				for (int z = c.getPos1().getBlockZ(); z <= c.getPos2()
 						.getBlockZ(); z++, i++) {
 
 					l.setX(x);
 					l.setZ(z);
-
 					Block b = l.getBlock();
 					DyeColor d;
-
 					d = (map != null && map[i] != null) ? map[i] : base;
-
 					if (b.getType() != Material.WOOL) {
-
 						setBlock(b, d.getData());
-
 						Chunk ch = b.getChunk();
-
-						if (!update.contains(ch))
-
+						if (!update.contains(ch)) {
 							update.add(ch);
+						}
 					}
 					if (b.getData() != d.getData())
 
@@ -85,7 +75,6 @@ public class SetCanvas extends BukkitRunnable {
 			}
 		}
 		if (!update.isEmpty()) {
-
 			updatePlayers();
 		}
 	}
@@ -93,21 +82,18 @@ public class SetCanvas extends BukkitRunnable {
 	public void updatePlayers() {
 
 		int r = Bukkit.getServer().getViewDistance() + 4;
-
 		players = new HashMap<Player, Location>();
-
-		for (Player p : Bukkit.getServer().getOnlinePlayers())
-
+		
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			players.put(p, p.getLocation());
+		}
 
-		if (players.size() == 0)
+		if (players.size() == 0) {
 			return;
-
+		}
 		for (Chunk c : update) {
-
 			int cx = c.getX();
 			int cz = c.getZ();
-
 			for (Player p : players.keySet()) {
 				int px, pz, pr, i, iab;
 
@@ -116,11 +102,10 @@ public class SetCanvas extends BukkitRunnable {
 
 				i = ((px - cx) ^ 2) + ((pz - cz) ^ 2);
 				iab = (i < 0) ? -i : i;
-
 				pr = ((int) (Math.floor(Math.sqrt(iab))));
-
-				if (pr <= r)
+				if (pr <= r) {
 					queueChunk(p, cx, cz);
+				}
 			}
 		}
 	}

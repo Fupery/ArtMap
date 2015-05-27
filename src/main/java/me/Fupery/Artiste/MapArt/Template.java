@@ -18,50 +18,32 @@ public class Template extends Artwork {
 		boolean d = title.equalsIgnoreCase("default");
 
 		if (Artiste.canvas != null) {
-
 			this.mapSize = (d) ? 64 : Artiste.canvas.getSize();
-
 			this.title = title;
-
 			mapId = Bukkit.getServer()
 					.createMap(Bukkit.getWorld(Artiste.canvas.worldname))
 					.getId();
-
 			setMap(map);
-
 			Artiste.artList.put(title, this);
-
 			byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
-
 			new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public Template(String title) {
-
+		
 		if (Artiste.canvas != null) {
-
 			this.mapSize = Artiste.canvas.getSize();
-			
 			World w = Bukkit.getWorld(Artiste.canvas.worldname);
-
 			this.title = title;
-			
 			this.artist = w.getUID();
-
-			mapId = Bukkit.getServer()
-					.createMap(w)
-					.getId();
-
-			if (getMap() == null)
-
+			mapId = Bukkit.getServer().createMap(w).getId();
+			if (getMap() == null) {
 				setMap(save());
-
+			}
 			Artiste.artList.put(title, this);
-
 			byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
-
 			new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 		}
 	}

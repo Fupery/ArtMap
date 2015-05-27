@@ -19,31 +19,25 @@ public class ColourConvert {
 	}
 
 	public byte[] byteConvert(DyeColor[] input, int mapSize) {
-
+		
 		byte[] mapOutput = new byte[128 * 128];
-
 		if (mapSize == 0) {
 			mapSize = Artiste.config.getInt("mapSize");
 			log.info("no mapSize found!");
 		}
-
 		int i = 0;
 		int f = 128 / mapSize;
-
+		
 		for (int x = 0; x < 128; x += f, i++) {
-
 			for (int z = 0; z < 128; z += f, i++) {
 
 				DyeColor d = input[i];
-
 				byte col = colourConvert(d);
-
+				
 				for (int ix = x; ix < (x + f); ix++) {
-
 					for (int iz = z; iz < (z + f); iz++) {
 
 						mapOutput[ix + iz * 128] = col;
-
 					}
 				}
 			}
@@ -54,25 +48,19 @@ public class ColourConvert {
 	public DyeColor[] dyeConvert(byte[] input, int mapSize) {
 
 		DyeColor[] mapOutput = new DyeColor[(mapSize * mapSize) + mapSize - 1];
-
 		if (mapSize == 0) {
 			mapSize = Artiste.config.getInt("mapSize");
 			log.info("no mapSize found!");
 		}
-
 		int i = 0;
 		int f = 128 / mapSize;
 
 		for (int x = 0; x < mapSize; x++, i += (f ^ 2)) {
-
 			for (int z = 0; z < mapSize; z++, i += (f ^ 2)) {
 
 				byte c = input[i];
-
 				DyeColor col = colourRevert(c);
-
 				mapOutput[x + z * mapSize] = col;
-
 			}
 		}
 		return mapOutput;

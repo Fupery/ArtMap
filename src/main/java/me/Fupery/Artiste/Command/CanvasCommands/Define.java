@@ -37,9 +37,9 @@ public class Define extends CanvasCommand {
 	@Override
 	public String conditions() {
 
-		if (Artiste.canvas != null)
+		if (Artiste.canvas != null) {
 			return error = Error.alreadyDef;
-
+		}
 		double pos1, pos2, pos3;
 
 		try {
@@ -48,37 +48,29 @@ public class Define extends CanvasCommand {
 			pos3 = Double.parseDouble(args[3]);
 
 		} catch (NumberFormatException e) {
-
 			return error = Error.define;
 		}
-
-		// Canvas.defineCanvas(sender, p1, p2, p3);
 		p1 = pos1;
 		p2 = pos2;
 		p3 = pos3;
 
-		if (!evalSize(size))
+		if (!evalSize(size)) {
 			error = "Invalid map size set in config!";
-
+		}
 		int mapSize = (size - 1);
-
 		Player player = (Player) sender;
-
 		World w = player.getWorld();
-
 		WorldBorder wb = w.getWorldBorder();
-
 		canvasPos = new Location(w, p1, p2, p3);
 
-		if (wb != null)
-
+		if (wb != null) {
 			if ((wb.getSize() - (canvasPos.getBlockX() + size)) <= 0
-					|| (wb.getSize() - (canvasPos.getBlockZ() + size) <= 0))
+					|| (wb.getSize() - (canvasPos.getBlockZ() + size) <= 0)) {
 
 				error = "Canvas obstructed by World Border";
-
+			}
+		}
 		endPos = new Location(w, p1 + mapSize, p2, p3 + mapSize);
-
 		Location l = canvasPos.clone();
 
 		for (; l.getBlockX() <= (endPos.getBlockX()); l.add(1, 0, 0)) {
@@ -92,10 +84,8 @@ public class Define extends CanvasCommand {
 					Material m = w.getHighestBlockAt(l).getType();
 
 					if (m != Material.WOOL && m != Material.WATER) {
-
 						Integer x = l.getBlockX(), y = l.getBlockY(), z = l
 								.getBlockZ();
-
 						error = String.format(
 								"Canvas obstructed at %s, %s, %s", x, y, z);
 					}
@@ -106,9 +96,7 @@ public class Define extends CanvasCommand {
 	}
 
 	public boolean run() {
-
 		Artiste.canvas = new Canvas(canvasPos, endPos, size);
-
 		return true;
 	}
 

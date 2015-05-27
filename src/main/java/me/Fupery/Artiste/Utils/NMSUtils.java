@@ -22,17 +22,11 @@ public class NMSUtils {
 	public static void setBlock(Block b, byte data) {
 
 		int typeId = Material.WOOL.getId();
-
 		Chunk c = b.getChunk();
-
 		net.minecraft.server.v1_8_R2.Chunk chunk = ((CraftChunk) c).getHandle();
-
 		BlockPosition bp = new BlockPosition(b.getX(), b.getY(), b.getZ());
-
 		int i = typeId + (data << 12);
-
 		IBlockData ibd = net.minecraft.server.v1_8_R2.Block.getByCombinedId(i);
-
 		chunk.a(bp, ibd);
 	}
 

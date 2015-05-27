@@ -15,9 +15,7 @@ public class Reset extends CanvasCommand {
 
 		coolOffRequired = (!sender.hasPermission("artiste.admin") && Artiste.plugin
 				.getConfig().getInt("coolOffTime") > 0);
-
 		claimRequired = !sender.hasPermission("artiste.admin");
-
 		usage = "reset <colour|list>";
 		maxArgs = 2;
 
@@ -34,25 +32,22 @@ public class Reset extends CanvasCommand {
 	public String conditions() {
 
 		if (args.length > 1) {
-
 			for (DyeColor c : DyeColor.values()) {
 				if (args[1].equalsIgnoreCase(c.toString())) {
-
 					colour = c;
 					break;
 				}
 			}
-		} else
+		} else {
 			colour = DyeColor.WHITE;
-
+		}
 		if (colour != null) {
-
 			success = ChatColor.GOLD + "Resetting Canvas to " + ChatColor.AQUA
 					+ colour.toString() + ChatColor.GOLD + " wool";
 			return null;
-
-		} else
+		} else {
 			error = Error.colours;
+		}
 		return error;
 	}
 }

@@ -17,7 +17,7 @@ public class PlayerInteractListener implements Listener {
 
 		if (Artiste.canvas != null && checkPos(event)
 				&& event.getItem() != null
-				&& event.getClickedBlock().getType() == Material.WOOL)
+				&& event.getClickedBlock().getType() == Material.WOOL) {
 
 			Bukkit.getServer()
 					.getPluginManager()
@@ -25,6 +25,7 @@ public class PlayerInteractListener implements Listener {
 							new PlayerPaintEvent(event.getPlayer(), event
 									.getAction(), event.getClickedBlock(),
 									event.getItem()));
+		}
 
 	}
 }
