@@ -21,15 +21,15 @@ public class AddMember extends CanvasCommand {
 
 		Player p = s.getPlayer(player);
 
-		switch (args[0].toLowerCase()) {
+		switch (commandType) {
 
-		case "addMember":
+		case ADDMEMBER:
 			canvas.addMember(p);
 			success = String.format("%s%s has been added as an artist!",
 					ChatColor.AQUA + player, ChatColor.GOLD);
 			break;
 
-		case "deleteMember":
+		case DELMEMBER:
 			canvas.delMember(p);
 			success = String.format("%s%s has been removed.", ChatColor.AQUA
 					+ player, ChatColor.GOLD);

@@ -38,6 +38,7 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	protected int minArgs = 1, maxArgs = 1;
 	protected String[] args;
 	protected CommandSender sender;
+	protected CommandType commandType;
 
 	protected AbstractCommand() {
 		this.canvas = Artiste.canvas;
@@ -157,8 +158,9 @@ public abstract class AbstractCommand implements ArtisteCommand {
 		return "/artmap " + msg;
 	}
 
-	public void pass(CommandSender sender, String[] args) {
+	public void pass(CommandSender sender, String[] args, CommandType type) {
 		this.sender = sender;
 		this.args = args;
+		this.commandType = type;
 	}
 }

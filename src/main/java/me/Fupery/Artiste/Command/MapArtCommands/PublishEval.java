@@ -58,11 +58,11 @@ public class PublishEval extends MapArtCommand {
 	}
 
 	private boolean getCmd() {
-		switch (args[0].toLowerCase()) {
-		case "approve":
+		switch (commandType) {
+		case APPROVE:
 			approve = true;
 			break;
-		case "deny":
+		case DENY:
 			approve = false;
 			break;
 		default:

@@ -23,9 +23,9 @@ public class Ban extends AbstractCommand {
 
 	public boolean run() {
 
-		switch (args[0].toLowerCase()) {
+		switch (commandType) {
 
-		case "ban":
+		case BAN:
 			success = ChatColor.GOLD
 					+ String.format(
 							"%s has been banned from creating artworks",
@@ -33,7 +33,7 @@ public class Ban extends AbstractCommand {
 			artist.setBanned(true);
 			return true;
 
-		case "unban":
+		case UNBAN:
 			success = ChatColor.GOLD
 					+ String.format("%s has been given artwork privileges",
 							args[1]);
