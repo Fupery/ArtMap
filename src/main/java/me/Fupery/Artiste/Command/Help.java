@@ -1,8 +1,9 @@
 package me.Fupery.Artiste.Command;
 
 import org.bukkit.ChatColor;
-import static me.Fupery.Artiste.Utils.Formatting.*;
 
+import static me.Fupery.Artiste.Utils.Formatting.*;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
 
@@ -19,7 +20,7 @@ public class Help extends AbstractCommand {
 
 		int p;
 		String page = null;
-		
+
 		if (args.length > 1) {
 			if (args[1].equalsIgnoreCase("admin")) {
 				p = 3;
@@ -72,8 +73,17 @@ public class Help extends AbstractCommand {
 		} else {
 			success = null;
 		}
+		if (Artiste.canvas == null && sender.hasPermission("artiste.admin")) {
+			sender.sendMessage(startup);
+		}
 		return true;
 	}
+
+	public static final String[] startup = new String[] {
+			ChatColor.GOLD
+					+ "Use /artmap define <x><y><z> to generate a new canvas",
+			ChatColor.YELLOW
+					+ "The location you provide will define the NW corner of the canvas" };
 
 	public static final String[] page1 = new String[] {
 			helpFormat("claim", "Claim the canvas"),

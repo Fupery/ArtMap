@@ -5,6 +5,7 @@ import me.Fupery.Artiste.MapArt.Buffer;
 import me.Fupery.Artiste.Command.Utils.Error;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -81,6 +82,8 @@ public class Claim extends CanvasCommand {
 		public void run() {
 			sender.sendMessage(ChatColor.AQUA + "[ArtMap]" + ChatColor.GOLD
 					+ "Your time using the canvas is up!");
+			Player p = (Player) sender;
+			p.getWorld().playSound(p.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			Unclaim.unclaim();
 		}
 
@@ -89,6 +92,7 @@ public class Claim extends CanvasCommand {
 			notify.cancel();
 			super.cancel();
 		}
+
 		public void setNotify(BukkitTask bukkitTask) {
 			this.notify = bukkitTask;
 		}
@@ -100,6 +104,8 @@ public class Claim extends CanvasCommand {
 		public void run() {
 			sender.sendMessage(ChatColor.AQUA + "[ArtMap] " + ChatColor.GOLD
 					+ "5 Minutes remaining with the canvas!");
+			Player p = (Player) sender;
+			p.getWorld().playSound(p.getLocation(), Sound.ORB_PICKUP, 1, 1);
 		}
 	}
 }
