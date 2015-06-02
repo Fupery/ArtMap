@@ -1,4 +1,5 @@
 # Artiste
+*Currently only supports Spigot 1.8.3*
 Create & share pixel art
           ~
 Artiste allows players to 'paint' on an interactive canvas of wool blocks, and share their work with other players - all in-game.
