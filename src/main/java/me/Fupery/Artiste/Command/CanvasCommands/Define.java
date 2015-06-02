@@ -1,6 +1,7 @@
 package me.Fupery.Artiste.Command.CanvasCommands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.Command.Utils.Error;
+import me.Fupery.Artiste.Tasks.SetCanvas;
 import me.Fupery.Artiste.Artiste;
 
 public class Define extends CanvasCommand {
@@ -97,6 +99,7 @@ public class Define extends CanvasCommand {
 
 	public boolean run() {
 		Artiste.canvas = new Canvas(canvasPos, endPos, size);
+		new SetCanvas(DyeColor.WHITE).runTask(Artiste.plugin);
 		return true;
 	}
 
