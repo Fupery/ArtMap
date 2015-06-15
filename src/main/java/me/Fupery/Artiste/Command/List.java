@@ -3,6 +3,8 @@ package me.Fupery.Artiste.Command;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
@@ -72,8 +74,8 @@ public class List extends AbstractCommand {
 		for (i = line, k = 1; i < list.size() && i < (pages + maxLines); i++, k++) {
 
 			Artwork a = list.get(i);
-			String name = (a instanceof Template) ? "template" : artist
-					.getName();
+			String name = (a instanceof Template) ? "template" : Bukkit
+					.getOfflinePlayer(a.getArtist()).getName();
 			String buys = (a instanceof PublicMap) ? ((PublicMap) a).getBuys()
 					+ " buys" : null;
 			returnList[k] = format(a.getTitle(), name, buys);
@@ -124,18 +126,12 @@ public class List extends AbstractCommand {
 
 	private validMapType resolveType(String s) {
 
-		switch (validMapType.valueOf(s)) {
-		case PRIVATE:
-			return validMapType.PRIVATE;
-		case PUBLIC:
-			return validMapType.PUBLIC;
-		case TEMPLATE:
-			return validMapType.TEMPLATE;
-		case QUEUED:
-			return validMapType.QUEUED;
-		default:
-			return null;
+		validMapType type = null;
+		for (validMapType t : validMapType.values()) {
+			if (s.toUpperCase().equals(t.name()))
+				type = t;
 		}
+		return type;
 	}
 
 	private String header() {
@@ -148,11 +144,6 @@ public class List extends AbstractCommand {
 		return colourA + String.format("Showing %s artworks", s + colourA);
 	}
 
-	private String footer(int l) {
-		return String.format(colourD + "/artmap list %s %s[%s]%s for more",
-				type.toString().toLowerCase(), colourE, l, colourB);
-	}
-
 	private String format(String title, String name, String buys) {
 		String s = String.format("%s•  %s%s %sby %s%s ", colourA,
 				evalColour(title), title, colourA, colourB, name);
@@ -160,8 +151,13 @@ public class List extends AbstractCommand {
 		return (buys == null) ? s : s + colourD + buys;
 	}
 
+	private String footer(int l) {
+		return String.format(colourD + "/artmap list %s %s[%s]%s for more",
+				type.toString().toLowerCase(), colourE, l, colourB);
+	}
+
 	private boolean isNumber(String s) {
-		
+
 		for (Character c : s.toCharArray()) {
 			if (!Character.isDigit(c)) {
 				return false;

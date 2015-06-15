@@ -6,11 +6,9 @@ import org.bukkit.entity.Player;
 
 public class AddMember extends CanvasCommand {
 
-	Server s;
-	String player;
+	private Player player;
 
 	public void initialize() {
-		
 		usage = "<addMember|delMember> <playername>";
 		claimRequired = true;
 		minArgs = 2;
@@ -19,20 +17,18 @@ public class AddMember extends CanvasCommand {
 
 	public boolean run() {
 
-		Player p = s.getPlayer(player);
-
 		switch (commandType) {
 
 		case ADDMEMBER:
-			canvas.addMember(p);
+			canvas.addMember(player);
 			success = String.format("%s%s has been added as an artist!",
-					ChatColor.AQUA + player, ChatColor.GOLD);
+					ChatColor.AQUA + player.getName(), ChatColor.GOLD);
 			break;
 
 		case DELMEMBER:
-			canvas.delMember(p);
+			canvas.delMember(player);
 			success = String.format("%s%s has been removed.", ChatColor.AQUA
-					+ player, ChatColor.GOLD);
+					+ player.getName(), ChatColor.GOLD);
 			break;
 
 		default:
@@ -44,11 +40,11 @@ public class AddMember extends CanvasCommand {
 	@Override
 	public String conditions() {
 
-		String player = args[1];
-
 		Server s = sender.getServer();
 
-		if (canvas.getOwner().getName() == player) {
+		player = s.getPlayer(args[1]);
+
+		if (canvas.getOwner() == player) {
 
 			return "You have already claimed the canvas!";
 		}

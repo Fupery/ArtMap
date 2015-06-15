@@ -43,7 +43,7 @@ public class Canvas implements Serializable {
 		worldname = position1.getWorld().getName();
 	}
 
-	public void removeCanvas(CommandSender sender) {
+	public void removeCanvas() {
 
 		owner = null;
 		member.clear();

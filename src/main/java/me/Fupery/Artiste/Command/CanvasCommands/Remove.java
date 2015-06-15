@@ -11,7 +11,7 @@ public class Remove extends CanvasCommand {
 	}
 
 	public boolean run() {
-		canvas.removeCanvas(sender);
+		canvas.removeCanvas();
 		return true;
 	}
 }

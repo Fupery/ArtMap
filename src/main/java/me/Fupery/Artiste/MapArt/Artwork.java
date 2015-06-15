@@ -38,7 +38,7 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 		ItemMeta im = i.getItemMeta();
 		im.setDisplayName(String.format("'%s'", title));
 		im.setLore(Arrays.asList(ChatColor.GOLD + "by " + ChatColor.YELLOW
-				+ player.getName()));
+				+ Bukkit.getOfflinePlayer(artist).getName()));
 		i.setItemMeta(im);
 		player.getInventory().addItem(i);
 		
