@@ -1,5 +1,7 @@
 package me.Fupery.Artiste.Command.MapArtCommands;
 
+import org.bukkit.ChatColor;
+
 import me.Fupery.Artiste.MapArt.PrivateMap;
 import me.Fupery.Artiste.Command.Utils.Error;
 import me.Fupery.Artiste.MapArt.PublicMap;
@@ -21,14 +23,16 @@ public class PublishEval extends MapArtCommand {
 
 		PrivateMap map = (PrivateMap) art;
 
-		if (approve && !map.isDenied())
-
-			new PublicMap(sender, map);
-
-		else
-
+		if (approve && !map.isDenied()) {
+			new PublicMap(map);
+			success = ChatColor.GOLD + "Successfully published "
+					+ ChatColor.AQUA + map.getTitle() + ChatColor.GOLD
+					+ " as a public artwork";
+		} else {
 			map.deny();
-
+			success = ChatColor.GOLD + "Denied " + ChatColor.AQUA
+					+ map.getTitle();
+		}
 		return true;
 	}
 

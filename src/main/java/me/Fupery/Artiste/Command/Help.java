@@ -94,7 +94,7 @@ public class Help extends AbstractCommand {
 			helpFormat("save <title>", "Save your artwork") };
 
 	public static final String[] page2 = new String[] {
-			helpFormat("publish <title>", "Make your artwork public"),
+			helpFormat("publish <title> <category>", "Make your artwork public"),
 			helpFormat("list [public|private] [p]", "List available artworks"),
 			helpFormat("edit <title>", "Load a saved artwork to the canvas"),
 			helpFormat("buy <title>", "Purchase an artwork as a map item"),

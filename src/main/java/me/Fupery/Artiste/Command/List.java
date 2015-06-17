@@ -6,10 +6,10 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
+import me.Fupery.Artiste.MapArt.ValidMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.MapArt.MapCategory;
 import me.Fupery.Artiste.MapArt.PublicMap;
-import me.Fupery.Artiste.MapArt.Template;
 import me.Fupery.Artiste.Command.Utils.AbstractCommand;
 import me.Fupery.Artiste.Command.Utils.Error;
 import static me.Fupery.Artiste.Utils.Formatting.*;
@@ -17,10 +17,11 @@ import static me.Fupery.Artiste.Utils.Formatting.*;
 //fix errors for no canvas
 public class List extends AbstractCommand {
 
-	private validMapType type;
+	private ValidMapType type;
+	private MapCategory category;
 	private ArrayList<Artwork> list;
 	private int pages, maxLines;
-	String[] returnList;
+	private String[] returnList;
 
 	public void initialize() {
 
@@ -42,12 +43,15 @@ public class List extends AbstractCommand {
 			if (isNumber(args[i])) {
 				pages = Integer.parseInt(args[i]);
 
-			} else if (resolveType(args[i]) != null) {
-				type = resolveType(args[i]);
+			} else if (ValidMapType.getType(args[i]) != null) {
+				type = ValidMapType.getType(args[i]);
+			} else if (MapCategory.getCategory(args[i]) != null) {
+				category = MapCategory.getCategory(args[i]);
 			}
 		}
 		if (type == null) {
-			type = validMapType.PRIVATE;
+			type = (category == null) ? ValidMapType.PRIVATE
+					: ValidMapType.PUBLIC;
 		}
 
 		if (!sort() || list.size() < 1) {
@@ -74,14 +78,16 @@ public class List extends AbstractCommand {
 		for (i = line, k = 1; i < list.size() && i < (pages + maxLines); i++, k++) {
 
 			Artwork a = list.get(i);
-			String name = (a instanceof Template) ? "template" : Bukkit
-					.getOfflinePlayer(a.getArtist()).getName();
-			String buys = (a instanceof PublicMap) ? ((PublicMap) a).getBuys()
-					+ " buys" : null;
-			returnList[k] = format(a.getTitle(), name, buys);
+			if (a != null) {
+				String name = (a.getArtist() == null) ? "unknown" : Bukkit
+						.getOfflinePlayer(a.getArtist()).getName();
+				String buys = (a instanceof PublicMap) ? ((PublicMap) a)
+						.getBuys() + " buys" : null;
+				returnList[k] = format(a.getTitle(), name, buys);
 
-			if (list.size() > (maxLines + line)) {
-				returnList[k + 1] = footer(l);
+				if (list.size() > (maxLines + line)) {
+					returnList[k + 1] = footer(l);
+				}
 			}
 		}
 		for (String s : returnList) {
@@ -116,7 +122,11 @@ public class List extends AbstractCommand {
 			for (String s : keys) {
 				Artwork a = Artiste.artList.get(s);
 				if (a.getType() == type) {
-					list.add(a);
+					if (category == null) {
+						list.add(a);
+					} else if (a.getCategory() == category) {
+						list.add(a);
+					}
 				}
 			}
 			break;
@@ -124,22 +134,13 @@ public class List extends AbstractCommand {
 		return true;
 	}
 
-	private validMapType resolveType(String s) {
-
-		validMapType type = null;
-		for (validMapType t : validMapType.values()) {
-			if (s.toUpperCase().equals(t.name()))
-				type = t;
-		}
-		return type;
-	}
-
 	private String header() {
 		String s;
 		if (type.name().equalsIgnoreCase("private")) {
 			s = colourC + sender.getName() + "'s";
 		} else {
-			s = type.name().toLowerCase();
+			s = (category == null) ? type.name().toLowerCase() : category
+					.name().toLowerCase();
 		}
 		return colourA + String.format("Showing %s artworks", s + colourA);
 	}

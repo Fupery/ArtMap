@@ -3,22 +3,18 @@ package me.Fupery.Artiste.MapArt;
 
 import me.Fupery.Artiste.Artiste;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 public class PublicMap extends Artwork{
 
 	private static final long serialVersionUID = 6321856941144893696L;
 	private int buys;
 
-	public PublicMap(CommandSender sender, PrivateMap pm) {
+	public PublicMap(PrivateMap pm) {
 			mapSize = pm.getMapSize();
 			artist = pm.getArtist();
 			mapId = pm.getMapId();
 			title = pm.getTitle();
+			category = pm.getCategory();
 			buys = 0;
-			sender.sendMessage(ChatColor.GOLD + "Successfully published " + ChatColor.AQUA +
-			title + ChatColor.GOLD + " as a public artwork");
 			Artiste.artList.put(title.toLowerCase(), this);
 	}
 	public int getBuys() {
@@ -27,5 +23,4 @@ public class PublicMap extends Artwork{
 	public void incrementBuys() {
 		buys ++;
 	}
-
 }

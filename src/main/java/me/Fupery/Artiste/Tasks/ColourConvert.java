@@ -1,6 +1,6 @@
 package me.Fupery.Artiste.Tasks;
 
-import java.util.logging.Logger;
+import java.util.HashMap;
 
 import me.Fupery.Artiste.Artiste;
 
@@ -12,28 +12,36 @@ import org.bukkit.map.MapPalette;
 /** Converts array of DyeColor values to byte for nbt storage */
 public class ColourConvert {
 
-	Logger log;
+	public static final HashMap<DyeColor, Byte> colourChart = setupColourChart();
 
-	public ColourConvert() {
-		log = Bukkit.getLogger();
+	@SuppressWarnings("deprecation")
+	public static HashMap<DyeColor, Byte> setupColourChart() {
+		HashMap<DyeColor, Byte> chart = new HashMap<DyeColor, Byte>();
+		chart.put(null, (byte) 0);
+		for (DyeColor d : DyeColor.values()) {
+			Color c = d.getColor();
+			int r = c.getRed(), g = c.getGreen(), b = c.getBlue();
+			byte code = MapPalette.matchColor(r, g, b);
+			chart.put(d, code);
+		}
+		return chart;
 	}
 
-	public byte[] byteConvert(DyeColor[] input, int mapSize) {
-		
+	public static byte[] byteConvert(DyeColor[] input, int mapSize) {
+
 		byte[] mapOutput = new byte[128 * 128];
 		if (mapSize == 0) {
 			mapSize = Artiste.config.getInt("mapSize");
-			log.info("no mapSize found!");
+			Bukkit.getLogger().info("no mapSize found!");
 		}
 		int i = 0;
 		int f = 128 / mapSize;
-		
+
 		for (int x = 0; x < 128; x += f, i++) {
 			for (int z = 0; z < 128; z += f, i++) {
 
-				DyeColor d = input[i];
-				byte col = colourConvert(d);
-				
+				byte col = colourChart.get(input[i]);
+
 				for (int ix = x; ix < (x + f); ix++) {
 					for (int iz = z; iz < (z + f); iz++) {
 
@@ -44,43 +52,4 @@ public class ColourConvert {
 		}
 		return mapOutput;
 	}
-
-	public DyeColor[] dyeConvert(byte[] input, int mapSize) {
-
-		DyeColor[] mapOutput = new DyeColor[(mapSize * mapSize) + mapSize - 1];
-		if (mapSize == 0) {
-			mapSize = Artiste.config.getInt("mapSize");
-			log.info("no mapSize found!");
-		}
-		int i = 0;
-		int f = 128 / mapSize;
-
-		for (int x = 0; x < mapSize; x++, i += (f ^ 2)) {
-			for (int z = 0; z < mapSize; z++, i += (f ^ 2)) {
-
-				byte c = input[i];
-				DyeColor col = colourRevert(c);
-				mapOutput[x + z * mapSize] = col;
-			}
-		}
-		return mapOutput;
-	}
-
-	@SuppressWarnings("deprecation")
-	private byte colourConvert(DyeColor color) {
-		Color c = color.getColor();
-		int r = c.getRed(), g = c.getGreen(), b = c.getBlue();
-		byte code = MapPalette.matchColor(r, g, b);
-		return code;
-	}
-
-	@SuppressWarnings("deprecation")
-	private DyeColor colourRevert(byte color) {
-		java.awt.Color c = MapPalette.getColor(color);
-		int r = c.getRed(), g = c.getGreen(), b = c.getBlue();
-		Color bc = Color.fromRGB(r, g, b);
-		DyeColor d = DyeColor.getByColor(bc);
-		return d;
-	}
-
 }

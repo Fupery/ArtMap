@@ -9,10 +9,10 @@ public class Info extends CanvasCommand {
 
 	public void initialize() {
 		usage = "info";
+		maxArgs = 2;
 	}
 
 	public boolean run() {
-
 		if (sender.hasPermission("artiste.admin")) {
 
 			sender.sendMessage(new String[] {
@@ -42,5 +42,4 @@ public class Info extends CanvasCommand {
 		}
 		return true;
 	}
-
 }

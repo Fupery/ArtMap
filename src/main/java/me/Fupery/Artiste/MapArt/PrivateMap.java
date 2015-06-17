@@ -23,7 +23,7 @@ public class PrivateMap extends Artwork {
 				.createMap(Bukkit.getWorld(Artiste.canvas.worldname)).getId();
 		setMap(save());
 		Artiste.artList.put(title.toLowerCase(), this);
-		byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
+		byte[] m = ColourConvert.byteConvert(getMap(), mapSize);
 		new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 	}
 
@@ -31,8 +31,9 @@ public class PrivateMap extends Artwork {
 		return queued;
 	}
 
-	public void setQueued(boolean queued) {
+	public void setQueued(boolean queued, MapCategory category) {
 		this.queued = queued;
+		this.category = category;
 	}
 
 	public boolean isDenied() {
@@ -40,8 +41,9 @@ public class PrivateMap extends Artwork {
 	}
 
 	public void deny() {
-		this.queued = false;
-		this.denied = true;
+		category = null;
+		queued = false;
+		denied = true;
 	}
 
 }

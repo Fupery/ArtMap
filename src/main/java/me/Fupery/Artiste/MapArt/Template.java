@@ -25,14 +25,14 @@ public class Template extends Artwork {
 					.getId();
 			setMap(map);
 			Artiste.artList.put(title, this);
-			byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
+			byte[] m = ColourConvert.byteConvert(getMap(), mapSize);
 			new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public Template(String title) {
-		
+
 		if (Artiste.canvas != null) {
 			this.mapSize = Artiste.canvas.getSize();
 			World w = Bukkit.getWorld(Artiste.canvas.worldname);
@@ -43,7 +43,7 @@ public class Template extends Artwork {
 				setMap(save());
 			}
 			Artiste.artList.put(title, this);
-			byte[] m = new ColourConvert().byteConvert(getMap(), mapSize);
+			byte[] m = ColourConvert.byteConvert(getMap(), mapSize);
 			new WorldMap(Bukkit.getMap(mapId)).setMap(m);
 		}
 	}

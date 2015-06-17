@@ -22,6 +22,7 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 	private static final long serialVersionUID = -1256331201936323289L;
 	protected String title;
 	protected short mapId;
+	protected MapCategory category;
 
 	@SuppressWarnings("deprecation")
 	public void delete(CommandSender sender) {
@@ -41,7 +42,7 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 				+ Bukkit.getOfflinePlayer(artist).getName()));
 		i.setItemMeta(im);
 		player.getInventory().addItem(i);
-		
+
 		if (this instanceof PublicMap) {
 			((PublicMap) this).incrementBuys();
 		}
@@ -82,6 +83,14 @@ public abstract class Artwork extends AbstractMapArt implements Serializable {
 
 	public void setMapId(short mapId) {
 		this.mapId = mapId;
+	}
+
+	public MapCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(MapCategory category) {
+		this.category = category;
 	}
 
 }

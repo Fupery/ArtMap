@@ -3,7 +3,7 @@ package me.Fupery.Artiste.Command.Utils;
 import me.Fupery.Artiste.Canvas;
 import me.Fupery.Artiste.IO.Artist;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
-import me.Fupery.Artiste.MapArt.AbstractMapArt.validMapType;
+import me.Fupery.Artiste.MapArt.ValidMapType;
 import me.Fupery.Artiste.MapArt.Artwork;
 import me.Fupery.Artiste.Utils.Formatting;
 
@@ -34,7 +34,7 @@ public abstract class AbstractCommand implements ArtisteCommand {
 	protected Artist artist;
 	protected Canvas canvas;
 	protected AbstractMapArt art;
-	protected validMapType type;
+	protected ValidMapType type;
 	protected int minArgs = 1, maxArgs = 1;
 	protected String[] args;
 	protected CommandSender sender;

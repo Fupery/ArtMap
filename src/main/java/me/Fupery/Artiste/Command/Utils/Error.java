@@ -35,5 +35,6 @@ public class Error {
 
 	public static final String colours = "BLACK, BLUE, BROWN, CYAN, GRAY, GREEN, LIGHT_BLUE, LIME, "
 			+ "MAGENTA, ORANGE, PINK, PURPLE, RED, SILVER, WHITE, YELLOW";
+	public static final String categories = "ARTWORK, SIGN, UNCATEGORIZED";
 
 }

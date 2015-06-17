@@ -3,6 +3,7 @@ package me.Fupery.Artiste.Command.MapArtCommands;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.MapArt.AbstractMapArt;
 import me.Fupery.Artiste.MapArt.Artwork;
+import me.Fupery.Artiste.MapArt.ValidMapType;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -28,7 +29,7 @@ public class Buy extends MapArtCommand {
 			AbstractMapArt a = Artiste.artList.get(args[1]);
 
 			if (a != null)
-				authorRequired = !(a.getType() == AbstractMapArt.validMapType.PUBLIC);
+				authorRequired = !(a.getType() == ValidMapType.PUBLIC);
 		}
 	}
 

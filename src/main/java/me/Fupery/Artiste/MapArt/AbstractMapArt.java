@@ -66,25 +66,21 @@ public abstract class AbstractMapArt implements Serializable {
 		this.mapSize = mapSize;
 	}
 
-	public validMapType getType() {
+	public ValidMapType getType() {
 
 		if (this instanceof PrivateMap) {
 			if (((PrivateMap) this).isQueued()) {
-				return validMapType.QUEUED;
+				return ValidMapType.QUEUED;
 			} else {
-				return validMapType.PRIVATE;
+				return ValidMapType.PRIVATE;
 			}
 		} else if (this instanceof PublicMap) {
-			return validMapType.PUBLIC;
+			return ValidMapType.PUBLIC;
 		} else if (this instanceof Buffer) {
-			return validMapType.BUFFER;
+			return ValidMapType.BUFFER;
 		} else if (this instanceof Template) {
-			return validMapType.TEMPLATE;
+			return ValidMapType.TEMPLATE;
 		}
 		return null;
-	}
-
-	public enum validMapType {
-		PRIVATE, QUEUED, PUBLIC, BUFFER, TEMPLATE
 	}
 }
