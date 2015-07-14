@@ -20,3 +20,7 @@ target/
 plugin.yml
 
 config.yml
+
+.idea/*
+
+.metadata/*
