@@ -1,0 +1,10 @@
+#.gitignore
+.classpath
+.idea/*
+.project
+.settings/*
+target/*
+*.iml
+dependency-reduced-pom.xml
+
+src/main/java/me/Fupery/Artiste/IO/ExamplePlugin.java
