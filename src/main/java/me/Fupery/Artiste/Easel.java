@@ -8,6 +8,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapView;
 
 import java.util.Collection;
 
@@ -76,9 +78,11 @@ public class Easel {
             seat.setHealth(arbitrarySeatHealth);
             seat.setRemoveWhenFarAway(true);
             seat.setPassenger(player);
-            new ArtistPipeline(plugin, player);
+            new ArtistPipeline(plugin, player, this);
 
         } else if (itemInHand.getType() == Material.MAP) {
+            ItemMeta meta = itemInHand.getItemMeta();
+
 
         }
     }
