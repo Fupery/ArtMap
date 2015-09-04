@@ -1,0 +1,5 @@
+#Artiste Config
+
+# The ID for the default background for each new canvas -
+# Don't change this unless you want to set a specific design
+backgroundID: 0

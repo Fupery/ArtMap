@@ -1,14 +1,22 @@
 package me.Fupery.Artiste;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Recipe {
+
+    public static String canvasTitle = "Canvas";
+    public static String paintBucketTitle = "PaintBucket";
 
     public static void addEasel() {
         ShapedRecipe easel = new ShapedRecipe(new ItemEasel());
@@ -28,6 +36,17 @@ public class Recipe {
         canvas.setIngredient('p', Material.PAINTING);
         Bukkit.getServer().addRecipe(canvas);
     }
+
+    public static void addBucket() {
+
+        for (DyeColor d : DyeColor.values()) {
+            ShapelessRecipe paintBucket = new ShapelessRecipe(new PaintBucket(d));
+            paintBucket.addIngredient(1, Material.BUCKET);
+            paintBucket.addIngredient(1,
+                    new MaterialData(Material.INK_SACK, (byte) (15 - d.ordinal())));
+            Bukkit.getServer().addRecipe(paintBucket);
+        }
+    }
 }
 
 class ItemEasel extends ItemStack {
@@ -44,10 +63,44 @@ class ItemEasel extends ItemStack {
 class ItemCanvas extends ItemStack {
 
     ItemCanvas() {
-        super(Material.PAINTING);
+        super(Material.MAP);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName("Canvas");
+        meta.setDisplayName(Recipe.canvasTitle);
         meta.setLore(Arrays.asList("Use with an Easel", "to create artworks"));
         setItemMeta(meta);
     }
 }
+
+class PaintBucket extends ItemStack {
+
+    PaintBucket(DyeColor colour) {
+        super(Material.BUCKET);
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName(String.format("%s %s(%s)", Recipe.paintBucketTitle,
+                colourWheel.get(colour), ChatColor.BOLD + colour.name().toLowerCase()));
+        meta.setLore(Arrays.asList("Combine with dyes to", "get different colours",
+                "Use with an Easel and", "Canvas to fill colours"));
+        setItemMeta(meta);
+    }
+    static HashMap<DyeColor, ChatColor> colourWheel;
+    static {
+        colourWheel = new HashMap<>();
+        colourWheel.put(DyeColor.BLACK, ChatColor.WHITE);
+        colourWheel.put(DyeColor.BLUE, ChatColor.BLUE);
+        colourWheel.put(DyeColor.BROWN, ChatColor.DARK_RED);
+        colourWheel.put(DyeColor.CYAN, ChatColor.DARK_AQUA);
+        colourWheel.put(DyeColor.GRAY, ChatColor.DARK_GRAY);
+        colourWheel.put(DyeColor.GREEN, ChatColor.DARK_GREEN);
+        colourWheel.put(DyeColor.LIGHT_BLUE, ChatColor.BLUE);
+        colourWheel.put(DyeColor.LIME, ChatColor.GREEN);
+        colourWheel.put(DyeColor.MAGENTA, ChatColor.LIGHT_PURPLE);
+        colourWheel.put(DyeColor.ORANGE, ChatColor.GOLD);
+        colourWheel.put(DyeColor.PINK, ChatColor.LIGHT_PURPLE);
+        colourWheel.put(DyeColor.PURPLE, ChatColor.DARK_PURPLE);
+        colourWheel.put(DyeColor.WHITE, ChatColor.WHITE);
+        colourWheel.put(DyeColor.YELLOW, ChatColor.YELLOW);
+        colourWheel.put(DyeColor.SILVER, ChatColor.GRAY);
+        colourWheel.put(DyeColor.RED, ChatColor.RED);
+    }
+}
+

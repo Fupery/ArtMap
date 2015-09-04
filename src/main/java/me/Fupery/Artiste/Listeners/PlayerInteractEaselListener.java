@@ -2,22 +2,19 @@ package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
-import static me.Fupery.Artiste.Easel.arbitrarySeatHealth;
 import static me.Fupery.Artiste.Easel.getEasel;
 
 public class PlayerInteractEaselListener implements Listener {
@@ -75,8 +72,8 @@ public class PlayerInteractEaselListener implements Listener {
             if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY
                     && event.getRemover() instanceof Player) {
 
-                    Player player = ((Player) event.getRemover());
-                    easel.onLeftClick(player);
+                Player player = ((Player) event.getRemover());
+                easel.onLeftClick(player);
             }
         }
     }
@@ -90,23 +87,12 @@ public class PlayerInteractEaselListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityDismount(EntityDismountEvent event) {
+    public void onBlockPhysics(BlockPhysicsEvent event) {
 
-        Bukkit.getLogger().info("dismount");
-        if (event.getDismounted() instanceof Player) {
-
-            Bukkit.getLogger().info("player");
-
-            if (event.getEntity().getType() == EntityType.ARMOR_STAND) {
-                ArmorStand stand = ((ArmorStand) event.getEntity());
-
-                if (stand.getHealth() == arbitrarySeatHealth) {
-                    stand.damage(10000);
-                }
-            }
+        if (getEasel(event.getBlock().getLocation()) != null) {
+            event.setCancelled(true);
         }
     }
-
 
     private Easel checkEasel(Entity entity) {
 

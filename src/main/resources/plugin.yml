@@ -5,6 +5,11 @@ description: ${project.description}
 depends: [Vault]
 author: Fupery
 
+commands:
+  artmap:
+    usage: /artmap
+    description: does stuff
+
 permissions:
   artiste.playerTier1:
     description: Lower tier players can only publish private artworks

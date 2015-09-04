@@ -33,16 +33,4 @@ public class EaselProtectListener implements Listener {
             event.setCancelled(true);
         }
     }
-
-    @EventHandler
-    public void onEntityDamage(HangingBreakEvent event) {
-
-        if (event.getEntity().getType() == EntityType.ITEM_FRAME) {
-
-            if (getEasel(event.getEntity().getLocation()) != null) {
-
-                event.setCancelled(true);
-            }
-        }
-    }
 }
