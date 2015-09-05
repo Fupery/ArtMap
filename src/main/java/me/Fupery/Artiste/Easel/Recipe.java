@@ -1,5 +1,6 @@
-package me.Fupery.Artiste;
+package me.Fupery.Artiste.Easel;
 
+import me.Fupery.Artiste.Artiste;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;

@@ -1,7 +1,7 @@
 package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Recipe;
+import me.Fupery.Artiste.Easel.Recipe;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

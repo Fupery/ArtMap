@@ -1,8 +1,11 @@
-package me.Fupery.Artiste;
+package me.Fupery.Artiste.Artist;
 
 import com.comphenix.tinyprotocol.Reflection;
 import com.comphenix.tinyprotocol.TinyProtocol;
 import io.netty.channel.Channel;
+import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.Easel.Easel;
+import me.Fupery.Artiste.Easel.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;

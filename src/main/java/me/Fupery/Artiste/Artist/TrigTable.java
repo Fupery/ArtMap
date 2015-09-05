@@ -1,4 +1,4 @@
-package me.Fupery.Artiste;
+package me.Fupery.Artiste.Artist;
 
 import org.bukkit.Bukkit;
 

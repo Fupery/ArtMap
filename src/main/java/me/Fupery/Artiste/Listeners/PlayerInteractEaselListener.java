@@ -1,7 +1,7 @@
 package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel;
+import me.Fupery.Artiste.Easel.Easel;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -15,7 +15,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-import static me.Fupery.Artiste.Easel.getEasel;
+import static me.Fupery.Artiste.Easel.Easel.getEasel;
 
 public class PlayerInteractEaselListener implements Listener {
 

@@ -1,7 +1,7 @@
 package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel;
+import me.Fupery.Artiste.Easel.Easel;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;

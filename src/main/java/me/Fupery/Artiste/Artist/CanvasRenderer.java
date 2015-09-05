@@ -1,5 +1,6 @@
-package me.Fupery.Artiste;
+package me.Fupery.Artiste.Artist;
 
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.DyeColor;
 import org.bukkit.Color;

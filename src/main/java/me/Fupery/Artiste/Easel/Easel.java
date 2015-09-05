@@ -1,6 +1,10 @@
-package me.Fupery.Artiste;
+package me.Fupery.Artiste.Easel;
 
+import me.Fupery.Artiste.Artist.ArtistPipeline;
+import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.Artist.CanvasRenderer;
 import me.Fupery.Artiste.IO.WorldMap;
+import me.Fupery.Artiste.ItemEasel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,11 +14,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.util.Collection;
-import java.util.List;
 
 public class Easel {
 
