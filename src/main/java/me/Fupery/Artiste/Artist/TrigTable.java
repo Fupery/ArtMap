@@ -8,7 +8,7 @@ public class TrigTable {
     private int sizeFactor;
     private float distance;
 
-    TrigTable(int range, float distance, int sizeFactor) {
+    public TrigTable(int range, float distance, int sizeFactor) {
         this.distance = distance;
         this.sizeFactor = sizeFactor;
 
