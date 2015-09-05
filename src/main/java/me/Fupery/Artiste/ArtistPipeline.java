@@ -23,7 +23,6 @@ public class ArtistPipeline {
     private float lastYaw;
 
     private CanvasRenderer renderer;
-    private TrigTable table;
 
     private Easel easel;
 
@@ -33,8 +32,6 @@ public class ArtistPipeline {
 
     private Class<?> playerSwingArmClass = Reflection.getClass("{nms}.PacketPlayInArmAnimation");
 
-//    private Class<?> playerInteractClass = Reflection.getClass("{nms}.PacketPlayInUseEntity");
-
     private Class<?> playerDismountClass = Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
     private Reflection.FieldAccessor<Boolean> playerDismount = Reflection.getField(playerDismountClass, "d", boolean.class);
 
@@ -42,7 +39,6 @@ public class ArtistPipeline {
         this.plugin = plugin;
         this.player = player;
         this.easel = easel;
-        this.table = plugin.getTrigTable();
         plugin.getActivePipelines().put(player, this);
         getMapRenderer(easel.getFrame());
 

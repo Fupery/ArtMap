@@ -1,7 +1,6 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.IO.WorldMap;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
@@ -18,7 +17,6 @@ public class CanvasRenderer extends MapRenderer {
     byte[][] pixelBuffer;
     ArrayList<byte[]> dirtyPixels;
     ListIterator<byte[]> iterator;
-    TrigTable table;
     int sizeFactor;
     Artiste plugin;
 
@@ -40,7 +38,6 @@ public class CanvasRenderer extends MapRenderer {
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
-        table = plugin.getTrigTable();
     }
 
     @Override
