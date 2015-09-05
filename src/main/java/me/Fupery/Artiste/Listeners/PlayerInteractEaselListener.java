@@ -81,7 +81,12 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (getEasel(event.getBlock().getLocation()) != null) {
+        if (getEasel(plugin, event.getBlock().getLocation()) != null) {
+            event.setCancelled(true);
+
+        }
+        if (plugin.getActivePipelines() != null
+                && plugin.getActivePipelines().containsKey(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -89,7 +94,7 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
 
-        if (getEasel(event.getBlock().getLocation()) != null) {
+        if (getEasel(plugin, event.getBlock().getLocation()) != null) {
             event.setCancelled(true);
         }
     }
@@ -111,7 +116,7 @@ public class PlayerInteractEaselListener implements Listener {
                 } else {
                     location.add(0, 0, -1);
                 }
-                return getEasel(location);
+                return getEasel(plugin, location);
             }
         }
         return null;

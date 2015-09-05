@@ -80,37 +80,43 @@ public class Easel {
 
         if (!isPainting) {
 
-            if (itemInHand.getType() == Material.AIR) {
-                player.sendMessage("Painting!");
+            if (frame.getItem().getType() != Material.AIR) {
 
-                Location seatLocation = stand.getLocation().add(0, -1.24, .8);
+                if (itemInHand.getType() == Material.AIR
+                        || itemInHand.getType() == Material.INK_SACK) {
+                    player.sendMessage("Painting!");
 
-                isPainting = true;
-                seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
-                        seatLocation, EntityType.ARMOR_STAND);
+                    Location seatLocation = stand.getLocation().add(0, -1.24, .8);
+                    seatLocation.setPitch(stand.getLocation().getPitch() - 180);
 
-                seat.setVisible(false);
-                seat.setGravity(false);
-                seat.setRemoveWhenFarAway(true);
-                seat.setPassenger(player);
-                new ArtistPipeline(plugin, player, this);
+                    isPainting = true;
+                    seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
+                            seatLocation, EntityType.ARMOR_STAND);
 
-            } else if (itemInHand.getType() == Material.MAP) {
-                ItemMeta meta = itemInHand.getItemMeta();
+                    seat.setVisible(false);
+                    seat.setGravity(false);
+                    seat.setRemoveWhenFarAway(true);
+                    seat.setPassenger(player);
+                    new ArtistPipeline(plugin, player, this);
+                }
 
-                if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.canvasTitle)) {
-                    frame.setItem(itemInHand);
-                    player.setItemInHand(new ItemStack(Material.AIR));
-                    MapView mapView = Bukkit.getMap(itemInHand.getDurability());
-                    mapView.getRenderers().clear();
-                    mapView.addRenderer(new CanvasRenderer(plugin));
+            } else {
+
+                if (itemInHand.getType() == Material.MAP) {
+                    ItemMeta meta = itemInHand.getItemMeta();
+
+                    if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.canvasTitle)) {
+                        frame.setItem(itemInHand);
+                        player.setItemInHand(new ItemStack(Material.AIR));
+                        MapView mapView = Bukkit.getMap(itemInHand.getDurability());
+                        mapView.getRenderers().clear();
+                        mapView.addRenderer(new CanvasRenderer(plugin, mapView));
+                    }
                 }
             }
-
-        } else {
-            player.sendMessage("Someone else is using this easel!");
         }
     }
+
 
     public void onShiftRightClick(Player player, ItemStack itemInHand) {
 
@@ -163,7 +169,7 @@ public class Easel {
         this.isPainting = isPainting;
     }
 
-    public static Easel getEasel(Location location) {
+    public static Easel getEasel(Artiste plugin, Location location) {
 
         ArmorStand stand = null;
         ItemFrame frame = null;
@@ -178,6 +184,10 @@ public class Easel {
 
         if (sign == null || !sign.getLine(3).equals(arbitrarySignID)) {
             return null;
+        }
+
+        if (plugin.getActiveEasels().containsKey(location)) {
+            return plugin.getActiveEasels().get(location);
         }
 
         Collection<Entity> entities =
@@ -205,7 +215,8 @@ public class Easel {
         if (stand == null || frame == null) {
             return null;
         }
-
-        return new Easel(stand, frame, sign);
+        Easel easel = new Easel(stand, frame, sign);
+        plugin.getActiveEasels().put(location, easel);
+        return easel;
     }
 }

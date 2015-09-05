@@ -1,5 +1,6 @@
 package me.Fupery.Artiste;
 
+import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Color;
@@ -9,63 +10,114 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class CanvasRenderer extends MapRenderer {
 
-    Set<Pixel> pixelBuffer;
+    byte[][] pixelBuffer;
+    ArrayList<byte[]> dirtyPixels;
+    ListIterator<byte[]> iterator;
     TrigTable table;
     int sizeFactor;
     Artiste plugin;
 
-    public CanvasRenderer(Artiste plugin) {
+    public CanvasRenderer(Artiste plugin, MapView mapView) {
         this.plugin = plugin;
-        pixelBuffer = new HashSet<>();
+        sizeFactor = 4;
+        WorldMap map = new WorldMap(mapView);
+        byte[] colours = map.getMap();
+        pixelBuffer = new byte[128 / sizeFactor][128 / sizeFactor];
+        dirtyPixels = new ArrayList<>();
+        iterator = dirtyPixels.listIterator();
+
+        int px, py;
+        for (int x = 0; x < 128; x ++) {
+
+            for (int y = 0; y < 128; y ++) {
+
+                px = x / sizeFactor; py = y / sizeFactor;
+                addPixel(px, py, colours[x + (y * 128)]);
+            }
+        }
         table = plugin.getTrigTable();
-        sizeFactor = plugin.getTrigTable().getSizeFactor();
     }
 
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
-        if (pixelBuffer != null && pixelBuffer.size() > 0) {
+        if (dirtyPixels != null && iterator != null
+                && pixelBuffer != null && dirtyPixels.size() > 0) {
+            while (iterator.hasPrevious()) {
 
-            for (Pixel pixel : pixelBuffer) {
-
-                int px = pixel.x; int py = pixel.y;
-//                Bukkit.getLogger().info("Rendering..." + px + " " + py + " " + pixel.colour);
+                byte[] pixel = iterator.previous();
+                int px = pixel[0] * sizeFactor;
+                int py = pixel[1] * sizeFactor;
 
                 for (int x = 0; x < sizeFactor; x++) {
 
                     for (int y = 0; y < sizeFactor; y++) {
-                        canvas.setPixel(px + x, py + y, pixel.colour);
+                        canvas.setPixel(px + x, py + y, pixelBuffer[pixel[0]][pixel[1]]);
                     }
                 }
+                iterator.remove();
             }
-            pixelBuffer.clear();
+        }
+        if (canvas.getCursors().size() > 0) {
+
+            for (int i = 0; i < canvas.getCursors().size(); i ++) {
+                canvas.getCursors().removeCursor(canvas.getCursors().getCursor(i));
+            }
         }
     }
 
-    public void addPixel(int lastPitch, int lastYaw, DyeColor colour) {
-
-//        byte[] pixel = table.getPixel(lastPitch - 180, lastYaw);
-
-//        if (pixel != null) {
-
-            pixelBuffer.add(new Pixel(lastPitch, lastYaw, colour));
-
-//            Bukkit.getLogger().info("Coords: " + (pixel[0]) + ", " + (pixel[1]));
-//        }
+    public void drawPixel(int x, int y, DyeColor colour) {
+        addPixel(x, y, getColourData(colour));
     }
-}
-class Pixel {
-    int x, y;
-    byte colour;
 
-    public Pixel(int x, int y, DyeColor colour) {
-        this.x = x; this.y = y;
+    public void fillPixel(final int x, final int y, DyeColor colour) {
+
+        final boolean[][] coloured = new boolean[128 / sizeFactor][128 / sizeFactor];
+        final byte clickedColour = pixelBuffer[x][y];
+        final byte setColour = getColourData(colour);
+
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                fillBucket(coloured, x, y, clickedColour, setColour);
+            }
+        });
+    }
+
+    private void fillBucket(boolean[][] coloured, int x, int y, byte source, byte target) {
+        if (x < 0 || y < 0) {
+            return;
+        }
+        if (x >= 128 / sizeFactor || y >= 128 / sizeFactor) {
+            return;
+        }
+
+        if (coloured[x][y]) {
+            return;
+        }
+
+        if (pixelBuffer[x][y] != source) {
+            return;
+        }
+        addPixel(x, y, target);
+        coloured[x][y] = true;
+
+        fillBucket(coloured, x - 1, y, source, target);
+        fillBucket(coloured, x + 1, y, source, target);
+        fillBucket(coloured, x, y - 1, source, target);
+        fillBucket(coloured, x, y + 1, source, target);
+    }
+    private void addPixel(int x, int y, byte colour) {
+        pixelBuffer[x][y] = colour;
+        iterator.add(new byte[]{((byte) x), ((byte) y)});
+    }
+    public static byte getColourData(DyeColor colour) {
         Color c = colour.getColor();
-        this.colour = ((byte) (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue())));
+        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
     }
 }

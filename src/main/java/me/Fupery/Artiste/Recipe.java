@@ -33,7 +33,7 @@ public class Recipe {
         ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas());
         canvas.shape("lll", "lpl", "lll");
         canvas.setIngredient('l', Material.LEATHER);
-        canvas.setIngredient('p', Material.PAINTING);
+        canvas.setIngredient('p', Material.EMPTY_MAP);
         Bukkit.getServer().addRecipe(canvas);
     }
 
@@ -76,10 +76,9 @@ class PaintBucket extends ItemStack {
     PaintBucket(DyeColor colour) {
         super(Material.BUCKET);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(String.format("%s %s(%s)", Recipe.paintBucketTitle,
-                colourWheel.get(colour), ChatColor.BOLD + colour.name().toLowerCase()));
-        meta.setLore(Arrays.asList("Combine with dyes to", "get different colours",
-                "Use with an Easel and", "Canvas to fill colours"));
+        meta.setDisplayName(colourWheel.get(colour) + Recipe.paintBucketTitle);
+        meta.setLore(Arrays.asList("§r" + colour.name(), "Combine with dyes to",
+                "get different colours", "Use with an Easel and", "Canvas to fill colours"));
         setItemMeta(meta);
     }
     static HashMap<DyeColor, ChatColor> colourWheel;

@@ -8,6 +8,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
@@ -19,9 +21,11 @@ public class ArtistPipeline {
 
     private float lastPitch;
     private float lastYaw;
-    private DyeColor queuedPixel = null;
 
     private CanvasRenderer renderer;
+    private TrigTable table;
+
+    private Easel easel;
 
     private Class<?> playerLookClass = Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
     private Reflection.FieldAccessor<Float> playerPitch = Reflection.getField(playerLookClass, float.class, 0);
@@ -29,7 +33,7 @@ public class ArtistPipeline {
 
     private Class<?> playerSwingArmClass = Reflection.getClass("{nms}.PacketPlayInArmAnimation");
 
-    private Class<?> playerInteractClass = Reflection.getClass("{nms}.PacketPlayInUseEntity");
+//    private Class<?> playerInteractClass = Reflection.getClass("{nms}.PacketPlayInUseEntity");
 
     private Class<?> playerDismountClass = Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
     private Reflection.FieldAccessor<Boolean> playerDismount = Reflection.getField(playerDismountClass, "d", boolean.class);
@@ -37,6 +41,9 @@ public class ArtistPipeline {
     public ArtistPipeline(Artiste plugin, final Player player, final Easel easel) {
         this.plugin = plugin;
         this.player = player;
+        this.easel = easel;
+        this.table = plugin.getTrigTable();
+        plugin.getActivePipelines().put(player, this);
         getMapRenderer(easel.getFrame());
 
         protocol = new TinyProtocol(plugin) {
@@ -50,51 +57,72 @@ public class ArtistPipeline {
 
                 if (player == sender) {
 
+                    //keeps track of where the player is looking
                     if (playerLookClass.isInstance(packet)) {
                         float pitch = playerPitch.get(packet);
                         float yaw = playerYaw.get(packet);
 
                         if (lastPitch != pitch) {
                             lastPitch = pitch;
-//                            Bukkit.getLogger().info("pitch: " + (int) pitch);
                         }
 
                         if (lastYaw != yaw) {
                             lastYaw = yaw;
-//                            Bukkit.getLogger().info("yaw: " + (int) yaw);
-                        }
-                        if (queuedPixel != null) {
-
-                            if (renderer != null) {
-//                                renderer.addPixel(compensateValue(lastPitch), compensateValue(lastYaw), queuedPixel);
-
-                                queuedPixel = null;
-                            }
                         }
                         return packet;
 
-                    } else if (playerInteractClass.isInstance(packet) || playerSwingArmClass.isInstance(packet)) {
+                        //adds pixels when the player clicks
+                    } else if (playerSwingArmClass.isInstance(packet)) {
 
-                        if (player.getItemInHand().getType() == Material.INK_SACK) {
-                            queuedPixel = DyeColor.getByData((byte) (15 - player.getItemInHand().getDurability()));
+                        ItemStack item = player.getItemInHand();
+
+                        //brush tool
+                        if (item.getType() == Material.INK_SACK) {
 
                             if (renderer != null) {
                                 byte[] pixel = getPixel(lastPitch, lastYaw);
-                                renderer.addPixel(pixel[0], pixel[1], queuedPixel);
-                            }
-//                            Bukkit.getLogger().info("click");
 
+                                if (pixel != null) {
+                                    renderer.drawPixel(pixel[0], pixel[1],
+                                            DyeColor.getByData((byte) (15 - item.getDurability())));
+                                }
+                            }
+
+                        //paint bucket tool
+                        } else if (item.getType() == Material.BUCKET) {
+
+                            if (item.hasItemMeta()) {
+                                ItemMeta meta = item.getItemMeta();
+
+                                if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
+                                        && meta.hasLore()) {
+                                    DyeColor colour = null;
+
+                                    for (DyeColor d : DyeColor.values()) {
+
+                                        if (meta.getLore().toArray()[0].equals("§r" + d.name())) {
+                                            colour = d;
+                                        }
+                                    }
+
+                                    if (colour != null && renderer != null) {
+
+                                        byte[] pixel = getPixel(lastPitch, lastYaw);
+
+                                        if (pixel != null) {
+                                            renderer.fillPixel(pixel[0], pixel[1], colour);
+                                        }
+                                    }
+                                }
+                            }
                         }
                         return null;
 
+                        //listens for when the player dismounts the easel
                     } else if (playerDismountClass.isInstance(packet)) {
 
                         if (playerDismount.get(packet)) {
-                            uninjectPlayer(player);
-                            player.leaveVehicle();
-                            easel.setIsPainting(false);
-                            Bukkit.getLogger().info("Uninjected " + player.getName());
-                            easel.getSeat().remove();
+                            closePipeline();
                             return null;
                         }
                     }
@@ -102,12 +130,23 @@ public class ArtistPipeline {
                 return super.onPacketInAsync(sender, channel, packet);
             }
         };
-        Bukkit.getLogger().info("Injected " + player.getName());
         protocol.injectPlayer(player);
     }
 
-    private void queueCanvasPixel(DyeColor color) {
-        queuedPixel = color;
+    public void closePipeline() {
+        protocol.uninjectPlayer(player);
+        player.leaveVehicle();
+        easel.setIsPainting(false);
+        easel.getSeat().remove();
+        MapView mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
+
+        if (mapView.getRenderers() != null) {
+            mapView.getRenderers().clear();
+        }
+
+        if (getPlugin().getActivePipelines() != null) {
+            getPlugin().getActivePipelines().remove(player);
+        }
     }
 
     private void getMapRenderer(ItemFrame frame) {
@@ -119,25 +158,18 @@ public class ArtistPipeline {
 
                 if (r instanceof CanvasRenderer) {
                     renderer = ((CanvasRenderer) r);
-                    Bukkit.getLogger().info("found renderer");
                 }
             }
         }
     }
 
-    public Artiste getPlugin() {
-        return plugin;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    private static byte[] getPixel(float pitch, float yaw) {
+    //finds the corresponding pixel for the pitch & yaw clicked
+    private byte[] getPixel(float pitch, float yaw) {
         byte[] pixel = new byte[2];
 
         if (pitch > 0) {
             pitch -= 180;
+
         } else {
             pitch += 180;
         }
@@ -156,8 +188,24 @@ public class ArtistPipeline {
                 yaw += yawAdjust;
             }
         }
-        pixel[0] = ((byte) ((Math.tan(Math.toRadians(pitch)) * .6155 * 128) + 64));
-        pixel[1] = ((byte) ((Math.tan(Math.toRadians(yaw)) * .6155 * 128) + 64));
+        pixel[0] = ((byte) ((Math.tan(Math.toRadians(pitch)) * .6155 * 32) + 16));
+        pixel[1] = ((byte) ((Math.tan(Math.toRadians(yaw)) * .6155 * 32) + 16));
+//        pixel = table.getPixel(pitch, yaw);
+
+        for (byte b : pixel) {
+
+            if (b >= 32 || b < 0) {
+                return null;
+            }
+        }
         return pixel;
+    }
+
+    public Artiste getPlugin() {
+        return plugin;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

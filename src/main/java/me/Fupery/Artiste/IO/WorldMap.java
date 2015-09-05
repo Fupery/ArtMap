@@ -1,9 +1,7 @@
 package me.Fupery.Artiste.IO;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 
-import org.bukkit.Bukkit;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 
@@ -11,6 +9,7 @@ public class WorldMap {
 
     private MapView mapView;
     private Object worldMap;
+    private byte[] colours;
 
     public WorldMap(MapView mapView) {
 
@@ -40,7 +39,6 @@ public class WorldMap {
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
             dimension = -5;
-            Bukkit.getLogger().warning(e.getMessage());
         }
         return (dimension != -5);
     }
@@ -64,9 +62,20 @@ public class WorldMap {
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
             dimension = -5;
-            Bukkit.getLogger().warning(e.getMessage());
         }
         return (dimension != -5);
+    }
+    public byte[] getMap() {
+        byte[] colors;
+        try {
+            Field colorsField = worldMap.getClass().getDeclaredField("colors");
+            colorsField.setAccessible(true);
+            colors = ((byte[]) colorsField.get(worldMap));
+        } catch (NoSuchFieldException | SecurityException
+                | IllegalArgumentException | IllegalAccessException e) {
+            colors = null;
+        }
+        return colors;
     }
 
     public boolean delete() {
@@ -77,7 +86,6 @@ public class WorldMap {
             colorsField.set(worldMap, new byte[128 * 128]);
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
-            Bukkit.getLogger().warning(e.getMessage());
         }
         return true;
     }
