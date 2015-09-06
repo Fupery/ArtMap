@@ -87,7 +87,7 @@ public class ArtistPipeline {
                                 }
                             }
 
-                        //paint bucket tool
+                            //paint bucket tool
                         } else if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {

@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Artist;
+package me.Fupery.Artiste.Utils;
 
 import org.bukkit.Bukkit;
 
@@ -15,11 +15,11 @@ public class TrigTable {
         pixelPitch = new byte[range * 100];
         pixelYaw = new byte[range * 100];
 
-        for (float p = 0; p < pixelPitch.length; p ++) {
+        for (float p = 0; p < pixelPitch.length; p++) {
             pixelPitch[(int) p] = getPixelAtPitch(p);
         }
 
-        for (float y = 0; y < pixelYaw.length; y ++) {
+        for (float y = 0; y < pixelYaw.length; y++) {
             pixelYaw[(int) y] = getPixelAtYaw(y);
         }
     }
@@ -39,7 +39,7 @@ public class TrigTable {
             if (pitchYaw[i] > 0) {
 
                 if (pitchYaw[i] < pixelPos.length) {
-                    pixel[i] = (byte) (pixelPos[pitchYaw[i]]);
+                    pixel[i] = pixelPos[pitchYaw[i]];
 
                 } else {
                     return null;
@@ -57,7 +57,7 @@ public class TrigTable {
     }
 
     private byte getPixelAtPitch(float pitch) {
-        return (byte) (Math.tan(Math.toRadians(pitch / 100)) *  distance * (128 / sizeFactor));
+        return (byte) (Math.tan(Math.toRadians(pitch / 100)) * distance * (128 / sizeFactor));
     }
 
     private byte getPixelAtYaw(float yaw) {

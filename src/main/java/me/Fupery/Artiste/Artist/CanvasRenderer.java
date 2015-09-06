@@ -2,8 +2,8 @@ package me.Fupery.Artiste.Artist;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.WorldMap;
-import org.bukkit.DyeColor;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -15,11 +15,11 @@ import java.util.ListIterator;
 
 public class CanvasRenderer extends MapRenderer {
 
-    byte[][] pixelBuffer;
-    ArrayList<byte[]> dirtyPixels;
-    ListIterator<byte[]> iterator;
-    int sizeFactor;
-    Artiste plugin;
+    private byte[][] pixelBuffer;
+    private ArrayList<byte[]> dirtyPixels;
+    private ListIterator<byte[]> iterator;
+    private int sizeFactor;
+    private Artiste plugin;
 
     public CanvasRenderer(Artiste plugin, MapView mapView) {
         this.plugin = plugin;
@@ -31,14 +31,20 @@ public class CanvasRenderer extends MapRenderer {
         iterator = dirtyPixels.listIterator();
 
         int px, py;
-        for (int x = 0; x < 128; x ++) {
+        for (int x = 0; x < 128; x++) {
 
-            for (int y = 0; y < 128; y ++) {
+            for (int y = 0; y < 128; y++) {
 
-                px = x / sizeFactor; py = y / sizeFactor;
+                px = x / sizeFactor;
+                py = y / sizeFactor;
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
+    }
+
+    private static byte getColourData(DyeColor colour) {
+        Color c = colour.getColor();
+        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
     }
 
     @Override
@@ -63,7 +69,7 @@ public class CanvasRenderer extends MapRenderer {
         }
         if (canvas.getCursors().size() > 0) {
 
-            for (int i = 0; i < canvas.getCursors().size(); i ++) {
+            for (int i = 0; i < canvas.getCursors().size(); i++) {
                 canvas.getCursors().removeCursor(canvas.getCursors().getCursor(i));
             }
         }
@@ -110,12 +116,17 @@ public class CanvasRenderer extends MapRenderer {
         fillBucket(coloured, x, y - 1, source, target);
         fillBucket(coloured, x, y + 1, source, target);
     }
+
     private void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         iterator.add(new byte[]{((byte) x), ((byte) y)});
     }
-    public static byte getColourData(DyeColor colour) {
-        Color c = colour.getColor();
-        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
+
+    public byte[][] getPixelBuffer() {
+        return pixelBuffer;
+    }
+
+    public int getSizeFactor() {
+        return sizeFactor;
     }
 }

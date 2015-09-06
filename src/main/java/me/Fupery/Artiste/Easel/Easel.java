@@ -1,11 +1,11 @@
 package me.Fupery.Artiste.Easel;
 
 import me.Fupery.Artiste.Artist.ArtistPipeline;
-import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Artist.CanvasRenderer;
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.WorldMap;
-import me.Fupery.Artiste.ItemEasel;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,21 +14,32 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+
+import static me.Fupery.Artiste.Utils.MapUtils.convertBuffer;
 
 public class Easel {
 
     public static String arbitrarySignID = "*{=}*";
+    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+    private Artiste plugin;
     private ArmorStand stand;
     private Sign sign;
     private ItemFrame frame;
     private ArmorStand seat;
     private boolean isPainting;
 
-    public Easel(Location location, BlockFace orientation) {
+    public Easel(Artiste plugin, Location location, BlockFace orientation) {
+
+        this.plugin = plugin;
 
         Location standLocation = new Location(
                 location.getWorld(),
@@ -73,8 +84,46 @@ public class Easel {
     public void onLeftClick(Player player) {
 
         if (frame.getItem() != null && frame.getItem().getType() == Material.MAP) {
-            MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
-            new WorldMap(mapView);
+
+            if (plugin.getNameQueue().containsKey(player)) {
+
+                ItemStack item = frame.getItem();
+
+                if (item.hasItemMeta()) {
+
+                    MapView mapView = Bukkit.getMap(item.getDurability());
+                    WorldMap map = new WorldMap(mapView);
+
+                    for (MapRenderer r : mapView.getRenderers()) {
+
+                        if (r instanceof CanvasRenderer) {
+                            CanvasRenderer renderer = (CanvasRenderer) r;
+                            map.setMap(convertBuffer(renderer.getPixelBuffer(), renderer.getSizeFactor()));
+                            break;
+                        }
+                    }
+
+                    Date d = new Date();
+
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(plugin.getNameQueue().get(player));
+
+                    meta.setLore(Arrays.asList(ChatColor.GREEN + "Player Artwork",
+                            ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
+                            dateFormat.format(d)));
+
+                    if (player.getInventory().addItem(item) != null) {
+                        player.sendMessage("Not enough space in your inv son");
+
+                    } else {
+                        frame.setItem(new ItemStack(Material.AIR));
+                    }
+                    //add to map list
+                }
+
+            } else {
+                player.sendMessage("/artmap save <title> to save your artwork");
+            }
         }
     }
 
@@ -109,7 +158,15 @@ public class Easel {
 
                     if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.canvasTitle)) {
                         frame.setItem(itemInHand);
-                        player.setItemInHand(new ItemStack(Material.AIR));
+                        ItemStack item = player.getItemInHand().clone();
+
+                        if (itemInHand.getAmount() > 1) {
+                            item.setAmount(player.getItemInHand().getAmount() - 1);
+
+                        } else {
+                            item = new ItemStack(Material.AIR);
+                        }
+                        player.setItemInHand(item);
                         MapView mapView = Bukkit.getMap(itemInHand.getDurability());
                         mapView.getRenderers().clear();
                         mapView.addRenderer(new CanvasRenderer(plugin, mapView));
@@ -118,7 +175,6 @@ public class Easel {
             }
         }
     }
-
 
     public void onShiftRightClick(Player player, ItemStack itemInHand) {
 
@@ -145,30 +201,6 @@ public class Easel {
             seat = null;
         }
         sign.getBlock().setType(Material.AIR);
-    }
-
-    public ArmorStand getStand() {
-        return stand;
-    }
-
-    public Sign getSign() {
-        return sign;
-    }
-
-    public ItemFrame getFrame() {
-        return frame;
-    }
-
-    public ArmorStand getSeat() {
-        return seat;
-    }
-
-    public boolean isPainting() {
-        return isPainting;
-    }
-
-    public void setIsPainting(boolean isPainting) {
-        this.isPainting = isPainting;
     }
 
     public static Easel getEasel(Artiste plugin, Location location) {
@@ -220,5 +252,30 @@ public class Easel {
         Easel easel = new Easel(stand, frame, sign);
         plugin.getActiveEasels().put(location, easel);
         return easel;
+    }
+
+
+    public ArmorStand getStand() {
+        return stand;
+    }
+
+    public Sign getSign() {
+        return sign;
+    }
+
+    public ItemFrame getFrame() {
+        return frame;
+    }
+
+    public ArmorStand getSeat() {
+        return seat;
+    }
+
+    public boolean isPainting() {
+        return isPainting;
+    }
+
+    public void setIsPainting(boolean isPainting) {
+        this.isPainting = isPainting;
     }
 }

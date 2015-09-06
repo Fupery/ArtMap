@@ -21,7 +21,7 @@ public class ChunkUnloadListener implements Listener {
         if (plugin.getActiveEasels() != null && plugin.getActiveEasels().size() > 0) {
             Object[] easels = plugin.getActiveEasels().keySet().toArray();
 
-            for (int i = 0; i < easels.length; i ++) {
+            for (int i = 0; i < easels.length; i++) {
 
                 if (((Location) easels[i]).getChunk().equals(event.getChunk())) {
                     plugin.getActiveEasels().remove(((Location) easels[i]));

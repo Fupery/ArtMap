@@ -33,7 +33,7 @@ public class PlayerInteractListener implements Listener {
 
                         if (event.getBlockFace().equals(BlockFace.UP)) {
 
-                            new Easel(event.getClickedBlock().getLocation(), BlockFace.SOUTH);
+                            new Easel(plugin, event.getClickedBlock().getLocation(), BlockFace.SOUTH);
 
                         } else {
                             event.setCancelled(true);

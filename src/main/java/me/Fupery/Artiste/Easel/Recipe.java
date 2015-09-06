@@ -74,15 +74,8 @@ class ItemCanvas extends ItemStack {
 
 class PaintBucket extends ItemStack {
 
-    PaintBucket(DyeColor colour) {
-        super(Material.BUCKET);
-        ItemMeta meta = getItemMeta();
-        meta.setDisplayName(colourWheel.get(colour) + Recipe.paintBucketTitle);
-        meta.setLore(Arrays.asList("§r" + colour.name(), "Combine with dyes to",
-                "get different colours", "Use with an Easel and", "Canvas to fill colours"));
-        setItemMeta(meta);
-    }
     static HashMap<DyeColor, ChatColor> colourWheel;
+
     static {
         colourWheel = new HashMap<>();
         colourWheel.put(DyeColor.BLACK, ChatColor.WHITE);
@@ -101,6 +94,15 @@ class PaintBucket extends ItemStack {
         colourWheel.put(DyeColor.YELLOW, ChatColor.YELLOW);
         colourWheel.put(DyeColor.SILVER, ChatColor.GRAY);
         colourWheel.put(DyeColor.RED, ChatColor.RED);
+    }
+
+    PaintBucket(DyeColor colour) {
+        super(Material.BUCKET);
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName(colourWheel.get(colour) + Recipe.paintBucketTitle);
+        meta.setLore(Arrays.asList("§r" + colour.name(), "Combine with dyes to",
+                "get different colours", "Use with an Easel and", "Canvas to fill colours"));
+        setItemMeta(meta);
     }
 }
 

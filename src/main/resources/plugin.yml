@@ -11,17 +11,11 @@ commands:
     description: does stuff
 
 permissions:
-  artiste.playerTier1:
+  artiste.artist:
     description: Lower tier players can only publish private artworks
     default: op
-  artiste.playerTier2:
-    description: Upper tier players can publish private and public artworks
-    default: op
-    children:
-      artiste.playerTier1: true
   artiste.admin:
     description: Allows administrative commands
     children:
-      artiste.playerTier1: true
-      artiste.playerTier2: true
+      artiste.artist: true
     default: op

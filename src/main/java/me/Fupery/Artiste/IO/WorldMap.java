@@ -1,9 +1,9 @@
 package me.Fupery.Artiste.IO;
 
-import java.lang.reflect.Field;
-
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
+
+import java.lang.reflect.Field;
 
 public class WorldMap {
 
@@ -46,7 +46,7 @@ public class WorldMap {
     public boolean setBlankMap() {
 
         byte[] mapOutput = new byte[128 * 128];
-        for (int i = 0; i < mapOutput.length; i ++) {
+        for (int i = 0; i < mapOutput.length; i++) {
             mapOutput[i] = MapPalette.matchColor(255, 255, 255);
         }
 
@@ -65,6 +65,7 @@ public class WorldMap {
         }
         return (dimension != -5);
     }
+
     public byte[] getMap() {
         byte[] colors;
         try {

@@ -1,12 +1,11 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.Artist.ArtistPipeline;
-import me.Fupery.Artiste.Artist.TrigTable;
-import me.Fupery.Artiste.Commands;
+import me.Fupery.Artiste.Utils.TrigTable;
 import me.Fupery.Artiste.Easel.Easel;
+import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.*;
-import me.Fupery.Artiste.Easel.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,7 +17,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Artiste extends JavaPlugin {
 
@@ -27,14 +26,17 @@ public class Artiste extends JavaPlugin {
     private File idList;
     private TrigTable trigTable;
     private int backgroundID;
-    private HashMap<Location, Easel> activeEasels;
-    private HashMap<Player, ArtistPipeline> activePipelines;
+    private ConcurrentHashMap<Location, Easel> activeEasels;
+    private ConcurrentHashMap<Player, ArtistPipeline> activePipelines;
+    private ConcurrentHashMap<Player, String> nameQueue;
 
     @Override
     public void onEnable() {
+
         Recipe.addCanvas();
         Recipe.addEasel();
         Recipe.addBucket();
+
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new PlayerInteractListener(this), this);
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
@@ -47,8 +49,9 @@ public class Artiste extends JavaPlugin {
         setupRegistry();
 
         trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
-        activeEasels = new HashMap<>();
-        activePipelines = new HashMap<>();
+        activeEasels = new ConcurrentHashMap<>();
+        activePipelines = new ConcurrentHashMap<>();
+        nameQueue = new ConcurrentHashMap<>();
         backgroundID = getConfig().getInt("backgroundID");
     }
 
@@ -84,19 +87,23 @@ public class Artiste extends JavaPlugin {
         return trigTable;
     }
 
-    public HashMap<Location, Easel> getActiveEasels() {
+    public ConcurrentHashMap<Location, Easel> getActiveEasels() {
         return activeEasels;
     }
 
-    public HashMap<Player, ArtistPipeline> getActivePipelines() {
+    public ConcurrentHashMap<Player, ArtistPipeline> getActivePipelines() {
         return activePipelines;
+    }
+
+    public ConcurrentHashMap<Player, String> getNameQueue() {
+        return nameQueue;
     }
 
     public int getBackgroundID() {
         return backgroundID;
     }
 
-    public void setBackgroundID(int id) {
+    private void setBackgroundID(int id) {
         backgroundID = id;
         getConfig().set("backgroundID", id);
         saveDefaultConfig();
