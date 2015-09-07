@@ -16,17 +16,22 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
+import java.io.*;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Artiste extends JavaPlugin {
 
     public static String entityTag = "Easel";
 
-    private File idList;
+    private File mapList;
+    private File easelList;
+    private FileConfiguration maps;
     private TrigTable trigTable;
     private int backgroundID;
-    private ConcurrentHashMap<Location, Easel> activeEasels;
+    private ConcurrentHashMap<Location, Boolean> easels;
     private ConcurrentHashMap<Player, ArtistPipeline> activePipelines;
     private ConcurrentHashMap<Player, String> nameQueue;
 
@@ -41,17 +46,21 @@ public class Artiste extends JavaPlugin {
         manager.registerEvents(new PlayerInteractListener(this), this);
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
         manager.registerEvents(new CanvasListener(this), this);
-        manager.registerEvents(new ChunkUnloadListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
 
         this.getCommand("artmap").setExecutor(new Commands(this));
 
-        setupRegistry();
+        if (setupRegistry()) {
 
-        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
-        activeEasels = new ConcurrentHashMap<>();
+            maps = YamlConfiguration.loadConfiguration(mapList);
+        }
+
+//        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
+        loadEasels();
+
         activePipelines = new ConcurrentHashMap<>();
         nameQueue = new ConcurrentHashMap<>();
+
         backgroundID = getConfig().getInt("backgroundID");
     }
 
@@ -68,27 +77,72 @@ public class Artiste extends JavaPlugin {
     private boolean setupRegistry() {
 
         saveDefaultConfig();
-        idList = new File(getDataFolder(), "IDList.yml");
 
-        if (!idList.exists()) {
+        mapList = new File(getDataFolder(), "mapList.yml");
+        easelList = new File(getDataFolder(), "easels.dat");
 
-            if (!idList.mkdir()) {
+        if (!mapList.exists()) {
+
+            if (!mapList.mkdir()) {
+                return false;
+            }
+        }
+        if (!easelList.exists()) {
+
+            if (!easelList.mkdir()) {
                 return false;
             }
         }
         return true;
     }
 
-    public FileConfiguration getIDList() {
-        return YamlConfiguration.loadConfiguration(idList);
+    public void saveEasels() {
+
+        try {
+            if (!easelList.exists()) {
+                easelList.createNewFile();
+            }
+            ObjectOutputStream out = new ObjectOutputStream(
+                    new GZIPOutputStream(new FileOutputStream(easelList)));
+            out.writeObject(easels);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean loadEasels() {
+        ObjectInputStream in;
+
+        try {
+
+            if (easelList.exists()) {
+                in = new ObjectInputStream(new GZIPInputStream(
+                        new FileInputStream(easelList)));
+                easels = (ConcurrentHashMap) in.readObject();
+                in.close();
+                return true;
+
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public FileConfiguration getMaps() {
+        return maps;
     }
 
     public TrigTable getTrigTable() {
         return trigTable;
     }
 
-    public ConcurrentHashMap<Location, Easel> getActiveEasels() {
-        return activeEasels;
+    public ConcurrentHashMap<Location, Boolean> getEasels() {
+        return easels;
     }
 
     public ConcurrentHashMap<Player, ArtistPipeline> getActivePipelines() {

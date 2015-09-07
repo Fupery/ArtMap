@@ -3,17 +3,17 @@ package me.Fupery.Artiste.Listeners;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 import static me.Fupery.Artiste.Easel.Easel.getEasel;
 
@@ -38,13 +38,22 @@ public class PlayerInteractEaselListener implements Listener {
                 easel.onShiftRightClick(player, player.getItemInHand());
 
             } else {
-                easel.onRightClick(plugin, player, player.getItemInHand());
+                easel.onRightClick(player, player.getItemInHand());
             }
         }
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+
+        if (event.getEntity().getType() == EntityType.ITEM_FRAME) {
+            ItemStack item = ((ItemFrame) event.getEntity()).getItem();
+            if (item.hasItemMeta()) {
+                if (item.getItemMeta().getDisplayName().equals("easel")) {
+                    event.getDamager().sendMessage("woo");
+                }
+            }
+        }
 
         Easel easel = checkEasel(event.getEntity());
 

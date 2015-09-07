@@ -11,7 +11,7 @@ public class MapArt {
     public static String getTitle(Artiste plugin, short mapID) {
         String tag = ((Short) mapID).toString();
 
-        FileConfiguration config = plugin.getIDList();
+        FileConfiguration config = plugin.getMaps();
 
         if (config.contains(tag)) {
             ConfigurationSection key = config.getConfigurationSection(tag);
@@ -23,7 +23,7 @@ public class MapArt {
     public static UUID getArtist(Artiste plugin, short mapID) {
         String tag = ((Short) mapID).toString();
 
-        FileConfiguration config = plugin.getIDList();
+        FileConfiguration config = plugin.getMaps();
 
         if (config.contains(tag)) {
             ConfigurationSection key = config.getConfigurationSection(tag);
