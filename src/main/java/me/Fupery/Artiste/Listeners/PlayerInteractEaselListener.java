@@ -5,7 +5,9 @@ import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.EaselPart;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -48,6 +50,7 @@ public class PlayerInteractEaselListener implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
@@ -155,6 +158,7 @@ public class PlayerInteractEaselListener implements Listener {
             }
         }
     }
+
     private EaselPart getPartType(Entity entity) {
 
         if (entity.getType() == EntityType.ARMOR_STAND ||

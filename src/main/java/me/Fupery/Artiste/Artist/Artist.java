@@ -44,12 +44,12 @@ public class Artist {
         return lastPitch;
     }
 
-    public float getLastYaw() {
-        return lastYaw;
-    }
-
     public void setLastPitch(float lastPitch) {
         this.lastPitch = lastPitch;
+    }
+
+    public float getLastYaw() {
+        return lastYaw;
     }
 
     public void setLastYaw(float lastYaw) {

@@ -1,10 +1,13 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.Artist.ArtistPipeline;
-import me.Fupery.Artiste.Utils.TrigTable;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
-import me.Fupery.Artiste.Listeners.*;
+import me.Fupery.Artiste.Listeners.CanvasListener;
+import me.Fupery.Artiste.Listeners.PlayerInteractEaselListener;
+import me.Fupery.Artiste.Listeners.PlayerInteractListener;
+import me.Fupery.Artiste.Listeners.PlayerQuitListener;
+import me.Fupery.Artiste.Utils.TrigTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

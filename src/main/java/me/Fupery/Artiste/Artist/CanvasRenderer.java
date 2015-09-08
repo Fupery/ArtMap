@@ -24,8 +24,10 @@ public class CanvasRenderer extends MapRenderer {
     public CanvasRenderer(Artiste plugin, MapView mapView) {
         this.plugin = plugin;
         sizeFactor = 4;
+
         WorldMap map = new WorldMap(mapView);
         byte[] colours = map.getMap();
+
         pixelBuffer = new byte[128 / sizeFactor][128 / sizeFactor];
         dirtyPixels = new ArrayList<>();
         iterator = dirtyPixels.listIterator();

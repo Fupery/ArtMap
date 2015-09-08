@@ -9,23 +9,18 @@ import me.Fupery.Artiste.Easel.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtistPipeline {
 
+    ConcurrentHashMap<Player, Artist> artists;
     private Artiste plugin;
     private TinyProtocol protocol;
-
-    ConcurrentHashMap<Player, Artist> artists;
-
     private Class<?> playerLookClass =
             Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
     private Reflection.FieldAccessor<Float> playerPitch =
@@ -141,7 +136,6 @@ public class ArtistPipeline {
     }
 
     public boolean containsPlayer(Player player) {
-
         return (artists.containsKey(player));
     }
 
@@ -159,7 +153,6 @@ public class ArtistPipeline {
         artists.remove(player);
 
         if (artists.size() == 0) {
-            protocol.close();
             plugin.setArtistPipeline(null);
         }
     }
@@ -201,6 +194,7 @@ public class ArtistPipeline {
         }
         return pixel;
     }
+
     public Artiste getPlugin() {
         return plugin;
     }
