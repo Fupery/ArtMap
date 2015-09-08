@@ -2,7 +2,6 @@ package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.Artist.ArtistPipeline;
 import me.Fupery.Artiste.Utils.TrigTable;
-import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.*;
@@ -17,7 +16,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -51,12 +49,14 @@ public class Artiste extends JavaPlugin {
         this.getCommand("artmap").setExecutor(new Commands(this));
 
         if (setupRegistry()) {
-
             maps = YamlConfiguration.loadConfiguration(mapList);
         }
 
+        if (!loadEasels()) {
+            easels = new ConcurrentHashMap<>();
+        }
+
 //        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
-        loadEasels();
 
         activePipelines = new ConcurrentHashMap<>();
         nameQueue = new ConcurrentHashMap<>();
@@ -72,6 +72,7 @@ public class Artiste extends JavaPlugin {
             config.set("backgroundID", backgroundID);
             saveDefaultConfig();
         }
+        saveEasels();
     }
 
     private boolean setupRegistry() {
@@ -81,17 +82,24 @@ public class Artiste extends JavaPlugin {
         mapList = new File(getDataFolder(), "mapList.yml");
         easelList = new File(getDataFolder(), "easels.dat");
 
-        if (!mapList.exists()) {
+        try {
 
-            if (!mapList.mkdir()) {
-                return false;
-            }
-        }
-        if (!easelList.exists()) {
+            if (!mapList.exists()) {
 
-            if (!easelList.mkdir()) {
-                return false;
+                if (!mapList.createNewFile()) {
+                    return false;
+                }
             }
+
+            if (!easelList.exists()) {
+
+                if (!easelList.createNewFile()) {
+                    return false;
+                }
+            }
+
+        } catch (IOException e) {
+            return false;
         }
         return true;
     }

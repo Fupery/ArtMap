@@ -16,6 +16,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ArtistPipeline {
 
     private Artiste plugin;
@@ -28,6 +31,8 @@ public class ArtistPipeline {
     private CanvasRenderer renderer;
 
     private Easel easel;
+
+    ConcurrentHashMap<Artist, CanvasRenderer> artists;
 
     private Class<?> playerLookClass = Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
     private Reflection.FieldAccessor<Float> playerPitch = Reflection.getField(playerLookClass, float.class, 0);

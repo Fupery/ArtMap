@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,63 +34,126 @@ public class Easel {
     Artiste plugin;
     Location location;
 
-    public Easel(Artiste plugin, Location location) {
+    private Easel(Artiste plugin, Location location) {
         this.plugin = plugin;
         this.location = location;
     }
 
     public static Easel spawnEasel(Artiste plugin, Location location, BlockFace orientation) {
+        double x, z, yaw; BlockFace signOrient;
 
-        Location frameLocation = location.add(0, 2, 0);
-        frameLocation.getBlock().setType(Material.WALL_SIGN);
-        Sign sign = ((Sign) frameLocation.getBlock().getState());
-        sign.setLine(3, arbitrarySignID);
-        sign.update(true, false);
+        //orientation represents direction the easel is facing
+        switch (orientation) {
+
+            case SOUTH:
+                x = 0.5;
+                z = 0.9;
+                yaw = 0;
+                signOrient = BlockFace.NORTH;
+                break;
+
+            case WEST:
+                x = 0.1;
+                z = 0.5;
+                yaw = 90;
+                signOrient = BlockFace.WEST_NORTH_WEST;
+                break;
+
+            case NORTH:
+                x = 0.5;
+                z = 0.1;
+                yaw = 180;
+                signOrient = BlockFace.SOUTH_SOUTH_EAST;
+                break;
+
+            case EAST:
+                x = 0.9;
+                z = 0.5;
+                yaw = 270;
+                signOrient = BlockFace.WEST;
+                break;
+
+            default:
+                return null;
+        }
 
         Location standLocation = new Location(
                 location.getWorld(),
-                location.getX() + .5,
+                location.getX() + x,
                 location.getY() + 1,
-                location.getZ() + .9);
+                location.getZ() + z,
+                ((float) yaw), ((float) 0));
 
         ArmorStand stand = (ArmorStand) location.getWorld().spawnEntity(
                 standLocation, EntityType.ARMOR_STAND);
-
-        stand.setMaxHealth(arbitraryHealthValue);
-        stand.setMetadata("Easel", new FixedMetadataValue(plugin, "Easel"));
 
         stand.setBasePlate(false);
         stand.setCustomNameVisible(true);
         stand.setCustomName(Artiste.entityTag);
         stand.setGravity(false);
 
+        Location frameLocation = location.add(0, 2, 0);
         Block face = frameLocation.getBlock().getRelative(orientation);
+
+        org.bukkit.material.Sign signFace = new org.bukkit.material.Sign(Material.SIGN);
+        signFace.setFacingDirection(signOrient);
+
+        frameLocation.getBlock().setType(Material.WALL_SIGN);
+        Sign sign = ((Sign) frameLocation.getBlock().getState());
+        sign.setData(signFace);
+        sign.setLine(3, arbitrarySignID);
+        sign.update(true, false);
 
         ItemFrame frame = stand.getWorld().spawn(face.getLocation(), ItemFrame.class);
 
-        frame.setMetadata("Easel", new FixedMetadataValue(plugin, "Easel"));
         frame.setFacingDirection(orientation, true);
         frame.setCustomNameVisible(true);
         frame.setCustomName(Artiste.entityTag);
 
-        plugin.getEasels().put(frameLocation, false);
+        plugin.getEasels().put(location, false);
         return new Easel(plugin, location);
     }
 
-    public static Easel getEasel(Artiste plugin, Location location) {
+    public static Easel getEasel(Artiste plugin, Location partLocation, EaselPart part) {
+
+        Location location = partLocation.getBlock().getLocation().clone();
+
+        if (part == EaselPart.STAND) {
+            location.add(0, 1, 0);
+
+        } else if (part == EaselPart.FRAME) {
+            int x = 0, z = 0;
+
+            switch (((int) partLocation.getYaw())) {
+                case 0:
+                    z = -1;
+                    break;
+                case 90:
+                    x = 1;
+                    break;
+                case 180:
+                    z = 1;
+                    break;
+                case 270:
+                    x = -1;
+                    break;
+                default:
+                    z = -1;
+            }
+            location.add(x, 0, z);
+        }
 
         Easel easel = new Easel(plugin, location);
 
         if (plugin.getEasels().containsKey(location)) {
 
-            if (easel.getSign() != null) {
+            if (easel.getSign() != null
+                    && easel.getStand() != null
+                    && easel.getFrame() != null) {
+                return easel;
 
-                if (easel.getStand() != null && easel.getFrame() != null) {
-                    return easel;
-
-                } else {
-                    plugin.getEasels().remove(location);
-                }
+            } else {
+                plugin.getEasels().remove(location);
             }
         }
         return null;
@@ -229,7 +291,28 @@ public class Easel {
                         || itemInHand.getType() == Material.BUCKET) {
                     player.sendMessage("Painting!");
 
-                    Location seatLocation = stand.getLocation().add(0, -1.24, .8);
+                    double x = 0, z = 0;
+
+                    switch (getFrame().getFacing()) {
+
+                        case SOUTH:
+                            z = 0.8;
+                            break;
+                        case WEST:
+                            x = -0.8;
+                            break;
+                        case NORTH:
+                            z = -0.8;
+                            break;
+                        case EAST:
+                            x = 0.8;
+                            break;
+                        default:
+                            return;
+                    }
+                    location.add(x, 0, z);
+
+                    Location seatLocation = stand.getLocation().add(x, -1.24, z);
                     seatLocation.setPitch(stand.getLocation().getPitch() - 180);
 
                     setIsPainting(true);
