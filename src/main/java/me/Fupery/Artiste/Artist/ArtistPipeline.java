@@ -22,33 +22,28 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ArtistPipeline {
 
     private Artiste plugin;
-    private Player player;
     private TinyProtocol protocol;
 
-    private float lastPitch;
-    private float lastYaw;
+    ConcurrentHashMap<Player, Artist> artists;
 
-    private CanvasRenderer renderer;
+    private Class<?> playerLookClass =
+            Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
+    private Reflection.FieldAccessor<Float> playerPitch =
+            Reflection.getField(playerLookClass, float.class, 0);
+    private Reflection.FieldAccessor<Float> playerYaw =
+            Reflection.getField(playerLookClass, float.class, 1);
 
-    private Easel easel;
+    private Class<?> playerSwingArmClass =
+            Reflection.getClass("{nms}.PacketPlayInArmAnimation");
 
-    ConcurrentHashMap<Artist, CanvasRenderer> artists;
+    private Class<?> playerDismountClass =
+            Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
+    private Reflection.FieldAccessor<Boolean> playerDismount =
+            Reflection.getField(playerDismountClass, "d", boolean.class);
 
-    private Class<?> playerLookClass = Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
-    private Reflection.FieldAccessor<Float> playerPitch = Reflection.getField(playerLookClass, float.class, 0);
-    private Reflection.FieldAccessor<Float> playerYaw = Reflection.getField(playerLookClass, float.class, 1);
-
-    private Class<?> playerSwingArmClass = Reflection.getClass("{nms}.PacketPlayInArmAnimation");
-
-    private Class<?> playerDismountClass = Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
-    private Reflection.FieldAccessor<Boolean> playerDismount = Reflection.getField(playerDismountClass, "d", boolean.class);
-
-    public ArtistPipeline(Artiste plugin, final Player player, final Easel easel) {
+    public ArtistPipeline(Artiste plugin) {
         this.plugin = plugin;
-        this.player = player;
-        this.easel = easel;
-        plugin.getActivePipelines().put(player, this);
-        getMapRenderer(easel.getFrame());
+        artists = new ConcurrentHashMap<>();
 
         protocol = new TinyProtocol(plugin) {
             @Override
@@ -59,35 +54,38 @@ public class ArtistPipeline {
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
 
-                if (player == sender) {
+                if (artists.containsKey(sender)) {
+
+                    Artist artist = artists.get(sender);
 
                     //keeps track of where the player is looking
                     if (playerLookClass.isInstance(packet)) {
                         float pitch = playerPitch.get(packet);
                         float yaw = playerYaw.get(packet);
 
-                        if (lastPitch != pitch) {
-                            lastPitch = pitch;
+                        if (artist.getLastPitch() != pitch) {
+                            artist.setLastPitch(pitch);
                         }
 
-                        if (lastYaw != yaw) {
-                            lastYaw = yaw;
+                        if (artist.getLastYaw() != yaw) {
+                            artist.setLastYaw(yaw);
                         }
                         return packet;
 
                         //adds pixels when the player clicks
                     } else if (playerSwingArmClass.isInstance(packet)) {
 
-                        ItemStack item = player.getItemInHand();
+                        ItemStack item = sender.getItemInHand();
 
                         //brush tool
                         if (item.getType() == Material.INK_SACK) {
 
-                            if (renderer != null) {
-                                byte[] pixel = getPixel(lastPitch, lastYaw);
+                            if (artist.getRenderer() != null) {
+                                byte[] pixel = getPixel(artist.getPitchOffset(),
+                                        artist.getLastPitch(), artist.getLastYaw());
 
                                 if (pixel != null) {
-                                    renderer.drawPixel(pixel[0], pixel[1],
+                                    artist.getRenderer().drawPixel(pixel[0], pixel[1],
                                             DyeColor.getByData((byte) (15 - item.getDurability())));
                                 }
                             }
@@ -109,12 +107,13 @@ public class ArtistPipeline {
                                         }
                                     }
 
-                                    if (colour != null && renderer != null) {
+                                    if (colour != null && artist.getRenderer() != null) {
 
-                                        byte[] pixel = getPixel(lastPitch, lastYaw);
+                                        byte[] pixel = getPixel(artist.getPitchOffset(),
+                                                artist.getLastPitch(), artist.getLastYaw());
 
                                         if (pixel != null) {
-                                            renderer.fillPixel(pixel[0], pixel[1], colour);
+                                            artist.getRenderer().fillPixel(pixel[0], pixel[1], colour);
                                         }
                                     }
                                 }
@@ -126,7 +125,7 @@ public class ArtistPipeline {
                     } else if (playerDismountClass.isInstance(packet)) {
 
                         if (playerDismount.get(packet)) {
-                            closePipeline();
+                            removePlayer(sender);
                             return null;
                         }
                     }
@@ -134,10 +133,20 @@ public class ArtistPipeline {
                 return super.onPacketInAsync(sender, channel, packet);
             }
         };
+    }
+
+    public void addPlayer(Player player, Easel easel) {
+        artists.put(player, new Artist(plugin, easel));
         protocol.injectPlayer(player);
     }
 
-    public void closePipeline() {
+    public boolean containsPlayer(Player player) {
+
+        return (artists.containsKey(player));
+    }
+
+    public void removePlayer(Player player) {
+        Easel easel = artists.get(player).getEasel();
         protocol.uninjectPlayer(player);
         player.leaveVehicle();
         easel.setIsPainting(false);
@@ -147,35 +156,23 @@ public class ArtistPipeline {
         if (mapView.getRenderers() != null) {
             mapView.getRenderers().clear();
         }
+        artists.remove(player);
 
-        if (getPlugin().getActivePipelines() != null) {
-            getPlugin().getActivePipelines().remove(player);
-        }
-    }
-
-    private void getMapRenderer(ItemFrame frame) {
-
-        if (frame.getItem().getType() == Material.MAP) {
-            MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
-
-            for (MapRenderer r : mapView.getRenderers()) {
-
-                if (r instanceof CanvasRenderer) {
-                    renderer = ((CanvasRenderer) r);
-                }
-            }
+        if (artists.size() == 0) {
+            protocol.close();
+            plugin.setArtistPipeline(null);
         }
     }
 
     //finds the corresponding pixel for the pitch & yaw clicked
-    private byte[] getPixel(float pitch, float yaw) {
+    private byte[] getPixel(int pitchOffset, float pitch, float yaw) {
         byte[] pixel = new byte[2];
 
         if (pitch > 0) {
-            pitch -= 180;
+            pitch -= pitchOffset;
 
         } else {
-            pitch += 180;
+            pitch += pitchOffset;
         }
 
         double yawAdjust = ((0.0044 * pitch * pitch) - (0.0075 * pitch)) * (0.0265 * yaw);
@@ -204,12 +201,7 @@ public class ArtistPipeline {
         }
         return pixel;
     }
-
     public Artiste getPlugin() {
         return plugin;
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 }

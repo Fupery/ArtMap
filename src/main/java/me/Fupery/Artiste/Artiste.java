@@ -30,8 +30,8 @@ public class Artiste extends JavaPlugin {
     private TrigTable trigTable;
     private int backgroundID;
     private ConcurrentHashMap<Location, Boolean> easels;
-    private ConcurrentHashMap<Player, ArtistPipeline> activePipelines;
     private ConcurrentHashMap<Player, String> nameQueue;
+    private ArtistPipeline artistPipeline;
 
     @Override
     public void onEnable() {
@@ -58,7 +58,6 @@ public class Artiste extends JavaPlugin {
 
 //        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
 
-        activePipelines = new ConcurrentHashMap<>();
         nameQueue = new ConcurrentHashMap<>();
 
         backgroundID = getConfig().getInt("backgroundID");
@@ -153,8 +152,12 @@ public class Artiste extends JavaPlugin {
         return easels;
     }
 
-    public ConcurrentHashMap<Player, ArtistPipeline> getActivePipelines() {
-        return activePipelines;
+    public ArtistPipeline getArtistPipeline() {
+        return artistPipeline;
+    }
+
+    public void setArtistPipeline(ArtistPipeline artistPipeline) {
+        this.artistPipeline = artistPipeline;
     }
 
     public ConcurrentHashMap<Player, String> getNameQueue() {

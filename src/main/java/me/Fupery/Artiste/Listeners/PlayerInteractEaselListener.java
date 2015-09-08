@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import static me.Fupery.Artiste.Easel.Easel.getEasel;
-import static me.Fupery.Artiste.Easel.Easel.spawnEasel;
 
 public class PlayerInteractEaselListener implements Listener {
 
@@ -134,8 +133,8 @@ public class PlayerInteractEaselListener implements Listener {
             }
         }
 
-        if (plugin.getActivePipelines() != null
-                && plugin.getActivePipelines().containsKey(event.getPlayer())) {
+        if (plugin.getArtistPipeline() != null
+                && plugin.getArtistPipeline().containsPlayer(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

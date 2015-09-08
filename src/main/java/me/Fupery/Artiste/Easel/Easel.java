@@ -233,46 +233,37 @@ public class Easel {
     public void onLeftClick(Player player) {
         ItemFrame frame = getFrame();
 
-        if (frame.getItem() != null && frame.getItem().getType() == Material.MAP) {
+        if (!player.isInsideVehicle() && !isPainting()) {
 
-            if (plugin.getNameQueue().containsKey(player)) {
+            if (frame.getItem().getType() == Material.MAP) {
 
-                ItemStack item = frame.getItem();
+                if (plugin.getNameQueue().containsKey(player)) {
 
-                if (item.hasItemMeta()) {
+                    if (player.getItemInHand().getType() != Material.AIR) {
 
-                    MapView mapView = Bukkit.getMap(item.getDurability());
-                    WorldMap map = new WorldMap(mapView);
+                        ItemStack item = frame.getItem();
 
-                    for (MapRenderer r : mapView.getRenderers()) {
+                        Date d = new Date();
 
-                        if (r instanceof CanvasRenderer) {
-                            CanvasRenderer renderer = (CanvasRenderer) r;
-                            map.setMap(convertBuffer(renderer.getPixelBuffer(), renderer.getSizeFactor()));
-                            break;
-                        }
-                    }
+                        ItemMeta meta = item.getItemMeta();
+                        meta.setDisplayName(plugin.getNameQueue().get(player));
 
-                    Date d = new Date();
+                        meta.setLore(Arrays.asList(ChatColor.GREEN + "Player Artwork",
+                                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
+                                dateFormat.format(d)));
+                        item.setItemMeta(meta);
 
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(plugin.getNameQueue().get(player));
-
-                    meta.setLore(Arrays.asList(ChatColor.GREEN + "Player Artwork",
-                            ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
-                            dateFormat.format(d)));
-
-                    if (player.getInventory().addItem(item) != null) {
-                        player.sendMessage("Not enough space in your inv son");
+                        frame.setItem(new ItemStack(Material.AIR));
+                        //add to map list
+                        plugin.getNameQueue().remove(player);
 
                     } else {
-                        frame.setItem(new ItemStack(Material.AIR));
+                        player.sendMessage("Use an empty hand to retrieve your artwork");
                     }
-                    //add to map list
-                }
 
-            } else {
-                player.sendMessage("/artmap save <title> to save your artwork");
+                } else {
+                    player.sendMessage("/artmap save <title> to save your artwork");
+                }
             }
         }
     }
@@ -324,7 +315,11 @@ public class Easel {
                     seat.setGravity(false);
                     seat.setRemoveWhenFarAway(true);
                     seat.setPassenger(player);
-                    new ArtistPipeline(plugin, player, this);
+
+                    if (plugin.getArtistPipeline() == null) {
+                        plugin.setArtistPipeline(new ArtistPipeline(plugin));
+                    }
+                    plugin.getArtistPipeline().addPlayer(player, this);
                 }
 
             } else {
@@ -333,7 +328,10 @@ public class Easel {
                     ItemMeta meta = itemInHand.getItemMeta();
 
                     if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.canvasTitle)) {
-                        frame.setItem(itemInHand);
+                        MapView mapView = Bukkit.createMap(player.getWorld());
+                        WorldMap map = new WorldMap(mapView);
+                        map.setBlankMap();
+                        frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
                         ItemStack item = player.getItemInHand().clone();
 
                         if (itemInHand.getAmount() > 1) {
@@ -343,9 +341,7 @@ public class Easel {
                             item = new ItemStack(Material.AIR);
                         }
                         player.setItemInHand(item);
-                        MapView mapView = Bukkit.getMap(itemInHand.getDurability());
                         mapView.getRenderers().clear();
-                        mapView.addRenderer(new CanvasRenderer(plugin, mapView));
                     }
                 }
             }
@@ -371,7 +367,7 @@ public class Easel {
         stand.remove();
 
         if (frame.getItem().getType() != Material.AIR) {
-            sign.getWorld().dropItemNaturally(sign.getLocation(), frame.getItem());
+            sign.getWorld().dropItemNaturally(sign.getLocation(), new ItemCanvas());
         }
 
         frame.remove();
