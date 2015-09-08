@@ -1,7 +1,6 @@
 package me.Fupery.Artiste.Easel;
 
 import me.Fupery.Artiste.Artist.ArtistPipeline;
-import me.Fupery.Artiste.Artist.CanvasRenderer;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.Bukkit;
@@ -14,7 +13,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.text.DateFormat;
@@ -23,14 +21,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import static me.Fupery.Artiste.Utils.MapUtils.convertBuffer;
-
 public class Easel {
 
+    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static String arbitrarySignID = "*{=}*";
     public static double arbitraryHealthValue = 1984;
-    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
     Artiste plugin;
     Location location;
 
@@ -40,7 +35,8 @@ public class Easel {
     }
 
     public static Easel spawnEasel(Artiste plugin, Location location, BlockFace orientation) {
-        double x, z, yaw; BlockFace signOrient;
+        double x, z, yaw;
+        BlockFace signOrient;
 
         //orientation represents direction the easel is facing
         switch (orientation) {
@@ -367,7 +363,9 @@ public class Easel {
         stand.remove();
 
         if (frame.getItem().getType() != Material.AIR) {
-            sign.getWorld().dropItemNaturally(sign.getLocation(), new ItemCanvas());
+            ItemStack item = new ItemCanvas();
+            item.setDurability(((short) plugin.getBackgroundID()));
+            sign.getWorld().dropItemNaturally(sign.getLocation(), item);
         }
 
         frame.remove();
@@ -391,7 +389,7 @@ public class Easel {
     public void setIsPainting(boolean isPainting) {
 
         if (!plugin.getEasels().containsKey(location)) {
-           plugin.getEasels().put(location, isPainting);
+            plugin.getEasels().put(location, isPainting);
 
         } else {
             plugin.getEasels().replace(location, isPainting);
