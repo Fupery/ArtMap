@@ -42,8 +42,8 @@ public class ArtistPipeline {
 
         protocol = new TinyProtocol(plugin) {
             @Override
-            public Object onPacketOutAsync(Player reciever, Channel channel, Object packet) {
-                return super.onPacketOutAsync(reciever, channel, packet);
+            public Object onPacketOutAsync(Player receiver, Channel channel, Object packet) {
+                return super.onPacketOutAsync(receiver, channel, packet);
             }
 
             @Override

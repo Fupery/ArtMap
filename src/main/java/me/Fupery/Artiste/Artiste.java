@@ -9,7 +9,6 @@ import me.Fupery.Artiste.Listeners.PlayerInteractListener;
 import me.Fupery.Artiste.Listeners.PlayerQuitListener;
 import me.Fupery.Artiste.Utils.TrigTable;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,8 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class Artiste extends JavaPlugin {
 

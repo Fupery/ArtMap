@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import static me.Fupery.Artiste.Utils.Formatting.*;
+
 public class Easel {
 
     public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -198,11 +200,11 @@ public class Easel {
                         plugin.getNameQueue().remove(player);
 
                     } else {
-                        player.sendMessage("Use an empty hand to retrieve your artwork");
+                        player.sendMessage(playerMessage(emptyHand));
                     }
 
                 } else {
-                    player.sendMessage("/artmap save <title> to save your artwork");
+                    player.sendMessage(playerMessage(saveUsage));
                 }
             }
         }
@@ -221,7 +223,7 @@ public class Easel {
                         || itemInHand.getType() == Material.INK_SACK
                         || itemInHand.getType() == Material.BUCKET) {
 
-                    player.sendMessage("Painting!");
+                    player.sendMessage(playerMessage(painting));
                     EaselPos pos = EaselOrientation.getSeatOffset(frame.getFacing());
 
                     if (pos != null) {
@@ -278,7 +280,7 @@ public class Easel {
             breakEasel();
 
         } else {
-            player.sendMessage("Someone else is using this easel!");
+            player.sendMessage(playerError(elseUsing));
         }
     }
 
