@@ -178,7 +178,7 @@ public class Easel {
 
                 if (plugin.getNameQueue().containsKey(player)) {
 
-                    if (player.getItemInHand().getType() != Material.AIR) {
+                    if (player.getItemInHand().getType() == Material.AIR) {
 
                         ItemStack item = frame.getItem();
 
@@ -191,6 +191,7 @@ public class Easel {
                                 ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
                                 dateFormat.format(d)));
                         item.setItemMeta(meta);
+                        player.setItemInHand(item);
 
                         frame.setItem(new ItemStack(Material.AIR));
                         //add to map list
