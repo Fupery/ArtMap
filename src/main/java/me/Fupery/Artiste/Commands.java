@@ -95,14 +95,14 @@ abstract class ArtisteCommand implements AbstractCommand {
         this.minArgs = minArgs;
 
         if (usage != null) {
-            this.usage = playerError(usage);
+            this.usage = usage;
 
         } else {
             this.usage = null;
         }
 
         if (success != null) {
-            this.success = playerMessage(success);
+            this.success = success;
 
         } else {
             this.success = null;
