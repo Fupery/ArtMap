@@ -2,6 +2,7 @@ package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
+import me.Fupery.Artiste.Easel.EaselOrientation;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class PlayerInteractListener implements Listener {
                         if (event.getBlockFace().equals(BlockFace.UP)) {
 
                             Easel.spawnEasel(plugin, event.getClickedBlock().getLocation(),
-                                    getOrientation(event.getPlayer()));
+                                    EaselOrientation.getOrientation(event.getPlayer()));
 
                         } else {
                             event.setCancelled(true);
@@ -44,28 +45,5 @@ public class PlayerInteractListener implements Listener {
                 }
             }
         }
-    }
-
-    private BlockFace getOrientation(Player player) {
-        int yaw = ((int) player.getLocation().getYaw());
-
-        yaw = (yaw > 0) ? yaw : -yaw;
-
-        while (yaw > 360) {
-            yaw -= 360;
-        }
-
-        if (yaw >= 135 && yaw < 225) {
-            return BlockFace.SOUTH;
-
-        } else if (yaw >= 225 && yaw < 315) {
-            return BlockFace.EAST;
-
-        } else if (yaw >= 315 || yaw < 45) {
-            return (BlockFace.NORTH);
-
-        } else if (yaw >= 45 && yaw < 135) {
-            return BlockFace.WEST;
-        } else return BlockFace.SOUTH;
     }
 }

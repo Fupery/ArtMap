@@ -143,7 +143,6 @@ public class ArtistPipeline {
         Easel easel = artists.get(player).getEasel();
         protocol.uninjectPlayer(player);
         player.leaveVehicle();
-        easel.setIsPainting(false);
         easel.getSeat().remove();
         MapView mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
 

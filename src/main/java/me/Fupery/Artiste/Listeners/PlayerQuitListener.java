@@ -16,9 +16,11 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        if (plugin.getArtistPipeline() != null) {
+        if (plugin.getArtistPipeline() != null
+                && plugin.getArtistPipeline().containsPlayer(event.getPlayer())) {
             plugin.getArtistPipeline().removePlayer(event.getPlayer());
         }
+
         if (plugin.getNameQueue().containsKey(event.getPlayer())) {
             plugin.getNameQueue().remove(event.getPlayer());
         }

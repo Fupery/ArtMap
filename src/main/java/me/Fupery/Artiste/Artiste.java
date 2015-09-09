@@ -28,11 +28,9 @@ public class Artiste extends JavaPlugin {
     public static String entityTag = "Easel";
 
     private File mapList;
-    private File easelList;
     private FileConfiguration maps;
     private TrigTable trigTable;
     private int backgroundID;
-    private ConcurrentHashMap<Location, Boolean> easels;
     private ConcurrentHashMap<Player, String> nameQueue;
     private ArtistPipeline artistPipeline;
 
@@ -55,10 +53,6 @@ public class Artiste extends JavaPlugin {
             maps = YamlConfiguration.loadConfiguration(mapList);
         }
 
-        if (!loadEasels()) {
-            easels = new ConcurrentHashMap<>();
-        }
-
 //        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
 
         nameQueue = new ConcurrentHashMap<>();
@@ -74,7 +68,6 @@ public class Artiste extends JavaPlugin {
             config.set("backgroundID", backgroundID);
             saveDefaultConfig();
         }
-        saveEasels();
     }
 
     private boolean setupRegistry() {
@@ -82,7 +75,6 @@ public class Artiste extends JavaPlugin {
         saveDefaultConfig();
 
         mapList = new File(getDataFolder(), "mapList.yml");
-        easelList = new File(getDataFolder(), "easels.dat");
 
         try {
 
@@ -93,54 +85,10 @@ public class Artiste extends JavaPlugin {
                 }
             }
 
-            if (!easelList.exists()) {
-
-                if (!easelList.createNewFile()) {
-                    return false;
-                }
-            }
-
         } catch (IOException e) {
             return false;
         }
         return true;
-    }
-
-    public void saveEasels() {
-
-        try {
-            if (!easelList.exists()) {
-                easelList.createNewFile();
-            }
-            ObjectOutputStream out = new ObjectOutputStream(
-                    new GZIPOutputStream(new FileOutputStream(easelList)));
-            out.writeObject(easels);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean loadEasels() {
-        ObjectInputStream in;
-
-        try {
-
-            if (easelList.exists()) {
-                in = new ObjectInputStream(new GZIPInputStream(
-                        new FileInputStream(easelList)));
-                easels = (ConcurrentHashMap) in.readObject();
-                in.close();
-                return true;
-
-            } else {
-                return false;
-            }
-
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     public FileConfiguration getMaps() {
@@ -149,10 +97,6 @@ public class Artiste extends JavaPlugin {
 
     public TrigTable getTrigTable() {
         return trigTable;
-    }
-
-    public ConcurrentHashMap<Location, Boolean> getEasels() {
-        return easels;
     }
 
     public ArtistPipeline getArtistPipeline() {

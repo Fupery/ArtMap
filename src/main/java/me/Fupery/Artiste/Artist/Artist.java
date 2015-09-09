@@ -2,6 +2,7 @@ package me.Fupery.Artiste.Artist;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
+import me.Fupery.Artiste.Easel.EaselOrientation;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 
@@ -13,20 +14,7 @@ public class Artist {
 
     public Artist(Artiste plugin, Easel easel) {
         this.easel = easel;
-        switch (easel.getFrame().getFacing()) {
-            case SOUTH:
-                pitchOffset = 180;
-                break;
-            case WEST:
-                pitchOffset = 90;
-                break;
-            case NORTH:
-                pitchOffset = 0;
-                break;
-            case EAST:
-                pitchOffset = -90;
-                break;
-        }
+        pitchOffset = EaselOrientation.getPitchOffset(easel.getFrame().getFacing());
         MapView mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
         renderer = new CanvasRenderer(plugin, mapView);
         mapView.addRenderer(renderer);
