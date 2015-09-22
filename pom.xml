@@ -7,7 +7,14 @@
     <artifactId>Artiste</artifactId>
     <version>2</version>
     <description>Make pixel art!</description>
-
+    <profiles>
+        <profile>
+            <id>testServer</id>
+            <build>
+                <directory>/Users/aiden/Documents/JavaResources/1.8.6/Server/plugins</directory>
+            </build>
+        </profile>
+    </profiles>
     <build>
         <finalName>${project.name}</finalName>
         <resources>
@@ -77,19 +84,19 @@
             <!--<version>1.8.3-R0.1-SNAPSHOT</version>-->
         <!--</dependency>-->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8.3-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.comphenix.tinyprotocol</groupId>
             <artifactId>TinyProtocol</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>4.0.0.Alpha4</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.6-R0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.8.6-R0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
