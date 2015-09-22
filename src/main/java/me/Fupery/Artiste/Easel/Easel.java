@@ -1,6 +1,7 @@
 package me.Fupery.Artiste.Easel;
 
 import me.Fupery.Artiste.Artist.ArtistPipeline;
+import me.Fupery.Artiste.Artist.CanvasRenderer;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.text.DateFormat;
@@ -27,6 +29,7 @@ public class Easel {
     public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static String arbitrarySignID = "*{=}*";
     public static double arbitraryHealthValue = 1984;
+
     Artiste plugin;
     Location location;
 
@@ -100,6 +103,14 @@ public class Easel {
         return null;
     }
 
+    public static boolean checkForEasel(Artiste plugin, Location location) {
+        Easel easel = new Easel(plugin, location);
+
+        return easel.getSign() != null
+                && easel.getFrame() != null
+                && easel.getStand() != null;
+    }
+
     public Sign getSign() {
 
         if (location.getBlock().getType() == Material.WALL_SIGN) {
@@ -127,13 +138,16 @@ public class Easel {
                 ArmorStand s = (ArmorStand) e;
 
                 if (s.isCustomNameVisible() && s.getCustomName().equals(Artiste.entityTag)) {
-                    stand = s;
+
+//                    if (s.getLocation().getBlock().getLocation().equals(location.add(0, -1, 0))) {
+                        stand = s;
+//                    }
                 }
             }
         }
         return stand;
     }
-
+    //TODO - fix weird npe
     public ItemFrame getFrame() {
         ItemFrame frame = null;
         Collection<Entity> entities =
@@ -145,7 +159,12 @@ public class Easel {
                 ItemFrame s = (ItemFrame) e;
 
                 if (s.isCustomNameVisible() && s.getCustomName().equals(Artiste.entityTag)) {
-                    frame = s;
+//                    EaselPos pos = EaselOrientation.getFrameOffset(s.getFacing());
+
+//                    if (s.getLocation().getBlock().getLocation().equals(
+//                            location.add(pos.getX(), 1, pos.getZ()))) {
+                        frame = s;
+//                    }
                 }
             }
         }
@@ -189,7 +208,8 @@ public class Easel {
                         ItemMeta meta = item.getItemMeta();
                         meta.setDisplayName(plugin.getNameQueue().get(player));
 
-                        meta.setLore(Arrays.asList(ChatColor.GREEN + "Player Artwork",
+                        meta.setLore(Arrays.asList(
+                                ChatColor.GREEN + "Player Artwork",
                                 ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
                                 dateFormat.format(d)));
                         item.setItemMeta(meta);
@@ -212,7 +232,10 @@ public class Easel {
 
     public void onRightClick(Player player, ItemStack itemInHand) {
         ItemFrame frame = getFrame();
+//        player.sendMessage(frame.toString());
         ArmorStand stand = getStand();
+//        player.sendMessage(stand.toString());
+        player.sendMessage(stand.getEntityId() + "");
         ArmorStand seat;
 
         if (!player.isInsideVehicle()) {
@@ -229,8 +252,8 @@ public class Easel {
                     if (pos != null) {
                         location.add(pos.getX(), 0, pos.getZ());
 
-                        Location seatLocation = stand.getLocation().add(pos.getX(), -1.24, pos.getZ());
-                        seatLocation.setPitch(stand.getLocation().getPitch() - 180);
+                        Location seatLocation = stand.getLocation().add(pos.getX(), -1.22, pos.getZ());
+                        seatLocation.setYaw(stand.getLocation().getYaw() - 180);
 
                         seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
                                 seatLocation, EntityType.ARMOR_STAND);
@@ -267,7 +290,16 @@ public class Easel {
                             item = new ItemStack(Material.AIR);
                         }
                         player.setItemInHand(item);
-                        mapView.getRenderers().clear();
+
+                        if (mapView.getRenderers() != null) {
+
+                            for (MapRenderer r : mapView.getRenderers()) {
+
+                                if (!(r instanceof CanvasRenderer)) {
+                                    mapView.removeRenderer(r);
+                                }
+                            }
+                        }
                     }
                 }
             }
