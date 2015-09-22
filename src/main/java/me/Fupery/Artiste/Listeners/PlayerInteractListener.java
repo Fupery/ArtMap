@@ -3,7 +3,6 @@ package me.Fupery.Artiste.Listeners;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.EaselOrientation;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -12,8 +11,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import static me.Fupery.Artiste.Utils.Formatting.playerError;
 import static me.Fupery.Artiste.Utils.Formatting.invalidPos;
+import static me.Fupery.Artiste.Utils.Formatting.playerError;
 
 public class PlayerInteractListener implements Listener {
 

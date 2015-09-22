@@ -140,13 +140,14 @@ public class Easel {
                 if (s.isCustomNameVisible() && s.getCustomName().equals(Artiste.entityTag)) {
 
 //                    if (s.getLocation().getBlock().getLocation().equals(location.add(0, -1, 0))) {
-                        stand = s;
+                    stand = s;
 //                    }
                 }
             }
         }
         return stand;
     }
+
     //TODO - fix weird npe
     public ItemFrame getFrame() {
         ItemFrame frame = null;
@@ -163,7 +164,7 @@ public class Easel {
 
 //                    if (s.getLocation().getBlock().getLocation().equals(
 //                            location.add(pos.getX(), 1, pos.getZ()))) {
-                        frame = s;
+                    frame = s;
 //                    }
                 }
             }

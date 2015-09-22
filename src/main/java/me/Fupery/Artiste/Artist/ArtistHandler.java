@@ -5,14 +5,12 @@ import io.netty.channel.Channel;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,7 +67,7 @@ public class ArtistHandler {
                         }
                         return packet;
 
-                    //adds pixels when the player clicks
+                        //adds pixels when the player clicks
                     } else if (playerSwingArmClass.isInstance(packet)) {
 
                         ItemStack item = sender.getItemInHand();
@@ -105,7 +103,7 @@ public class ArtistHandler {
                         }
                         return null;
 
-                    //listens for when the player dismounts the easel
+                        //listens for when the player dismounts the easel
                     } else if (playerDismountClass.isInstance(packet)) {
 
                         if (playerDismount.get(packet)) {

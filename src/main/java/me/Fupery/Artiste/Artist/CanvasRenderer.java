@@ -37,6 +37,11 @@ public class CanvasRenderer extends MapRenderer {
         loadMap();
     }
 
+    private static byte getColourData(DyeColor colour) {
+        Color c = colour.getColor();
+        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
+    }
+
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
@@ -123,7 +128,8 @@ public class CanvasRenderer extends MapRenderer {
 
     //finds the corresponding pixel for the yaw & pitch clicked
     public byte[] getPixel() {
-        float yaw = lastYaw; float pitch = lastPitch;
+        float yaw = lastYaw;
+        float pitch = lastPitch;
         byte[] pixel = new byte[2];
         yaw %= 360;
 
@@ -193,11 +199,6 @@ public class CanvasRenderer extends MapRenderer {
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
-    }
-
-    private static byte getColourData(DyeColor colour) {
-        Color c = colour.getColor();
-        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
     }
 
     public float getLastYaw() {

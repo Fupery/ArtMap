@@ -1,22 +1,21 @@
 package me.Fupery.Artiste.Artist;
+
 import com.comphenix.tinyprotocol.Reflection;
-
-import io.netty.channel.*;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import com.comphenix.tinyprotocol.Reflection.FieldAccessor;
 import com.comphenix.tinyprotocol.Reflection.MethodInvoker;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
+import io.netty.channel.*;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
- *  Adapted from com.comhenix.tinyprotocol.TinyProtocol
+ * Adapted from com.comhenix.tinyprotocol.TinyProtocol
  */
 public abstract class ArtistProtocol {
 
@@ -39,23 +38,18 @@ public abstract class ArtistProtocol {
             Reflection.getField(minecraftServerClass, serverConnectionClass, 0);
     private static final MethodInvoker getNetworkMarkers =
             Reflection.getTypedMethod(serverConnectionClass, null, List.class, serverConnectionClass);
-
+    protected volatile boolean closed;
+    protected Plugin plugin;
     // Speedup channel lookup
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
-
     // List of network markers
     private List<Object> networkManagers;
-
     // Injected channel handlers
     private List<Channel> serverChannels = Lists.newArrayList();
     private ChannelInboundHandlerAdapter serverChannelHandler;
     private ChannelInitializer<Channel> beginInitProtocol;
     private ChannelInitializer<Channel> endInitProtocol;
-
     private String handlerName = "ArtisteHandler";
-
-    protected volatile boolean closed;
-    protected Plugin plugin;
 
     public ArtistProtocol(Plugin plugin) {
         this.plugin = plugin;
@@ -110,7 +104,8 @@ public abstract class ArtistProtocol {
                     }
 
                 } catch (Exception e) {
-                    plugin.getLogger().log(Level.SEVERE, "Cannot inject incoming channel " + channel, e);
+                    plugin.getLogger().log(Level.SEVERE,
+                            "Cannot inject incoming channel " + channel, e);
                 }
             }
 
@@ -203,7 +198,8 @@ public abstract class ArtistProtocol {
         private Player player;
 
         @Override
-        public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
+        public void channelRead(ChannelHandlerContext context,
+                                Object msg) throws Exception {
 
             final Channel channel = context.channel();
 
@@ -220,7 +216,8 @@ public abstract class ArtistProtocol {
         }
 
         @Override
-        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+        public void write(ChannelHandlerContext ctx, Object msg,
+                          ChannelPromise promise) throws Exception {
 
             try {
                 msg = onPacketOutAsync(player, ctx.channel(), msg);
