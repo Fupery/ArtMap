@@ -1,6 +1,6 @@
 package me.Fupery.Artiste;
 
-import me.Fupery.Artiste.Artist.ArtistPipeline;
+import me.Fupery.Artiste.Artist.ArtistHandler;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.CanvasListener;
@@ -30,7 +30,7 @@ public class Artiste extends JavaPlugin {
     private TrigTable trigTable;
     private int backgroundID;
     private ConcurrentHashMap<Player, String> nameQueue;
-    private ArtistPipeline artistPipeline;
+    private ArtistHandler artistHandler;
 
     @Override
     public void onEnable() {
@@ -97,12 +97,12 @@ public class Artiste extends JavaPlugin {
         return trigTable;
     }
 
-    public ArtistPipeline getArtistPipeline() {
-        return artistPipeline;
+    public ArtistHandler getArtistHandler() {
+        return artistHandler;
     }
 
-    public void setArtistPipeline(ArtistPipeline artistPipeline) {
-        this.artistPipeline = artistPipeline;
+    public void setArtistHandler(ArtistHandler artistHandler) {
+        this.artistHandler = artistHandler;
     }
 
     public ConcurrentHashMap<Player, String> getNameQueue() {

@@ -1,6 +1,6 @@
 package me.Fupery.Artiste.Easel;
 
-import me.Fupery.Artiste.Artist.ArtistPipeline;
+import me.Fupery.Artiste.Artist.ArtistHandler;
 import me.Fupery.Artiste.Artist.CanvasRenderer;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.WorldMap;
@@ -264,10 +264,10 @@ public class Easel {
                         seat.setRemoveWhenFarAway(true);
                         seat.setPassenger(player);
 
-                        if (plugin.getArtistPipeline() == null) {
-                            plugin.setArtistPipeline(new ArtistPipeline(plugin));
+                        if (plugin.getArtistHandler() == null) {
+                            plugin.setArtistHandler(new ArtistHandler(plugin));
                         }
-                        plugin.getArtistPipeline().addPlayer(player, this);
+                        plugin.getArtistHandler().addPlayer(player, this);
                     }
                 }
 

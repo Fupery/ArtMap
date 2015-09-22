@@ -1,7 +1,10 @@
 package me.Fupery.Artiste.Artist;
 
 import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.Easel.Easel;
+import me.Fupery.Artiste.Easel.EaselOrientation;
 import me.Fupery.Artiste.IO.WorldMap;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
@@ -19,34 +22,19 @@ public class CanvasRenderer extends MapRenderer {
     private ArrayList<byte[]> dirtyPixels;
     private ListIterator<byte[]> iterator;
     private int sizeFactor;
+    private float lastYaw, lastPitch;
+    private int yawOffset;
+    private MapView mapView;
     private Artiste plugin;
 
-    public CanvasRenderer(Artiste plugin, MapView mapView, int sizeFactor) {
+    public CanvasRenderer(Artiste plugin, int sizeFactor, Easel easel) {
         this.plugin = plugin;
         this.sizeFactor = sizeFactor;
-
-        WorldMap map = new WorldMap(mapView);
-        byte[] colours = map.getMap();
-
-        pixelBuffer = new byte[128 / sizeFactor][128 / sizeFactor];
-        dirtyPixels = new ArrayList<>();
-        iterator = dirtyPixels.listIterator();
-
-        int px, py;
-        for (int x = 0; x < 128; x++) {
-
-            for (int y = 0; y < 128; y++) {
-
-                px = x / sizeFactor;
-                py = y / sizeFactor;
-                addPixel(px, py, colours[x + (y * 128)]);
-            }
-        }
-    }
-
-    private static byte getColourData(DyeColor colour) {
-        Color c = colour.getColor();
-        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
+        yawOffset = EaselOrientation.getYawOffset(easel.getFrame().getFacing());
+        mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
+        clearRenderers();
+        mapView.addRenderer(this);
+        loadMap();
     }
 
     @Override
@@ -77,22 +65,31 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    public void drawPixel(int x, int y, DyeColor colour) {
-        addPixel(x, y, getColourData(colour));
+    public void drawPixel(DyeColor colour) {
+        byte[] pixel = getPixel();
+
+        if (pixel != null) {
+            pixelBuffer[pixel[0]][pixel[1]] = getColourData(colour);
+            iterator.add(pixel);
+        }
     }
 
-    public void fillPixel(final int x, final int y, DyeColor colour) {
+    public void fillPixel(DyeColor colour) {
+        final byte[] pixel = getPixel();
 
-        final boolean[][] coloured = new boolean[128 / sizeFactor][128 / sizeFactor];
-        final byte clickedColour = pixelBuffer[x][y];
-        final byte setColour = getColourData(colour);
+        if (pixel != null) {
 
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                fillBucket(coloured, x, y, clickedColour, setColour);
-            }
-        });
+            final boolean[][] coloured = new boolean[128 / sizeFactor][128 / sizeFactor];
+            final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
+            final byte setColour = getColourData(colour);
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
+                }
+            });
+        }
     }
 
     private void fillBucket(boolean[][] coloured, int x, int y, byte source, byte target) {
@@ -122,5 +119,100 @@ public class CanvasRenderer extends MapRenderer {
     private void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         iterator.add(new byte[]{((byte) x), ((byte) y)});
+    }
+
+    //finds the corresponding pixel for the yaw & pitch clicked
+    public byte[] getPixel() {
+        float yaw = lastYaw; float pitch = lastPitch;
+        byte[] pixel = new byte[2];
+        yaw %= 360;
+
+        if (yaw > 0) {
+            yaw -= yawOffset;
+
+        } else {
+            yaw += yawOffset;
+        }
+
+        double pitchAdjust = yaw * ((0.0044 * yaw) - 0.0075) * 0.0264 * pitch;
+
+        if (pitch > 0) {
+
+            if (pitchAdjust > 0) {
+                pitch += pitchAdjust;
+            }
+
+        } else if (pitch < 0) {
+
+            if (pitchAdjust < 0) {
+                pitch += pitchAdjust;
+            }
+        }
+        int factor = (128 / sizeFactor);
+        pixel[0] = ((byte) ((Math.tan(Math.toRadians(yaw)) * .6155 * factor) + (factor / 2)));
+        pixel[1] = ((byte) ((Math.tan(Math.toRadians(pitch)) * .6155 * factor) + (factor / 2)));
+//        pixel = table.getPixel(yaw, pitch);
+
+        for (byte b : pixel) {
+
+            if (b >= factor || b < 0) {
+                return null;
+            }
+        }
+        return pixel;
+    }
+
+    public void clearRenderers() {
+
+        if (mapView.getRenderers() != null) {
+
+            for (MapRenderer r : mapView.getRenderers()) {
+
+                if (!(r instanceof CanvasRenderer)) {
+                    mapView.removeRenderer(r);
+                }
+            }
+        }
+    }
+
+    private void loadMap() {
+        WorldMap map = new WorldMap(mapView);
+        byte[] colours = map.getMap();
+
+        pixelBuffer = new byte[128 / sizeFactor][128 / sizeFactor];
+        dirtyPixels = new ArrayList<>();
+        iterator = dirtyPixels.listIterator();
+
+        int px, py;
+        for (int x = 0; x < 128; x++) {
+
+            for (int y = 0; y < 128; y++) {
+
+                px = x / sizeFactor;
+                py = y / sizeFactor;
+                addPixel(px, py, colours[x + (y * 128)]);
+            }
+        }
+    }
+
+    private static byte getColourData(DyeColor colour) {
+        Color c = colour.getColor();
+        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
+    }
+
+    public float getLastYaw() {
+        return lastYaw;
+    }
+
+    public void setLastYaw(float lastYaw) {
+        this.lastYaw = lastYaw;
+    }
+
+    public float getLastPitch() {
+        return lastPitch;
+    }
+
+    public void setLastPitch(float lastPitch) {
+        this.lastPitch = lastPitch;
     }
 }

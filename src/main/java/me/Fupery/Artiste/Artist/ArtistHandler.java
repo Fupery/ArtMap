@@ -1,7 +1,6 @@
 package me.Fupery.Artiste.Artist;
 
 import com.comphenix.tinyprotocol.Reflection;
-import com.comphenix.tinyprotocol.TinyProtocol;
 import io.netty.channel.Channel;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
@@ -13,13 +12,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ArtistPipeline {
+public class ArtistHandler {
 
-    ConcurrentHashMap<Player, Artist> artists;
+    ConcurrentHashMap<Player, CanvasRenderer> artists;
 
     private Artiste plugin;
     private ArtistProtocol protocol;
@@ -39,7 +38,7 @@ public class ArtistPipeline {
     private Reflection.FieldAccessor<Boolean> playerDismount =
             Reflection.getField(playerDismountClass, "d", boolean.class);
 
-    public ArtistPipeline(Artiste plugin) {
+    public ArtistHandler(Artiste plugin) {
         this.plugin = plugin;
         artists = new ConcurrentHashMap<>();
 
@@ -54,19 +53,19 @@ public class ArtistPipeline {
 
                 if (artists.containsKey(sender)) {
 
-                    Artist artist = artists.get(sender);
+                    CanvasRenderer renderer = artists.get(sender);
 
                     //keeps track of where the player is looking
                     if (playerLookClass.isInstance(packet)) {
                         float yaw = playerYaw.get(packet);
                         float pitch = playerPitch.get(packet);
 
-                        if (artist.getLastYaw() != yaw) {
-                            artist.setLastYaw(yaw);
+                        if (renderer.getLastYaw() != yaw) {
+                            renderer.setLastYaw(yaw);
                         }
 
-                        if (artist.getLastPitch() != pitch) {
-                            artist.setLastPitch(pitch);
+                        if (renderer.getLastPitch() != pitch) {
+                            renderer.setLastPitch(pitch);
                         }
                         return packet;
 
@@ -78,16 +77,9 @@ public class ArtistPipeline {
                         //brush tool
                         if (item.getType() == Material.INK_SACK) {
 
-                            if (artist.getRenderer() != null) {
-                                byte[] pixel = artist.getPixel();
+                            renderer.drawPixel(DyeColor.getByData((byte) (15 - item.getDurability())));
 
-                                if (pixel != null) {
-                                    artist.getRenderer().drawPixel(pixel[0], pixel[1],
-                                            DyeColor.getByData((byte) (15 - item.getDurability())));
-                                }
-                            }
-
-                        //paint bucket tool
+                            //paint bucket tool
                         } else if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {
@@ -104,13 +96,9 @@ public class ArtistPipeline {
                                         }
                                     }
 
-                                    if (colour != null && artist.getRenderer() != null) {
+                                    if (colour != null) {
 
-                                        byte[] pixel = artist.getPixel();
-
-                                        if (pixel != null) {
-                                            artist.getRenderer().fillPixel(pixel[0], pixel[1], colour);
-                                        }
+                                        renderer.fillPixel(colour);
                                     }
                                 }
                             }
@@ -132,7 +120,7 @@ public class ArtistPipeline {
     }
 
     public void addPlayer(Player player, Easel easel) {
-        artists.put(player, new Artist(plugin, easel, 4));
+        artists.put(player, new CanvasRenderer(plugin, 4, easel));
         protocol.injectPlayer(player);
     }
 
@@ -145,12 +133,12 @@ public class ArtistPipeline {
         Entity seat = player.getVehicle();
         player.leaveVehicle();
         seat.remove();
-        Artist artist = artists.get(player);
-        artist.clearRenderers();
+        CanvasRenderer renderer = artists.get(player);
+        renderer.clearRenderers();
         artists.remove(player);
 
         if (artists.size() == 0) {
-            plugin.setArtistPipeline(null);
+            plugin.setArtistHandler(null);
         }
     }
 

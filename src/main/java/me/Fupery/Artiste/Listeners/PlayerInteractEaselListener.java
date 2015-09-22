@@ -134,8 +134,8 @@ public class PlayerInteractEaselListener implements Listener {
             }
         }
 
-        if (event.getPlayer().isInsideVehicle() && plugin.getArtistPipeline() != null
-                && plugin.getArtistPipeline().containsPlayer(event.getPlayer())) {
+        if (event.getPlayer().isInsideVehicle() && plugin.getArtistHandler() != null
+                && plugin.getArtistHandler().containsPlayer(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
