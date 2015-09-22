@@ -5,12 +5,12 @@ import org.bukkit.Bukkit;
 public class TrigTable {
     private byte[] pixelYaw;
     private byte[] pixelPitch;
-    private int sizeFactor;
+    private int resolutionFactor;
     private float distance;
 
-    public TrigTable(int range, float distance, int sizeFactor) {
+    public TrigTable(int range, float distance, int resolutionFactor) {
         this.distance = distance;
-        this.sizeFactor = sizeFactor;
+        this.resolutionFactor = resolutionFactor;
 
         pixelYaw = new byte[range * 100];
         pixelPitch = new byte[range * 100];
@@ -28,7 +28,7 @@ public class TrigTable {
 
         int[] yawPitch = new int[]{(int) (yaw * 100), (int) (pitch * 100)};
         Bukkit.getLogger().info(yaw + ", " + pitch);
-        byte k = (byte) (128 / (sizeFactor * 2));
+        byte k = (byte) (128 / (resolutionFactor * 2));
         byte[] pixel = new byte[2];
         byte[] pixelPos;
 
@@ -57,14 +57,14 @@ public class TrigTable {
     }
 
     private byte getPixelAtYaw(float yaw) {
-        return (byte) (Math.tan(Math.toRadians(yaw / 100)) * distance * (128 / sizeFactor));
+        return (byte) (Math.tan(Math.toRadians(yaw / 100)) * distance * (128 / resolutionFactor));
     }
 
     private byte getPixelAtPitch(float pitch) {
-        return (byte) (Math.tan(Math.toRadians(pitch / 100)) * distance * (128 / sizeFactor));
+        return (byte) (Math.tan(Math.toRadians(pitch / 100)) * distance * (128 / resolutionFactor));
     }
 
     public int getSizeFactor() {
-        return sizeFactor;
+        return resolutionFactor;
     }
 }

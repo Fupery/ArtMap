@@ -2,18 +2,18 @@ package me.Fupery.Artiste.Utils;
 
 public class MapUtils {
 
-    public static byte[] convertBuffer(byte[][] buffer, int sizeFactor) {
+    public static byte[] convertBuffer(byte[][] buffer, int resolutionFactor) {
         byte[] colors = new byte[128 * 128];
 
-        for (int x = 0; x < 128 / sizeFactor; x++) {
+        for (int x = 0; x < 128 / resolutionFactor; x++) {
 
-            for (int y = 0; y < 128 / sizeFactor; y++) {
+            for (int y = 0; y < 128 / resolutionFactor; y++) {
 
-                for (int px = 0; px < sizeFactor; x++) {
+                for (int px = 0; px < resolutionFactor; x++) {
 
-                    for (int py = 0; py < sizeFactor; y++) {
+                    for (int py = 0; py < resolutionFactor; y++) {
                         colors[x + (y * 128)] =
-                                buffer[(x * sizeFactor) + px][(y * sizeFactor) + py];
+                                buffer[(x * resolutionFactor) + px][(y * resolutionFactor) + py];
                     }
                 }
 
