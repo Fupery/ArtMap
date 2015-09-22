@@ -9,6 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static me.Fupery.Artiste.Utils.Formatting.*;
 
+interface AbstractCommand {
+    boolean run(CommandSender sender, String[] args);
+}
+
 public class Commands implements CommandExecutor {
 
     private Artiste plugin;
@@ -22,7 +26,7 @@ public class Commands implements CommandExecutor {
             @Override
             public boolean run(CommandSender sender, String[] args) {
 
-                if (sender instanceof Player){
+                if (sender instanceof Player) {
 
                     final Player player = (Player) sender;
                     ConcurrentHashMap<Player, String> queue = plugin.getNameQueue();
@@ -81,6 +85,7 @@ public class Commands implements CommandExecutor {
         return plugin;
     }
 }
+
 abstract class ArtisteCommand implements AbstractCommand {
 
     protected Artiste plugin;
@@ -130,7 +135,4 @@ abstract class ArtisteCommand implements AbstractCommand {
             sender.sendMessage(playerError(noperm));
         }
     }
-}
-interface AbstractCommand {
-    boolean run(CommandSender sender, String[] args);
 }
