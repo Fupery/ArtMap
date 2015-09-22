@@ -3,14 +3,17 @@ package me.Fupery.Artiste.Listeners;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.EaselOrientation;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import static me.Fupery.Artiste.Utils.Formatting.playerError;
+import static me.Fupery.Artiste.Utils.Formatting.invalidPos;
 
 public class PlayerInteractListener implements Listener {
 
@@ -32,14 +35,17 @@ public class PlayerInteractListener implements Listener {
                 if (meta.getDisplayName().equals(Artiste.entityTag)) {
 
                     if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                        event.setCancelled(true);
 
                         if (event.getBlockFace().equals(BlockFace.UP)) {
 
-                            Easel.spawnEasel(plugin, event.getClickedBlock().getLocation(),
-                                    EaselOrientation.getOrientation(event.getPlayer()));
+                            if (!Easel.checkForEasel(plugin, event.getClickedBlock().getLocation().add(0, 2, 0))) {
 
-                        } else {
-                            event.setCancelled(true);
+                                Easel.spawnEasel(plugin, event.getClickedBlock().getLocation(),
+                                        EaselOrientation.getOrientation(event.getPlayer()));
+                            } else {
+                                event.getPlayer().sendMessage(playerError(invalidPos));
+                            }
                         }
                     }
                 }

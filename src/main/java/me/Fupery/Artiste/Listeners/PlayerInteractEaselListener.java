@@ -128,15 +128,13 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
 
-                Easel easel = getEasel(plugin, event.getBlock().getLocation(), EaselPart.SIGN);
-
-                if (easel != null) {
+                if (Easel.checkForEasel(plugin, event.getBlock().getLocation())) {
                     event.setCancelled(true);
                 }
             }
         }
 
-        if (plugin.getArtistPipeline() != null
+        if (event.getPlayer().isInsideVehicle() && plugin.getArtistPipeline() != null
                 && plugin.getArtistPipeline().containsPlayer(event.getPlayer())) {
             event.setCancelled(true);
         }
@@ -150,9 +148,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
 
-                Easel easel = getEasel(plugin, event.getBlock().getLocation(), EaselPart.SIGN);
-
-                if (easel != null) {
+                if (Easel.checkForEasel(plugin, event.getBlock().getLocation())) {
                     event.setCancelled(true);
                 }
             }
