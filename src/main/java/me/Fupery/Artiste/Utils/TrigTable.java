@@ -3,8 +3,8 @@ package me.Fupery.Artiste.Utils;
 import org.bukkit.Bukkit;
 
 public class TrigTable {
-    private byte[] pixelPitch;
     private byte[] pixelYaw;
+    private byte[] pixelPitch;
     private int sizeFactor;
     private float distance;
 
@@ -12,41 +12,41 @@ public class TrigTable {
         this.distance = distance;
         this.sizeFactor = sizeFactor;
 
-        pixelPitch = new byte[range * 100];
         pixelYaw = new byte[range * 100];
+        pixelPitch = new byte[range * 100];
 
-        for (float p = 0; p < pixelPitch.length; p++) {
-            pixelPitch[(int) p] = getPixelAtPitch(p);
+        for (float p = 0; p < pixelYaw.length; p++) {
+            pixelYaw[(int) p] = getPixelAtYaw(p);
         }
 
-        for (float y = 0; y < pixelYaw.length; y++) {
-            pixelYaw[(int) y] = getPixelAtYaw(y);
+        for (float y = 0; y < pixelPitch.length; y++) {
+            pixelPitch[(int) y] = getPixelAtPitch(y);
         }
     }
 
-    public byte[] getPixel(float pitch, float yaw) {
+    public byte[] getPixel(float yaw, float pitch) {
 
-        int[] pitchYaw = new int[]{(int) (pitch * 100), (int) (yaw * 100)};
-        Bukkit.getLogger().info(pitch + ", " + yaw);
+        int[] yawPitch = new int[]{(int) (yaw * 100), (int) (pitch * 100)};
+        Bukkit.getLogger().info(yaw + ", " + pitch);
         byte k = (byte) (128 / (sizeFactor * 2));
         byte[] pixel = new byte[2];
         byte[] pixelPos;
 
         for (int i = 0; i < 2; i++) {
 
-            pixelPos = (i == 0) ? pixelPitch : pixelYaw;
+            pixelPos = (i == 0) ? pixelYaw : pixelPitch;
 
-            if (pitchYaw[i] > 0) {
+            if (yawPitch[i] > 0) {
 
-                if (pitchYaw[i] < pixelPos.length) {
-                    pixel[i] = pixelPos[pitchYaw[i]];
+                if (yawPitch[i] < pixelPos.length) {
+                    pixel[i] = pixelPos[yawPitch[i]];
 
                 } else {
                     return null;
                 }
 
-            } else if (pitchYaw[i] > -pixelPos.length) {
-                pixel[i] = (byte) (pixelPos[-pitchYaw[i]] * -1);
+            } else if (yawPitch[i] > -pixelPos.length) {
+                pixel[i] = (byte) (pixelPos[-yawPitch[i]] * -1);
 
             } else {
                 return null;
@@ -56,12 +56,12 @@ public class TrigTable {
         return pixel;
     }
 
-    private byte getPixelAtPitch(float pitch) {
-        return (byte) (Math.tan(Math.toRadians(pitch / 100)) * distance * (128 / sizeFactor));
-    }
-
     private byte getPixelAtYaw(float yaw) {
         return (byte) (Math.tan(Math.toRadians(yaw / 100)) * distance * (128 / sizeFactor));
+    }
+
+    private byte getPixelAtPitch(float pitch) {
+        return (byte) (Math.tan(Math.toRadians(pitch / 100)) * distance * (128 / sizeFactor));
     }
 
     public int getSizeFactor() {

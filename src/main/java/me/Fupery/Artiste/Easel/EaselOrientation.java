@@ -26,52 +26,31 @@ public enum EaselOrientation {
     }
 
     public static EaselOrientation getOrientation(Player player) {
-        int yaw = ((int) player.getLocation().getYaw());
+        int yaw = ((int) player.getLocation().getYaw()) % 360;
 
-        yaw = (yaw > 0) ? yaw : -yaw;
-
-        while (yaw > 360) {
-            yaw -= 360;
+        if (yaw < 0) {
+            yaw += 360;
         }
 
         if (yaw >= 135 && yaw < 225) {
             return SOUTH;
 
         } else if (yaw >= 225 && yaw < 315) {
-            return EAST;
+            return WEST;
 
         } else if (yaw >= 315 || yaw < 45) {
             return NORTH;
 
         } else if (yaw >= 45 && yaw < 135) {
-            return WEST;
-        } else return SOUTH;
-    }
+            return EAST;
 
-    public BlockFace getFace() {
-
-        switch (this) {
-
-            case NORTH:
-                return BlockFace.NORTH;
-
-            case WEST:
-                return BlockFace.WEST;
-
-            case SOUTH:
-                return BlockFace.SOUTH;
-
-            case EAST:
-                return BlockFace.EAST;
-        }
-        return null;
+        } else return NORTH;
     }
 
     public static EaselPos getEaselPosition(EaselOrientation orientation) {
         double x, z, yaw;
         BlockFace signOrient;
 
-        //orientation represents direction the easel is facing
         switch (orientation) {
 
             case SOUTH:
@@ -108,7 +87,7 @@ public enum EaselOrientation {
         return new EaselPos(x, z, yaw, signOrient);
     }
 
-    public static int getPitchOffset(BlockFace face) {
+    public static int getYawOffset(BlockFace face) {
 
         switch (face) {
 
@@ -122,7 +101,7 @@ public enum EaselOrientation {
                 return 0;
 
             case EAST:
-                return -90;
+                return 90;
         }
         return 0;
     }
@@ -148,6 +127,29 @@ public enum EaselOrientation {
         }
         return new EaselPos(x, z, 0, null);
     }
+
+    public static EaselPos getFrameOffset(BlockFace face) {
+        int x = 0, z = 0;
+
+        switch (face) {
+            case NORTH:
+                z = -1;
+                break;
+            case EAST:
+                x = 1;
+                break;
+            case SOUTH:
+                z = 1;
+                break;
+            case WEST:
+                x = -1;
+                break;
+            default:
+                z = -1;
+        }
+        return new EaselPos(x, z, 0, null);
+    }
+
     public static EaselPos getSeatOffset(BlockFace orientation) {
         double x = 0, z = 0;
 
@@ -170,7 +172,27 @@ public enum EaselOrientation {
         }
         return new EaselPos(x, z, 0, null);
     }
+
+    public BlockFace getFace() {
+
+        switch (this) {
+
+            case NORTH:
+                return BlockFace.NORTH;
+
+            case WEST:
+                return BlockFace.WEST;
+
+            case SOUTH:
+                return BlockFace.SOUTH;
+
+            case EAST:
+                return BlockFace.EAST;
+        }
+        return null;
+    }
 }
+
 class EaselPos {
 
     private double x, z, yaw;
