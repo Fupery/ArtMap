@@ -21,9 +21,9 @@ public class CanvasRenderer extends MapRenderer {
     private int sizeFactor;
     private Artiste plugin;
 
-    public CanvasRenderer(Artiste plugin, MapView mapView) {
+    public CanvasRenderer(Artiste plugin, MapView mapView, int sizeFactor) {
         this.plugin = plugin;
-        sizeFactor = 4;
+        this.sizeFactor = sizeFactor;
 
         WorldMap map = new WorldMap(mapView);
         byte[] colours = map.getMap();
@@ -122,13 +122,5 @@ public class CanvasRenderer extends MapRenderer {
     private void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         iterator.add(new byte[]{((byte) x), ((byte) y)});
-    }
-
-    public byte[][] getPixelBuffer() {
-        return pixelBuffer;
-    }
-
-    public int getSizeFactor() {
-        return sizeFactor;
     }
 }
