@@ -49,6 +49,11 @@ public class Artiste extends JavaPlugin {
 
         if (setupRegistry()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
+
+            if (maps.getConfigurationSection("artworks") == null) {
+                maps.createSection("artworks");
+                updateMaps();
+            }
         }
 
 //        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
@@ -60,6 +65,10 @@ public class Artiste extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        if (artistHandler != null) {
+            artistHandler.getProtocol().close();
+        }
         FileConfiguration config = getConfig();
 
         if (backgroundID != config.getInt("backgroundID")) {
@@ -91,6 +100,23 @@ public class Artiste extends JavaPlugin {
 
     public FileConfiguration getMaps() {
         return maps;
+    }
+
+    public void updateMaps() {
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    maps.save(mapList);
+                    maps = YamlConfiguration.loadConfiguration(mapList);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public TrigTable getTrigTable() {

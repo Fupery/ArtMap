@@ -49,7 +49,7 @@ public class ArtistHandler {
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
 
-                if (artists.containsKey(sender)) {
+                if (artists != null && artists.containsKey(sender)) {
 
                     CanvasRenderer renderer = artists.get(sender);
 
@@ -111,6 +111,7 @@ public class ArtistHandler {
                             return null;
                         }
                     }
+
                 }
                 return super.onPacketInAsync(sender, channel, packet);
             }
@@ -130,14 +131,22 @@ public class ArtistHandler {
         protocol.uninjectPlayer(player);
         Entity seat = player.getVehicle();
         player.leaveVehicle();
-        seat.remove();
+
+        if (seat != null) {
+            seat.remove();
+        }
         CanvasRenderer renderer = artists.get(player);
         renderer.clearRenderers();
         artists.remove(player);
 
         if (artists.size() == 0) {
+            protocol.close();
             plugin.setArtistHandler(null);
         }
+    }
+
+    public ArtistProtocol getProtocol() {
+        return protocol;
     }
 
     public Artiste getPlugin() {

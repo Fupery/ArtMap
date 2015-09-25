@@ -3,14 +3,15 @@ package me.Fupery.Artiste.Artist;
 import com.comphenix.tinyprotocol.Reflection;
 import com.comphenix.tinyprotocol.Reflection.FieldAccessor;
 import com.comphenix.tinyprotocol.Reflection.MethodInvoker;
-import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -28,113 +29,26 @@ public abstract class ArtistProtocol {
     private static final FieldAccessor<Channel> getChannel =
             Reflection.getField("{nms}.NetworkManager", Channel.class, 0);
 
-    private static final Class<Object> minecraftServerClass =
-            Reflection.getUntypedClass("{nms}.MinecraftServer");
-    private static final Class<Object> serverConnectionClass =
-            Reflection.getUntypedClass("{nms}.ServerConnection");
-    private static final FieldAccessor<Object> getMinecraftServer =
-            Reflection.getField("{obc}.CraftServer", minecraftServerClass, 0);
-    private static final FieldAccessor<Object> getServerConnection =
-            Reflection.getField(minecraftServerClass, serverConnectionClass, 0);
-    private static final MethodInvoker getNetworkMarkers =
-            Reflection.getTypedMethod(serverConnectionClass, null, List.class, serverConnectionClass);
-    protected volatile boolean closed;
     protected Plugin plugin;
-    // Speedup channel lookup
+
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
-    // List of network markers
-    private List<Object> networkManagers;
-    // Injected channel handlers
-    private List<Channel> serverChannels = Lists.newArrayList();
-    private ChannelInboundHandlerAdapter serverChannelHandler;
-    private ChannelInitializer<Channel> beginInitProtocol;
-    private ChannelInitializer<Channel> endInitProtocol;
+
     private String handlerName = "ArtisteHandler";
 
     public ArtistProtocol(Plugin plugin) {
         this.plugin = plugin;
-        registerChannelHandler();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void registerChannelHandler() {
-        Object server = getMinecraftServer.get(Bukkit.getServer());
-        Object serverConnection = getServerConnection.get(server);
-        boolean looking = true;
-
-        // We need to synchronize against this list
-        networkManagers = (List<Object>) getNetworkMarkers.invoke(null, serverConnection);
-        createServerChannelHandler();
-
-        // Find the correct list, or implicitly throw an exception
-        for (int i = 0; looking; i++) {
-            List<Object> list = Reflection.getField(
-                    serverConnection.getClass(), List.class, i).get(serverConnection);
-
-            for (Object item : list) {
-
-                if (!ChannelFuture.class.isInstance(item)) {
-                    break;
-                }
-
-                // Channel future that contains the server connection
-                Channel serverChannel = ((ChannelFuture) item).channel();
-
-                serverChannels.add(serverChannel);
-                serverChannel.pipeline().addFirst(serverChannelHandler);
-                looking = false;
-            }
-        }
-    }
-
-    private void createServerChannelHandler() {
-        // Handle connected channels
-        endInitProtocol = new ChannelInitializer<Channel>() {
-
-            @Override
-            public void initChannel(Channel channel) throws Exception {
-
-                try {
-
-                    synchronized (networkManagers) {
-                        // Stop injecting channels
-                        if (!closed) {
-                            injectChannel(channel);
-                        }
-                    }
-
-                } catch (Exception e) {
-                    plugin.getLogger().log(Level.SEVERE,
-                            "Cannot inject incoming channel " + channel, e);
-                }
-            }
-
-        };
-
-        beginInitProtocol = new ChannelInitializer<Channel>() {
-
-            @Override
-            public void initChannel(Channel channel) throws Exception {
-                channel.pipeline().addLast(endInitProtocol);
-            }
-
-        };
-
-        serverChannelHandler = new ChannelInboundHandlerAdapter() {
-
-            @Override
-            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                Channel channel = (Channel) msg;
-
-                channel.pipeline().addFirst(beginInitProtocol);
-                ctx.fireChannelRead(msg);
-            }
-        };
     }
 
     public void injectPlayer(Player player) {
+
         Channel channel = getChannel(player);
-        injectChannel(channel).player = player;
+        PacketHandler interceptor = (PacketHandler) channel.pipeline().get(handlerName);
+
+        if (interceptor == null) {
+            interceptor = new PacketHandler();
+            channel.pipeline().addBefore("packet_handler", handlerName, interceptor);
+        }
+        interceptor.player = player;
     }
 
     public void uninjectPlayer(Player player) {
@@ -149,28 +63,7 @@ public abstract class ArtistProtocol {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean isInjected(Player player) {
-        Channel channel = getChannel(player);
-        return (channel != null && channel.pipeline().get(handlerName) != null);
-    }
-
-    private PacketHandler injectChannel(Channel channel) {
-
-        try {
-            PacketHandler interceptor = (PacketHandler) channel.pipeline().get(handlerName);
-
-            if (interceptor == null) {
-                interceptor = new PacketHandler();
-                channel.pipeline().addBefore("packet_handler", handlerName, interceptor);
-            }
-
-            return interceptor;
-
-        } catch (IllegalArgumentException e) {
-            return (PacketHandler) channel.pipeline().get(handlerName);
-        }
+        channelLookup.remove(player.getName());
     }
 
     public Channel getChannel(Player player) {
@@ -184,6 +77,17 @@ public abstract class ArtistProtocol {
         }
 
         return channel;
+    }
+
+    public void close() {
+
+        if (channelLookup != null && channelLookup.size() > 0) {
+
+            for (String name : channelLookup.keySet()) {
+                uninjectPlayer(Bukkit.getPlayer(name));
+            }
+            channelLookup.clear();
+        }
     }
 
     public Object onPacketInAsync(Player player, Channel channel, Object packet) {
