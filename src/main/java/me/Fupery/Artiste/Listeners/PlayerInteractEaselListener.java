@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import static me.Fupery.Artiste.Easel.Easel.getEasel;
+import static me.Fupery.Artiste.Utils.Formatting.breakCanvas;
+import static me.Fupery.Artiste.Utils.Formatting.playerError;
 
 public class PlayerInteractEaselListener implements Listener {
 
@@ -130,6 +132,7 @@ public class PlayerInteractEaselListener implements Listener {
 
                 if (Easel.checkForEasel(plugin, event.getBlock().getLocation())) {
                     event.setCancelled(true);
+                    event.getPlayer().sendMessage(playerError(breakCanvas));
                 }
             }
         }
