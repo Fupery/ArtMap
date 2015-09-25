@@ -1,5 +1,6 @@
 package me.Fupery.Artiste;
 
+import me.Fupery.Artiste.IO.MapArt;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -59,7 +60,7 @@ public class Commands implements CommandExecutor {
                 2, "/artmap delete <title>", deleted, this) {
             @Override
             public boolean run(CommandSender sender, String[] args) {
-                //delete artwork
+                MapArt.deleteArtwork(plugin, args[1]);
                 return true;
             }
         };

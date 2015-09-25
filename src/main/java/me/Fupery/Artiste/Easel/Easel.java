@@ -3,6 +3,7 @@ package me.Fupery.Artiste.Easel;
 import me.Fupery.Artiste.Artist.ArtistHandler;
 import me.Fupery.Artiste.Artist.CanvasRenderer;
 import me.Fupery.Artiste.Artiste;
+import me.Fupery.Artiste.IO.MapArt;
 import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -207,7 +208,9 @@ public class Easel {
                         Date d = new Date();
 
                         ItemMeta meta = item.getItemMeta();
-                        meta.setDisplayName(plugin.getNameQueue().get(player));
+                        String title = plugin.getNameQueue().get(player);
+
+                        meta.setDisplayName(title);
 
                         meta.setLore(Arrays.asList(
                                 ChatColor.GREEN + "Player Artwork",
@@ -217,7 +220,7 @@ public class Easel {
                         player.setItemInHand(item);
 
                         frame.setItem(new ItemStack(Material.AIR));
-                        //add to map list
+                        MapArt.saveArtwork(plugin, item.getDurability(), title, player);
                         plugin.getNameQueue().remove(player);
 
                     } else {
