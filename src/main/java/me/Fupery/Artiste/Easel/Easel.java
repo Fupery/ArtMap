@@ -6,7 +6,6 @@ import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.MapArt;
 import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,17 +17,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 
 import static me.Fupery.Artiste.Utils.Formatting.*;
 
 public class Easel {
 
-    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static String arbitrarySignID = "*{=}*";
 
     Artiste plugin;
@@ -192,24 +186,12 @@ public class Easel {
 
                     if (player.getItemInHand().getType() == Material.AIR) {
 
-                        ItemStack item = frame.getItem();
+                        MapArt art = new MapArt(frame.getItem().getDurability(),
+                                plugin.getNameQueue().get(player), player);
 
-                        Date d = new Date();
-
-                        ItemMeta meta = item.getItemMeta();
-                        String title = plugin.getNameQueue().get(player);
-
-                        meta.setDisplayName(title);
-
-                        meta.setLore(Arrays.asList(
-                                ChatColor.GREEN + "Player Artwork",
-                                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
-                                dateFormat.format(d)));
-                        item.setItemMeta(meta);
-                        player.setItemInHand(item);
-
+                        player.setItemInHand(art.getMapItem());
                         frame.setItem(new ItemStack(Material.AIR));
-                        MapArt.saveArtwork(plugin, item.getDurability(), title, player);
+                        art.saveArtwork(plugin);
                         plugin.getNameQueue().remove(player);
 
                     } else {

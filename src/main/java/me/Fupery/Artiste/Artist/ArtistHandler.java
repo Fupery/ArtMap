@@ -133,6 +133,7 @@ public class ArtistHandler {
             seat.remove();
         }
         CanvasRenderer renderer = artists.get(player);
+        renderer.saveMap();
         renderer.clearRenderers();
         artists.remove(player);
 

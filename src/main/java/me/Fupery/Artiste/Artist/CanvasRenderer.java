@@ -25,6 +25,7 @@ public class CanvasRenderer extends MapRenderer {
     private float lastYaw, lastPitch;
     private int yawOffset;
     private MapView mapView;
+    private boolean active;
     private Artiste plugin;
 
     public CanvasRenderer(Artiste plugin, int resolutionFactor, Easel easel) {
@@ -34,6 +35,7 @@ public class CanvasRenderer extends MapRenderer {
         mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
         clearRenderers();
         mapView.addRenderer(this);
+        active = true;
         loadMap();
     }
 
@@ -45,7 +47,7 @@ public class CanvasRenderer extends MapRenderer {
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
-        if (dirtyPixels != null && iterator != null
+        if (active && dirtyPixels != null && iterator != null
                 && pixelBuffer != null && dirtyPixels.size() > 0) {
             while (iterator.hasPrevious()) {
 
@@ -60,12 +62,6 @@ public class CanvasRenderer extends MapRenderer {
                     }
                 }
                 iterator.remove();
-            }
-        }
-        if (canvas.getCursors().size() > 0) {
-
-            for (int i = 0; i < canvas.getCursors().size(); i++) {
-                canvas.getCursors().removeCursor(canvas.getCursors().getCursor(i));
             }
         }
     }
@@ -133,6 +129,8 @@ public class CanvasRenderer extends MapRenderer {
         byte[] pixel = new byte[2];
         yaw %= 360;
 
+        Bukkit.getLogger().info(yaw + "");
+
         if (yaw > 0) {
             yaw -= yawOffset;
 
@@ -140,6 +138,11 @@ public class CanvasRenderer extends MapRenderer {
             yaw += yawOffset;
         }
 
+        if (yaw > 45 || yaw < -45) {
+            return null;
+        }
+
+        //Corrects for parallax error in player's view
         double pitchAdjust = yaw * ((0.0044 * yaw) - 0.0075) * 0.0264 * pitch;
 
         if (pitch > 0) {
@@ -181,6 +184,32 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
+    public void saveMap() {
+
+        WorldMap map = new WorldMap(mapView);
+        byte[] colours = new byte[128 * 128];
+
+        for (int x = 0; x < (128 / resolutionFactor); x++) {
+
+            for (int y = 0; y < (128 / resolutionFactor); y++) {
+
+                int ix = x * resolutionFactor;
+                int iy = y * resolutionFactor;
+
+                for (int px = 0; px < resolutionFactor; px++) {
+
+                    for ( int py = 0; py < resolutionFactor; py++) {
+
+                        colours[(px + ix) + ((py + iy) * 128)] = pixelBuffer[x][y];
+                    }
+                }
+            }
+        }
+        map.setMap(colours);
+        clearRenderers();
+        active = false;
+    }
+
     private void loadMap() {
         WorldMap map = new WorldMap(mapView);
         byte[] colours = map.getMap();
@@ -215,7 +244,7 @@ public class CanvasRenderer extends MapRenderer {
                 return 0;
 
             case EAST:
-                return 90;
+                return 270;
         }
         return 0;
     }

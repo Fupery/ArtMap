@@ -2,12 +2,22 @@ package me.Fupery.Artiste.IO;
 
 import me.Fupery.Artiste.Artiste;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 public class MapArt {
+
+    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     short mapID;
     String title;
@@ -19,7 +29,26 @@ public class MapArt {
         this.player = player;
     }
 
-    public static MapArt saveArtwork(Artiste plugin, short mapID, String title, OfflinePlayer player) {
+    public ItemStack getMapItem() {
+
+        ItemStack map = new ItemStack(Material.MAP, 1, mapID);
+
+        Date d = new Date();
+
+        ItemMeta meta = map.getItemMeta();
+
+        meta.setDisplayName(title);
+
+        meta.setLore(Arrays.asList(
+                ChatColor.GREEN + "Player Artwork",
+                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
+                dateFormat.format(d)));
+        map.setItemMeta(meta);
+
+        return map;
+    }
+
+    public MapArt saveArtwork(Artiste plugin) {
 
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
