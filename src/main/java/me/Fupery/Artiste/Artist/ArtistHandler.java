@@ -21,6 +21,7 @@ public class ArtistHandler {
     private Artiste plugin;
     private ArtistProtocol protocol;
 
+    //packets to listen for
     private Class<?> playerLookClass =
             Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
     private Reflection.FieldAccessor<Float> playerYaw =
@@ -41,10 +42,6 @@ public class ArtistHandler {
         artists = new ConcurrentHashMap<>();
 
         protocol = new ArtistProtocol(plugin) {
-            @Override
-            public Object onPacketOutAsync(Player receiver, Channel channel, Object packet) {
-                return super.onPacketOutAsync(receiver, channel, packet);
-            }
 
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
@@ -67,7 +64,7 @@ public class ArtistHandler {
                         }
                         return packet;
 
-                        //adds pixels when the player clicks
+                    //adds pixels when the player clicks
                     } else if (playerSwingArmClass.isInstance(packet)) {
 
                         ItemStack item = sender.getItemInHand();
@@ -77,7 +74,7 @@ public class ArtistHandler {
 
                             renderer.drawPixel(DyeColor.getByData((byte) (15 - item.getDurability())));
 
-                            //paint bucket tool
+                        //paint bucket tool
                         } else if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {
@@ -103,7 +100,7 @@ public class ArtistHandler {
                         }
                         return null;
 
-                        //listens for when the player dismounts the easel
+                    //listens for when the player dismounts the easel
                     } else if (playerDismountClass.isInstance(packet)) {
 
                         if (playerDismount.get(packet)) {
