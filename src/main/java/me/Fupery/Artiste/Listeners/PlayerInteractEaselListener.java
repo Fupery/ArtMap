@@ -2,7 +2,7 @@ package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
-import me.Fupery.Artiste.Easel.EaselPart;
+import me.Fupery.Artiste.Easel.PartType;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -31,7 +31,7 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
-        EaselPart part = getPartType(event.getRightClicked());
+        PartType part = getPartType(event.getRightClicked());
 
         if (part != null) {
 
@@ -54,7 +54,7 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
-        EaselPart part = getPartType(event.getRightClicked());
+        PartType part = getPartType(event.getRightClicked());
 
         if (part != null) {
 
@@ -78,7 +78,7 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
-        EaselPart part = getPartType(event.getEntity());
+        PartType part = getPartType(event.getEntity());
 
         if (part != null) {
 
@@ -100,7 +100,7 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 
-        EaselPart part = getPartType(event.getEntity());
+        PartType part = getPartType(event.getEntity());
 
         if (part != null) {
 
@@ -155,13 +155,13 @@ public class PlayerInteractEaselListener implements Listener {
         }
     }
 
-    private EaselPart getPartType(Entity entity) {
+    private PartType getPartType(Entity entity) {
 
         if (entity.getType() == EntityType.ARMOR_STAND ||
                 entity.getType() == EntityType.ITEM_FRAME) {
 
             return (entity.getType() == EntityType.ARMOR_STAND) ?
-                    EaselPart.STAND : EaselPart.FRAME;
+                    PartType.STAND : PartType.FRAME;
         }
         return null;
     }

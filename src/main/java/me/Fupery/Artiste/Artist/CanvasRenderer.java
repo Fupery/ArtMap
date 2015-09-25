@@ -2,11 +2,11 @@ package me.Fupery.Artiste.Artist;
 
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
-import me.Fupery.Artiste.Easel.EaselOrientation;
 import me.Fupery.Artiste.IO.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -30,7 +30,7 @@ public class CanvasRenderer extends MapRenderer {
     public CanvasRenderer(Artiste plugin, int resolutionFactor, Easel easel) {
         this.plugin = plugin;
         this.resolutionFactor = resolutionFactor;
-        yawOffset = EaselOrientation.getYawOffset(easel.getFrame().getFacing());
+        yawOffset = getYawOffset(easel.getFrame().getFacing());
         mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
         clearRenderers();
         mapView.addRenderer(this);
@@ -199,6 +199,25 @@ public class CanvasRenderer extends MapRenderer {
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
+    }
+
+    private static int getYawOffset(BlockFace face) {
+
+        switch (face) {
+
+            case SOUTH:
+                return 180;
+
+            case WEST:
+                return 90;
+
+            case NORTH:
+                return 0;
+
+            case EAST:
+                return 90;
+        }
+        return 0;
     }
 
     public float getLastYaw() {

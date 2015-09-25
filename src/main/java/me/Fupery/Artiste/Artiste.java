@@ -1,14 +1,13 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.Artist.ArtistHandler;
+import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
-import me.Fupery.Artiste.Listeners.CanvasListener;
-import me.Fupery.Artiste.Listeners.PlayerInteractEaselListener;
-import me.Fupery.Artiste.Listeners.PlayerInteractListener;
-import me.Fupery.Artiste.Listeners.PlayerQuitListener;
+import me.Fupery.Artiste.Listeners.*;
 import me.Fupery.Artiste.Utils.TrigTable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,6 +29,7 @@ public class Artiste extends JavaPlugin {
     private TrigTable trigTable;
     private int backgroundID;
     private ConcurrentHashMap<Player, String> nameQueue;
+    private ConcurrentHashMap<Location, Easel> easels;
     private ArtistHandler artistHandler;
 
     @Override
@@ -44,8 +44,11 @@ public class Artiste extends JavaPlugin {
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
         manager.registerEvents(new CanvasListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
+        manager.registerEvents(new ChunkUnloadListener(this), this);
 
         this.getCommand("artmap").setExecutor(new Commands(this));
+
+        easels = new ConcurrentHashMap<>();
 
         if (setupRegistry()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
@@ -133,6 +136,10 @@ public class Artiste extends JavaPlugin {
 
     public ConcurrentHashMap<Player, String> getNameQueue() {
         return nameQueue;
+    }
+
+    public ConcurrentHashMap<Location, Easel> getEasels() {
+        return easels;
     }
 
     public int getBackgroundID() {
