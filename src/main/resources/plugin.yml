@@ -12,7 +12,7 @@ commands:
 
 permissions:
   artiste.artist:
-    description: Lower tier players can only publish private artworks
+    description: Allows creation of artworks
     default: op
   artiste.admin:
     description: Allows administrative commands
