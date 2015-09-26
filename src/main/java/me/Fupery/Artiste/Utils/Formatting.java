@@ -10,9 +10,12 @@ public class Formatting {
             emptyHand = "Use an empty hand to retrieve your artwork.",
             elseUsing = "Someone else is using this canvas!",
             saveUsage = "Use " + ChatColor.YELLOW + "/artmap save <title> " + ChatColor.GOLD + "to save your artwork.",
-            punchCanvas = "Now left-click your artwork to save.",
-            painting = "Right click the canvas with dye or a paint bucket to paint.",
-            deleted = "Sucessfully deleted.";
+            punchCanvas = "Now Left-Click your artwork to save.",
+            breakCanvas = "Shift + Right-Click the easel to break it.",
+            painting = "Right-Click the canvas with dye or a paint bucket to paint.",
+            deleted = "Sucessfully deleted.",
+            noCraftPerm = "You can't copy other players' artworks",
+            craftHelp = "";
 
     public static String playerMessage(String string) {
         return prefix + ChatColor.GOLD + string;
