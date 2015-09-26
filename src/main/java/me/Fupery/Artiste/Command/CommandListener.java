@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Art;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,6 +41,13 @@ public class CommandListener implements CommandExecutor {
 
                     if (!new TitleFilter(plugin, args[1]).check()) {
                         msg.message = playerError(badTitle);
+                        return false;
+                    }
+
+                    MapArt art = MapArt.getArtwork(plugin, args[1]);
+
+                    if (art != null) {
+                        msg.message = playerError(titleUsed);
                         return false;
                     }
 

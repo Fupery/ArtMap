@@ -29,7 +29,8 @@ public class Formatting {
             helpMessage = ChatColor.GOLD + "Craft an Easel and Canvas to create artworks.\n" +
                     "Use Dyes and PaintBuckets to paint on your canvas.",
             badTitle = "Invalid Title. Titles must be between 3 and 16 characters, " +
-                    "and consist of only letters and numbers.";
+                    "and consist of only letters and numbers.",
+            titleUsed = "Sorry, this title is already being used.";
 
     public static String playerMessage(String string) {
         return prefix + ChatColor.GOLD + string;

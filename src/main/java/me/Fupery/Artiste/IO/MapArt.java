@@ -49,10 +49,13 @@ public class MapArt {
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
             ConfigurationSection map = mapList.getConfigurationSection(title);
-            int mapIDValue = map.getInt(mapID);
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistID)));
-            String date = map.getString(dateID);
-            return new MapArt(((short) mapIDValue), title, player, date);
+
+            if (map != null) {
+                int mapIDValue = map.getInt(mapID);
+                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistID)));
+                String date = map.getString(dateID);
+                return new MapArt(((short) mapIDValue), title, player, date);
+            }
         }
         return null;
     }
