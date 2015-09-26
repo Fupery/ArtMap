@@ -88,6 +88,7 @@ public class MapArt {
                 //remove map from list
                 mapList.set(title, null);
                 plugin.updateMaps();
+                return true;
             }
         }
         return false;

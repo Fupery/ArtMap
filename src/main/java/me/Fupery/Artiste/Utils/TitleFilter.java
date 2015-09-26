@@ -38,6 +38,7 @@ public class TitleFilter {
         return (title.length() >= 3 && title.length() <= 16);
     }
 
+    //ensure characters are only alphabetic, numerical, or underscores
     private boolean checkValidType() {
 
         for (char c : chars) {
@@ -52,6 +53,7 @@ public class TitleFilter {
         return true;
     }
 
+    //removes repeat characters & underscores
     private String replaceCharacters() {
 
         String adjString = "";

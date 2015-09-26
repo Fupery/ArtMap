@@ -21,13 +21,12 @@ public class Commands implements CommandExecutor {
 
     private Artiste plugin;
     private ArtisteCommand save, delete;
-    private FileConfiguration wordfilter;
 
     public Commands(final Artiste plugin) {
         this.plugin = plugin;
 
         save = new ArtisteCommand("save", "artiste.artist",
-                2, "/artmap save <title>", punchCanvas, this) {
+                2, "/artmap save <title>", null, this) {
 
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -43,6 +42,8 @@ public class Commands implements CommandExecutor {
                     }
 
                     if (queue != null) {
+
+                        msg.message = playerMessage(String.format(punchCanvas, args[1]));
 
                         if (queue.containsKey(player)) {
                             queue.remove(player);
@@ -68,11 +69,16 @@ public class Commands implements CommandExecutor {
         };
 
         delete = new ArtisteCommand("delete", "artiste.admin",
-                2, "/artmap delete <title>", deleted, this) {
+                2, "/artmap delete <title>", null, this) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                MapArt.deleteArtwork(plugin, args[1]);
-                return true;
+
+                if (MapArt.deleteArtwork(plugin, args[1])) {
+                    msg.message = playerMessage(String.format(deleted, args[1]));
+                    return true;
+                }
+                msg.message = playerError(String.format(mapNotFound, args[1]));
+                return false;
             }
         };
 
