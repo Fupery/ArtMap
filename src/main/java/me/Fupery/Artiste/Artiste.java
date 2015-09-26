@@ -5,7 +5,7 @@ import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.*;
-import me.Fupery.Artiste.Utils.TrigTable;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -16,9 +16,12 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Artiste extends JavaPlugin {
 
@@ -26,7 +29,7 @@ public class Artiste extends JavaPlugin {
 
     private File mapList;
     private FileConfiguration maps;
-    private TrigTable trigTable;
+    private List<String> titleFilter;
     private int backgroundID;
     private ConcurrentHashMap<Player, String> nameQueue;
     private ConcurrentHashMap<Location, Easel> easels;
@@ -35,9 +38,7 @@ public class Artiste extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        Recipe.addCanvas();
-        Recipe.addEasel();
-        Recipe.addBucket();
+        Recipe.setupRecipes(this);
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new PlayerInteractListener(this), this);
@@ -45,6 +46,7 @@ public class Artiste extends JavaPlugin {
         manager.registerEvents(new CanvasListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
         manager.registerEvents(new ChunkUnloadListener(this), this);
+        manager.registerEvents(new PlayerCraftListener(this), this);
 
         this.getCommand("artmap").setExecutor(new Commands(this));
 
@@ -58,8 +60,6 @@ public class Artiste extends JavaPlugin {
                 updateMaps();
             }
         }
-
-//        trigTable = new TrigTable(40, ((float) .6155), ((short) 4));
 
         nameQueue = new ConcurrentHashMap<>();
 
@@ -85,6 +85,15 @@ public class Artiste extends JavaPlugin {
         saveDefaultConfig();
 
         mapList = new File(getDataFolder(), "mapList.yml");
+
+        FileConfiguration filter =
+                YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
+
+            titleFilter = filter.getStringList("blacklisted");
+
+        for (String title : titleFilter) {
+            Bukkit.getLogger().info(title);
+        }
 
         try {
 
@@ -122,10 +131,6 @@ public class Artiste extends JavaPlugin {
         });
     }
 
-    public TrigTable getTrigTable() {
-        return trigTable;
-    }
-
     public ArtistHandler getArtistHandler() {
         return artistHandler;
     }
@@ -140,6 +145,10 @@ public class Artiste extends JavaPlugin {
 
     public ConcurrentHashMap<Location, Easel> getEasels() {
         return easels;
+    }
+
+    public List<String> getTitleFilter() {
+        return titleFilter;
     }
 
     public int getBackgroundID() {

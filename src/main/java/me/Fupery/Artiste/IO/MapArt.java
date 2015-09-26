@@ -18,10 +18,11 @@ import java.util.UUID;
 public class MapArt {
 
     public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    public static final String artworkTag = "§aPlayer Artwork";
 
-    short mapID;
-    String title;
-    OfflinePlayer player;
+    private short mapID;
+    private String title;
+    private OfflinePlayer player;
 
     public MapArt(short mapID, String title, OfflinePlayer player) {
         this.mapID = mapID;
@@ -40,7 +41,7 @@ public class MapArt {
         meta.setDisplayName(title);
 
         meta.setLore(Arrays.asList(
-                ChatColor.GREEN + "Player Artwork",
+                artworkTag,
                 ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
                 dateFormat.format(d)));
         map.setItemMeta(meta);
@@ -90,5 +91,17 @@ public class MapArt {
             }
         }
         return false;
+    }
+
+    public short getMapID() {
+        return mapID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public OfflinePlayer getPlayer() {
+        return player;
     }
 }
