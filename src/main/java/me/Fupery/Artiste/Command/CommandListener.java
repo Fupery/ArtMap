@@ -1,5 +1,6 @@
-package me.Fupery.Artiste;
+package me.Fupery.Artiste.Command;
 
+import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.MapArt;
 import me.Fupery.Artiste.Utils.TitleFilter;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,22 +13,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.Fupery.Artiste.Utils.Formatting.*;
 
-interface AbstractCommand {
-    boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg);
-}
-
-public class Commands implements CommandExecutor {
+public class CommandListener implements CommandExecutor {
 
     private Artiste plugin;
     private HashMap<String, ArtisteCommand> commands;
 
-    public Commands(final Artiste plugin) {
+    public CommandListener(final Artiste plugin) {
         this.plugin = plugin;
         commands = new HashMap<>();
 
@@ -159,7 +155,7 @@ public class Commands implements CommandExecutor {
                                 , pg, list, true);
 
                 if (footerButton != null) {
-                    multiMsg.footer.addExtra(footerButton);
+                    multiMsg.getFooter().addExtra(footerButton);
                 }
 
                 //sends the list to the player
@@ -205,140 +201,5 @@ public class Commands implements CommandExecutor {
 
     public Artiste getPlugin() {
         return plugin;
-    }
-}
-
-abstract class ArtisteCommand implements AbstractCommand {
-
-    protected Artiste plugin;
-    protected String command, permission, usage, success;
-    protected int minArgs, maxArgs;
-    protected final AbstractCommand artisteCommand = this;
-
-    protected ArtisteCommand(String command, String permission, int minArgs, int maxArgs,
-                             String usage, String success, Commands commands) {
-        this.command = command;
-        this.permission = permission;
-        this.plugin = commands.getPlugin();
-        this.minArgs = minArgs;
-        this.maxArgs = maxArgs;
-        commands.getCommands().put(command, this);
-
-        if (usage != null) {
-            this.usage = usage;
-
-        } else {
-            this.usage = null;
-        }
-
-        if (success != null) {
-            this.success = success;
-
-        } else {
-            this.success = null;
-        }
-    }
-
-    void runPlayerCommand(final CommandSender sender, final String args[]) {
-
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-
-                ReturnMessage returnMsg = new ReturnMessage(sender, null);
-
-                if (permission == null || sender.hasPermission(permission)) {
-
-                    if (args.length >= minArgs && args.length <= maxArgs) {
-
-                        if (artisteCommand.runCommand(sender, args, returnMsg)) {
-
-                            if (success != null) {
-                                returnMsg.message = playerMessage(success);
-                            }
-                        }
-
-                    } else {
-                        returnMsg.message = playerError(usage);
-                    }
-
-                } else {
-                    returnMsg.message = playerError(noperm);
-                }
-
-                if (returnMsg.message != null) {
-                    Bukkit.getScheduler().runTask(plugin, returnMsg);
-                }
-            }
-        });
-    }
-}
-
-class ReturnMessage implements Runnable {
-
-    CommandSender sender;
-    String message;
-
-    ReturnMessage(CommandSender sender, String message) {
-        this.sender = sender;
-        this.message = message;
-    }
-
-    @Override
-    public void run() {
-        sender.sendMessage(message);
-    }
-}
-
-class MultiLineReturnMessage extends ReturnMessage {
-
-    private String[] messages;
-    TextComponent footer;
-
-    MultiLineReturnMessage(CommandSender sender, String message,
-                           int pages, String[] msgs, boolean footer) {
-        super(sender, message);
-        messages = null;
-
-        addMessages(pages, msgs);
-    }
-
-    @Override
-    public void run() {
-        sender.sendMessage(seperator);
-        sender.sendMessage(message);
-        sender.sendMessage(messages);
-
-        if (footer != null && sender instanceof Player) {
-            ((Player) sender).spigot().sendMessage(footer);
-        }
-    }
-
-    private void addMessages(int pg, String[] msgs) {
-        int i = pg * 8;
-        String[] returnMsgs;
-
-        if (msgs.length <= 8) {
-            returnMsgs = msgs;
-
-        } else {
-
-            while (msgs.length < i && i >= 8) {
-                i -= 8;
-            }
-            int k;
-
-            if (msgs.length > i + 8) {
-                k = i + 8;
-
-            } else {
-                k = msgs.length;
-            }
-
-            returnMsgs = Arrays.copyOfRange(msgs, i, k);
-        }
-        footer = new TextComponent(String.format(listFooterPage, i / 8, msgs.length / 8));
-        messages = returnMsgs;
     }
 }
