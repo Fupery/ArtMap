@@ -7,9 +7,11 @@ author: Fupery
 
 commands:
   artmap:
-    usage: /artmap
-    description: does stuff
-
+      usage:  |
+        <command> save <title> : Saves your artwork
+        <command> delete <title> : Removes your artwork
+        <command> list <playername|all> <pg> : lists artworks
+        <command> help : Displays help
 permissions:
   artiste.artist:
     description: Allows creation of artworks
