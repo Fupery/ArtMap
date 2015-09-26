@@ -11,28 +11,42 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
+
+import static me.Fupery.Artiste.Utils.Formatting.listLine;
 
 public class MapArt {
 
     public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static final String artworkTag = "§aPlayer Artwork";
+    public static final String artworks = "artworks";
+    public static final String artistID = "artist";
+    public static final String mapID = "mapID";
+    public static final String dateID = "date";
 
-    private short mapID;
+
+    private short mapIDValue;
     private String title;
     private OfflinePlayer player;
+    private String date;
 
-    public MapArt(short mapID, String title, OfflinePlayer player) {
-        this.mapID = mapID;
+    public MapArt(short mapIDValue, String title, OfflinePlayer player) {
+        this.mapIDValue = mapIDValue;
         this.title = title;
         this.player = player;
+        this.date = dateFormat.format(new Date());
+    }
+
+    private MapArt(short mapIDValue, String title, OfflinePlayer player, String date) {
+        this.mapIDValue = mapIDValue;
+        this.title = title;
+        this.player = player;
+        this.date = date;
     }
 
     public ItemStack getMapItem() {
 
-        ItemStack map = new ItemStack(Material.MAP, 1, mapID);
+        ItemStack map = new ItemStack(Material.MAP, 1, mapIDValue);
 
         Date d = new Date();
 
@@ -52,12 +66,13 @@ public class MapArt {
     public MapArt saveArtwork(Artiste plugin) {
 
         if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
             ConfigurationSection map = mapList.createSection(title);
-            map.set("id", mapID);
-            map.set("artist", player.getUniqueId().toString());
+            map.set(mapID, mapIDValue);
+            map.set(artistID, player.getUniqueId().toString());
+            map.set(dateID, date);
             plugin.updateMaps();
-            return new MapArt(mapID, title, player);
+            return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
     }
@@ -65,11 +80,12 @@ public class MapArt {
     public static MapArt getArtwork(Artiste plugin, String title) {
 
         if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
             ConfigurationSection map = mapList.getConfigurationSection(title);
-            int mapID = map.getInt("id");
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString("artist")));
-            return new MapArt(((short) mapID), title, player);
+            int mapIDValue = map.getInt(mapID);
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistID)));
+            String date = map.getString(dateID);
+            return new MapArt(((short) mapIDValue), title, player, date);
         }
         return null;
     }
@@ -77,13 +93,13 @@ public class MapArt {
     public static boolean deleteArtwork(Artiste plugin, String title) {
 
         if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
             ConfigurationSection map = mapList.getConfigurationSection(title);
 
             if (map != null) {
-                int mapID = map.getInt("id");
+                int mapIDValue = map.getInt(mapID);
                 //clear map data
-                WorldMap worldMap = new WorldMap(Bukkit.getMap(((short) mapID)));
+                WorldMap worldMap = new WorldMap(Bukkit.getMap(((short) mapIDValue)));
                 worldMap.delete();
                 //remove map from list
                 mapList.set(title, null);
@@ -94,12 +110,34 @@ public class MapArt {
         return false;
     }
 
-    public short getMapID() {
-        return mapID;
-    }
+    public static String[] listArtworks(Artiste plugin, String artist) {
+        ArrayList<String> returnList = null;
 
-    public String getTitle() {
-        return title;
+        if (plugin.getMaps() != null) {
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+
+            Set<String> list = mapList.getKeys(false);
+            returnList = new ArrayList<>();
+
+            int i = 0;
+            for (String title : list) {
+                MapArt art = getArtwork(plugin, title);
+
+                if (art != null) {
+
+                    if (!artist.equals("all")) {
+
+                        if (!art.getPlayer().getName().equalsIgnoreCase(artist)) {
+                            continue;
+                        }
+                    }
+                    returnList.add(listLine(title, art.player.getName(), art.date, art.mapIDValue));
+                    i ++;
+                }
+            }
+            return returnList.toArray(new String[returnList.size()]);
+        }
+        return null;
     }
 
     public OfflinePlayer getPlayer() {
