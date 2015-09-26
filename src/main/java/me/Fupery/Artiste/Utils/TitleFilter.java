@@ -1,7 +1,6 @@
 package me.Fupery.Artiste.Utils;
 
 import me.Fupery.Artiste.Artiste;
-import org.bukkit.Bukkit;
 
 public class TitleFilter {
 

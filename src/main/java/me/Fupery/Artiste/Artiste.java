@@ -5,7 +5,6 @@ import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.*;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -17,11 +16,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class Artiste extends JavaPlugin {
 
@@ -90,10 +86,6 @@ public class Artiste extends JavaPlugin {
                 YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
 
             titleFilter = filter.getStringList("blacklisted");
-
-        for (String title : titleFilter) {
-            Bukkit.getLogger().info(title);
-        }
 
         try {
 
