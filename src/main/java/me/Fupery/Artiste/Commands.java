@@ -1,36 +1,49 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.IO.MapArt;
+import me.Fupery.Artiste.Utils.TitleFilter;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.Fupery.Artiste.Utils.Formatting.*;
 
 interface AbstractCommand {
-    boolean run(CommandSender sender, String[] args);
+    boolean runCommand(CommandSender sender, String[] args);
 }
 
 public class Commands implements CommandExecutor {
 
     private Artiste plugin;
     private ArtisteCommand save, delete;
+    private FileConfiguration wordfilter;
 
     public Commands(final Artiste plugin) {
         this.plugin = plugin;
 
         save = new ArtisteCommand("save", "artiste.artist",
                 2, "/artmap save <title>", punchCanvas, this) {
+
             @Override
-            public boolean run(CommandSender sender, String[] args) {
+            public boolean runCommand(CommandSender sender, String[] args) {
 
                 if (sender instanceof Player) {
 
                     final Player player = (Player) sender;
                     ConcurrentHashMap<Player, String> queue = plugin.getNameQueue();
+
+                    if (!new TitleFilter(plugin, args[1]).check()) {
+
+                        return false;
+                    }
 
                     if (queue != null) {
 
@@ -59,7 +72,7 @@ public class Commands implements CommandExecutor {
         delete = new ArtisteCommand("delete", "artiste.admin",
                 2, "/artmap delete <title>", deleted, this) {
             @Override
-            public boolean run(CommandSender sender, String[] args) {
+            public boolean runCommand(CommandSender sender, String[] args) {
                 MapArt.deleteArtwork(plugin, args[1]);
                 return true;
             }
@@ -92,6 +105,7 @@ abstract class ArtisteCommand implements AbstractCommand {
     protected Artiste plugin;
     protected String command, permission, usage, success;
     protected int minArgs;
+    protected final AbstractCommand artisteCommand = this;
 
     protected ArtisteCommand(String command, String permission, int minArgs,
                              String usage, String success, Commands commands) {
@@ -115,25 +129,32 @@ abstract class ArtisteCommand implements AbstractCommand {
         }
     }
 
-    void runPlayerCommand(CommandSender sender, String args[]) {
+    void runPlayerCommand(final CommandSender sender, final String args[]) {
 
-        if (permission != null && sender.hasPermission(permission)) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
-            if (args.length >= minArgs) {
+            @Override
+            public void run() {
+                if(permission!=null && sender.hasPermission(permission)) {
 
-                if (this.run(sender, args)) {
+                    if (args.length >= minArgs) {
 
-                    if (success != null) {
-                        sender.sendMessage(playerMessage(success));
+                        if (artisteCommand.runCommand(sender, args)) {
+
+                            if (success != null) {
+                                sender.sendMessage(playerMessage(success));
+                            }
+                        }
+
+                    } else {
+                        sender.sendMessage(playerError(usage));
                     }
+
+                } else {
+                    sender.sendMessage(playerError(noperm));
                 }
-
-            } else {
-                sender.sendMessage(playerError(usage));
             }
-
-        } else {
-            sender.sendMessage(playerError(noperm));
-        }
+        });
     }
+
 }
