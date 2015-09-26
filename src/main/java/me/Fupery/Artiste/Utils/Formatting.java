@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 public class Formatting {
     public static String
             prefix = ChatColor.AQUA + "[Artmap] ",
+            playerOnly = "This command can only be used by players.",
             invalidPos = "You can't place an easel here",
             noperm = "You don't have permission to do this.",
             emptyHand = "Use an empty hand to retrieve your artwork.",
@@ -15,7 +16,8 @@ public class Formatting {
             painting = "Right-Click the canvas with dye or a paint bucket to paint.",
             deleted = "Sucessfully deleted.",
             noCraftPerm = "You can't copy other players' artworks",
-            craftHelp = "";
+            craftHelp = "",
+            badTitle = "Invalid Title. Titles must be between 3 and 16 characters, and consist of only letters and numbers.";
 
     public static String playerMessage(String string) {
         return prefix + ChatColor.GOLD + string;
