@@ -1,7 +1,10 @@
 package me.Fupery.Artiste.Easel;
 
 import me.Fupery.Artiste.Artiste;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;

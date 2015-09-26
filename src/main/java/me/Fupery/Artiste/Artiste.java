@@ -1,6 +1,7 @@
 package me.Fupery.Artiste;
 
 import me.Fupery.Artiste.Artist.ArtistHandler;
+import me.Fupery.Artiste.Command.CommandListener;
 import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.WorldMap;
@@ -15,7 +16,8 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,7 +46,7 @@ public class Artiste extends JavaPlugin {
         manager.registerEvents(new ChunkUnloadListener(this), this);
         manager.registerEvents(new PlayerCraftListener(this), this);
 
-        this.getCommand("artmap").setExecutor(new Commands(this));
+        this.getCommand("artmap").setExecutor(new CommandListener(this));
 
         easels = new ConcurrentHashMap<>();
 
@@ -85,7 +87,7 @@ public class Artiste extends JavaPlugin {
         FileConfiguration filter =
                 YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
 
-            titleFilter = filter.getStringList("blacklisted");
+        titleFilter = filter.getStringList("blacklisted");
 
         try {
 

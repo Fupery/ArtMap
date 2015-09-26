@@ -46,9 +46,28 @@ public class CanvasRenderer extends MapRenderer {
         return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
     }
 
+    private static int getYawOffset(BlockFace face) {
+
+        switch (face) {
+
+            case SOUTH:
+                return 180;
+
+            case WEST:
+                return 90;
+
+            case NORTH:
+                return 0;
+
+            case EAST:
+                return 270;
+        }
+        return 0;
+    }
+
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
-        
+
         if (active && dirtyPixels != null && iterator != null
                 && pixelBuffer != null && dirtyPixels.size() > 0) {
             while (iterator.hasPrevious()) {
@@ -197,7 +216,7 @@ public class CanvasRenderer extends MapRenderer {
 
                 for (int px = 0; px < resolutionFactor; px++) {
 
-                    for ( int py = 0; py < resolutionFactor; py++) {
+                    for (int py = 0; py < resolutionFactor; py++) {
 
                         colours[(px + ix) + ((py + iy) * 128)] = pixelBuffer[x][y];
                     }
@@ -227,25 +246,6 @@ public class CanvasRenderer extends MapRenderer {
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
-    }
-
-    private static int getYawOffset(BlockFace face) {
-
-        switch (face) {
-
-            case SOUTH:
-                return 180;
-
-            case WEST:
-                return 90;
-
-            case NORTH:
-                return 0;
-
-            case EAST:
-                return 270;
-        }
-        return 0;
     }
 
     public float getLastYaw() {

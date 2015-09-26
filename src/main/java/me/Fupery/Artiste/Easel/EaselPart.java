@@ -12,7 +12,37 @@ public class EaselPart {
         getVerticalOffset(type);
 
         if (type.centred) {
-            x += 0.5; z += 0.5;
+            x += 0.5;
+            z += 0.5;
+        }
+    }
+
+    public static BlockFace getFacing(double yaw) {
+
+        switch ((int) yaw) {
+            case 0:
+                return BlockFace.SOUTH;
+            case 90:
+                return BlockFace.WEST;
+            case 180:
+                return BlockFace.NORTH;
+            case 270:
+                return BlockFace.EAST;
+        }
+        return BlockFace.SOUTH;
+    }
+
+    public static BlockFace getSignFacing(BlockFace facing) {
+        BlockFace orientation = facing.getOppositeFace();
+
+        if (orientation == BlockFace.SOUTH) {
+            return BlockFace.SOUTH_SOUTH_EAST;
+
+        } else if (orientation == BlockFace.EAST) {
+            return BlockFace.WEST_NORTH_WEST;
+
+        } else {
+            return orientation;
         }
     }
 
@@ -61,34 +91,5 @@ public class EaselPart {
         Location easelLocation = partLocation.clone().subtract(x, y, z);
         partLocation.setYaw(((float) yaw));
         return easelLocation;
-    }
-
-    public static BlockFace getFacing(double yaw) {
-
-        switch ((int) yaw) {
-            case 0:
-                return BlockFace.SOUTH;
-            case 90:
-                return BlockFace.WEST;
-            case 180:
-                return BlockFace.NORTH;
-            case 270:
-                return BlockFace.EAST;
-        }
-        return BlockFace.SOUTH;
-    }
-
-    public static BlockFace getSignFacing(BlockFace facing) {
-        BlockFace orientation = facing.getOppositeFace();
-
-        if (orientation == BlockFace.SOUTH) {
-            return BlockFace.SOUTH_SOUTH_EAST;
-
-        } else if (orientation == BlockFace.EAST) {
-            return BlockFace.WEST_NORTH_WEST;
-
-        } else {
-            return orientation;
-        }
     }
 }

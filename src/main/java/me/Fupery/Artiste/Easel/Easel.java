@@ -135,7 +135,7 @@ public class Easel {
                         stand = s;
                     }
 
-                //check if entity is a seat
+                    //check if entity is a seat
                 } else {
                     EaselPart part = new EaselPart(PartType.SEAT,
                             EaselPart.getFacing(s.getLocation().getYaw()));
@@ -223,21 +223,21 @@ public class Easel {
 
                     EaselPart seatPart = new EaselPart(PartType.SEAT, frame.getFacing());
 
-                        Location seatLocation = seatPart.getPartPos(stand.getLocation());
-                        seatLocation.setYaw(stand.getLocation().getYaw() - 180);
+                    Location seatLocation = seatPart.getPartPos(stand.getLocation());
+                    seatLocation.setYaw(stand.getLocation().getYaw() - 180);
 
-                        seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
-                                seatLocation, EntityType.ARMOR_STAND);
+                    seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
+                            seatLocation, EntityType.ARMOR_STAND);
 
-                        seat.setVisible(false);
-                        seat.setGravity(false);
-                        seat.setRemoveWhenFarAway(true);
-                        seat.setPassenger(player);
+                    seat.setVisible(false);
+                    seat.setGravity(false);
+                    seat.setRemoveWhenFarAway(true);
+                    seat.setPassenger(player);
 
-                        if (plugin.getArtistHandler() == null) {
-                            plugin.setArtistHandler(new ArtistHandler(plugin));
-                        }
-                        plugin.getArtistHandler().addPlayer(player, this);
+                    if (plugin.getArtistHandler() == null) {
+                        plugin.setArtistHandler(new ArtistHandler(plugin));
+                    }
+                    plugin.getArtistHandler().addPlayer(player, this);
                 }
 
             } else {

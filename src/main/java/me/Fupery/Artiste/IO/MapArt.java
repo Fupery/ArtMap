@@ -44,39 +44,6 @@ public class MapArt {
         this.date = date;
     }
 
-    public ItemStack getMapItem() {
-
-        ItemStack map = new ItemStack(Material.MAP, 1, mapIDValue);
-
-        Date d = new Date();
-
-        ItemMeta meta = map.getItemMeta();
-
-        meta.setDisplayName(title);
-
-        meta.setLore(Arrays.asList(
-                artworkTag,
-                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
-                dateFormat.format(d)));
-        map.setItemMeta(meta);
-
-        return map;
-    }
-
-    public MapArt saveArtwork(Artiste plugin) {
-
-        if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
-            ConfigurationSection map = mapList.createSection(title);
-            map.set(mapID, mapIDValue);
-            map.set(artistID, player.getUniqueId().toString());
-            map.set(dateID, date);
-            plugin.updateMaps();
-            return new MapArt(mapIDValue, title, player, dateID);
-        }
-        return null;
-    }
-
     public static MapArt getArtwork(Artiste plugin, String title) {
 
         if (plugin.getMaps() != null) {
@@ -132,10 +99,43 @@ public class MapArt {
                         }
                     }
                     returnList.add(listLine(title, art.player.getName(), art.date, art.mapIDValue));
-                    i ++;
+                    i++;
                 }
             }
             return returnList.toArray(new String[returnList.size()]);
+        }
+        return null;
+    }
+
+    public ItemStack getMapItem() {
+
+        ItemStack map = new ItemStack(Material.MAP, 1, mapIDValue);
+
+        Date d = new Date();
+
+        ItemMeta meta = map.getItemMeta();
+
+        meta.setDisplayName(title);
+
+        meta.setLore(Arrays.asList(
+                artworkTag,
+                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
+                dateFormat.format(d)));
+        map.setItemMeta(meta);
+
+        return map;
+    }
+
+    public MapArt saveArtwork(Artiste plugin) {
+
+        if (plugin.getMaps() != null) {
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
+            ConfigurationSection map = mapList.createSection(title);
+            map.set(mapID, mapIDValue);
+            map.set(artistID, player.getUniqueId().toString());
+            map.set(dateID, date);
+            plugin.updateMaps();
+            return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
     }

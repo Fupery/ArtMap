@@ -22,6 +22,28 @@ public class PlayerInteractListener implements Listener {
         this.plugin = plugin;
     }
 
+    public static BlockFace getFacing(Player player) {
+        int yaw = ((int) player.getLocation().getYaw()) % 360;
+
+        if (yaw < 0) {
+            yaw += 360;
+        }
+
+        if (yaw >= 135 && yaw < 225) {
+            return BlockFace.SOUTH;
+
+        } else if (yaw >= 225 && yaw < 315) {
+            return BlockFace.WEST;
+
+        } else if (yaw >= 315 || yaw < 45) {
+            return BlockFace.NORTH;
+
+        } else if (yaw >= 45 && yaw < 135) {
+            return BlockFace.EAST;
+
+        } else return BlockFace.NORTH;
+    }
+
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
@@ -55,26 +77,5 @@ public class PlayerInteractListener implements Listener {
                 }
             }
         }
-    }
-    public static BlockFace getFacing(Player player) {
-        int yaw = ((int) player.getLocation().getYaw()) % 360;
-
-        if (yaw < 0) {
-            yaw += 360;
-        }
-
-        if (yaw >= 135 && yaw < 225) {
-            return BlockFace.SOUTH;
-
-        } else if (yaw >= 225 && yaw < 315) {
-            return BlockFace.WEST;
-
-        } else if (yaw >= 315 || yaw < 45) {
-            return BlockFace.NORTH;
-
-        } else if (yaw >= 45 && yaw < 135) {
-            return BlockFace.EAST;
-
-        } else return BlockFace.NORTH;
     }
 }

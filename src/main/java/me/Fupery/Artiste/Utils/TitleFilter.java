@@ -60,7 +60,7 @@ public class TitleFilter {
         char repeatChar = '$';
         char currentChar;
 
-        for (int i = 0; i < chars.length; i ++) {
+        for (int i = 0; i < chars.length; i++) {
 
             if (chars[i] == '1') {
                 currentChar = 'i';

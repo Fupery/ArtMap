@@ -1,4 +1,5 @@
 package me.Fupery.Artiste.Listeners;
+
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.MapArt;
 import org.bukkit.OfflinePlayer;
@@ -10,9 +11,9 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import static me.Fupery.Artiste.Utils.Formatting.playerError;
-import static me.Fupery.Artiste.Utils.Formatting.noCraftPerm;
 import static me.Fupery.Artiste.IO.MapArt.artworkTag;
+import static me.Fupery.Artiste.Utils.Formatting.noCraftPerm;
+import static me.Fupery.Artiste.Utils.Formatting.playerError;
 
 // Disallows players from copying Artiste maps in the crafting table
 public class PlayerCraftListener implements Listener {
