@@ -22,6 +22,7 @@ public class CanvasRenderer extends MapRenderer {
     private ArrayList<byte[]> dirtyPixels;
     private ListIterator<byte[]> iterator;
     private int resolutionFactor;
+    private int axisLength;
     private float lastYaw, lastPitch;
     private int yawOffset;
     private MapView mapView;
@@ -31,6 +32,7 @@ public class CanvasRenderer extends MapRenderer {
     public CanvasRenderer(Artiste plugin, int resolutionFactor, Easel easel) {
         this.plugin = plugin;
         this.resolutionFactor = resolutionFactor;
+        axisLength = 128 / resolutionFactor;
         yawOffset = getYawOffset(easel.getFrame().getFacing());
         mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
         clearRenderers();
@@ -46,7 +48,7 @@ public class CanvasRenderer extends MapRenderer {
 
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
-
+        
         if (active && dirtyPixels != null && iterator != null
                 && pixelBuffer != null && dirtyPixels.size() > 0) {
             while (iterator.hasPrevious()) {
@@ -80,7 +82,7 @@ public class CanvasRenderer extends MapRenderer {
 
         if (pixel != null) {
 
-            final boolean[][] coloured = new boolean[128 / resolutionFactor][128 / resolutionFactor];
+            final boolean[][] coloured = new boolean[axisLength][axisLength];
             final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
             final byte setColour = getColourData(colour);
 
@@ -97,7 +99,7 @@ public class CanvasRenderer extends MapRenderer {
         if (x < 0 || y < 0) {
             return;
         }
-        if (x >= 128 / resolutionFactor || y >= 128 / resolutionFactor) {
+        if (x >= axisLength || y >= axisLength) {
             return;
         }
 
@@ -129,8 +131,6 @@ public class CanvasRenderer extends MapRenderer {
         byte[] pixel = new byte[2];
         yaw %= 360;
 
-        Bukkit.getLogger().info(yaw + "");
-
         if (yaw > 0) {
             yaw -= yawOffset;
 
@@ -157,14 +157,13 @@ public class CanvasRenderer extends MapRenderer {
                 pitch += pitchAdjust;
             }
         }
-        int factor = (128 / resolutionFactor);
-        pixel[0] = ((byte) ((Math.tan(Math.toRadians(yaw)) * .6155 * factor) + (factor / 2)));
-        pixel[1] = ((byte) ((Math.tan(Math.toRadians(pitch)) * .6155 * factor) + (factor / 2)));
+        pixel[0] = ((byte) ((Math.tan(Math.toRadians(yaw)) * .6155 * axisLength) + (axisLength / 2)));
+        pixel[1] = ((byte) ((Math.tan(Math.toRadians(pitch)) * .6155 * axisLength) + (axisLength / 2)));
 //        pixel = table.getPixel(yaw, pitch);
 
         for (byte b : pixel) {
 
-            if (b >= factor || b < 0) {
+            if (b >= axisLength || b < 0) {
                 return null;
             }
         }
@@ -189,9 +188,9 @@ public class CanvasRenderer extends MapRenderer {
         WorldMap map = new WorldMap(mapView);
         byte[] colours = new byte[128 * 128];
 
-        for (int x = 0; x < (128 / resolutionFactor); x++) {
+        for (int x = 0; x < (axisLength); x++) {
 
-            for (int y = 0; y < (128 / resolutionFactor); y++) {
+            for (int y = 0; y < (axisLength); y++) {
 
                 int ix = x * resolutionFactor;
                 int iy = y * resolutionFactor;
@@ -214,7 +213,7 @@ public class CanvasRenderer extends MapRenderer {
         WorldMap map = new WorldMap(mapView);
         byte[] colours = map.getMap();
 
-        pixelBuffer = new byte[128 / resolutionFactor][128 / resolutionFactor];
+        pixelBuffer = new byte[axisLength][axisLength];
         dirtyPixels = new ArrayList<>();
         iterator = dirtyPixels.listIterator();
 

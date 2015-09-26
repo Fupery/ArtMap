@@ -296,8 +296,7 @@ public class Easel {
         stand.remove();
 
         if (frame.getItem().getType() != Material.AIR) {
-            ItemStack item = new ItemCanvas();
-            item.setDurability(((short) plugin.getBackgroundID()));
+            ItemStack item = new ItemCanvas(plugin);
             location.getWorld().dropItemNaturally(location, item);
         }
 

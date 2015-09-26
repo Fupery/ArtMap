@@ -1,10 +1,7 @@
 package me.Fupery.Artiste.Easel;
 
 import me.Fupery.Artiste.Artiste;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -19,7 +16,13 @@ public class Recipe {
     public static String canvasTitle = "Canvas";
     public static String paintBucketTitle = "PaintBucket";
 
-    public static void addEasel() {
+    public static void setupRecipes(Artiste plugin) {
+        addEasel();
+        addCanvas(plugin);
+        addBucket();
+    }
+
+    private static void addEasel() {
         ShapedRecipe easel = new ShapedRecipe(new ItemEasel());
         easel.shape("*s*", "tft", "lal");
         easel.setIngredient('s', Material.STICK);
@@ -30,15 +33,15 @@ public class Recipe {
         Bukkit.getServer().addRecipe(easel);
     }
 
-    public static void addCanvas() {
-        ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas());
+    private static void addCanvas(Artiste plugin) {
+        ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas(plugin));
         canvas.shape("lll", "lpl", "lll");
         canvas.setIngredient('l', Material.LEATHER);
         canvas.setIngredient('p', Material.EMPTY_MAP);
         Bukkit.getServer().addRecipe(canvas);
     }
 
-    public static void addBucket() {
+    private static void addBucket() {
 
         for (DyeColor d : DyeColor.values()) {
             ShapelessRecipe paintBucket = new ShapelessRecipe(new PaintBucket(d));
@@ -63,8 +66,8 @@ class ItemEasel extends ItemStack {
 
 class ItemCanvas extends ItemStack {
 
-    ItemCanvas() {
-        super(Material.MAP);
+    ItemCanvas(Artiste plugin) {
+        super(Material.MAP, 1, ((short) plugin.getBackgroundID()));
         ItemMeta meta = getItemMeta();
         meta.setDisplayName(Recipe.canvasTitle);
         meta.setLore(Arrays.asList("Use with an Easel", "to create artworks"));

@@ -2,6 +2,7 @@ package me.Fupery.Artiste.IO;
 
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapPalette;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
@@ -93,6 +94,10 @@ public class WorldMap {
             Field colorsField = worldMap.getClass().getDeclaredField("colors");
             colorsField.setAccessible(true);
             colorsField.set(worldMap, new byte[128 * 128]);
+
+            for (MapRenderer renderer : mapView.getRenderers()) {
+                mapView.removeRenderer(renderer);
+            }
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
