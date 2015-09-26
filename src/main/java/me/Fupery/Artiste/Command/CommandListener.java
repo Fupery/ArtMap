@@ -115,7 +115,7 @@ public class CommandListener implements CommandExecutor {
                     artist = args[1];
 
                 } else {
-                    artist = "all";
+                    artist = (sender instanceof Player) ? sender.getName() : "all";
                 }
                 if (args.length == 3) {
 
@@ -159,8 +159,8 @@ public class CommandListener implements CommandExecutor {
                 //builds the list
                 MultiLineReturnMessage multiMsg =
                         new MultiLineReturnMessage(sender,
-                                playerMessage(String.format(listHeader, artist))
-                                , pg, list, true);
+                                playerMessage(String.format(listHeader, artist)),
+                                pg, list, true);
 
                 if (footerButton != null) {
                     multiMsg.getFooter().addExtra(footerButton);
