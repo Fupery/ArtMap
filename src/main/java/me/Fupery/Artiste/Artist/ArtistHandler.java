@@ -108,7 +108,6 @@ public class ArtistHandler {
                             return null;
                         }
                     }
-
                 }
                 return super.onPacketInAsync(sender, channel, packet);
             }

@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Art;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -103,6 +104,45 @@ public class CommandListener implements CommandExecutor {
             }
         };
 
+        new ArtisteCommand("preview", null, 2, 2, "/artmap preview <title>", null, this) {
+
+            @Override
+            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+
+                    if (player.getItemInHand().getType() == Material.AIR) {
+
+                        MapArt art = MapArt.getArtwork(plugin, args[1]);
+
+                        if (art != null) {
+
+                            if (player.hasPermission("artiste.admin")) {
+
+                                player.setItemInHand(art.getMapItem());
+
+                            } else {
+                                plugin.startPreviewing(((Player) sender), art);
+                            }
+                            msg.message = playerMessage(String.format(previewing, args[1]));
+                            return true;
+
+                        } else {
+                            msg.message = playerError(String.format(mapNotFound, args[1]));
+                        }
+
+                    } else {
+                        msg.message = playerMessage(emptyHandPreview);
+                    }
+
+                } else {
+                    msg.message = playerError(playerOnly);
+                }
+                return false;
+            }
+        };
+
         new ArtisteCommand("list", null, 1, 3,
                 "/artmap list [playername|all] [pg]", null, this) {
             @Override
@@ -186,7 +226,6 @@ public class CommandListener implements CommandExecutor {
                 return true;
             }
         };
-
     }
 
     @Override

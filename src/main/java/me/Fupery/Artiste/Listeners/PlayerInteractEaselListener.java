@@ -75,6 +75,15 @@ public class PlayerInteractEaselListener implements Listener {
                 }
             }
         }
+
+        if (plugin.isPreviewing(event.getPlayer())) {
+
+            if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
+
+                plugin.stopPreviewing(event.getPlayer());
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler

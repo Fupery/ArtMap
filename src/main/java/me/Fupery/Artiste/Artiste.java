@@ -4,17 +4,21 @@ import me.Fupery.Artiste.Artist.ArtistHandler;
 import me.Fupery.Artiste.Command.CommandListener;
 import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
+import me.Fupery.Artiste.IO.MapArt;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +35,7 @@ public class Artiste extends JavaPlugin {
     private int backgroundID;
     private ConcurrentHashMap<Player, String> nameQueue;
     private ConcurrentHashMap<Location, Easel> easels;
+    private ConcurrentHashMap<Player, MapPreview> previewing;
     private ArtistHandler artistHandler;
 
     @Override
@@ -45,10 +50,12 @@ public class Artiste extends JavaPlugin {
         manager.registerEvents(new PlayerQuitListener(this), this);
         manager.registerEvents(new ChunkUnloadListener(this), this);
         manager.registerEvents(new PlayerCraftListener(this), this);
+        manager.registerEvents(new InventoryInteractListener(this), this);
 
         this.getCommand("artmap").setExecutor(new CommandListener(this));
 
         easels = new ConcurrentHashMap<>();
+        previewing = new ConcurrentHashMap<>();
 
         if (setupRegistry()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
@@ -160,5 +167,44 @@ public class Artiste extends JavaPlugin {
         WorldMap map = new WorldMap(mapView);
         map.setBlankMap();
         setBackgroundID(mapView.getId());
+    }
+
+    public void startPreviewing(Player player, MapArt art) {
+
+        if (previewing.containsKey(player)) {
+            stopPreviewing(player);
+        }
+        ItemStack item = art.getMapItem();
+        MapPreview preview = new MapPreview(this, player);
+        preview.runTaskLaterAsynchronously(this, 600);
+        player.setItemInHand(item);
+        previewing.put(player, preview);
+    }
+
+    public void stopPreviewing(Player player) {
+
+        if (previewing.containsKey(player)) {
+            player.setItemInHand(new ItemStack(Material.AIR));
+            previewing.get(player).cancel();
+            previewing.remove(player);
+        }
+    }
+
+    public boolean isPreviewing(Player player) {
+        return previewing.containsKey(player);
+    }
+
+    private class MapPreview extends BukkitRunnable {
+        Artiste plugin;
+        Player player;
+
+        MapPreview(Artiste plugin, Player player) {
+            this.plugin = plugin;
+            this.player = player;
+        }
+
+        public void run() {
+            stopPreviewing(player);
+        }
     }
 }
