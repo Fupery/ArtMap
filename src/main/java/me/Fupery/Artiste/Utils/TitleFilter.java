@@ -1,6 +1,7 @@
 package me.Fupery.Artiste.Utils;
 
 import me.Fupery.Artiste.Artiste;
+import org.bukkit.Bukkit;
 
 public class TitleFilter {
 
@@ -22,11 +23,14 @@ public class TitleFilter {
 
             for (String reject : plugin.getTitleFilter()) {
 
-                if (title.contains(reject)
+                if (title.toLowerCase().contains(reject)
                         || adjTitle.contains(reject)) {
                     return false;
                 }
             }
+
+        } else {
+            return false;
         }
         return true;
     }
@@ -39,11 +43,12 @@ public class TitleFilter {
 
         for (char c : chars) {
 
-            if (!Character.isDigit(c)
-                    || !Character.isAlphabetic(c)
-                    || !(c == '_')) {
-                return false;
+            if (Character.isDigit(c)
+                    || Character.isAlphabetic(c)
+                    || c == '_') {
+                continue;
             }
+            return false;
         }
         return true;
     }
@@ -51,29 +56,36 @@ public class TitleFilter {
     private String replaceCharacters() {
 
         String adjString = "";
+        char repeatChar = '$';
+        char currentChar;
 
         for (int i = 0; i < chars.length; i ++) {
 
             if (chars[i] == '1') {
-                adjString += 'i';
+                currentChar = 'i';
 
             } else if (chars[i] == '3') {
-                adjString += 'e';
+                currentChar = 'e';
 
             } else if (chars[i] == '0') {
-                adjString += 'o';
+                currentChar = 'o';
 
             } else if (chars[i] == '5') {
-                adjString += 's';
+                currentChar = 's';
 
             } else if (Character.toLowerCase(chars[i]) == 'z') {
-                adjString += 's';
+                currentChar = 's';
 
             } else if (chars[i] == '_') {
-                //remove underscores
+                continue;
 
             } else {
-                adjString += Character.toLowerCase(chars[i]);
+                currentChar = Character.toLowerCase(chars[i]);
+            }
+
+            if (repeatChar != currentChar) {
+                repeatChar = currentChar;
+                adjString += currentChar;
             }
         }
         return adjString;
