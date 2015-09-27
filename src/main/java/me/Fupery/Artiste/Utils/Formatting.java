@@ -21,6 +21,7 @@ public class Formatting {
             craftHelp = "",
             noArtworksFound = "No artworks were found by '%s'.",
             listHeader = "Artworks by '%s':",
+            listLineHover = ChatColor.YELLOW + "Click to preview '%s'",
             listFooterPage = ChatColor.LIGHT_PURPLE + "Showing pg [%s/%s] ",
             listFooterButton = ChatColor.GREEN + "[Next Page]",
             listFooterNxt = ChatColor.YELLOW + "Click to view the next page",
@@ -51,5 +52,42 @@ public class Formatting {
     public static String helpLine(String usage, String helpMsg) {
         return ChatColor.GOLD + "  - " + ChatColor.AQUA + usage +
                 ChatColor.GOLD + "  |  " + ChatColor.DARK_AQUA + helpMsg;
+    }
+
+    public static String extractListTitle(String listLine) {
+        char[] chars = listLine.toCharArray();
+        boolean readingTitle = false;
+        boolean colourCode = false;
+        String title = "";
+
+        for (char c : chars) {
+
+            if (c == '§') {
+                colourCode = true;
+                readingTitle = false;
+                continue;
+            }
+            if (colourCode) {
+                colourCode = false;
+                continue;
+            }
+
+            if (readingTitle
+                    && c == ' ') {
+                break;
+            }
+
+            if (Character.isAlphabetic(c)
+                    || Character.isDigit(c)
+                    || c == '_'
+                    ) {
+                title += c;
+
+                if (!readingTitle) {
+                    readingTitle = true;
+                }
+            }
+        }
+        return title;
     }
 }

@@ -176,7 +176,7 @@ public class Artiste extends JavaPlugin {
         }
         ItemStack item = art.getMapItem();
         MapPreview preview = new MapPreview(this, player);
-        preview.runTaskLaterAsynchronously(this, 600);
+        preview.runTaskLaterAsynchronously(this, 300);
         player.setItemInHand(item);
         previewing.put(player, preview);
     }

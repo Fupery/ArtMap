@@ -1,13 +1,15 @@
 package me.Fupery.Artiste.Command;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-import static me.Fupery.Artiste.Utils.Formatting.listFooterPage;
-import static me.Fupery.Artiste.Utils.Formatting.seperator;
+import static me.Fupery.Artiste.Utils.Formatting.*;
 
 class ReturnMessage implements Runnable {
 
@@ -28,13 +30,13 @@ class ReturnMessage implements Runnable {
 class MultiLineReturnMessage extends ReturnMessage {
 
     private String[] messages;
+    private TextComponent[] lineButtons;
     private TextComponent footer;
 
-    MultiLineReturnMessage(CommandSender sender, String message,
-                           int pages, String[] msgs, boolean footer) {
+    MultiLineReturnMessage(CommandSender sender, String message, int pages,
+                           String[] msgs, boolean footer) {
         super(sender, message);
-        messages = null;
-
+        lineButtons = null;
         addMessages(pages, msgs);
     }
 
@@ -42,10 +44,36 @@ class MultiLineReturnMessage extends ReturnMessage {
     public void run() {
         sender.sendMessage(seperator);
         sender.sendMessage(message);
-        sender.sendMessage(messages);
+
+        if (lineButtons != null && sender instanceof Player) {
+
+            for (TextComponent line : lineButtons) {
+                ((Player) sender).spigot().sendMessage(line);
+            }
+
+        } else {
+            sender.sendMessage(messages);
+        }
 
         if (footer != null && sender instanceof Player) {
             ((Player) sender).spigot().sendMessage(footer);
+        }
+    }
+
+    public void makeLinesButtons(String lineHoverText, String lineClickCommand) {
+        lineButtons = new TextComponent[8];
+
+        for (int i = 0; i < 8; i ++) {
+            String title = extractListTitle(messages[i]);
+            String cmd = String.format(lineClickCommand, title);
+            String hover = String.format(lineHoverText, title);
+
+            lineButtons[i] = new TextComponent(messages[i]);
+            lineButtons[i].setHoverEvent(
+                    new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            new ComponentBuilder(hover).create()));
+            lineButtons[i].setClickEvent(
+                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
         }
     }
 

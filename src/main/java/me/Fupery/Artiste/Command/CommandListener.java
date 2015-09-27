@@ -201,6 +201,7 @@ public class CommandListener implements CommandExecutor {
                         new MultiLineReturnMessage(sender,
                                 playerMessage(String.format(listHeader, artist)),
                                 pg, list, true);
+                multiMsg.makeLinesButtons(listLineHover, "/artmap preview %s");
 
                 if (footerButton != null) {
                     multiMsg.getFooter().addExtra(footerButton);
