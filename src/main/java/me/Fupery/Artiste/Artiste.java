@@ -77,6 +77,10 @@ public class Artiste extends JavaPlugin {
         if (artistHandler != null) {
             artistHandler.getProtocol().close();
         }
+
+        for (Player player : previewing.keySet()) {
+            stopPreviewing(player);
+        }
         FileConfiguration config = getConfig();
 
         if (backgroundID != config.getInt("backgroundID")) {
