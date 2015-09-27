@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -38,9 +40,10 @@ public class Recipe {
 
     private static void addCanvas(Artiste plugin) {
         ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas(plugin));
-        canvas.shape("lll", "lpl", "lll");
+        canvas.shape("lel", "epe", "lel");
         canvas.setIngredient('l', Material.LEATHER);
         canvas.setIngredient('p', Material.EMPTY_MAP);
+        canvas.setIngredient('e', Material.EMERALD);
         Bukkit.getServer().addRecipe(canvas);
     }
 
@@ -108,6 +111,8 @@ class PaintBucket extends ItemStack {
         meta.setDisplayName(colourWheel.get(colour) + Recipe.paintBucketTitle);
         meta.setLore(Arrays.asList("§r" + colour.name(), "Combine with dyes to",
                 "get different colours", "Use with an Easel and", "Canvas to fill colours"));
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);
     }
 }
