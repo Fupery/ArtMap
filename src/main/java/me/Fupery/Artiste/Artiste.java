@@ -78,8 +78,11 @@ public class Artiste extends JavaPlugin {
             artistHandler.getProtocol().close();
         }
 
-        for (Player player : previewing.keySet()) {
-            stopPreviewing(player);
+        if (previewing != null && previewing.size() > 0) {
+
+            for (Player player : previewing.keySet()) {
+                stopPreviewing(player);
+            }
         }
         FileConfiguration config = getConfig();
 
