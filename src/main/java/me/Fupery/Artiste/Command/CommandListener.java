@@ -7,7 +7,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Art;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -220,6 +219,7 @@ public class CommandListener implements CommandExecutor {
                         new MultiLineReturnMessage(sender, playerMessage(helpHeader), 0, new String[]{
                                 helpLine("/artmap save <title>", "save your artwork"),
                                 helpLine("/artmap delete <title>", "delete your artwork"),
+                                helpLine("/artmap preview <title>", "preview an artwork"),
                                 helpLine("/artmap list [playername|all] [pg]", "list artworks"),
                                 helpMessage
                         }, false);

@@ -10,7 +10,8 @@ commands:
       usage:  |
         <command> save <title> : Saves your artwork
         <command> delete <title> : Removes your artwork
-        <command> list <playername|all> <pg> : lists artworks
+        <command> preview <title> : Previews an artwork
+        <command> list <playername|all> <pg> : Lists artworks
         <command> help : Displays help
 permissions:
   artiste.artist:
