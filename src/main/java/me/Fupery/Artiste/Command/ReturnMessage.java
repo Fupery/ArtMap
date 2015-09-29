@@ -61,9 +61,9 @@ class MultiLineReturnMessage extends ReturnMessage {
     }
 
     public void makeLinesButtons(String lineHoverText, String lineClickCommand) {
-        lineButtons = new TextComponent[8];
+        lineButtons = new TextComponent[messages.length];
 
-        for (int i = 0; i < 8; i ++) {
+        for (int i = 0; i < messages.length; i ++) {
             String title = extractListTitle(messages[i]);
             String cmd = String.format(lineClickCommand, title);
             String hover = String.format(lineHoverText, title);
