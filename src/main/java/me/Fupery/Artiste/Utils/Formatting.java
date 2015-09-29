@@ -17,6 +17,7 @@ public class Formatting {
             painting = "Right-Click the canvas with dye or a paint bucket to paint.",
             deleted = "Sucessfully deleted '%s'.",
             mapNotFound = "Artwork '%s' could not be found.",
+            noDupeCanvas = "You can't copy canvases.",
             noCraftPerm = "You can't copy other players' artworks",
             craftHelp = "",
             noArtworksFound = "No artworks were found by '%s'.",
