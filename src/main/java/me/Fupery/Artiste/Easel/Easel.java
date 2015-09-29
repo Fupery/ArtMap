@@ -5,6 +5,7 @@ import me.Fupery.Artiste.Artist.CanvasRenderer;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.IO.MapArt;
 import me.Fupery.Artiste.IO.WorldMap;
+import me.Fupery.Artiste.Utils.LocationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Collection;
 
@@ -25,16 +27,18 @@ public class Easel {
 
     public static String arbitrarySignID = "*{=}*";
 
-    Artiste plugin;
-    Location location;
-    ArmorStand stand;
-    ArmorStand seat;
-    ItemFrame frame;
+    private Artiste plugin;
+    private Location location;
+    private ArmorStand stand;
+    private ArmorStand seat;
+    private ItemFrame frame;
+    boolean isPainting;
 
     private Easel(Artiste plugin, Location location) {
         this.plugin = plugin;
         this.location = location;
     }
+
 
     //Spawns an easel at the location provided, facing the direction provided
     public static Easel spawnEasel(Artiste plugin, Location location, BlockFace facing) {
@@ -86,7 +90,9 @@ public class Easel {
 
         if (easel.getParts()) {
 
-            plugin.getEasels().put(easel.location, easel);
+            if (!plugin.getEasels().containsKey(easel.location)) {
+                plugin.getEasels().put(easel.location, easel);
+            }
             return easel;
         }
         return null;
@@ -94,7 +100,6 @@ public class Easel {
 
     public static boolean checkForEasel(Artiste plugin, Location location) {
         Easel easel = new Easel(plugin, location);
-
         return easel.getParts();
     }
 
@@ -177,8 +182,7 @@ public class Easel {
         if (frame == null) {
             getParts();
         }
-
-        if (!player.isInsideVehicle()) {
+        if (!isPainting) {
 
             if (frame != null && frame.getItem().getType() == Material.MAP) {
 
@@ -211,7 +215,7 @@ public class Easel {
             getParts();
         }
 
-        if (!player.isInsideVehicle()) {
+        if (!isPainting) {
 
             if (frame != null && frame.getItem().getType() != Material.AIR) {
 
@@ -233,11 +237,17 @@ public class Easel {
                     seat.setGravity(false);
                     seat.setRemoveWhenFarAway(true);
                     seat.setPassenger(player);
+                    seat.setMetadata("easel" ,
+                            new FixedMetadataValue(plugin, LocationTag.createTag(location)));
 
                     if (plugin.getArtistHandler() == null) {
                         plugin.setArtistHandler(new ArtistHandler(plugin));
                     }
-                    plugin.getArtistHandler().addPlayer(player, this);
+                    setIsPainting(true);
+                    MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
+
+                    plugin.getArtistHandler().addPlayer(player, mapView,
+                            EaselPart.getYawOffset(frame.getFacing()));
                 }
 
             } else {
@@ -277,7 +287,7 @@ public class Easel {
 
     public void onShiftRightClick(Player player, ItemStack itemInHand) {
 
-        if (!player.isInsideVehicle()) {
+        if (!isPainting) {
             breakEasel();
 
         } else {
@@ -306,6 +316,14 @@ public class Easel {
             seat.remove();
         }
         location.getBlock().setType(Material.AIR);
+    }
+
+    public boolean isPainting() {
+        return isPainting;
+    }
+
+    public void setIsPainting(boolean isPainting) {
+        this.isPainting = isPainting;
     }
 
     public ItemFrame getFrame() {
