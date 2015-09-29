@@ -81,6 +81,26 @@ public class EaselPart {
         }
     }
 
+    public static int getYawOffset(BlockFace face) {
+
+        switch (face) {
+
+            case SOUTH:
+                return 180;
+
+            case WEST:
+                return 90;
+
+            case NORTH:
+                return 0;
+
+            case EAST:
+                return 270;
+        }
+        return 0;
+    }
+
+
     public Location getPartPos(Location easelLocation) {
         Location partLocation = easelLocation.clone().add(x, y, z);
         partLocation.setYaw(((float) yaw));

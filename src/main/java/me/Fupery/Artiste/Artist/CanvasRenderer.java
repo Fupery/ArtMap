@@ -1,12 +1,11 @@
 package me.Fupery.Artiste.Artist;
 
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.IO.WorldMap;
+import me.Fupery.Artiste.Utils.PixelTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -21,48 +20,39 @@ public class CanvasRenderer extends MapRenderer {
     private byte[][] pixelBuffer;
     private ArrayList<byte[]> dirtyPixels;
     private ListIterator<byte[]> iterator;
+
     private int resolutionFactor;
     private int axisLength;
-    private float lastYaw, lastPitch;
-    private int yawOffset;
+
     private MapView mapView;
     private boolean active;
-    private Artiste plugin;
 
-    public CanvasRenderer(Artiste plugin, int resolutionFactor, Easel easel) {
+    private Artiste plugin;
+    private Cursor cursor;
+
+    public CanvasRenderer(Artiste plugin, MapView mapView, int yawOffset) {
         this.plugin = plugin;
-        this.resolutionFactor = resolutionFactor;
+        this.mapView = mapView;
+        resolutionFactor = plugin.getMapResolutionFactor();
         axisLength = 128 / resolutionFactor;
-        yawOffset = getYawOffset(easel.getFrame().getFacing());
-        mapView = Bukkit.getMap(easel.getFrame().getItem().getDurability());
         clearRenderers();
         mapView.addRenderer(this);
+
         active = true;
         loadMap();
+
+        PixelTable pixelTable = plugin.getPixelTable();
+
+        if (pixelTable == null) {
+            mapView.removeRenderer(this);
+            return;
+        }
+        cursor = new Cursor(plugin, yawOffset);
     }
 
     private static byte getColourData(DyeColor colour) {
         Color c = colour.getColor();
         return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
-    }
-
-    private static int getYawOffset(BlockFace face) {
-
-        switch (face) {
-
-            case SOUTH:
-                return 180;
-
-            case WEST:
-                return 90;
-
-            case NORTH:
-                return 0;
-
-            case EAST:
-                return 270;
-        }
-        return 0;
     }
 
     @Override
@@ -145,40 +135,10 @@ public class CanvasRenderer extends MapRenderer {
 
     //finds the corresponding pixel for the yaw & pitch clicked
     public byte[] getPixel() {
-        float yaw = lastYaw;
-        float pitch = lastPitch;
         byte[] pixel = new byte[2];
-        yaw %= 360;
 
-        if (yaw > 0) {
-            yaw -= yawOffset;
-
-        } else {
-            yaw += yawOffset;
-        }
-
-        if (yaw > 45 || yaw < -45) {
-            return null;
-        }
-
-        //Corrects for parallax error in player's view
-        double pitchAdjust = yaw * ((0.0044 * yaw) - 0.0075) * 0.0264 * pitch;
-
-        if (pitch > 0) {
-
-            if (pitchAdjust > 0) {
-                pitch += pitchAdjust;
-            }
-
-        } else if (pitch < 0) {
-
-            if (pitchAdjust < 0) {
-                pitch += pitchAdjust;
-            }
-        }
-        pixel[0] = ((byte) ((Math.tan(Math.toRadians(yaw)) * .6155 * axisLength) + (axisLength / 2)));
-        pixel[1] = ((byte) ((Math.tan(Math.toRadians(pitch)) * .6155 * axisLength) + (axisLength / 2)));
-//        pixel = table.getPixel(yaw, pitch);
+        pixel[0] = ((byte) cursor.getX());
+        pixel[1] = ((byte) cursor.getY());
 
         for (byte b : pixel) {
 
@@ -248,19 +208,11 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    public float getLastYaw() {
-        return lastYaw;
+    public void setYaw(float yaw) {
+        cursor.setYaw(yaw);
     }
 
-    public void setLastYaw(float lastYaw) {
-        this.lastYaw = lastYaw;
-    }
-
-    public float getLastPitch() {
-        return lastPitch;
-    }
-
-    public void setLastPitch(float lastPitch) {
-        this.lastPitch = lastPitch;
+    public void setPitch(float pitch) {
+        cursor.setPitch(pitch);
     }
 }

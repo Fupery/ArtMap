@@ -7,6 +7,7 @@ import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.MapArt;
 import me.Fupery.Artiste.IO.WorldMap;
 import me.Fupery.Artiste.Listeners.*;
+import me.Fupery.Artiste.Utils.PixelTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,16 +21,18 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Artiste extends JavaPlugin {
 
     public static String entityTag = "Easel";
 
     private File mapList;
+    File data;
     private FileConfiguration maps;
     private List<String> titleFilter;
     private int backgroundID;
@@ -37,6 +40,8 @@ public class Artiste extends JavaPlugin {
     private ConcurrentHashMap<Location, Easel> easels;
     private ConcurrentHashMap<Player, MapPreview> previewing;
     private ArtistHandler artistHandler;
+    private int mapResolutionFactor;
+    private PixelTable pixelTable;
 
     @Override
     public void onEnable() {
@@ -65,10 +70,19 @@ public class Artiste extends JavaPlugin {
                 updateMaps();
             }
         }
+        backgroundID = getConfig().getInt("backgroundID");
+        int factor = getConfig().getInt("mapResolutionFactor");
+
+        if (factor % 16 == 0 && factor <= 128) {
+            mapResolutionFactor = 128 / factor;
+
+        } else {
+            mapResolutionFactor = 4;
+            Bukkit.getLogger().warning("Invalid mapResolutionFactor in config");
+        }
+        loadTables();
 
         nameQueue = new ConcurrentHashMap<>();
-
-        backgroundID = getConfig().getInt("backgroundID");
     }
 
     @Override
@@ -96,7 +110,11 @@ public class Artiste extends JavaPlugin {
 
         saveDefaultConfig();
 
+        mapResolutionFactor = getConfig().getInt("mapResolutionFactor");
+
         mapList = new File(getDataFolder(), "mapList.yml");
+
+        data = new File(getDataFolder(), "data");
 
         FileConfiguration filter =
                 YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
@@ -120,6 +138,66 @@ public class Artiste extends JavaPlugin {
 
     public FileConfiguration getMaps() {
         return maps;
+    }
+
+    public boolean loadTables() {
+
+        Bukkit.getLogger().info("Loading pixel tables ...");
+
+        final File pixelTables = new File(data, mapResolutionFactor + "_tables.dat");
+
+        if (data.exists() && pixelTables.exists()) {
+
+            try {
+                ObjectInputStream in = new ObjectInputStream(
+                        new GZIPInputStream(new FileInputStream(pixelTables)));
+
+                pixelTable = (PixelTable) in.readObject();
+
+                in.close();
+                return true;
+
+            } catch (ClassNotFoundException | IOException e) {
+                Bukkit.getLogger().warning("Pixel data files corrupted");
+            }
+        }
+        Bukkit.getLogger().warning("No pixel tables found, generating tables ...");
+        Bukkit.getLogger().warning("(This will only need be done once)");
+
+        pixelTable = new PixelTable(mapResolutionFactor);
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                pixelTable.generate();
+                saveTables(pixelTables);
+                Bukkit.getLogger().warning("Table generation successful!");
+            }
+            });
+        return true;
+    }
+
+    public void saveTables(File datafile) {
+
+        if (!data.exists()) {
+            data.mkdir();
+        }
+
+        try {
+
+            if (datafile.exists()) {
+                datafile.delete();
+            }
+            datafile.createNewFile();
+
+            ObjectOutputStream out = new ObjectOutputStream(
+                    new GZIPOutputStream(new FileOutputStream(datafile)));
+            out.writeObject(pixelTable);
+            out.flush();
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateMaps() {
@@ -159,8 +237,16 @@ public class Artiste extends JavaPlugin {
         return titleFilter;
     }
 
+    public PixelTable getPixelTable() {
+        return pixelTable;
+    }
+
     public int getBackgroundID() {
         return backgroundID;
+    }
+
+    public int getMapResolutionFactor() {
+        return mapResolutionFactor;
     }
 
     private void setBackgroundID(int id) {
