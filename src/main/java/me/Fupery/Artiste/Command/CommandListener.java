@@ -93,7 +93,7 @@ public class CommandListener implements CommandExecutor {
                 }
 
                 if (MapArt.deleteArtwork(plugin, args[1])) {
-                    msg.message = playerMessage(String.format(deleted, args[1]));
+                    msg.message = playerError(String.format(deleted, args[1]));
                     return true;
 
                 } else {

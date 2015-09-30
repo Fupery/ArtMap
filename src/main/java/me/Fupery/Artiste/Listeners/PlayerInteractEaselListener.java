@@ -3,6 +3,7 @@ package me.Fupery.Artiste.Listeners;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.PartType;
+import me.Fupery.Artiste.Utils.Formatting;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import static me.Fupery.Artiste.Easel.Easel.getEasel;
 import static me.Fupery.Artiste.Utils.Formatting.breakCanvas;
 import static me.Fupery.Artiste.Utils.Formatting.playerError;
+import static me.Fupery.Artiste.Utils.Formatting.playerMessage;
 
 public class PlayerInteractEaselListener implements Listener {
 
@@ -39,11 +41,17 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.isSneaking()) {
-                easel.onShiftRightClick(player, player.getItemInHand());
+            if (player.hasPermission("artiste.artist")){
+
+                if (player.isSneaking()) {
+                    easel.onShiftRightClick(player, player.getItemInHand());
+
+                } else {
+                    easel.onRightClick(player, player.getItemInHand());
+                }
 
             } else {
-                easel.onRightClick(player, player.getItemInHand());
+                player.sendMessage(playerError(Formatting.noperm));
             }
         }
     }
@@ -56,11 +64,17 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.isSneaking()) {
-                easel.onShiftRightClick(player, player.getItemInHand());
+            if (player.hasPermission("artiste.artist")) {
+
+                if (player.isSneaking()) {
+                    easel.onShiftRightClick(player, player.getItemInHand());
+
+                } else {
+                    easel.onRightClick(player, player.getItemInHand());
+                }
 
             } else {
-                easel.onRightClick(player, player.getItemInHand());
+                player.sendMessage(playerError(Formatting.noperm));
             }
         }
 
@@ -83,7 +97,13 @@ public class PlayerInteractEaselListener implements Listener {
             Easel easel = checkEasel(player, event.getEntity(), event);
 
             if (easel != null) {
-                easel.onLeftClick(player);
+
+                if (player.hasPermission("artiste.artist")) {
+                    easel.onLeftClick(player);
+
+                } else {
+                    player.sendMessage(playerError(Formatting.noperm));
+                }
             }
         }
     }
