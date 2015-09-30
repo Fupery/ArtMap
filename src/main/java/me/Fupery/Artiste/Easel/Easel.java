@@ -85,15 +85,22 @@ public class Easel {
     public static Easel getEasel(Artiste plugin, Location partLocation, PartType type) {
 
         EaselPart part = new EaselPart(type, EaselPart.getFacing(partLocation.getYaw()));
+        Location easelLocation = part.getEaselPos(partLocation).getBlock().getLocation();
 
-        Easel easel = new Easel(plugin, part.getEaselPos(partLocation));
+        if (plugin.getEasels() != null && plugin.getEasels().containsKey(easelLocation)) {
 
-        if (easel.getParts()) {
+            return plugin.getEasels().get(easelLocation);
 
-            if (!plugin.getEasels().containsKey(easel.location)) {
+        } else {
+
+            Easel easel = new Easel(plugin, easelLocation);
+
+            if (easel.getParts()) {
+
                 plugin.getEasels().put(easel.location, easel);
+                return easel;
             }
-            return easel;
+
         }
         return null;
     }
@@ -154,12 +161,10 @@ public class Easel {
                 ItemFrame f = (ItemFrame) e;
 
                 //check if entity is a frame
-                if (f.isCustomNameVisible() && f.getCustomName().equals(Artiste.entityTag)) {
-                    EaselPart part = new EaselPart(PartType.FRAME, f.getFacing());
+                EaselPart part = new EaselPart(PartType.FRAME, f.getFacing());
 
-                    if (part.getEaselPos(f.getLocation()).getBlock().equals(location.getBlock())) {
-                        frame = f;
-                    }
+                if (part.getEaselPos(f.getLocation()).getBlock().equals(location.getBlock())) {
+                    frame = f;
                 }
             }
         }

@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -33,22 +34,16 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
-        PartType part = getPartType(event.getRightClicked());
+        Player player = event.getPlayer();
+        Easel easel = checkEasel(player, event.getRightClicked(), event);
 
-        if (part != null) {
+        if (easel != null) {
 
-            Easel easel = getEasel(plugin, event.getRightClicked().getLocation(), part);
+            if (player.isSneaking()) {
+                easel.onShiftRightClick(player, player.getItemInHand());
 
-            if (easel != null) {
-                event.setCancelled(true);
-                Player player = event.getPlayer();
-
-                if (player.isSneaking()) {
-                    easel.onShiftRightClick(player, player.getItemInHand());
-
-                } else {
-                    easel.onRightClick(player, player.getItemInHand());
-                }
+            } else {
+                easel.onRightClick(player, player.getItemInHand());
             }
         }
     }
@@ -56,23 +51,16 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
-        PartType part = getPartType(event.getRightClicked());
+        Player player = event.getPlayer();
+        Easel easel = checkEasel(player, event.getRightClicked(), event);
 
-        if (part != null) {
+        if (easel != null) {
 
-            Easel easel = getEasel(plugin, event.getRightClicked().getLocation(), part);
+            if (player.isSneaking()) {
+                easel.onShiftRightClick(player, player.getItemInHand());
 
-
-            if (easel != null) {
-                event.setCancelled(true);
-                Player player = event.getPlayer();
-
-                if (player.isSneaking()) {
-                    easel.onShiftRightClick(player, player.getItemInHand());
-
-                } else {
-                    easel.onRightClick(player, player.getItemInHand());
-                }
+            } else {
+                easel.onRightClick(player, player.getItemInHand());
             }
         }
 
@@ -89,21 +77,13 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
-        PartType part = getPartType(event.getEntity());
+        if (event.getDamager() instanceof Player) {
 
-        if (part != null) {
-
-            Easel easel = getEasel(plugin, event.getEntity().getLocation(), part);
+            Player player = ((Player) event.getDamager());
+            Easel easel = checkEasel(player, event.getEntity(), event);
 
             if (easel != null) {
-
-                event.setCancelled(true);
-
-                if (event.getDamager() instanceof Player) {
-
-                    Player player = ((Player) event.getDamager());
-                    easel.onLeftClick(player);
-                }
+                easel.onLeftClick(player);
             }
         }
     }
@@ -111,23 +91,11 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 
-        PartType part = getPartType(event.getEntity());
+        if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY
+                && event.getRemover() instanceof Player) {
 
-        if (part != null) {
-
-            Easel easel = getEasel(plugin, event.getEntity().getLocation(), part);
-
-            if (easel != null) {
-
-                event.setCancelled(true);
-
-                if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY
-                        && event.getRemover() instanceof Player) {
-
-                    Player player = ((Player) event.getRemover());
-                    easel.onLeftClick(player);
-                }
-            }
+            Player player = ((Player) event.getRemover());
+            checkEasel(player, event.getEntity(), event);
         }
     }
 
@@ -165,6 +133,32 @@ public class PlayerInteractEaselListener implements Listener {
                 }
             }
         }
+    }
+
+    private Easel checkEasel(Player player, Entity clicked, Cancellable event) {
+
+        if (plugin.getArtistHandler() != null
+                && plugin.getArtistHandler().containsPlayer(player)) {
+            event.setCancelled(true);
+            return null;
+        }
+
+        if (!player.isInsideVehicle()) {
+
+            PartType part = getPartType(clicked);
+
+            if (part != null && part != PartType.SEAT) {
+
+                Easel easel = getEasel(plugin, clicked.getLocation(), part);
+
+                if (easel != null) {
+
+                    event.setCancelled(true);
+                    return easel;
+                }
+            }
+        }
+        return null;
     }
 
     private PartType getPartType(Entity entity) {
