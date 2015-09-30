@@ -3,6 +3,7 @@ package me.Fupery.Artiste.Listeners;
 import me.Fupery.Artiste.Artiste;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.IO.MapArt;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.Event;
@@ -29,42 +30,45 @@ public class PlayerCraftListener implements Listener {
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
 
-        ItemStack items[];
-        items = event.getInventory().getMatrix();
+        if (event.getRecipe().getResult().getType() == Material.MAP) {
 
-        for (ItemStack i : items) {
+            ItemStack items[];
+            items = event.getInventory().getMatrix();
 
-            if (i != null && i.hasItemMeta()) {
-                ItemMeta meta = i.getItemMeta();
+            for (ItemStack i : items) {
 
-                if (meta != null ) {
+                if (i != null && i.hasItemMeta()) {
+                    ItemMeta meta = i.getItemMeta();
 
-                    if (meta.getLore() != null
-                            && meta.getLore().get(0).equals(artworkTag)) {
+                    if (meta != null) {
 
-                        MapArt art = MapArt.getArtwork(plugin, meta.getDisplayName());
+                        if (meta.getLore() != null
+                                && meta.getLore().get(0).equals(artworkTag)) {
 
-                        if (art != null) {
-                            OfflinePlayer player = art.getPlayer();
+                            MapArt art = MapArt.getArtwork(plugin, meta.getDisplayName());
+
+                            if (art != null) {
+                                OfflinePlayer player = art.getPlayer();
+
+                                for (HumanEntity e : event.getViewers()) {
+
+                                    if (e.getName().equals(player.getName())) {
+                                        return;
+
+                                    } else {
+                                        e.sendMessage(playerError(noCraftPerm));
+                                    }
+                                }
+                                event.setResult(Event.Result.DENY);
+                                return;
+                            }
+
+                        } else if (meta.getDisplayName().equals(Recipe.canvasTitle)) {
 
                             for (HumanEntity e : event.getViewers()) {
+                                e.sendMessage(playerError(noDupeCanvas));
 
-                                if (e.getName().equals(player.getName())) {
-                                    return;
-
-                                } else {
-                                    e.sendMessage(playerError(noCraftPerm));
-                                }
                             }
-                            event.setResult(Event.Result.DENY);
-                            return;
-                        }
-
-                    } else if (meta.getDisplayName().equals(Recipe.canvasTitle)) {
-
-                        for (HumanEntity e : event.getViewers()) {
-                            e.sendMessage(playerError(noDupeCanvas));
-
                         }
                     }
                 }
