@@ -13,8 +13,8 @@ import static me.Fupery.Artiste.Utils.Formatting.*;
 
 class ReturnMessage implements Runnable {
 
-    protected CommandSender sender;
-    protected String message;
+    CommandSender sender;
+    String message;
 
     ReturnMessage(CommandSender sender, String message) {
         this.sender = sender;
@@ -63,7 +63,7 @@ class MultiLineReturnMessage extends ReturnMessage {
     public void makeLinesButtons(String lineHoverText, String lineClickCommand) {
         lineButtons = new TextComponent[messages.length];
 
-        for (int i = 0; i < messages.length; i ++) {
+        for (int i = 0; i < messages.length; i++) {
             String title = extractListTitle(messages[i]);
             String cmd = String.format(lineClickCommand, title);
             String hover = String.format(lineHoverText, title);

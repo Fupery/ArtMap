@@ -16,13 +16,13 @@ import static me.Fupery.Artiste.Utils.Formatting.playerError;
 
 public class PlayerInteractListener implements Listener {
 
-    Artiste plugin;
+    private Artiste plugin;
 
     public PlayerInteractListener(Artiste plugin) {
         this.plugin = plugin;
     }
 
-    public static BlockFace getFacing(Player player) {
+    private static BlockFace getFacing(Player player) {
         int yaw = ((int) player.getLocation().getYaw()) % 360;
 
         if (yaw < 0) {

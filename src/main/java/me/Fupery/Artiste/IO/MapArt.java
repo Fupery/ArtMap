@@ -15,14 +15,15 @@ import java.util.*;
 
 import static me.Fupery.Artiste.Utils.Formatting.listLine;
 
+@SuppressWarnings("ALL")
 public class MapArt {
 
-    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static final String artworkTag = "§aPlayer Artwork";
-    public static final String artworks = "artworks";
-    public static final String artistID = "artist";
-    public static final String mapID = "mapID";
-    public static final String dateID = "date";
+    private static final String artworks = "artworks";
+    private static final String artistID = "artist";
+    private static final String mapID = "mapID";
+    private static final String dateID = "date";
 
 
     private short mapIDValue;
@@ -81,7 +82,7 @@ public class MapArt {
     }
 
     public static String[] listArtworks(Artiste plugin, String artist) {
-        ArrayList<String> returnList = null;
+        ArrayList<String> returnList;
 
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");

@@ -23,11 +23,10 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import static me.Fupery.Artiste.Easel.Easel.getEasel;
 import static me.Fupery.Artiste.Utils.Formatting.breakCanvas;
 import static me.Fupery.Artiste.Utils.Formatting.playerError;
-import static me.Fupery.Artiste.Utils.Formatting.playerMessage;
 
 public class PlayerInteractEaselListener implements Listener {
 
-    Artiste plugin;
+    private Artiste plugin;
 
     public PlayerInteractEaselListener(Artiste plugin) {
         this.plugin = plugin;
@@ -41,7 +40,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.hasPermission("artiste.artist")){
+            if (player.hasPermission("artiste.artist")) {
 
                 if (player.isSneaking()) {
                     easel.onShiftRightClick(player, player.getItemInHand());

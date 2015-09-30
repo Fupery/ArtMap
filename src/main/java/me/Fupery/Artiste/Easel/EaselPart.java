@@ -3,8 +3,11 @@ package me.Fupery.Artiste.Easel;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 
-public class EaselPart {
-    double x = 0, y = 0, z = 0, yaw = 0;
+class EaselPart {
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
+    private double yaw = 0;
 
     public EaselPart(PartType type, BlockFace facing) {
 
@@ -46,6 +49,25 @@ public class EaselPart {
         }
     }
 
+    public static int getYawOffset(BlockFace face) {
+
+        switch (face) {
+
+            case SOUTH:
+                return 180;
+
+            case WEST:
+                return 90;
+
+            case NORTH:
+                return 0;
+
+            case EAST:
+                return 270;
+        }
+        return 0;
+    }
+
     private void getFacingOffset(PartType type, BlockFace facing) {
         double partModifier = type.modifier;
 
@@ -80,26 +102,6 @@ public class EaselPart {
                 break;
         }
     }
-
-    public static int getYawOffset(BlockFace face) {
-
-        switch (face) {
-
-            case SOUTH:
-                return 180;
-
-            case WEST:
-                return 90;
-
-            case NORTH:
-                return 0;
-
-            case EAST:
-                return 270;
-        }
-        return 0;
-    }
-
 
     public Location getPartPos(Location easelLocation) {
         Location partLocation = easelLocation.clone().add(x, y, z);

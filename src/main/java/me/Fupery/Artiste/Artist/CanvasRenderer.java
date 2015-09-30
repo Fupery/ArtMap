@@ -134,7 +134,7 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     //finds the corresponding pixel for the yaw & pitch clicked
-    public byte[] getPixel() {
+    private byte[] getPixel() {
         byte[] pixel = new byte[2];
 
         pixel[0] = ((byte) cursor.getX());

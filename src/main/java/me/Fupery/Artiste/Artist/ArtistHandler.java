@@ -3,16 +3,12 @@ package me.Fupery.Artiste.Artist;
 import com.comphenix.tinyprotocol.Reflection;
 import io.netty.channel.Channel;
 import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Easel;
 import me.Fupery.Artiste.Easel.Recipe;
 import me.Fupery.Artiste.Utils.LocationTag;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtistHandler {
 
-    ConcurrentHashMap<Player, CanvasRenderer> artists;
+    private ConcurrentHashMap<Player, CanvasRenderer> artists;
 
     private Artiste plugin;
     private ArtistProtocol protocol;
@@ -37,9 +33,6 @@ public class ArtistHandler {
 
     private Class<?> playerSwingArmClass =
             Reflection.getClass("{nms}.PacketPlayInArmAnimation");
-
-    private Class<?> playerMoveVehicleClass =
-            Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
 
     private Class<?> playerDismountClass =
             Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
@@ -112,9 +105,10 @@ public class ArtistHandler {
                             return null;
                         }
 
-                    } else if (playerMoveVehicleClass.isInstance(packet)) {
-                        Bukkit.getLogger().info("moved vehicle");
                     }
+
+                } else {
+                    removePlayer(sender);
                 }
                 return super.onPacketInAsync(sender, channel, packet);
             }

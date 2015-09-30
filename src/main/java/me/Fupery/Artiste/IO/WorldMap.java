@@ -110,7 +110,7 @@ public class WorldMap {
         return mapView;
     }
 
-    public void setMapView(MapView mapView) {
+    private void setMapView(MapView mapView) {
         this.mapView = mapView;
     }
 }

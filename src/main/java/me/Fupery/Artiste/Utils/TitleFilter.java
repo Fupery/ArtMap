@@ -4,10 +4,10 @@ import me.Fupery.Artiste.Artiste;
 
 public class TitleFilter {
 
-    Artiste plugin;
-    String title;
-    char[] chars;
-    String adjTitle;
+    private Artiste plugin;
+    private String title;
+    private char[] chars;
+    private String adjTitle;
 
     public TitleFilter(Artiste plugin, String title) {
         this.plugin = plugin;

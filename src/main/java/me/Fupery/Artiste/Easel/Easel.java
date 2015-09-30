@@ -26,13 +26,12 @@ import static me.Fupery.Artiste.Utils.Formatting.*;
 public class Easel {
 
     public static String arbitrarySignID = "*{=}*";
-
+    private boolean isPainting;
     private Artiste plugin;
     private Location location;
     private ArmorStand stand;
     private ArmorStand seat;
     private ItemFrame frame;
-    boolean isPainting;
 
     private Easel(Artiste plugin, Location location) {
         this.plugin = plugin;
@@ -116,7 +115,7 @@ public class Easel {
         return this;
     }
 
-    public boolean getParts() {
+    private boolean getParts() {
         Sign sign = null;
 
         if (location.getBlock().getType() == Material.WALL_SIGN) {
@@ -242,7 +241,7 @@ public class Easel {
                     seat.setGravity(false);
                     seat.setRemoveWhenFarAway(true);
                     seat.setPassenger(player);
-                    seat.setMetadata("easel" ,
+                    seat.setMetadata("easel",
                             new FixedMetadataValue(plugin, LocationTag.createTag(location)));
 
                     if (plugin.getArtistHandler() == null) {
@@ -300,7 +299,7 @@ public class Easel {
         }
     }
 
-    public void breakEasel() {
+    private void breakEasel() {
 
         plugin.getEasels().remove(location);
 

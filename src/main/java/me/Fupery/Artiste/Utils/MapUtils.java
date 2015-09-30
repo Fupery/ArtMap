@@ -1,6 +1,6 @@
 package me.Fupery.Artiste.Utils;
 
-public class MapUtils {
+class MapUtils {
 
     public static byte[] convertBuffer(byte[][] buffer, int resolutionFactor) {
         byte[] colors = new byte[128 * 128];

@@ -30,9 +30,8 @@ import java.util.zip.GZIPOutputStream;
 public class Artiste extends JavaPlugin {
 
     public static String entityTag = "Easel";
-
+    private File data;
     private File mapList;
-    File data;
     private FileConfiguration maps;
     private List<String> titleFilter;
     private int backgroundID;
@@ -140,7 +139,7 @@ public class Artiste extends JavaPlugin {
         return maps;
     }
 
-    public boolean loadTables() {
+    private boolean loadTables() {
 
         Bukkit.getLogger().info("Loading pixel tables ...");
 
@@ -172,11 +171,11 @@ public class Artiste extends JavaPlugin {
                 saveTables(pixelTables);
                 Bukkit.getLogger().warning("Table generation successful!");
             }
-            });
+        });
         return true;
     }
 
-    public void saveTables(File datafile) {
+    private void saveTables(File datafile) {
 
         if (!data.exists()) {
             data.mkdir();
@@ -245,14 +244,14 @@ public class Artiste extends JavaPlugin {
         return backgroundID;
     }
 
-    public int getMapResolutionFactor() {
-        return mapResolutionFactor;
-    }
-
     private void setBackgroundID(int id) {
         backgroundID = id;
         getConfig().set("backgroundID", id);
         saveDefaultConfig();
+    }
+
+    public int getMapResolutionFactor() {
+        return mapResolutionFactor;
     }
 
     public void setupBackgroundID(World world) {

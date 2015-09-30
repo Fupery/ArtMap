@@ -83,7 +83,7 @@ class ItemCanvas extends ItemStack {
 
 class PaintBucket extends ItemStack {
 
-    static HashMap<DyeColor, ChatColor> colourWheel;
+    private static HashMap<DyeColor, ChatColor> colourWheel;
 
     static {
         colourWheel = new HashMap<>();

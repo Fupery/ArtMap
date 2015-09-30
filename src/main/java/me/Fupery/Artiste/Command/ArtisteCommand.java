@@ -12,13 +12,17 @@ interface AbstractCommand {
 
 abstract class ArtisteCommand implements AbstractCommand {
 
-    protected final AbstractCommand artisteCommand = this;
-    protected Artiste plugin;
-    protected String command, permission, usage, success;
-    protected int minArgs, maxArgs;
+    private final AbstractCommand artisteCommand = this;
+    Artiste plugin;
+    private String command;
+    private String permission;
+    String usage;
+    private String success;
+    private int minArgs;
+    private int maxArgs;
 
-    protected ArtisteCommand(String command, String permission, int minArgs, int maxArgs,
-                             String usage, String success, CommandListener commands) {
+    ArtisteCommand(String command, String permission, int minArgs, int maxArgs,
+                   String usage, String success, CommandListener commands) {
         this.command = command;
         this.permission = permission;
         this.plugin = commands.getPlugin();

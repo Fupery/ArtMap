@@ -4,15 +4,12 @@ import me.Fupery.Artiste.Artiste;
 
 class Cursor {
 
-    float[] yawTable;
-    Object[] pitchTables;
-
+    private float[] yawTable;
+    private Object[] pitchTables;
+    private int resolutionFactor;
     private int x, y;
     private float pitch, yaw;
     private float leftBound, rightBound, upBound, downBound;
-
-    int resolutionFactor;
-
     private int limit;
     private int yawOffset;
 
@@ -25,7 +22,8 @@ class Cursor {
 
         limit = (128 / resolutionFactor) - 1;
         int mid = limit / 2;
-        x = mid; y = mid;
+        x = mid;
+        y = mid;
 
         updateYawBounds();
         updatePitchBounds();
@@ -74,27 +72,31 @@ class Cursor {
     }
 
     private void up() {
-        y --;
+        y--;
         updatePitchBounds();
     }
+
     private void down() {
-        y ++;
+        y++;
         updatePitchBounds();
     }
 
     private void left() {
-        x --;
+        x--;
         updateYawBounds();
     }
+
     private void right() {
-        x ++;
+        x++;
         updateYawBounds();
     }
-    void updateYawBounds() {
+
+    private void updateYawBounds() {
         leftBound = yawTable[x];
         rightBound = yawTable[x + 1];
     }
-    void updatePitchBounds() {
+
+    private void updatePitchBounds() {
         upBound = ((float[]) pitchTables[x])[y];
         downBound = ((float[]) pitchTables[x])[y + 1];
     }

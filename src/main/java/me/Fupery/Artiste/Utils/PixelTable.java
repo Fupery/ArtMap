@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class PixelTable implements Serializable {
 
-    int resolutionFactor;
-    float[] yawBounds;
-    Object[] pitchBounds;
+    private int resolutionFactor;
+    private float[] yawBounds;
+    private Object[] pitchBounds;
 
     public PixelTable(int resolutionFactor) {
         this.resolutionFactor = resolutionFactor;
@@ -47,20 +47,20 @@ public class PixelTable implements Serializable {
 
         double getPixelX() {
             double x = yaw;
-            double xValue = 0.0003*Math.pow(x, 3)
-                    + 0.0043*Math.pow(x, 2)
-                    + 1.423*x
+            double xValue = 0.0003 * Math.pow(x, 3)
+                    + 0.0043 * Math.pow(x, 2)
+                    + 1.423 * x
                     + 64.171;
-            return (xflip)? 128 - xValue : xValue;
+            return (xflip) ? 128 - xValue : xValue;
         }
 
         double getPixelY() {
             double x = pitch;
 
             //y = ax^3 + bx^2 + cx + d
-            return a()*Math.pow(x, 3)
-                    + b()*Math.pow(x, 2)
-                    + c()*x
+            return a() * Math.pow(x, 3)
+                    + b() * Math.pow(x, 2)
+                    + c() * x
                     + d();
         }
 
@@ -70,21 +70,21 @@ public class PixelTable implements Serializable {
 
         double b() {
             double x = yaw;
-            return 2E-06*x + 0.0001;
+            return 2E-06 * x + 0.0001;
         }
 
         double c() {
             double x = yaw;
-            return 0.0003*Math.pow(x, 2)
-                    + 0.0018*x
+            return 0.0003 * Math.pow(x, 2)
+                    + 0.0018 * x
                     + 1.369;
         }
 
         double d() {
             double x = yaw;
-            return 1E-05*Math.pow(x, 3)
-                    + 0.0008*Math.pow(x, 2)
-                    + 0.0089*x
+            return 1E-05 * Math.pow(x, 3)
+                    + 0.0008 * Math.pow(x, 2)
+                    + 0.0089 * x
                     + 64.155;
         }
     }
@@ -132,12 +132,13 @@ public class PixelTable implements Serializable {
             if (x != previousValue
                     && x % resolutionFactor == 0) {
                 values[counter] = yaw;
-                counter ++;
+                counter++;
                 previousValue = x;
                 return true;
             }
             return true;
         }
+
         public float[] getValues() {
             return values;
         }
@@ -157,7 +158,7 @@ public class PixelTable implements Serializable {
             yawValues = xTable.getValues();
             pitchValueList = new Object[yawValues.length];
 
-            for (int j = 0; j < yawValues.length; j ++ ) {
+            for (int j = 0; j < yawValues.length; j++) {
 
                 float yaw = yawValues[j];
                 float[] pitchValues = new float[yawValues.length];
@@ -201,7 +202,7 @@ public class PixelTable implements Serializable {
             if (y != previousValue
                     && y % resolutionFactor == 0) {
                 pitchValue[counter] = yaw;
-                counter ++;
+                counter++;
                 previousValue = y;
                 return true;
             }

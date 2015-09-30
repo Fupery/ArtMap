@@ -14,9 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import static me.Fupery.Artiste.IO.MapArt.artworkTag;
-import static me.Fupery.Artiste.Utils.Formatting.noCraftPerm;
-import static me.Fupery.Artiste.Utils.Formatting.noDupeCanvas;
-import static me.Fupery.Artiste.Utils.Formatting.playerError;
+import static me.Fupery.Artiste.Utils.Formatting.*;
 
 // Disallows players from copying Artiste maps in the crafting table
 public class PlayerCraftListener implements Listener {

@@ -1,8 +1,6 @@
 package me.Fupery.Artiste.Listeners;
 
 import me.Fupery.Artiste.Artiste;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -27,7 +25,7 @@ public class InventoryInteractListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-       checkPreviewing(((Player) event.getWhoClicked()), event);
+        checkPreviewing(((Player) event.getWhoClicked()), event);
     }
 
     @EventHandler

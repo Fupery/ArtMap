@@ -29,7 +29,7 @@ public abstract class ArtistProtocol {
     private static final FieldAccessor<Channel> getChannel =
             Reflection.getField("{nms}.NetworkManager", Channel.class, 0);
 
-    protected Plugin plugin;
+    private Plugin plugin;
 
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
@@ -66,7 +66,7 @@ public abstract class ArtistProtocol {
         channelLookup.remove(player.getName());
     }
 
-    public Channel getChannel(Player player) {
+    private Channel getChannel(Player player) {
         Channel channel = channelLookup.get(player.getName());
 
         if (channel == null) {
@@ -94,7 +94,7 @@ public abstract class ArtistProtocol {
         return packet;
     }
 
-    public Object onPacketOutAsync(Player player, Channel channel, Object packet) {
+    private Object onPacketOutAsync(Player player, Channel channel, Object packet) {
         return packet;
     }
 
