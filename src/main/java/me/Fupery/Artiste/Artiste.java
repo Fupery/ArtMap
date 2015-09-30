@@ -77,7 +77,7 @@ public class Artiste extends JavaPlugin {
 
         } else {
             mapResolutionFactor = 4;
-            Bukkit.getLogger().warning("Invalid mapResolutionFactor in config");
+            getLogger().warning("Invalid mapResolutionFactor in config, default will be used");
         }
         loadTables();
 
@@ -141,7 +141,7 @@ public class Artiste extends JavaPlugin {
 
     private boolean loadTables() {
 
-        Bukkit.getLogger().info("Loading pixel tables ...");
+        getLogger().info("Loading pixel tables ...");
 
         final File pixelTables = new File(data, mapResolutionFactor + "_tables.dat");
 
@@ -157,11 +157,11 @@ public class Artiste extends JavaPlugin {
                 return true;
 
             } catch (ClassNotFoundException | IOException e) {
-                Bukkit.getLogger().warning("Pixel data files corrupted");
+                getLogger().warning("Pixel data files corrupted");
             }
         }
-        Bukkit.getLogger().warning("No pixel tables found, generating tables ...");
-        Bukkit.getLogger().warning("(This will only need be done once)");
+        getLogger().warning("No pixel tables found, generating tables ...");
+        getLogger().warning("(This will only need be done once)");
 
         pixelTable = new PixelTable(mapResolutionFactor);
         Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
