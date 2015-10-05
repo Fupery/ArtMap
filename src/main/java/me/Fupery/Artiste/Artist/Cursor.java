@@ -30,6 +30,7 @@ class Cursor {
     }
 
     public void setPitch(float pitch) {
+    
         if (pitch > 45 || pitch < -45) {
             return;
         }
@@ -39,7 +40,6 @@ class Cursor {
 
     public void setYaw(float yaw) {
         float adjYaw = yaw;
-        adjYaw %= 360;
 
         if (adjYaw > 0) {
             adjYaw -= yawOffset;
@@ -51,6 +51,7 @@ class Cursor {
         if (adjYaw > 45 || adjYaw < -45) {
             return;
         }
+        adjYaw %= 360;
         this.yaw = adjYaw;
         updatePosition();
     }
