@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.IO;
+package me.Fupery.ArtMap.IO;
 
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapPalette;

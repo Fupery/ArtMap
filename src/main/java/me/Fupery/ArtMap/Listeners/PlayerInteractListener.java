@@ -1,7 +1,7 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Easel;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Easel;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -11,14 +11,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import static me.Fupery.Artiste.Utils.Formatting.invalidPos;
-import static me.Fupery.Artiste.Utils.Formatting.playerError;
+import static me.Fupery.ArtMap.Utils.Formatting.invalidPos;
+import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 public class PlayerInteractListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public PlayerInteractListener(Artiste plugin) {
+    public PlayerInteractListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 
@@ -53,7 +53,7 @@ public class PlayerInteractListener implements Listener {
 
             if (meta != null && meta.hasDisplayName()) {
 
-                if (meta.getDisplayName().equals(Artiste.entityTag)) {
+                if (meta.getDisplayName().equals(ArtMap.entityTag)) {
 
                     if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                         event.setCancelled(true);

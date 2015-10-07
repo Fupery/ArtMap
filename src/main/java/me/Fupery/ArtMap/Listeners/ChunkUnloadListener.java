@@ -1,6 +1,6 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -9,9 +9,9 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class ChunkUnloadListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public ChunkUnloadListener(Artiste plugin) {
+    public ChunkUnloadListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 

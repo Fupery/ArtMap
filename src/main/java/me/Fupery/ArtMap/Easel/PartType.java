@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Easel;
+package me.Fupery.ArtMap.Easel;
 
 import org.bukkit.entity.Entity;
 

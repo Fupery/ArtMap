@@ -1,15 +1,15 @@
-package me.Fupery.Artiste.Utils;
+package me.Fupery.ArtMap.Utils;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 
 public class TitleFilter {
 
-    private Artiste plugin;
+    private ArtMap plugin;
     private String title;
     private char[] chars;
     private String adjTitle;
 
-    public TitleFilter(Artiste plugin, String title) {
+    public TitleFilter(ArtMap plugin, String title) {
         this.plugin = plugin;
         this.title = title;
         chars = title.toCharArray();

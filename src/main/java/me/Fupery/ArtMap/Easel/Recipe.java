@@ -1,6 +1,6 @@
-package me.Fupery.Artiste.Easel;
+package me.Fupery.ArtMap.Easel;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -21,7 +21,7 @@ public class Recipe {
     public static String canvasTitle = "Canvas";
     public static String paintBucketTitle = "PaintBucket";
 
-    public static void setupRecipes(Artiste plugin) {
+    public static void setupRecipes(ArtMap plugin) {
         addEasel();
         addCanvas(plugin);
         addBucket();
@@ -38,7 +38,7 @@ public class Recipe {
         Bukkit.getServer().addRecipe(easel);
     }
 
-    private static void addCanvas(Artiste plugin) {
+    private static void addCanvas(ArtMap plugin) {
         ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas(plugin));
         canvas.shape("lel", "epe", "lel");
         canvas.setIngredient('l', Material.LEATHER);
@@ -64,7 +64,7 @@ class ItemEasel extends ItemStack {
     ItemEasel() {
         super(Material.ARMOR_STAND);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(Artiste.entityTag);
+        meta.setDisplayName(ArtMap.entityTag);
         meta.setLore(Arrays.asList("Used to edit artworks", "Right click to place"));
         setItemMeta(meta);
     }
@@ -72,7 +72,7 @@ class ItemEasel extends ItemStack {
 
 class ItemCanvas extends ItemStack {
 
-    ItemCanvas(Artiste plugin) {
+    ItemCanvas(ArtMap plugin) {
         super(Material.MAP, 1, ((short) plugin.getBackgroundID()));
         ItemMeta meta = getItemMeta();
         meta.setDisplayName(Recipe.canvasTitle);

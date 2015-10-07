@@ -1,6 +1,6 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -11,9 +11,9 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class InventoryInteractListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public InventoryInteractListener(Artiste plugin) {
+    public InventoryInteractListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 

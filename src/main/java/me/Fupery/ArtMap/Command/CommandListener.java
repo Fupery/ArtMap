@@ -1,8 +1,8 @@
-package me.Fupery.Artiste.Command;
+package me.Fupery.ArtMap.Command;
 
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.MapArt;
-import me.Fupery.Artiste.Utils.TitleFilter;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.TitleFilter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -17,18 +17,18 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.Fupery.Artiste.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 public class CommandListener implements CommandExecutor {
 
-    private Artiste plugin;
-    private HashMap<String, ArtisteCommand> commands;
+    private ArtMap plugin;
+    private HashMap<String, ArtMapCommand> commands;
 
-    public CommandListener(final Artiste plugin) {
+    public CommandListener(final ArtMap plugin) {
         this.plugin = plugin;
         commands = new HashMap<>();
 
-        new ArtisteCommand("save", "artiste.artist",
+        new ArtMapCommand("save", "ArtMap.artist",
                 2, 2, "/artmap save <title>", null, this) {
 
             @Override
@@ -78,7 +78,7 @@ public class CommandListener implements CommandExecutor {
             }
         };
 
-        new ArtisteCommand("delete", null,
+        new ArtMapCommand("delete", null,
                 2, 2, "/artmap delete <title>", null, this) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -87,7 +87,7 @@ public class CommandListener implements CommandExecutor {
 
                 if (art != null && sender instanceof Player
                         && !art.getPlayer().getName().equalsIgnoreCase(sender.getName())
-                        && !sender.hasPermission("artiste.admin")) {
+                        && !sender.hasPermission("ArtMap.admin")) {
                     msg.message = playerMessage(noperm);
                     return false;
                 }
@@ -103,7 +103,7 @@ public class CommandListener implements CommandExecutor {
             }
         };
 
-        new ArtisteCommand("preview", null, 2, 2, "/artmap preview <title>", null, this) {
+        new ArtMapCommand("preview", null, 2, 2, "/artmap preview <title>", null, this) {
 
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -117,7 +117,7 @@ public class CommandListener implements CommandExecutor {
 
                         if (art != null) {
 
-                            if (player.hasPermission("artiste.admin")) {
+                            if (player.hasPermission("ArtMap.admin")) {
 
                                 player.setItemInHand(art.getMapItem());
 
@@ -142,7 +142,7 @@ public class CommandListener implements CommandExecutor {
             }
         };
 
-        new ArtisteCommand("list", null, 1, 3,
+        new ArtMapCommand("list", null, 1, 3,
                 "/artmap list [playername|all] [pg]", null, this) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -212,7 +212,7 @@ public class CommandListener implements CommandExecutor {
             }
         };
 
-        new ArtisteCommand("help", null, 1, 1, "/artmap help", null, this) {
+        new ArtMapCommand("help", null, 1, 1, "/artmap help", null, this) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MultiLineReturnMessage multiMsg =
@@ -243,11 +243,11 @@ public class CommandListener implements CommandExecutor {
         return true;
     }
 
-    public HashMap<String, ArtisteCommand> getCommands() {
+    public HashMap<String, ArtMapCommand> getCommands() {
         return commands;
     }
 
-    public Artiste getPlugin() {
+    public ArtMap getPlugin() {
         return plugin;
     }
 }

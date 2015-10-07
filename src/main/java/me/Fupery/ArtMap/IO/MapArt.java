@@ -1,6 +1,6 @@
-package me.Fupery.Artiste.IO;
+package me.Fupery.ArtMap.IO;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,13 +13,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static me.Fupery.Artiste.Utils.Formatting.listLine;
+import static me.Fupery.ArtMap.Utils.Formatting.listLine;
 
 @SuppressWarnings("ALL")
 public class MapArt {
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     public static final String artworkTag = "§aPlayer Artwork";
+    private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static final String artworks = "artworks";
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
@@ -45,7 +45,7 @@ public class MapArt {
         this.date = date;
     }
 
-    public static MapArt getArtwork(Artiste plugin, String title) {
+    public static MapArt getArtwork(ArtMap plugin, String title) {
 
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
@@ -61,7 +61,7 @@ public class MapArt {
         return null;
     }
 
-    public static boolean deleteArtwork(Artiste plugin, String title) {
+    public static boolean deleteArtwork(ArtMap plugin, String title) {
 
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
@@ -81,7 +81,7 @@ public class MapArt {
         return false;
     }
 
-    public static String[] listArtworks(Artiste plugin, String artist) {
+    public static String[] listArtworks(ArtMap plugin, String artist) {
         ArrayList<String> returnList;
 
         if (plugin.getMaps() != null) {
@@ -130,7 +130,7 @@ public class MapArt {
         return map;
     }
 
-    public MapArt saveArtwork(Artiste plugin) {
+    public MapArt saveArtwork(ArtMap plugin) {
 
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);

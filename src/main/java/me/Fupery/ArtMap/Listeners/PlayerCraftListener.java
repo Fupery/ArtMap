@@ -1,8 +1,8 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Recipe;
-import me.Fupery.Artiste.IO.MapArt;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Recipe;
+import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.HumanEntity;
@@ -13,15 +13,15 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import static me.Fupery.Artiste.IO.MapArt.artworkTag;
-import static me.Fupery.Artiste.Utils.Formatting.*;
+import static me.Fupery.ArtMap.IO.MapArt.artworkTag;
+import static me.Fupery.ArtMap.Utils.Formatting.*;
 
-// Disallows players from copying Artiste maps in the crafting table
+// Disallows players from copying ArtMap maps in the crafting table
 public class PlayerCraftListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public PlayerCraftListener(Artiste plugin) {
+    public PlayerCraftListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 

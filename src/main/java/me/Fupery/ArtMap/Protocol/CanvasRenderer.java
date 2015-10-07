@@ -1,8 +1,8 @@
-package me.Fupery.Artiste.Artist;
+package me.Fupery.ArtMap.Protocol;
 
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.WorldMap;
-import me.Fupery.Artiste.Utils.PixelTable;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.WorldMap;
+import me.Fupery.ArtMap.Utils.PixelTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -27,10 +27,10 @@ public class CanvasRenderer extends MapRenderer {
     private MapView mapView;
     private boolean active;
 
-    private Artiste plugin;
+    private ArtMap plugin;
     private Cursor cursor;
 
-    public CanvasRenderer(Artiste plugin, MapView mapView, int yawOffset) {
+    public CanvasRenderer(ArtMap plugin, MapView mapView, int yawOffset) {
         this.plugin = plugin;
         this.mapView = mapView;
         resolutionFactor = plugin.getMapResolutionFactor();

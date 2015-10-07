@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Utils;
+package me.Fupery.ArtMap.Utils;
 
 import org.bukkit.Location;
 import org.bukkit.World;

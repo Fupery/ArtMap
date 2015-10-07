@@ -1,28 +1,28 @@
-package me.Fupery.Artiste.Command;
+package me.Fupery.ArtMap.Command;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import static me.Fupery.Artiste.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 interface AbstractCommand {
     boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg);
 }
 
-abstract class ArtisteCommand implements AbstractCommand {
+abstract class ArtMapCommand implements AbstractCommand {
 
-    private final AbstractCommand artisteCommand = this;
-    Artiste plugin;
+    private final AbstractCommand ArtMapCommand = this;
+    ArtMap plugin;
+    String usage;
     private String command;
     private String permission;
-    String usage;
     private String success;
     private int minArgs;
     private int maxArgs;
 
-    ArtisteCommand(String command, String permission, int minArgs, int maxArgs,
-                   String usage, String success, CommandListener commands) {
+    ArtMapCommand(String command, String permission, int minArgs, int maxArgs,
+                  String usage, String success, CommandListener commands) {
         this.command = command;
         this.permission = permission;
         this.plugin = commands.getPlugin();
@@ -58,7 +58,7 @@ abstract class ArtisteCommand implements AbstractCommand {
 
                     if (args.length >= minArgs && args.length <= maxArgs) {
 
-                        if (artisteCommand.runCommand(sender, args, returnMsg)) {
+                        if (ArtMapCommand.runCommand(sender, args, returnMsg)) {
 
                             if (success != null) {
                                 returnMsg.message = playerMessage(success);

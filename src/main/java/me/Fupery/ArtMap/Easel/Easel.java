@@ -1,11 +1,11 @@
-package me.Fupery.Artiste.Easel;
+package me.Fupery.ArtMap.Easel;
 
-import me.Fupery.Artiste.Artist.ArtistHandler;
-import me.Fupery.Artiste.Artist.CanvasRenderer;
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.IO.MapArt;
-import me.Fupery.Artiste.IO.WorldMap;
-import me.Fupery.Artiste.Utils.LocationTag;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.IO.WorldMap;
+import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Protocol.CanvasRenderer;
+import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,26 +21,26 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Collection;
 
-import static me.Fupery.Artiste.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 public class Easel {
 
     public static String arbitrarySignID = "*{=}*";
     private boolean isPainting;
-    private Artiste plugin;
+    private ArtMap plugin;
     private Location location;
     private ArmorStand stand;
     private ArmorStand seat;
     private ItemFrame frame;
 
-    private Easel(Artiste plugin, Location location) {
+    private Easel(ArtMap plugin, Location location) {
         this.plugin = plugin;
         this.location = location;
     }
 
 
     //Spawns an easel at the location provided, facing the direction provided
-    public static Easel spawnEasel(Artiste plugin, Location location, BlockFace facing) {
+    public static Easel spawnEasel(ArtMap plugin, Location location, BlockFace facing) {
 
         EaselPart standPart = new EaselPart(PartType.STAND, facing);
         EaselPart framePart = new EaselPart(PartType.FRAME, facing);
@@ -56,7 +56,7 @@ public class Easel {
 
         stand.setBasePlate(false);
         stand.setCustomNameVisible(true);
-        stand.setCustomName(Artiste.entityTag);
+        stand.setCustomName(ArtMap.entityTag);
         stand.setGravity(false);
 
         Block face = location.getBlock().getRelative(facing);
@@ -75,13 +75,13 @@ public class Easel {
 
         frame.setFacingDirection(facing, true);
         frame.setCustomNameVisible(true);
-        frame.setCustomName(Artiste.entityTag);
+        frame.setCustomName(ArtMap.entityTag);
         Easel easel = new Easel(plugin, location).setEasel(stand, frame);
         plugin.getEasels().put(location, easel);
         return easel;
     }
 
-    public static Easel getEasel(Artiste plugin, Location partLocation, PartType type) {
+    public static Easel getEasel(ArtMap plugin, Location partLocation, PartType type) {
 
         EaselPart part = new EaselPart(type, EaselPart.getFacing(partLocation.getYaw()));
         Location easelLocation = part.getEaselPos(partLocation).getBlock().getLocation();
@@ -104,7 +104,7 @@ public class Easel {
         return null;
     }
 
-    public static boolean checkForEasel(Artiste plugin, Location location) {
+    public static boolean checkForEasel(ArtMap plugin, Location location) {
         Easel easel = new Easel(plugin, location);
         return easel.getParts();
     }
@@ -138,7 +138,7 @@ public class Easel {
                 ArmorStand s = (ArmorStand) e;
 
                 //Check if entity is a stand
-                if (s.isCustomNameVisible() && s.getCustomName().equals(Artiste.entityTag)) {
+                if (s.isCustomNameVisible() && s.getCustomName().equals(ArtMap.entityTag)) {
                     EaselPart part = new EaselPart(PartType.STAND,
                             EaselPart.getFacing(s.getLocation().getYaw()));
 

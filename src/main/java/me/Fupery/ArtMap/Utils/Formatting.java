@@ -1,17 +1,15 @@
-package me.Fupery.Artiste.Utils;
+package me.Fupery.ArtMap.Utils;
 
 import org.bukkit.ChatColor;
 
 public class Formatting {
-    private static String
-            prefix = ChatColor.AQUA + "[Artmap] ";
     public static String playerOnly = "This command can only be used by players.";
     public static String invalidPos = "You can't place an easel here";
     public static String noperm = "You don't have permission to do this.";
     public static String emptyHand = "Use an empty hand to retrieve your artwork.";
     public static String elseUsing = "Someone else is using this canvas!";
     public static String saveUsage = "Use " + ChatColor.YELLOW + "/artmap save <title> "
-                    + ChatColor.GOLD + "to save your artwork.";
+            + ChatColor.GOLD + "to save your artwork.";
     public static String punchCanvas = "Now Left-Click your artwork to save '%s'.";
     public static String breakCanvas = "Shift + Right-Click the easel to break it.";
     public static String painting = "Right-Click the canvas with dye or a paint bucket to paint.";
@@ -29,12 +27,14 @@ public class Formatting {
     public static String seperator = ChatColor.DARK_AQUA + "-------------------------";
     public static String helpHeader = "Help:";
     public static String helpMessage = ChatColor.GOLD + "Craft an Easel and Canvas to create artworks.\n" +
-                    "Use Dyes and PaintBuckets to paint on your canvas.";
+            "Use Dyes and PaintBuckets to paint on your canvas.";
     public static String badTitle = "Invalid Title. Titles must be between 3 and 16 characters, " +
-                    "and consist of only letters and numbers.";
+            "and consist of only letters and numbers.";
     public static String titleUsed = "Sorry, this title is already being used.";
     public static String previewing = "Previewing artwork '%s'.";
     public static String emptyHandPreview = "You need to have an empty hand to preview.";
+    private static String
+            prefix = ChatColor.AQUA + "[ArtMap] ";
 
     public static String playerMessage(String string) {
         return prefix + ChatColor.GOLD + string;

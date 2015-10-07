@@ -1,6 +1,6 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public PlayerQuitListener(Artiste plugin) {
+    public PlayerQuitListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 

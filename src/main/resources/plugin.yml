@@ -1,5 +1,5 @@
 name: ${project.name}
-main: me.Fupery.Artiste.Artiste
+main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depends: [Vault]

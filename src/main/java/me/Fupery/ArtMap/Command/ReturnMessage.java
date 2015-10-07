@@ -1,4 +1,4 @@
-package me.Fupery.Artiste.Command;
+package me.Fupery.ArtMap.Command;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-import static me.Fupery.Artiste.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 class ReturnMessage implements Runnable {
 

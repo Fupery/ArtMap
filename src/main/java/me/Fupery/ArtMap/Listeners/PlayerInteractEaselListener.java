@@ -1,9 +1,9 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Easel;
-import me.Fupery.Artiste.Easel.PartType;
-import me.Fupery.Artiste.Utils.Formatting;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.PartType;
+import me.Fupery.ArtMap.Utils.Formatting;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -20,15 +20,15 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import static me.Fupery.Artiste.Easel.Easel.getEasel;
-import static me.Fupery.Artiste.Utils.Formatting.breakCanvas;
-import static me.Fupery.Artiste.Utils.Formatting.playerError;
+import static me.Fupery.ArtMap.Easel.Easel.getEasel;
+import static me.Fupery.ArtMap.Utils.Formatting.breakCanvas;
+import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 public class PlayerInteractEaselListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public PlayerInteractEaselListener(Artiste plugin) {
+    public PlayerInteractEaselListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 
@@ -40,7 +40,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.hasPermission("artiste.artist")) {
+            if (player.hasPermission("ArtMap.artist")) {
 
                 if (player.isSneaking()) {
                     easel.onShiftRightClick(player, player.getItemInHand());
@@ -63,7 +63,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.hasPermission("artiste.artist")) {
+            if (player.hasPermission("ArtMap.artist")) {
 
                 if (player.isSneaking()) {
                     easel.onShiftRightClick(player, player.getItemInHand());
@@ -97,7 +97,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (easel != null) {
 
-                if (player.hasPermission("artiste.artist")) {
+                if (player.hasPermission("ArtMap.artist")) {
                     easel.onLeftClick(player);
 
                 } else {

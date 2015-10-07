@@ -1,13 +1,13 @@
-package me.Fupery.Artiste;
+package me.Fupery.ArtMap;
 
-import me.Fupery.Artiste.Artist.ArtistHandler;
-import me.Fupery.Artiste.Command.CommandListener;
-import me.Fupery.Artiste.Easel.Easel;
-import me.Fupery.Artiste.Easel.Recipe;
-import me.Fupery.Artiste.IO.MapArt;
-import me.Fupery.Artiste.IO.WorldMap;
-import me.Fupery.Artiste.Listeners.*;
-import me.Fupery.Artiste.Utils.PixelTable;
+import me.Fupery.ArtMap.Command.CommandListener;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.Recipe;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.IO.WorldMap;
+import me.Fupery.ArtMap.Listeners.*;
+import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Utils.PixelTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class Artiste extends JavaPlugin {
+public class ArtMap extends JavaPlugin {
 
     public static String entityTag = "Easel";
     private File data;
@@ -287,10 +287,10 @@ public class Artiste extends JavaPlugin {
     }
 
     private class MapPreview extends BukkitRunnable {
-        Artiste plugin;
+        ArtMap plugin;
         Player player;
 
-        MapPreview(Artiste plugin, Player player) {
+        MapPreview(ArtMap plugin, Player player) {
             this.plugin = plugin;
             this.player = player;
         }

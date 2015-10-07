@@ -1,7 +1,7 @@
-package me.Fupery.Artiste.Listeners;
+package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Recipe;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Recipe;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,9 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class CanvasListener implements Listener {
 
-    private Artiste plugin;
+    private ArtMap plugin;
 
-    public CanvasListener(Artiste plugin) {
+    public CanvasListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 

@@ -1,6 +1,6 @@
-package me.Fupery.Artiste.Artist;
+package me.Fupery.ArtMap.Protocol;
 
-import me.Fupery.Artiste.Artiste;
+import me.Fupery.ArtMap.ArtMap;
 
 class Cursor {
 
@@ -12,7 +12,7 @@ class Cursor {
     private int limit;
     private int yawOffset;
 
-    Cursor(Artiste plugin, int yawOffset) {
+    Cursor(ArtMap plugin, int yawOffset) {
 
         yawTable = plugin.getPixelTable().getYawBounds();
         pitchTables = plugin.getPixelTable().getPitchBounds();
@@ -69,12 +69,13 @@ class Cursor {
 
     private float getAdjustedYaw() {
         float yaw = this.yaw;
-        float start = -180; float end = 180;
+        float start = -180;
+        float end = 180;
 
         float width = end - start;
         float offsetValue = yaw - start;
 
-        yaw = (float) ( offsetValue - ( Math.floor( offsetValue / width ) * width ) ) + start ;
+        yaw = (float) (offsetValue - (Math.floor(offsetValue / width) * width)) + start;
 
         if (yaw > 0) {
             yaw -= yawOffset;
