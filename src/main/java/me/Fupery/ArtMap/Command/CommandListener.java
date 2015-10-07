@@ -28,7 +28,7 @@ public class CommandListener implements CommandExecutor {
         this.plugin = plugin;
         commands = new HashMap<>();
 
-        new ArtMapCommand("save", "ArtMap.artist",
+        new ArtMapCommand("save", "artmap.artist",
                 2, 2, "/artmap save <title>", null, this) {
 
             @Override
@@ -87,7 +87,7 @@ public class CommandListener implements CommandExecutor {
 
                 if (art != null && sender instanceof Player
                         && !art.getPlayer().getName().equalsIgnoreCase(sender.getName())
-                        && !sender.hasPermission("ArtMap.admin")) {
+                        && !sender.hasPermission("artmap.admin")) {
                     msg.message = playerMessage(noperm);
                     return false;
                 }
@@ -117,7 +117,7 @@ public class CommandListener implements CommandExecutor {
 
                         if (art != null) {
 
-                            if (player.hasPermission("ArtMap.admin")) {
+                            if (player.hasPermission("artmap.admin")) {
 
                                 player.setItemInHand(art.getMapItem());
 

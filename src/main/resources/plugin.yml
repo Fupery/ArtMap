@@ -14,11 +14,11 @@ commands:
         <command> list <playername|all> <pg> : Lists artworks
         <command> help : Displays help
 permissions:
-  artiste.artist:
+  artmap.artist:
     description: Allows creation of artworks
     default: op
-  artiste.admin:
+  artmap.admin:
     description: Allows administrative commands
     children:
-      artiste.artist: true
+      artmap.artist: true
     default: op

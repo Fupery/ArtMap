@@ -40,7 +40,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.hasPermission("ArtMap.artist")) {
+            if (player.hasPermission("artmap.artist")) {
 
                 if (player.isSneaking()) {
                     easel.onShiftRightClick(player, player.getItemInHand());
@@ -63,7 +63,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (easel != null) {
 
-            if (player.hasPermission("ArtMap.artist")) {
+            if (player.hasPermission("artmap.artist")) {
 
                 if (player.isSneaking()) {
                     easel.onShiftRightClick(player, player.getItemInHand());
@@ -97,7 +97,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (easel != null) {
 
-                if (player.hasPermission("ArtMap.artist")) {
+                if (player.hasPermission("artmap.artist")) {
                     easel.onLeftClick(player);
 
                 } else {
