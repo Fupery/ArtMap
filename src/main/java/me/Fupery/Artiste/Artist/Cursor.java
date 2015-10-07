@@ -6,7 +6,6 @@ class Cursor {
 
     private float[] yawTable;
     private Object[] pitchTables;
-    private int resolutionFactor;
     private int x, y;
     private float pitch, yaw;
     private float leftBound, rightBound, upBound, downBound;
@@ -15,12 +14,11 @@ class Cursor {
 
     Cursor(Artiste plugin, int yawOffset) {
 
-        resolutionFactor = plugin.getMapResolutionFactor();
         yawTable = plugin.getPixelTable().getYawBounds();
         pitchTables = plugin.getPixelTable().getPitchBounds();
         this.yawOffset = yawOffset;
 
-        limit = (128 / resolutionFactor) - 1;
+        limit = (128 / plugin.getMapResolutionFactor()) - 1;
         int mid = limit / 2;
         x = mid;
         y = mid;
@@ -30,71 +28,89 @@ class Cursor {
     }
 
     public void setPitch(float pitch) {
-    
-        if (pitch > 45 || pitch < -45) {
-            return;
+        if (this.pitch != pitch) {
+            this.pitch = pitch;
+            updateYPos();
         }
-        this.pitch = pitch;
-        updatePosition();
     }
 
     public void setYaw(float yaw) {
-        float adjYaw = yaw;
-
-        if (adjYaw > 0) {
-            adjYaw -= yawOffset;
-
-        } else {
-            adjYaw += yawOffset;
+        if (this.yaw != yaw) {
+            this.yaw = yaw;
+            updateXPos();
         }
-
-        if (adjYaw > 45 || adjYaw < -45) {
-            return;
-        }
-        adjYaw %= 360;
-        this.yaw = adjYaw;
-        updatePosition();
     }
 
-    private void updatePosition() {
+    private void updateXPos() {
+        float yaw = getAdjustedYaw();
 
         while (yaw < leftBound && x > 0) {
-            left();
+            x--;
+            updateYawBounds();
         }
         while (yaw > rightBound && x < limit) {
-            right();
+            x++;
+            updateYawBounds();
         }
+    }
+
+    private void updateYPos() {
+        float pitch = getAdjustedPitch();
+
         while (pitch < upBound && y > 0) {
-            up();
+            y--;
+            updatePitchBounds();
         }
         while (pitch > downBound && y < limit) {
-            down();
+            y++;
+            updatePitchBounds();
         }
     }
 
-    private void up() {
-        y--;
-        updatePitchBounds();
+    private float getAdjustedYaw() {
+        float yaw = this.yaw;
+        float start = -180; float end = 180;
+
+        float width = end - start;
+        float offsetValue = yaw - start;
+
+        yaw = (float) ( offsetValue - ( Math.floor( offsetValue / width ) * width ) ) + start ;
+
+        if (yaw > 0) {
+            yaw -= yawOffset;
+
+        } else {
+            yaw += yawOffset;
+        }
+
+        if (yaw > 45) {
+            return 45;
+
+        } else if (yaw < -45) {
+            return -45;
+
+        } else {
+            return yaw;
+        }
     }
 
-    private void down() {
-        y++;
-        updatePitchBounds();
-    }
+    private float getAdjustedPitch() {
 
-    private void left() {
-        x--;
-        updateYawBounds();
-    }
+        if (pitch > 45) {
+            return 45;
 
-    private void right() {
-        x++;
-        updateYawBounds();
+        } else if (pitch < -45) {
+            return -45;
+
+        } else {
+            return pitch;
+        }
     }
 
     private void updateYawBounds() {
         leftBound = yawTable[x];
         rightBound = yawTable[x + 1];
+        updatePitchBounds();
     }
 
     private void updatePitchBounds() {
