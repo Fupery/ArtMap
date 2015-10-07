@@ -1,37 +1,24 @@
 name: ${project.name}
-main: me.Fupery.Artiste.Artiste
+main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
-depends: [Vault]
+depends:
 author: Fupery
+
 commands:
   artmap:
-    usage:  |
-      <command> define <x> <y> <z> : Defines the canvas region
-      <command> remove : Removes the canvas region
-      <command> info : Returns information about the canvas
-      <command> <approve|deny> <title> : Approves/denies a player’s publish request
-      <command> <ban|unban> <playername> : Bans/unbans a player from using the canvas
-      <command> claim : Claim the canvas for use
-      <command> <addmember|delmember> <playerName> : Add/remove player to canvas
-      <command> unclaim : Leave the canvas for others to claim
-      <command> reset [colour|list] : Reset the canvas to a block colour
-      <command> save <title> : Save your artwork
-      <command> publish <title> : Request to publish your artwork as a public map
-      <command> edit <title> : Load your artwork to the canvas
-      <command> list [private|public|queued|all] [page] : List artworks
+      usage:  |
+        <command> save <title> : Saves your artwork
+        <command> delete <title> : Removes your artwork
+        <command> preview <title> : Previews an artwork
+        <command> list <playername|all> <pg> : Lists artworks
+        <command> help : Displays help
 permissions:
-  artiste.playerTier1:
-    description: Lower tier players can only publish private artworks
+  artmap.artist:
+    description: Allows creation of artworks
     default: op
-  artiste.playerTier2:
-    description: Upper tier players can publish private and public artworks
-    default: op
-    children:
-      artiste.playerTier1: true
-  artiste.admin:
+  artmap.admin:
     description: Allows administrative commands
     children:
-      artiste.playerTier1: true
-      artiste.playerTier2: true
+      artmap.artist: true
     default: op

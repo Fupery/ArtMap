@@ -1,8 +1,8 @@
-canvasSize: 64     #Width of canvas; acceptable values: 32, 64, 128
-artworkPrice: 350  #Price to purchase a map in vault $
-claimTime: 60      #Minutes a player can claim a canvas for; 0 for unlimited use
-cooldownTime: 1    #Minutes between when the map can be reset
-maxMaps:           #max number of private artworks
-  playerTier1: 3
-  playerTier2: 5
-  admin: 10
+#ArtMap Config
+
+# The ID for the default background for each new canvas -
+# Don't change this unless you want to set a specific design
+backgroundID: 0
+# The resolution for artmap maps. Acceptable values: 128, 64, 32, 16
+# 64 or 32 are recommended.
+mapResolutionFactor: 32
