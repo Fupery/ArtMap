@@ -169,7 +169,7 @@ public class ArtMap extends JavaPlugin {
             public void run() {
                 pixelTable.generate();
                 saveTables(pixelTables);
-                Bukkit.getLogger().warning("Table generation successful!");
+                getLogger().warning("Table generation successful!");
             }
         });
         return true;
@@ -214,34 +214,6 @@ public class ArtMap extends JavaPlugin {
                 }
             }
         });
-    }
-
-    public ArtistHandler getArtistHandler() {
-        return artistHandler;
-    }
-
-    public void setArtistHandler(ArtistHandler artistHandler) {
-        this.artistHandler = artistHandler;
-    }
-
-    public ConcurrentHashMap<Player, String> getNameQueue() {
-        return nameQueue;
-    }
-
-    public ConcurrentHashMap<Location, Easel> getEasels() {
-        return easels;
-    }
-
-    public List<String> getTitleFilter() {
-        return titleFilter;
-    }
-
-    public PixelTable getPixelTable() {
-        return pixelTable;
-    }
-
-    public int getBackgroundID() {
-        return backgroundID;
     }
 
     private void setBackgroundID(int id) {
@@ -298,5 +270,33 @@ public class ArtMap extends JavaPlugin {
         public void run() {
             stopPreviewing(player);
         }
+    }
+
+    public ArtistHandler getArtistHandler() {
+        return artistHandler;
+    }
+
+    public void setArtistHandler(ArtistHandler artistHandler) {
+        this.artistHandler = artistHandler;
+    }
+
+    public ConcurrentHashMap<Player, String> getNameQueue() {
+        return nameQueue;
+    }
+
+    public ConcurrentHashMap<Location, Easel> getEasels() {
+        return easels;
+    }
+
+    public List<String> getTitleFilter() {
+        return titleFilter;
+    }
+
+    public PixelTable getPixelTable() {
+        return pixelTable;
+    }
+
+    public int getBackgroundID() {
+        return backgroundID;
     }
 }
