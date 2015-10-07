@@ -1,13 +1,11 @@
-package me.Fupery.Artiste.Artist;
+package me.Fupery.ArtMap.Protocol;
 
-import com.comphenix.tinyprotocol.Reflection;
-import com.comphenix.tinyprotocol.Reflection.FieldAccessor;
-import com.comphenix.tinyprotocol.Reflection.MethodInvoker;
 import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -20,20 +18,11 @@ import java.util.logging.Level;
  */
 public abstract class ArtistProtocol {
 
-    private static final MethodInvoker getPlayerHandle =
-            Reflection.getMethod("{obc}.entity.CraftPlayer", "getHandle");
-    private static final FieldAccessor<Object> getConnection =
-            Reflection.getField("{nms}.EntityPlayer", "playerConnection", Object.class);
-    private static final FieldAccessor<Object> getManager =
-            Reflection.getField("{nms}.PlayerConnection", "networkManager", Object.class);
-    private static final FieldAccessor<Channel> getChannel =
-            Reflection.getField("{nms}.NetworkManager", Channel.class, 0);
-
     private Plugin plugin;
 
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
-    private String handlerName = "ArtisteHandler";
+    private String handlerName = "ArtMapHandler";
 
     public ArtistProtocol(Plugin plugin) {
         this.plugin = plugin;
@@ -70,10 +59,12 @@ public abstract class ArtistProtocol {
         Channel channel = channelLookup.get(player.getName());
 
         if (channel == null) {
-            Object connection = getConnection.get(getPlayerHandle.invoke(player));
-            Object manager = getManager.get(connection);
+            channel = Reflection.getPlayerConnection(player);
 
-            channelLookup.put(player.getName(), channel = getChannel.get(manager));
+            if (channel == null) {
+                uninjectPlayer(player);
+            }
+            channelLookup.put(player.getName(), channel);
         }
 
         return channel;

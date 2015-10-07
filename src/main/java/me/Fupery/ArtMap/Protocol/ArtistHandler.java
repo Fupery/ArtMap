@@ -1,10 +1,9 @@
-package me.Fupery.Artiste.Artist;
+package me.Fupery.ArtMap.Protocol;
 
-import com.comphenix.tinyprotocol.Reflection;
 import io.netty.channel.Channel;
-import me.Fupery.Artiste.Artiste;
-import me.Fupery.Artiste.Easel.Recipe;
-import me.Fupery.Artiste.Utils.LocationTag;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Recipe;
+import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,26 +19,10 @@ public class ArtistHandler {
 
     private ConcurrentHashMap<Player, CanvasRenderer> artists;
 
-    private Artiste plugin;
+    private ArtMap plugin;
     private ArtistProtocol protocol;
 
-    //packets to listen for
-    private Class<?> playerLookClass =
-            Reflection.getClass("{nms}.PacketPlayInFlying$PacketPlayInLook");
-    private Reflection.FieldAccessor<Float> playerYaw =
-            Reflection.getField(playerLookClass, float.class, 0);
-    private Reflection.FieldAccessor<Float> playerPitch =
-            Reflection.getField(playerLookClass, float.class, 1);
-
-    private Class<?> playerSwingArmClass =
-            Reflection.getClass("{nms}.PacketPlayInArmAnimation");
-
-    private Class<?> playerDismountClass =
-            Reflection.getClass("{nms}.PacketPlayInSteerVehicle");
-    private Reflection.FieldAccessor<Boolean> playerDismount =
-            Reflection.getField(playerDismountClass, "d", boolean.class);
-
-    public ArtistHandler(Artiste plugin) {
+    public ArtistHandler(ArtMap plugin) {
         this.plugin = plugin;
         artists = new ConcurrentHashMap<>();
 
@@ -50,20 +33,22 @@ public class ArtistHandler {
 
                 if (artists != null && artists.containsKey(sender)) {
 
+                    ArtistPacket ArtMapPacket = ArtistPacket.getArtistPacket(packet);
+
+                    if (ArtMapPacket == null) {
+                        return packet;
+                    }
                     CanvasRenderer renderer = artists.get(sender);
 
                     //keeps track of where the player is looking
-                    if (playerLookClass.isInstance(packet)) {
-                        float yaw = playerYaw.get(packet);
-                        float pitch = playerPitch.get(packet);
+                    if (ArtMapPacket.getType() == PacketType.LOOK) {
 
-                        renderer.setYaw(yaw);
-                        renderer.setPitch(pitch);
+                        renderer.setYaw(ArtMapPacket.getSuperField(float.class, "yaw"));
+                        renderer.setPitch(ArtMapPacket.getSuperField(Float.class, "pitch"));
                         return packet;
 
                         //adds pixels when the player clicks
-                    } else if (playerSwingArmClass.isInstance(packet)) {
-
+                    } else if (ArtMapPacket.getType() == PacketType.ARM_ANIMATION) {
                         ItemStack item = sender.getItemInHand();
 
                         //brush tool
@@ -89,7 +74,6 @@ public class ArtistHandler {
                                     }
 
                                     if (colour != null) {
-
                                         renderer.fillPixel(colour);
                                     }
                                 }
@@ -98,9 +82,9 @@ public class ArtistHandler {
                         return null;
 
                         //listens for when the player dismounts the easel
-                    } else if (playerDismountClass.isInstance(packet)) {
+                    } else if (ArtMapPacket.getType() == PacketType.STEER_VEHICLE) {
 
-                        if (playerDismount.get(packet)) {
+                        if (ArtMapPacket.getField(boolean.class, "d")) {
                             removePlayer(sender);
                             return null;
                         }
@@ -159,7 +143,7 @@ public class ArtistHandler {
         return protocol;
     }
 
-    public Artiste getPlugin() {
+    public ArtMap getPlugin() {
         return plugin;
     }
 }
