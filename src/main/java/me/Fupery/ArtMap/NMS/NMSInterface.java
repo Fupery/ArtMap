@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public interface NMSInterface {
 
-    public Channel getPlayerChannel(Player player);
+    Channel getPlayerChannel(Player player);
 
-    public ArtistPacket getArtistPacket(Object packet);
+    ArtistPacket getArtistPacket(Object packet);
 }

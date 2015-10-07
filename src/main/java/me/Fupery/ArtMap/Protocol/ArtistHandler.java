@@ -52,7 +52,7 @@ public class ArtistHandler {
                         renderer.setPitch(packetLook.getPitch());
                         return packet;
 
-                    //adds pixels when the player clicks
+                        //adds pixels when the player clicks
                     } else if (artMapPacket instanceof ArtistPacket.PacketArmSwing) {
 
                         ItemStack item = sender.getItemInHand();
@@ -62,7 +62,7 @@ public class ArtistHandler {
 
                             renderer.drawPixel(DyeColor.getByData((byte) (15 - item.getDurability())));
 
-                        //paint bucket tool
+                            //paint bucket tool
                         } else if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {
@@ -87,7 +87,7 @@ public class ArtistHandler {
                         }
                         return null;
 
-                    //listens for when the player dismounts the easel
+                        //listens for when the player dismounts the easel
                     } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
 
                         ArtistPacket.PacketVehicle packetVehicle

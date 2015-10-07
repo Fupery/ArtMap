@@ -11,6 +11,7 @@ public class VersionHandler {
         String serverPackage = plugin.getServer().getClass().getPackage().getName();
         version = serverPackage.substring(serverPackage.lastIndexOf('.') + 1);
     }
+
     public NMSInterface getNMSInterface() {
         String classPath = this.getClass().getPackage().getName() + "." + version;
         plugin.getLogger().fine("Searching for interfaces supporting " + version);

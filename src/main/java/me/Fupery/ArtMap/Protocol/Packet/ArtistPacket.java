@@ -1,9 +1,5 @@
 package me.Fupery.ArtMap.Protocol.Packet;
 
-import org.bukkit.Bukkit;
-
-import java.lang.reflect.Field;
-
 public class ArtistPacket {
 
     protected Object packet;

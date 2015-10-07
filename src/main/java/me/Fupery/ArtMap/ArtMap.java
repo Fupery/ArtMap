@@ -295,14 +295,14 @@ public class ArtMap extends JavaPlugin {
         return backgroundID;
     }
 
-    public NMSInterface getNmsInterface() {
-        return nmsInterface;
-    }
-
     private void setBackgroundID(int id) {
         backgroundID = id;
         getConfig().set("backgroundID", id);
         saveDefaultConfig();
+    }
+
+    public NMSInterface getNmsInterface() {
+        return nmsInterface;
     }
 
     private class MapPreview extends BukkitRunnable {

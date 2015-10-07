@@ -4,7 +4,6 @@ import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
