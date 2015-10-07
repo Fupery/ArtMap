@@ -77,12 +77,7 @@ class Cursor {
 
         yaw = (float) (offsetValue - (Math.floor(offsetValue / width) * width)) + start;
 
-        if (yaw > 0) {
-            yaw -= yawOffset;
-
-        } else {
-            yaw += yawOffset;
-        }
+        yaw += (yaw > 0) ? -yawOffset : yawOffset;
 
         if (yaw > 45) {
             return 45;
