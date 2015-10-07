@@ -216,12 +216,6 @@ public class ArtMap extends JavaPlugin {
         });
     }
 
-    private void setBackgroundID(int id) {
-        backgroundID = id;
-        getConfig().set("backgroundID", id);
-        saveDefaultConfig();
-    }
-
     public int getMapResolutionFactor() {
         return mapResolutionFactor;
     }
@@ -258,20 +252,6 @@ public class ArtMap extends JavaPlugin {
         return previewing.containsKey(player);
     }
 
-    private class MapPreview extends BukkitRunnable {
-        ArtMap plugin;
-        Player player;
-
-        MapPreview(ArtMap plugin, Player player) {
-            this.plugin = plugin;
-            this.player = player;
-        }
-
-        public void run() {
-            stopPreviewing(player);
-        }
-    }
-
     public ArtistHandler getArtistHandler() {
         return artistHandler;
     }
@@ -298,5 +278,25 @@ public class ArtMap extends JavaPlugin {
 
     public int getBackgroundID() {
         return backgroundID;
+    }
+
+    private void setBackgroundID(int id) {
+        backgroundID = id;
+        getConfig().set("backgroundID", id);
+        saveDefaultConfig();
+    }
+
+    private class MapPreview extends BukkitRunnable {
+        ArtMap plugin;
+        Player player;
+
+        MapPreview(ArtMap plugin, Player player) {
+            this.plugin = plugin;
+            this.player = player;
+        }
+
+        public void run() {
+            stopPreviewing(player);
+        }
     }
 }
