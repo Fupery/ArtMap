@@ -56,14 +56,12 @@ class EaselPart {
             case SOUTH:
                 return 180;
 
-            case WEST:
-                return 90;
-
             case NORTH:
                 return 0;
 
+            case WEST:
             case EAST:
-                return 270;
+                return 90;
         }
         return 0;
     }
