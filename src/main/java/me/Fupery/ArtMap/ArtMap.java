@@ -6,6 +6,9 @@ import me.Fupery.ArtMap.Easel.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.WorldMap;
 import me.Fupery.ArtMap.Listeners.*;
+import me.Fupery.ArtMap.NMS.InvalidVersion;
+import me.Fupery.ArtMap.NMS.NMSInterface;
+import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Utils.PixelTable;
 import org.bukkit.Bukkit;
@@ -41,25 +44,20 @@ public class ArtMap extends JavaPlugin {
     private ArtistHandler artistHandler;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
+    private NMSInterface nmsInterface;
 
     @Override
     public void onEnable() {
 
-        Recipe.setupRecipes(this);
+        nmsInterface = new VersionHandler(this).getNMSInterface();
 
-        PluginManager manager = getServer().getPluginManager();
-        manager.registerEvents(new PlayerInteractListener(this), this);
-        manager.registerEvents(new PlayerInteractEaselListener(this), this);
-        manager.registerEvents(new CanvasListener(this), this);
-        manager.registerEvents(new PlayerQuitListener(this), this);
-        manager.registerEvents(new ChunkUnloadListener(this), this);
-        manager.registerEvents(new PlayerCraftListener(this), this);
-        manager.registerEvents(new InventoryInteractListener(this), this);
-
-        this.getCommand("artmap").setExecutor(new CommandListener(this));
-
-        easels = new ConcurrentHashMap<>();
-        previewing = new ConcurrentHashMap<>();
+        if (nmsInterface instanceof InvalidVersion) {
+            String version = ((InvalidVersion) nmsInterface).getVersion();
+            getLogger().warning(String.format(
+                    "Version %s of craftbukkit is not supported - disabling ArtMap", version));
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
 
         if (setupRegistry()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
@@ -79,9 +77,26 @@ public class ArtMap extends JavaPlugin {
             mapResolutionFactor = 4;
             getLogger().warning("Invalid mapResolutionFactor in config, default will be used");
         }
-        loadTables();
+
+        easels = new ConcurrentHashMap<>();
+        previewing = new ConcurrentHashMap<>();
+
+        Recipe.setupRecipes(this);
+
+        this.getCommand("artmap").setExecutor(new CommandListener(this));
+
+        PluginManager manager = getServer().getPluginManager();
+        manager.registerEvents(new PlayerInteractListener(this), this);
+        manager.registerEvents(new PlayerInteractEaselListener(this), this);
+        manager.registerEvents(new CanvasListener(this), this);
+        manager.registerEvents(new PlayerQuitListener(this), this);
+        manager.registerEvents(new ChunkUnloadListener(this), this);
+        manager.registerEvents(new PlayerCraftListener(this), this);
+        manager.registerEvents(new InventoryInteractListener(this), this);
 
         nameQueue = new ConcurrentHashMap<>();
+
+        loadTables();
     }
 
     @Override
@@ -141,7 +156,7 @@ public class ArtMap extends JavaPlugin {
 
     private boolean loadTables() {
 
-        getLogger().info("Loading pixel tables ...");
+        getLogger().fine("Loading pixel tables ...");
 
         final File pixelTables = new File(data, mapResolutionFactor + "_tables.dat");
 
@@ -169,7 +184,7 @@ public class ArtMap extends JavaPlugin {
             public void run() {
                 pixelTable.generate();
                 saveTables(pixelTables);
-                getLogger().warning("Table generation successful!");
+                getLogger().info("Table generation successful!");
             }
         });
         return true;
@@ -278,6 +293,10 @@ public class ArtMap extends JavaPlugin {
 
     public int getBackgroundID() {
         return backgroundID;
+    }
+
+    public NMSInterface getNmsInterface() {
+        return nmsInterface;
     }
 
     private void setBackgroundID(int id) {

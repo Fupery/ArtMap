@@ -3,6 +3,8 @@ package me.Fupery.ArtMap.Protocol;
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Recipe;
+import me.Fupery.ArtMap.NMS.NMSInterface;
+import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -25,30 +27,34 @@ public class ArtistHandler {
     public ArtistHandler(ArtMap plugin) {
         this.plugin = plugin;
         artists = new ConcurrentHashMap<>();
+        final NMSInterface nmsInterface = plugin.getNmsInterface();
 
-        protocol = new ArtistProtocol(plugin) {
+        protocol = new ArtistProtocol(plugin, nmsInterface) {
 
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
 
                 if (artists != null && artists.containsKey(sender)) {
 
-                    ArtistPacket ArtMapPacket = ArtistPacket.getArtistPacket(packet);
+                    ArtistPacket artMapPacket = nmsInterface.getArtistPacket(packet);
 
-                    if (ArtMapPacket == null) {
+                    if (artMapPacket == null) {
                         return packet;
                     }
                     CanvasRenderer renderer = artists.get(sender);
 
                     //keeps track of where the player is looking
-                    if (ArtMapPacket.getType() == PacketType.LOOK) {
+                    if (artMapPacket instanceof ArtistPacket.PacketLook) {
 
-                        renderer.setYaw(ArtMapPacket.getSuperField(float.class, "yaw"));
-                        renderer.setPitch(ArtMapPacket.getSuperField(Float.class, "pitch"));
+                        ArtistPacket.PacketLook packetLook
+                                = (ArtistPacket.PacketLook) artMapPacket;
+                        renderer.setYaw(packetLook.getYaw());
+                        renderer.setPitch(packetLook.getPitch());
                         return packet;
 
-                        //adds pixels when the player clicks
-                    } else if (ArtMapPacket.getType() == PacketType.ARM_ANIMATION) {
+                    //adds pixels when the player clicks
+                    } else if (artMapPacket instanceof ArtistPacket.PacketArmSwing) {
+
                         ItemStack item = sender.getItemInHand();
 
                         //brush tool
@@ -56,7 +62,7 @@ public class ArtistHandler {
 
                             renderer.drawPixel(DyeColor.getByData((byte) (15 - item.getDurability())));
 
-                            //paint bucket tool
+                        //paint bucket tool
                         } else if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {
@@ -81,10 +87,12 @@ public class ArtistHandler {
                         }
                         return null;
 
-                        //listens for when the player dismounts the easel
-                    } else if (ArtMapPacket.getType() == PacketType.STEER_VEHICLE) {
+                    //listens for when the player dismounts the easel
+                    } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
 
-                        if (ArtMapPacket.getField(boolean.class, "d")) {
+                        ArtistPacket.PacketVehicle packetVehicle
+                                = ((ArtistPacket.PacketVehicle) artMapPacket);
+                        if (packetVehicle.isDismount()) {
                             removePlayer(sender);
                             return null;
                         }

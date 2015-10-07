@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import me.Fupery.ArtMap.Utils.Reflection;
+import me.Fupery.ArtMap.NMS.NMSInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -13,19 +13,18 @@ import org.bukkit.plugin.Plugin;
 import java.util.Map;
 import java.util.logging.Level;
 
-/**
- * Adapted from com.comhenix.tinyprotocol.TinyProtocol
- */
 public abstract class ArtistProtocol {
 
     private Plugin plugin;
+    private NMSInterface nmsInterface;
 
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
     private String handlerName = "ArtMapHandler";
 
-    public ArtistProtocol(Plugin plugin) {
+    public ArtistProtocol(Plugin plugin, NMSInterface nmsInterface) {
         this.plugin = plugin;
+        this.nmsInterface = nmsInterface;
     }
 
     public void injectPlayer(Player player) {
@@ -59,7 +58,7 @@ public abstract class ArtistProtocol {
         Channel channel = channelLookup.get(player.getName());
 
         if (channel == null) {
-            channel = Reflection.getPlayerConnection(player);
+            channel = nmsInterface.getPlayerChannel(player);
 
             if (channel == null) {
                 uninjectPlayer(player);
@@ -85,10 +84,6 @@ public abstract class ArtistProtocol {
         return packet;
     }
 
-    private Object onPacketOutAsync(Player player, Channel channel, Object packet) {
-        return packet;
-    }
-
     private final class PacketHandler extends ChannelDuplexHandler {
         private Player player;
 
@@ -107,22 +102,6 @@ public abstract class ArtistProtocol {
 
             if (msg != null) {
                 super.channelRead(context, msg);
-            }
-        }
-
-        @Override
-        public void write(ChannelHandlerContext ctx, Object msg,
-                          ChannelPromise promise) throws Exception {
-
-            try {
-                msg = onPacketOutAsync(player, ctx.channel(), msg);
-
-            } catch (Exception e) {
-                plugin.getLogger().log(Level.SEVERE, "Error in onPacketOutAsync().", e);
-            }
-
-            if (msg != null) {
-                super.write(ctx, msg, promise);
             }
         }
     }
