@@ -12,7 +12,7 @@ public class Formatting {
             + ChatColor.GOLD + "to save your artwork.";
     public static String punchCanvas = "Now Left-Click your artwork to save '%s'.";
     public static String breakCanvas = "Shift + Right-Click the easel to break it.";
-    public static String painting = "Right-Click the canvas with dye or a paint bucket to paint.";
+    public static String painting = "Left-Click the canvas with dye or a paint bucket to paint.";
     public static String deleted = "Sucessfully deleted '%s'.";
     public static String mapNotFound = "Artwork '%s' could not be found.";
     public static String noDupeCanvas = "You can't copy canvases.";
