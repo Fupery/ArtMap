@@ -64,6 +64,8 @@ public class PlayerInteractListener implements Listener {
 
                                 Easel easel = Easel.spawnEasel(plugin, event.getClickedBlock().getLocation().add(0, 2, 0),
                                         getFacing(event.getPlayer()));
+                                event.getItem().setType(Material.AIR);
+                                event.setCancelled(true);
 
                                 if (easel == null) {
                                     event.getPlayer().sendMessage(playerError(invalidPos));
