@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import static me.Fupery.ArtMap.Utils.Formatting.invalidPos;
@@ -64,7 +65,16 @@ public class PlayerInteractListener implements Listener {
 
                                 Easel easel = Easel.spawnEasel(plugin, event.getClickedBlock().getLocation().add(0, 2, 0),
                                         getFacing(event.getPlayer()));
-                                event.getItem().setType(Material.AIR);
+                                Player player = event.getPlayer();
+                                ItemStack item = player.getItemInHand().clone();
+
+                                if (item.getAmount() > 1) {
+                                    item.setAmount(player.getItemInHand().getAmount() - 1);
+
+                                } else {
+                                    item = new ItemStack(Material.AIR);
+                                }
+                                player.setItemInHand(item);
                                 event.setCancelled(true);
 
                                 if (easel == null) {
