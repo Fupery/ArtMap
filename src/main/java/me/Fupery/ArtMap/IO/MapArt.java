@@ -8,6 +8,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -70,8 +72,12 @@ public class MapArt {
             if (map != null) {
                 int mapIDValue = map.getInt(mapID);
                 //clear map data
-                WorldMap worldMap = new WorldMap(Bukkit.getMap(((short) mapIDValue)));
-                worldMap.delete();
+                MapView mapView = Bukkit.getMap((short) mapIDValue);
+                plugin.getNmsInterface().setWorldMap(mapView, new byte[128 * 128]);
+
+                for (MapRenderer renderer : mapView.getRenderers()) {
+                    mapView.removeRenderer(renderer);
+                }
                 //remove map from list
                 mapList.set(title, null);
                 plugin.updateMaps();

@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Protocol;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.WorldMap;
 import me.Fupery.ArtMap.Utils.PixelTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -164,7 +163,6 @@ public class CanvasRenderer extends MapRenderer {
 
     public void saveMap() {
 
-        WorldMap map = new WorldMap(mapView);
         byte[] colours = new byte[128 * 128];
 
         for (int x = 0; x < (axisLength); x++) {
@@ -183,14 +181,13 @@ public class CanvasRenderer extends MapRenderer {
                 }
             }
         }
-        map.setMap(colours);
+        plugin.getNmsInterface().setWorldMap(mapView, colours);
         clearRenderers();
         active = false;
     }
 
     private void loadMap() {
-        WorldMap map = new WorldMap(mapView);
-        byte[] colours = map.getMap();
+        byte[] colours = plugin.getNmsInterface().getMap(mapView);
 
         pixelBuffer = new byte[axisLength][axisLength];
         dirtyPixels = new ArrayList<>();

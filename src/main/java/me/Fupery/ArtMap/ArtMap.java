@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.Command.CommandListener;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.WorldMap;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
@@ -19,6 +18,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -237,8 +237,7 @@ public class ArtMap extends JavaPlugin {
 
     public void setupBackgroundID(World world) {
         MapView mapView = Bukkit.createMap(world);
-        WorldMap map = new WorldMap(mapView);
-        map.setBlankMap();
+        nmsInterface.setWorldMap(mapView, getBlankMap());
         setBackgroundID(mapView.getId());
     }
 
@@ -303,6 +302,15 @@ public class ArtMap extends JavaPlugin {
 
     public NMSInterface getNmsInterface() {
         return nmsInterface;
+    }
+
+    public byte[] getBlankMap() {
+        byte[] mapOutput = new byte[128 * 128];
+
+        for (int i = 0; i < mapOutput.length; i++) {
+            mapOutput[i] = MapPalette.matchColor(255, 255, 255);
+        }
+        return mapOutput;
     }
 
     private class MapPreview extends BukkitRunnable {

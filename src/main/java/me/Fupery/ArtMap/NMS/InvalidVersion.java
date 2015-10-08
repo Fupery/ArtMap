@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.NMS;
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapView;
 
 public class InvalidVersion implements NMSInterface {
 
@@ -20,6 +21,16 @@ public class InvalidVersion implements NMSInterface {
     @Override
     public ArtistPacket getArtistPacket(Object packet) {
         return null;
+    }
+
+    @Override
+    public byte[] getMap(MapView mapView) {
+        return new byte[0];
+    }
+
+    @Override
+    public void setWorldMap(MapView mapView, byte[] colors) {
+
     }
 
     public String getVersion() {

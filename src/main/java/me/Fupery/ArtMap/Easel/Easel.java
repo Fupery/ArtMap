@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.WorldMap;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.CanvasRenderer;
 import me.Fupery.ArtMap.Utils.LocationTag;
@@ -261,8 +260,7 @@ public class Easel {
 
                     if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.canvasTitle)) {
                         MapView mapView = Bukkit.createMap(player.getWorld());
-                        WorldMap map = new WorldMap(mapView);
-                        map.setBlankMap();
+                        plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
                         frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
                         ItemStack item = player.getItemInHand().clone();
 
