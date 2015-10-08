@@ -22,4 +22,4 @@ The following values are configurable
 * Canvas resolution
 * Base canvas image
 
-#### MVN PACKAGE, SON
+### Latest Jar available in [releases](https://github.com/Fupery/ArtMap/releases).
