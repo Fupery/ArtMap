@@ -19,7 +19,7 @@ public class ChunkUnloadListener implements Listener {
     public void onChunkUnload(final ChunkUnloadEvent event) {
 
         if (plugin.getEasels().size() > 0) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
 
                 @Override
                 public void run() {
