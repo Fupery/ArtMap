@@ -151,6 +151,10 @@ public class ArtistHandler {
         return protocol;
     }
 
+    public ConcurrentHashMap<Player, CanvasRenderer> getArtists() {
+        return artists;
+    }
+
     public ArtMap getPlugin() {
         return plugin;
     }
