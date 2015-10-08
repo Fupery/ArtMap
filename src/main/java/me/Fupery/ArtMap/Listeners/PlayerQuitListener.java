@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerQuitListener implements Listener {
 
@@ -51,6 +52,15 @@ public class PlayerQuitListener implements Listener {
         if (plugin.isPreviewing(event.getEntity())) {
 
             plugin.stopPreviewing(event.getEntity());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+
+        if (plugin.getArtistHandler() != null
+                && plugin.getArtistHandler().containsPlayer(event.getPlayer())) {
+            plugin.getArtistHandler().removePlayer(event.getPlayer());
         }
     }
 }
