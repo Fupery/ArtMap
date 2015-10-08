@@ -28,7 +28,7 @@ public class PlayerCraftListener implements Listener {
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
 
-        if (event.getRecipe().getResult().getType() == Material.MAP) {
+        if (event.getCurrentItem().getType() == Material.MAP) {
 
             ItemStack items[];
             items = event.getInventory().getMatrix();
@@ -51,6 +51,9 @@ public class PlayerCraftListener implements Listener {
                                 for (HumanEntity e : event.getViewers()) {
 
                                     if (e.getName().equals(player.getName())) {
+                                        ItemStack result = art.getMapItem();
+                                        result.setAmount(2);
+                                        event.setCurrentItem(result);
                                         return;
 
                                     } else {
@@ -65,7 +68,7 @@ public class PlayerCraftListener implements Listener {
 
                             for (HumanEntity e : event.getViewers()) {
                                 e.sendMessage(playerError(noDupeCanvas));
-
+                                event.setResult(Event.Result.DENY);
                             }
                         }
                     }
