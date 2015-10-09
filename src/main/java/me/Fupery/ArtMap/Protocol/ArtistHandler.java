@@ -120,6 +120,8 @@ public class ArtistHandler {
     }
 
     public void removePlayer(Player player) {
+        CanvasRenderer renderer = artists.get(player);
+        artists.remove(player);
         protocol.uninjectPlayer(player);
         Entity seat = player.getVehicle();
         player.leaveVehicle();
@@ -136,10 +138,8 @@ public class ArtistHandler {
             }
             seat.remove();
         }
-        CanvasRenderer renderer = artists.get(player);
         renderer.saveMap();
         renderer.clearRenderers();
-        artists.remove(player);
 
         if (artists.size() == 0) {
             protocol.close();
