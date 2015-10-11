@@ -22,6 +22,7 @@ public enum Recipe {
 
     public static final String canvasTitle = "Canvas";
     public static final String paintBucketTitle = "PaintBucket";
+    public static final String voidPaint = "§rVoidPaint";
 
     RecipeItem recipeItem;
 
@@ -125,6 +126,18 @@ class PaintBucket extends RecipeItem {
         setItemMeta(meta);
     }
 
+    //void bucket fills with empty pixels
+    PaintBucket() {
+        super(Material.BUCKET);
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName(ChatColor.DARK_GREEN + Recipe.paintBucketTitle);
+        meta.setLore(Arrays.asList(Recipe.voidPaint, "Combine with dyes to",
+                "get different colours", "Use with an Easel and", "Canvas to fill colours"));
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addUnsafeEnchantment(Enchantment.LUCK, 1);
+        setItemMeta(meta);
+    }
+
     @Override
     public void addRecipe() {
         for (DyeColor d : DyeColor.values()) {
@@ -134,6 +147,10 @@ class PaintBucket extends RecipeItem {
                     new MaterialData(Material.INK_SACK, (byte) (15 - d.ordinal())));
             Bukkit.getServer().addRecipe(paintBucket);
         }
+        ShapelessRecipe voidBucket = new ShapelessRecipe(new PaintBucket());
+        voidBucket.addIngredient(1, Material.BUCKET);
+        voidBucket.addIngredient(1, Material.EYE_OF_ENDER);
+        Bukkit.getServer().addRecipe(voidBucket);
     }
 }
 

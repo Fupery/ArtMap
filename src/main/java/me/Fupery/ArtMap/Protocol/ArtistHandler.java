@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,9 +62,16 @@ public class ArtistHandler {
                         //brush tool
                         if (item.getType() == Material.INK_SACK) {
 
-                            renderer.drawPixel(DyeColor.getByData((byte) (15 - item.getDurability())));
+                            DyeColor colour = DyeColor.getByData((byte) (15 - item.getDurability()));
 
-                            //paint bucket tool
+                            renderer.drawPixel(getColourData(colour));
+
+                        //void brush paints empty pixels
+                        } else if (item.getType() == Material.EYE_OF_ENDER) {
+
+                            renderer.drawPixel(((byte) 0));
+
+                        //paint bucket tool
                         } else if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {
@@ -71,16 +80,23 @@ public class ArtistHandler {
                                 if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
                                         && meta.hasLore()) {
                                     DyeColor colour = null;
+                                    String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
                                     for (DyeColor d : DyeColor.values()) {
 
-                                        if (meta.getLore().toArray()[0].equals("§r" + d.name())) {
+                                        if (lore[0].equals("§r" + d.name())) {
                                             colour = d;
                                         }
                                     }
 
                                     if (colour != null) {
-                                        renderer.fillPixel(colour);
+                                        renderer.fillPixel(getColourData(colour));
+
+                                    } else {
+
+                                        if (lore[0].equals(Recipe.voidPaint)) {
+                                            renderer.fillPixel((byte) 0);
+                                        }
                                     }
                                 }
                             }
@@ -96,7 +112,6 @@ public class ArtistHandler {
                             removePlayer(sender);
                             return null;
                         }
-
                     }
 
                 } else {
@@ -145,6 +160,11 @@ public class ArtistHandler {
             protocol.close();
             plugin.setArtistHandler(null);
         }
+    }
+
+    private static byte getColourData(DyeColor colour) {
+        Color c = colour.getColor();
+        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
     }
 
     public ArtistProtocol getProtocol() {
