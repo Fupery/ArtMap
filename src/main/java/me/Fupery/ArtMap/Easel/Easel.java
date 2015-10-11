@@ -180,124 +180,63 @@ public class Easel {
         }
     }
 
-    public void onLeftClick(Player player) {
+    public void mountCanvas(Player player, ItemStack itemInHand) {
 
-        if (frame == null) {
-            getParts();
-        }
-        if (!isPainting) {
+        MapView mapView = Bukkit.createMap(player.getWorld());
+        plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
+        frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
+        ItemStack item = player.getItemInHand().clone();
 
-            if (frame != null && frame.getItem().getType() == Material.MAP) {
-
-                if (plugin.getNameQueue().containsKey(player)) {
-
-                    if (player.getItemInHand().getType() == Material.AIR) {
-
-                        MapArt art = new MapArt(frame.getItem().getDurability(),
-                                plugin.getNameQueue().get(player), player);
-
-                        player.setItemInHand(art.getMapItem());
-                        frame.setItem(new ItemStack(Material.AIR));
-                        art.saveArtwork(plugin);
-                        plugin.getNameQueue().remove(player);
-
-                    } else {
-                        player.sendMessage(playerMessage(emptyHand));
-                    }
-
-                } else {
-                    player.sendMessage(playerMessage(saveUsage));
-                }
-            }
-        }
-    }
-
-    public void onRightClick(Player player, ItemStack itemInHand) {
-
-        if (frame == null || stand == null) {
-            getParts();
-        }
-
-        if (!isPainting) {
-
-            if (frame != null && frame.getItem().getType() != Material.AIR) {
-
-                if (itemInHand.getType() == Material.AIR
-                        || itemInHand.getType() == Material.INK_SACK
-                        || itemInHand.getType() == Material.BUCKET) {
-
-                    player.sendMessage(playerMessage(painting));
-
-                    EaselPart seatPart = new EaselPart(PartType.SEAT, frame.getFacing());
-
-                    Location seatLocation = seatPart.getPartPos(stand.getLocation());
-                    seatLocation.setYaw(stand.getLocation().getYaw() - 180);
-
-                    seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
-                            seatLocation, EntityType.ARMOR_STAND);
-
-                    seat.setVisible(false);
-                    seat.setGravity(false);
-                    seat.setRemoveWhenFarAway(true);
-                    seat.setPassenger(player);
-                    seat.setMetadata("easel",
-                            new FixedMetadataValue(plugin, LocationTag.createTag(location)));
-
-                    if (plugin.getArtistHandler() == null) {
-                        plugin.setArtistHandler(new ArtistHandler(plugin));
-                    }
-                    setIsPainting(true);
-                    MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
-
-                    plugin.getArtistHandler().addPlayer(player, mapView,
-                            EaselPart.getYawOffset(frame.getFacing()));
-                }
-
-            } else {
-
-                if (itemInHand.getType() == Material.MAP) {
-                    ItemMeta meta = itemInHand.getItemMeta();
-
-                    if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.canvasTitle)) {
-                        MapView mapView = Bukkit.createMap(player.getWorld());
-                        plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
-                        frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
-                        ItemStack item = player.getItemInHand().clone();
-
-                        if (itemInHand.getAmount() > 1) {
-                            item.setAmount(player.getItemInHand().getAmount() - 1);
-
-                        } else {
-                            item = new ItemStack(Material.AIR);
-                        }
-                        player.setItemInHand(item);
-
-                        if (mapView.getRenderers() != null) {
-
-                            for (MapRenderer r : mapView.getRenderers()) {
-
-                                if (!(r instanceof CanvasRenderer)) {
-                                    mapView.removeRenderer(r);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void onShiftRightClick(Player player, ItemStack itemInHand) {
-
-        if (!isPainting) {
-            breakEasel();
+        if (itemInHand.getAmount() > 1) {
+            item.setAmount(player.getItemInHand().getAmount() - 1);
 
         } else {
-            player.sendMessage(playerError(elseUsing));
+            item = new ItemStack(Material.AIR);
+        }
+        player.setItemInHand(item);
+
+        if (mapView.getRenderers() != null) {
+
+            for (MapRenderer r : mapView.getRenderers()) {
+
+                if (!(r instanceof CanvasRenderer)) {
+                    mapView.removeRenderer(r);
+                }
+            }
         }
     }
 
-    private void breakEasel() {
+    public void rideEasel(Player player) {
+
+        player.sendMessage(playerMessage(painting));
+
+        EaselPart seatPart = new EaselPart(PartType.SEAT, frame.getFacing());
+
+        Location seatLocation = seatPart.getPartPos(stand.getLocation());
+        seatLocation.setYaw(stand.getLocation().getYaw() - 180);
+
+        seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
+                seatLocation, EntityType.ARMOR_STAND);
+
+        seat.setVisible(false);
+        seat.setGravity(false);
+        seat.setRemoveWhenFarAway(true);
+        seat.setPassenger(player);
+        seat.setMetadata("easel",
+                new FixedMetadataValue(plugin, LocationTag.createTag(location)));
+
+        if (plugin.getArtistHandler() == null) {
+            plugin.setArtistHandler(new ArtistHandler(plugin));
+        }
+        setIsPainting(true);
+        MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
+
+        plugin.getArtistHandler().addPlayer(player, mapView,
+                EaselPart.getYawOffset(frame.getFacing()));
+    }
+
+
+    public void breakEasel() {
 
         plugin.getEasels().remove(location);
 
@@ -308,7 +247,7 @@ public class Easel {
         stand.remove();
 
         if (frame.getItem().getType() != Material.AIR) {
-            ItemStack item = new ItemCanvas(plugin);
+            ItemStack item = new ItemCanvas();
             location.getWorld().dropItemNaturally(location, item);
         }
 
@@ -330,5 +269,15 @@ public class Easel {
 
     public ItemFrame getFrame() {
         return frame;
+    }
+
+    public ItemStack getItem() {
+        return (frame != null) ? frame.getItem() : null;
+    }
+    public boolean hasItem() {
+        if (frame != null) {
+            return frame.getItem().getType() != Material.AIR;
+        }
+        return false;
     }
 }

@@ -14,7 +14,7 @@ public enum PartType {
         this.centred = centred;
     }
 
-    static PartType getPartType(Entity entity) {
+    public static PartType getPartType(Entity entity) {
 
         switch (entity.getType()) {
             case ARMOR_STAND:

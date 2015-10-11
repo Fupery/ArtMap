@@ -2,15 +2,17 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.PartType;
 import me.Fupery.ArtMap.Utils.Formatting;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -32,162 +34,130 @@ public class PlayerInteractEaselListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
         Player player = event.getPlayer();
-        Easel easel = checkEasel(player, event.getRightClicked(), event);
 
-        if (easel != null) {
+        callEaselEvent(player, event.getRightClicked(), event,
+                isSneaking(player));
 
-            if (player.hasPermission("artmap.artist")) {
-
-                if (player.isSneaking()) {
-                    easel.onShiftRightClick(player, player.getItemInHand());
-
-                } else {
-                    easel.onRightClick(player, player.getItemInHand());
-                }
-
-            } else {
-                player.sendMessage(playerError(Formatting.noperm));
-            }
-        }
+        checkPreviewing(player, event);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
         Player player = event.getPlayer();
-        Easel easel = checkEasel(player, event.getRightClicked(), event);
+        callEaselEvent(player, event.getRightClicked(), event,
+                isSneaking(player));
 
-        if (easel != null) {
-
-            if (player.hasPermission("artmap.artist")) {
-
-                if (player.isSneaking()) {
-                    easel.onShiftRightClick(player, player.getItemInHand());
-
-                } else {
-                    easel.onRightClick(player, player.getItemInHand());
-                }
-
-            } else {
-                player.sendMessage(playerError(Formatting.noperm));
-            }
-        }
-
-        if (plugin.isPreviewing(event.getPlayer())) {
-
-            if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
-
-                plugin.stopPreviewing(event.getPlayer());
-                event.setCancelled(true);
-            }
-        }
+        checkPreviewing(player, event);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         if (event.getDamager() instanceof Player) {
 
             Player player = ((Player) event.getDamager());
-            Easel easel = checkEasel(player, event.getEntity(), event);
-
-            if (easel != null) {
-
-                if (player.hasPermission("artmap.artist")) {
-                    easel.onLeftClick(player);
-
-                } else {
-                    player.sendMessage(playerError(Formatting.noperm));
-                }
-            }
+            callEaselEvent(player, event.getEntity(), event,
+                    EaselEvent.ClickType.LEFT_CLICK);
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 
         if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY
                 && event.getRemover() instanceof Player) {
 
             Player player = ((Player) event.getRemover());
-            checkEasel(player, event.getEntity(), event);
+            callEaselEvent(player, event.getEntity(), event,
+                    EaselEvent.ClickType.LEFT_CLICK);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-
-        if (event.getBlock().getType() == Material.WALL_SIGN) {
-            Sign sign = ((Sign) event.getBlock().getState());
-
-            if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
-
-                if (Easel.checkForEasel(plugin, event.getBlock().getLocation())) {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(playerError(breakCanvas));
-                }
-            }
-        }
-
-        if (event.getPlayer().isInsideVehicle() && plugin.getArtistHandler() != null
-                && plugin.getArtistHandler().containsPlayer(event.getPlayer())) {
-            event.setCancelled(true);
-        }
+        checkSignBreak(event.getBlock(), event);
+        checkIsPainting(event.getPlayer(), event);
     }
 
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
+        checkSignBreak(event.getBlock(), event);
+    }
 
-        if (event.getBlock().getType() == Material.WALL_SIGN) {
-            Sign sign = ((Sign) event.getBlock().getState());
+    private void callEaselEvent(Player player, Entity clicked,
+                                Cancellable event, EaselEvent.ClickType click) {
 
-            if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
+        if (checkIsPainting(player, event)) {
+            return;
+        }
 
-                if (Easel.checkForEasel(plugin, event.getBlock().getLocation())) {
-                    event.setCancelled(true);
+        if (!event.isCancelled()) {
+
+            if (!player.isInsideVehicle()) {
+
+                PartType part = PartType.getPartType(clicked);
+
+                if (part != null && part != PartType.SEAT) {
+
+                    Easel easel = getEasel(plugin, clicked.getLocation(), part);
+
+                    if (easel != null) {
+
+                        event.setCancelled(true);
+                        plugin.getServer().getPluginManager().callEvent(
+                                new EaselEvent(easel, click, player));
+                    }
                 }
             }
         }
     }
 
-    private Easel checkEasel(Player player, Entity clicked, Cancellable event) {
+    private EaselEvent.ClickType isSneaking(Player player) {
+        return (player.isSneaking()) ? EaselEvent.ClickType.SHIFT_RIGHT_CLICK :
+                EaselEvent.ClickType.RIGHT_CLICK;
+    }
 
-        if (plugin.getArtistHandler() != null
+    private boolean checkIsPainting(Player player, Cancellable event) {
+
+        if (player.isInsideVehicle() && plugin.getArtistHandler() != null
                 && plugin.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
-            return null;
+            return true;
         }
+        return false;
+    }
 
-        if (!player.isInsideVehicle()) {
+    private void checkPreviewing(Player player, Cancellable event) {
 
-            PartType part = getPartType(clicked);
+        if (plugin.isPreviewing(player)) {
 
-            if (part != null && part != PartType.SEAT) {
+            if (player.getItemInHand().getType() == Material.MAP) {
 
-                Easel easel = getEasel(plugin, clicked.getLocation(), part);
+                plugin.stopPreviewing(player);
+                event.setCancelled(true);
+            }
+        }
+    }
 
-                if (easel != null) {
+    private void checkSignBreak(Block block, Cancellable event) {
 
-                    event.setCancelled(true);
-                    return easel;
+        if (!event.isCancelled()) {
+
+            if (block.getType() == Material.WALL_SIGN) {
+                Sign sign = ((Sign) block.getState());
+
+                if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
+
+                    if (Easel.checkForEasel(plugin, block.getLocation())) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
-        return null;
-    }
-
-    private PartType getPartType(Entity entity) {
-
-        if (entity.getType() == EntityType.ARMOR_STAND ||
-                entity.getType() == EntityType.ITEM_FRAME) {
-
-            return (entity.getType() == EntityType.ARMOR_STAND) ?
-                    PartType.STAND : PartType.FRAME;
-        }
-        return null;
     }
 }
