@@ -63,6 +63,19 @@ public class MapArt {
         return null;
     }
 
+    public static MapArt getArtwork(ArtMap plugin, ItemStack itemStack) {
+
+        if (itemStack.hasItemMeta()) {
+            ItemMeta meta = itemStack.getItemMeta();
+
+            if (meta.getLore().get(0).equals(artworkTag)) {
+
+                return getArtwork(plugin, meta.getDisplayName());
+            }
+        }
+        return null;
+    }
+
     public static boolean deleteArtwork(ArtMap plugin, String title) {
 
         if (plugin.getMaps() != null) {

@@ -1,18 +1,23 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
+import me.Fupery.ArtMap.Utils.LocationTag;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,47 +39,75 @@ public class CommandListener implements CommandExecutor {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
+                final String title = args[1];
+
                 if (sender instanceof Player) {
 
                     final Player player = (Player) sender;
-                    ConcurrentHashMap<Player, String> queue = plugin.getNameQueue();
 
-                    if (!new TitleFilter(plugin, args[1]).check()) {
+                    if (!new TitleFilter(plugin, title).check()) {
                         msg.message = playerError(badTitle);
                         return false;
                     }
 
-                    MapArt art = MapArt.getArtwork(plugin, args[1]);
+                    MapArt art = MapArt.getArtwork(plugin, title);
 
                     if (art != null) {
                         msg.message = playerError(titleUsed);
                         return false;
                     }
 
-                    if (queue != null) {
+                    if (plugin.getArtistHandler() != null
+                            && plugin.getArtistHandler().containsPlayer(player)) {
 
-                        msg.message = playerMessage(String.format(punchCanvas, args[1]));
 
-                        if (queue.containsKey(player)) {
-                            queue.remove(player);
-                        }
-                        queue.put(player, args[1]);
-
-                        //timeout removes player from the queue after a delay
-                        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
+                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             @Override
                             public void run() {
+                                Easel easel = null;
 
-                                if (plugin.getNameQueue().containsKey(player)) {
-                                    plugin.getNameQueue().remove(player);
+                                Entity seat = player.getVehicle();
+
+                                if (seat != null) {
+
+                                    if (seat.hasMetadata("easel")) {
+                                        String tag = seat.getMetadata("easel").get(0).asString();
+                                        Location location = LocationTag.getLocation(seat.getWorld(), tag);
+
+                                        easel = plugin.getEasels().get(location);
+                                    }
                                 }
+
+                                if (easel != null) {
+
+                                    if (player.getItemInHand().getType() == Material.AIR) {
+
+                                        MapArt art = new MapArt(easel.getItem().getDurability(),
+                                                title, player);
+                                        plugin.getArtistHandler().removePlayer(player);
+                                        player.setItemInHand(art.getMapItem());
+                                        easel.getFrame().setItem(new ItemStack(Material.AIR));
+                                        art.saveArtwork(plugin);
+                                        player.sendMessage(playerMessage(String.format(saveSuccess, title)));
+                                        return;
+                                    } else {
+                                        player.sendMessage(playerError(emptyHand));
+                                    }
+                                }
+                                player.sendMessage(playerError(notRidingEasel));
                             }
-                        }, 1200);
+                        });
                         return true;
+
+                    } else {
+                        player.sendMessage(playerError(notRidingEasel));
+                        return false;
                     }
+
+                } else {
+                    msg.message = playerError(noConsole);
+                    return false;
                 }
-                msg.message = playerError(playerOnly);
-                return false;
             }
         };
 
@@ -136,7 +169,7 @@ public class CommandListener implements CommandExecutor {
                     }
 
                 } else {
-                    msg.message = playerError(playerOnly);
+                    msg.message = playerError(noConsole);
                 }
                 return false;
             }
@@ -177,12 +210,12 @@ public class CommandListener implements CommandExecutor {
                     return false;
                 }
                 //checks we are not on the last page
-                int totalLength = list.length / 8;
+                int totalPages = list.length / 8;
 
                 //footer shows current page number
                 TextComponent footerButton = null;
 
-                if (totalLength > pg) {
+                if (totalPages > pg) {
 
                     //attaches a clickable button to open the next page to the footer
                     footerButton = new TextComponent(listFooterButton);

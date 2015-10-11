@@ -24,10 +24,6 @@ public class PlayerQuitListener implements Listener {
             plugin.getArtistHandler().removePlayer(event.getPlayer());
         }
 
-        if (plugin.getNameQueue().containsKey(event.getPlayer())) {
-            plugin.getNameQueue().remove(event.getPlayer());
-        }
-
         if (plugin.isPreviewing(event.getPlayer())) {
 
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
@@ -43,10 +39,6 @@ public class PlayerQuitListener implements Listener {
         if (plugin.getArtistHandler() != null
                 && plugin.getArtistHandler().containsPlayer(event.getEntity())) {
             plugin.getArtistHandler().removePlayer(event.getEntity());
-        }
-
-        if (plugin.getNameQueue().containsKey(event.getEntity())) {
-            plugin.getNameQueue().remove(event.getEntity());
         }
 
         if (plugin.isPreviewing(event.getEntity())) {
