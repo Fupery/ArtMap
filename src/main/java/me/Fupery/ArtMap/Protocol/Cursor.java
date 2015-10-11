@@ -11,6 +11,8 @@ class Cursor {
     private float leftBound, rightBound, upBound, downBound;
     private int limit;
     private int yawOffset;
+    private boolean yawOffCanvas;
+    private boolean pitchOffCanvas;
 
     Cursor(ArtMap plugin, int yawOffset) {
 
@@ -19,6 +21,8 @@ class Cursor {
         this.yawOffset = yawOffset;
 
         limit = (128 / plugin.getMapResolutionFactor()) - 1;
+        yawOffCanvas = false;
+        pitchOffCanvas = false;
         int mid = limit / 2;
         x = mid;
         y = mid;
@@ -79,28 +83,23 @@ class Cursor {
 
         yaw += (yaw > 0) ? -yawOffset : yawOffset;
 
-        if (yaw > 45) {
-            return 45;
-
-        } else if (yaw < -45) {
-            return -45;
-
-        } else {
-            return yaw;
-        }
+        yawOffCanvas = (yaw > 45 || yaw < -45);
+        return checkBounds(yaw);
     }
 
     private float getAdjustedPitch() {
+        pitchOffCanvas = (pitch > 45 || pitch < -45);
+        return checkBounds(pitch);
+    }
+    private float checkBounds(float value) {
 
-        if (pitch > 45) {
-            return 45;
+        if (value > 40) {
+            return 40;
 
-        } else if (pitch < -45) {
-            return -45;
-
-        } else {
-            return pitch;
+        } else if (value < -40) {
+            return -40;
         }
+        return value;
     }
 
     private void updateYawBounds() {
@@ -120,5 +119,9 @@ class Cursor {
 
     public int getY() {
         return y;
+    }
+
+    public boolean isOffCanvas() {
+        return yawOffCanvas || pitchOffCanvas;
     }
 }

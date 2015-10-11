@@ -49,11 +49,6 @@ public class CanvasRenderer extends MapRenderer {
         cursor = new Cursor(plugin, yawOffset);
     }
 
-    private static byte getColourData(DyeColor colour) {
-        Color c = colour.getColor();
-        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
-    }
-
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
@@ -76,30 +71,36 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    public void drawPixel(DyeColor colour) {
-        byte[] pixel = getPixel();
+    public void drawPixel(byte colour) {
 
-        if (pixel != null) {
-            pixelBuffer[pixel[0]][pixel[1]] = getColourData(colour);
-            iterator.add(pixel);
+        if (!cursor.isOffCanvas()) {
+            byte[] pixel = getPixel();
+
+            if (pixel != null) {
+                pixelBuffer[pixel[0]][pixel[1]] = colour;
+                iterator.add(pixel);
+            }
         }
     }
 
-    public void fillPixel(DyeColor colour) {
-        final byte[] pixel = getPixel();
+    public void fillPixel(byte colour) {
 
-        if (pixel != null) {
+        if (!cursor.isOffCanvas()) {
+            final byte[] pixel = getPixel();
 
-            final boolean[][] coloured = new boolean[axisLength][axisLength];
-            final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
-            final byte setColour = getColourData(colour);
+            if (pixel != null) {
 
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
-                }
-            });
+                final boolean[][] coloured = new boolean[axisLength][axisLength];
+                final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
+                final byte setColour = colour;
+
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
+                    }
+                });
+            }
         }
     }
 
