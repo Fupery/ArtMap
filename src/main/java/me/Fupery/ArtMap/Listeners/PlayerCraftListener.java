@@ -3,17 +3,23 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Map;
+
 import static me.Fupery.ArtMap.IO.MapArt.artworkTag;
+import static me.Fupery.ArtMap.IO.MapArt.getArtwork;
 import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 // Disallows players from copying ArtMap maps in the crafting table
@@ -28,51 +34,49 @@ public class PlayerCraftListener implements Listener {
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
 
-        if (event.getCurrentItem().getType() == Material.MAP) {
+        ItemStack result = event.getCurrentItem();
 
-            ItemStack items[];
-            items = event.getInventory().getMatrix();
+        if (result.getType() == Material.MAP && result.hasItemMeta()) {
 
-            for (ItemStack i : items) {
+            MapArt art = MapArt.getArtwork(plugin, result.getItemMeta().getDisplayName());
 
-                if (i != null && i.hasItemMeta()) {
-                    ItemMeta meta = i.getItemMeta();
+            if (art != null) {
 
-                    if (meta != null) {
+                Player player = (Player) event.getWhoClicked();
 
-                        if (meta.getLore() != null
-                                && meta.getLore().get(0).equals(artworkTag)) {
+                if (player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
 
-                            MapArt art = MapArt.getArtwork(plugin, meta.getDisplayName());
+                    ItemStack artworkItem = art.getMapItem();
 
-                            if (art != null) {
-                                OfflinePlayer player = art.getPlayer();
+                    if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        event.setCancelled(true);
 
-                                for (HumanEntity e : event.getViewers()) {
+                        int i = 0;
+                        ItemStack[] items = event.getInventory().getMatrix();
+                        for (ItemStack item : items) {
 
-                                    if (e.getName().equals(player.getName())) {
-                                        ItemStack result = art.getMapItem();
-                                        result.setAmount(2);
-                                        event.setCurrentItem(result);
-                                        return;
-
-                                    } else {
-                                        e.sendMessage(playerError(noCraftPerm));
-                                    }
-                                }
-                                event.setResult(Event.Result.DENY);
-                                return;
-                            }
-
-                        } else if (meta.getDisplayName().equals(Recipe.canvasTitle)) {
-
-                            for (HumanEntity e : event.getViewers()) {
-                                e.sendMessage(playerError(noDupeCanvas));
-                                event.setResult(Event.Result.DENY);
+                            if (item != null) {
+                                i += item.getAmount();
                             }
                         }
+                        event.getInventory().setMatrix(new ItemStack[items.length]);
+                        artworkItem.setAmount(i);
+                        ItemStack leftOver = player.getInventory().addItem(artworkItem).get(0);
+
+                        if (leftOver != null && leftOver.getAmount() > 0) {
+                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                        }
+
+                    } else {
+                        result.setItemMeta(artworkItem.getItemMeta());
                     }
+
+                } else {
+                    player.sendMessage(playerError(noCraftPerm));
+                    event.setResult(Event.Result.DENY);
+                    event.setCancelled(true);
                 }
+
             }
         }
     }
