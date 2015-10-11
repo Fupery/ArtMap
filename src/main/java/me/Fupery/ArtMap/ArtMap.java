@@ -38,7 +38,6 @@ public class ArtMap extends JavaPlugin {
     private FileConfiguration maps;
     private List<String> titleFilter;
     private int backgroundID;
-    private ConcurrentHashMap<Player, String> nameQueue;
     private ConcurrentHashMap<Location, Easel> easels;
     private ConcurrentHashMap<Player, MapPreview> previewing;
     private ArtistHandler artistHandler;
@@ -81,20 +80,18 @@ public class ArtMap extends JavaPlugin {
         easels = new ConcurrentHashMap<>();
         previewing = new ConcurrentHashMap<>();
 
-        Recipe.setupRecipes(this);
+        Recipe.setupRecipes();
 
         this.getCommand("artmap").setExecutor(new CommandListener(this));
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new PlayerInteractListener(this), this);
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
-        manager.registerEvents(new CanvasListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
         manager.registerEvents(new ChunkUnloadListener(this), this);
         manager.registerEvents(new PlayerCraftListener(this), this);
         manager.registerEvents(new InventoryInteractListener(this), this);
-
-        nameQueue = new ConcurrentHashMap<>();
+        manager.registerEvents(new EaselInteractListener(this), this);
 
         loadTables();
     }
@@ -276,10 +273,6 @@ public class ArtMap extends JavaPlugin {
 
     public void setArtistHandler(ArtistHandler artistHandler) {
         this.artistHandler = artistHandler;
-    }
-
-    public ConcurrentHashMap<Player, String> getNameQueue() {
-        return nameQueue;
     }
 
     public ConcurrentHashMap<Location, Easel> getEasels() {

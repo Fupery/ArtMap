@@ -21,9 +21,9 @@ public class Recipe {
     public static String canvasTitle = "Canvas";
     public static String paintBucketTitle = "PaintBucket";
 
-    public static void setupRecipes(ArtMap plugin) {
+    public static void setupRecipes() {
         addEasel();
-        addCanvas(plugin);
+        addCanvas();
         addBucket();
     }
 
@@ -38,8 +38,8 @@ public class Recipe {
         Bukkit.getServer().addRecipe(easel);
     }
 
-    private static void addCanvas(ArtMap plugin) {
-        ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas(plugin));
+    private static void addCanvas() {
+        ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas());
         canvas.shape("lel", "epe", "lel");
         canvas.setIngredient('l', Material.LEATHER);
         canvas.setIngredient('p', Material.EMPTY_MAP);
@@ -72,8 +72,8 @@ class ItemEasel extends ItemStack {
 
 class ItemCanvas extends ItemStack {
 
-    ItemCanvas(ArtMap plugin) {
-        super(Material.MAP, 1, ((short) plugin.getBackgroundID()));
+    ItemCanvas() {
+        super(Material.PAPER);
         ItemMeta meta = getItemMeta();
         meta.setDisplayName(Recipe.canvasTitle);
         meta.setLore(Arrays.asList("Use with an Easel", "to create artworks"));
