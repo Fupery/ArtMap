@@ -92,26 +92,19 @@ public class PlayerInteractEaselListener implements Listener {
     private void callEaselEvent(Player player, Entity clicked,
                                 Cancellable event, EaselEvent.ClickType click) {
 
-        if (checkIsPainting(player, event)) {
-            return;
-        }
+        PartType part = PartType.getPartType(clicked);
 
-        if (!event.isCancelled()) {
+        if (part != null && part != PartType.SEAT) {
 
-            if (!player.isInsideVehicle()) {
+            Easel easel = getEasel(plugin, clicked.getLocation(), part);
 
-                PartType part = PartType.getPartType(clicked);
+            if (easel != null) {
+                boolean wasCancelled = event.isCancelled();
+                event.setCancelled(true);
 
-                if (part != null && part != PartType.SEAT) {
-
-                    Easel easel = getEasel(plugin, clicked.getLocation(), part);
-
-                    if (easel != null) {
-
-                        event.setCancelled(true);
-                        plugin.getServer().getPluginManager().callEvent(
-                                new EaselEvent(easel, click, player));
-                    }
+                if (!checkIsPainting(player, event) && !wasCancelled) {
+                    plugin.getServer().getPluginManager().callEvent(
+                            new EaselEvent(easel, click, player));
                 }
             }
         }
@@ -146,16 +139,14 @@ public class PlayerInteractEaselListener implements Listener {
 
     private void checkSignBreak(Block block, Cancellable event) {
 
-        if (!event.isCancelled()) {
+        if (block.getType() == Material.WALL_SIGN) {
+            Sign sign = ((Sign) block.getState());
 
-            if (block.getType() == Material.WALL_SIGN) {
-                Sign sign = ((Sign) block.getState());
+            if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
 
-                if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
-
-                    if (Easel.checkForEasel(plugin, block.getLocation())) {
-                        event.setCancelled(true);
-                    }
+                if (plugin.getEasels().containsKey(block.getLocation())
+                        || Easel.checkForEasel(plugin, block.getLocation())) {
+                    event.setCancelled(true);
                 }
             }
         }
