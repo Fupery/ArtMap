@@ -2,7 +2,7 @@ package me.Fupery.ArtMap.Protocol;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Easel.Recipe;
+import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;

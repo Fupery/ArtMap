@@ -1,12 +1,8 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Easel.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -14,11 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Map;
-
-import static me.Fupery.ArtMap.IO.MapArt.artworkTag;
 import static me.Fupery.ArtMap.IO.MapArt.getArtwork;
 import static me.Fupery.ArtMap.Utils.Formatting.*;
 

@@ -1,10 +1,10 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.CanvasRenderer;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +13,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -243,11 +242,11 @@ public class Easel {
         if (frame == null || stand == null || seat == null) {
             getParts();
         }
-        location.getWorld().dropItemNaturally(location, new ItemEasel());
+        location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
         stand.remove();
 
         if (frame.getItem().getType() != Material.AIR) {
-            ItemStack item = new ItemCanvas();
+            ItemStack item = Recipe.CANVAS.getResult();
             location.getWorld().dropItemNaturally(location, item);
         }
 

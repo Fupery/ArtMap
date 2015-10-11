@@ -15,7 +15,6 @@ abstract class ArtMapCommand implements AbstractCommand {
     private final AbstractCommand ArtMapCommand = this;
     ArtMap plugin;
     String usage;
-    private String command;
     private String permission;
     private String success;
     private int minArgs;
@@ -23,7 +22,6 @@ abstract class ArtMapCommand implements AbstractCommand {
 
     ArtMapCommand(String command, String permission, int minArgs, int maxArgs,
                   String usage, String success, CommandListener commands) {
-        this.command = command;
         this.permission = permission;
         this.plugin = commands.getPlugin();
         this.minArgs = minArgs;

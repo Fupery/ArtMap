@@ -2,7 +2,7 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandListener;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.Recipe;
+import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -80,7 +80,9 @@ public class ArtMap extends JavaPlugin {
         easels = new ConcurrentHashMap<>();
         previewing = new ConcurrentHashMap<>();
 
-        Recipe.setupRecipes();
+        for (Recipe recipe : Recipe.values()) {
+            recipe.setupRecipe();
+        }
 
         this.getCommand("artmap").setExecutor(new CommandListener(this));
 

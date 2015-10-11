@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Easel;
+package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
@@ -16,18 +16,48 @@ import org.bukkit.material.MaterialData;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Recipe {
+public enum Recipe {
 
-    public static String canvasTitle = "Canvas";
-    public static String paintBucketTitle = "PaintBucket";
+    CANVAS(new ItemCanvas()), EASEL(new ItemEasel()), PAINT_BUCKET(new PaintBucket(DyeColor.BLACK));
 
-    public static void setupRecipes() {
-        addEasel();
-        addCanvas();
-        addBucket();
+    public static final String canvasTitle = "Canvas";
+    public static final String paintBucketTitle = "PaintBucket";
+
+    RecipeItem recipeItem;
+
+
+    Recipe(RecipeItem recipeItem) {
+        this.recipeItem = recipeItem;
     }
 
-    private static void addEasel() {
+    public RecipeItem getResult() {
+        return recipeItem;
+    }
+
+    public void setupRecipe() {
+        recipeItem.addRecipe();
+    }
+}
+abstract class RecipeItem extends ItemStack {
+    public RecipeItem(Material material) {
+        super(material);
+    }
+
+    public abstract void addRecipe();
+}
+
+class ItemEasel extends RecipeItem {
+
+    ItemEasel() {
+        super(Material.ARMOR_STAND);
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName(ArtMap.entityTag);
+        meta.setLore(Arrays.asList("Used to edit artworks", "Right click to place"));
+        setItemMeta(meta);
+    }
+
+    @Override
+    public void addRecipe() {
         ShapedRecipe easel = new ShapedRecipe(new ItemEasel());
         easel.shape("*s*", "tft", "lal");
         easel.setIngredient('s', Material.STICK);
@@ -37,40 +67,9 @@ public class Recipe {
         easel.setIngredient('a', Material.ARMOR_STAND);
         Bukkit.getServer().addRecipe(easel);
     }
-
-    private static void addCanvas() {
-        ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas());
-        canvas.shape("lel", "epe", "lel");
-        canvas.setIngredient('l', Material.LEATHER);
-        canvas.setIngredient('p', Material.EMPTY_MAP);
-        canvas.setIngredient('e', Material.EMERALD);
-        Bukkit.getServer().addRecipe(canvas);
-    }
-
-    private static void addBucket() {
-
-        for (DyeColor d : DyeColor.values()) {
-            ShapelessRecipe paintBucket = new ShapelessRecipe(new PaintBucket(d));
-            paintBucket.addIngredient(1, Material.BUCKET);
-            paintBucket.addIngredient(1,
-                    new MaterialData(Material.INK_SACK, (byte) (15 - d.ordinal())));
-            Bukkit.getServer().addRecipe(paintBucket);
-        }
-    }
 }
 
-class ItemEasel extends ItemStack {
-
-    ItemEasel() {
-        super(Material.ARMOR_STAND);
-        ItemMeta meta = getItemMeta();
-        meta.setDisplayName(ArtMap.entityTag);
-        meta.setLore(Arrays.asList("Used to edit artworks", "Right click to place"));
-        setItemMeta(meta);
-    }
-}
-
-class ItemCanvas extends ItemStack {
+class ItemCanvas extends RecipeItem {
 
     ItemCanvas() {
         super(Material.PAPER);
@@ -79,9 +78,19 @@ class ItemCanvas extends ItemStack {
         meta.setLore(Arrays.asList("Use with an Easel", "to create artworks"));
         setItemMeta(meta);
     }
+
+    @Override
+    public void addRecipe() {
+        ShapedRecipe canvas = new ShapedRecipe(new ItemCanvas());
+        canvas.shape("lel", "epe", "lel");
+        canvas.setIngredient('l', Material.LEATHER);
+        canvas.setIngredient('p', Material.EMPTY_MAP);
+        canvas.setIngredient('e', Material.EMERALD);
+        Bukkit.getServer().addRecipe(canvas);
+    }
 }
 
-class PaintBucket extends ItemStack {
+class PaintBucket extends RecipeItem {
 
     private static HashMap<DyeColor, ChatColor> colourWheel;
 
@@ -114,6 +123,17 @@ class PaintBucket extends ItemStack {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);
+    }
+
+    @Override
+    public void addRecipe() {
+        for (DyeColor d : DyeColor.values()) {
+            ShapelessRecipe paintBucket = new ShapelessRecipe(new PaintBucket(d));
+            paintBucket.addIngredient(1, Material.BUCKET);
+            paintBucket.addIngredient(1,
+                    new MaterialData(Material.INK_SACK, (byte) (15 - d.ordinal())));
+            Bukkit.getServer().addRecipe(paintBucket);
+        }
     }
 }
 

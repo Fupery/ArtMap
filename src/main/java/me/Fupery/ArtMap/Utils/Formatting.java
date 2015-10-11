@@ -3,21 +3,26 @@ package me.Fupery.ArtMap.Utils;
 import org.bukkit.ChatColor;
 
 public class Formatting {
-    public static String playerOnly = "This command can only be used by players.";
+    public static String noConsole = "This command can only be used by players.";
     public static String invalidPos = "You can't place an easel here";
     public static String noperm = "You don't have permission to do this.";
     public static String emptyHand = "Use an empty hand to retrieve your artwork.";
     public static String elseUsing = "Someone else is using this canvas!";
     public static String saveUsage = "Use " + ChatColor.YELLOW + "/artmap save <title> "
             + ChatColor.GOLD + "to save your artwork.";
-    public static String punchCanvas = "Now Left-Click your artwork to save '%s'.";
+    public static String notRidingEasel = "You must be sitting at your easel to save.";
+    public static String saveSuccess = "Successfully saved '%s'!";
+    public static String easelHelp = "Right-Click to start painting, Shift + Right-Click to break.";
+    public static String needCanvas = "You need to place a canvas on the easel to paint.";
+    public static String notACanvas = "You can only place ArtMap canvases on the easel.";
+    public static String notYourEasel = "You cannot destroy %s's artwork!";
     public static String breakCanvas = "Shift + Right-Click the easel to break it.";
     public static String painting = "Left-Click the canvas with dye or a paint bucket to paint.";
     public static String deleted = "Sucessfully deleted '%s'.";
     public static String mapNotFound = "Artwork '%s' could not be found.";
-    public static String noDupeCanvas = "You can't copy canvases.";
     public static String noCraftPerm = "You can't copy other players' artworks";
-    public static String craftHelp = "";
+    public static String getItem = ChatColor.YELLOW + "Click to get one %s";
+    public static String recipeButton = ChatColor.GREEN + "[%s]";
     public static String noArtworksFound = "No artworks were found by '%s'.";
     public static String listHeader = "Artworks by '%s':";
     public static String listLineHover = ChatColor.YELLOW + "Click to preview '%s'";
@@ -27,7 +32,7 @@ public class Formatting {
     public static String seperator = ChatColor.DARK_AQUA + "-------------------------";
     public static String helpHeader = "Help:";
     public static String helpMessage = ChatColor.GOLD + "Craft an Easel and Canvas to create artworks.\n" +
-            "Use Dyes and PaintBuckets to paint on your canvas.";
+            ChatColor.GOLD + "Use Dyes and PaintBuckets to paint on your canvas.";
     public static String badTitle = "Invalid Title. Titles must be between 3 and 16 characters, " +
             "and consist of only letters and numbers.";
     public static String titleUsed = "Sorry, this title is already being used.";
