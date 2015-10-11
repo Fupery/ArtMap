@@ -34,7 +34,7 @@ public class PlayerInteractEaselListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
         Player player = event.getPlayer();
@@ -45,7 +45,7 @@ public class PlayerInteractEaselListener implements Listener {
         checkPreviewing(player, event);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
         Player player = event.getPlayer();
@@ -55,7 +55,7 @@ public class PlayerInteractEaselListener implements Listener {
         checkPreviewing(player, event);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         if (event.getDamager() instanceof Player) {
@@ -66,7 +66,7 @@ public class PlayerInteractEaselListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 
         if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY
