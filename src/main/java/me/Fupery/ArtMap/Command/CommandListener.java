@@ -34,8 +34,7 @@ public class CommandListener implements CommandExecutor {
         this.plugin = plugin;
         commands = new HashMap<>();
 
-        new ArtMapCommand("save", "artmap.artist",
-                2, 2, "/artmap save <title>", null, this) {
+        commands.put("save", new ArtMapCommand("artmap.artist", 2, 2, "/artmap save <title>") {
 
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -109,10 +108,9 @@ public class CommandListener implements CommandExecutor {
                     return false;
                 }
             }
-        };
+        });
 
-        new ArtMapCommand("delete", null,
-                2, 2, "/artmap delete <title>", null, this) {
+        commands.put("delete", new ArtMapCommand(null, 2, 2, "/artmap delete <title>") {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -134,9 +132,9 @@ public class CommandListener implements CommandExecutor {
                     return false;
                 }
             }
-        };
+        });
 
-        new ArtMapCommand("preview", null, 2, 2, "/artmap preview <title>", null, this) {
+        commands.put("preview", new ArtMapCommand(null, 2, 2, "/artmap preview <title>") {
 
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -173,10 +171,9 @@ public class CommandListener implements CommandExecutor {
                 }
                 return false;
             }
-        };
+        });
 
-        new ArtMapCommand("list", null, 1, 3,
-                "/artmap list [playername|all] [pg]", null, this) {
+        commands.put("list", new ArtMapCommand(null, 1, 3, "/artmap list [playername|all] [pg]") {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 String artist;
@@ -263,9 +260,9 @@ public class CommandListener implements CommandExecutor {
                 Bukkit.getScheduler().runTask(plugin, multiMsg);
                 return true;
             }
-        };
+        });
 
-        new ArtMapCommand("help", null, 1, 1, "/artmap help", null, this) {
+        commands.put("help", new ArtMapCommand(null, 1, 1, "/artmap help") {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MultiLineReturnMessage multiMsg =
@@ -298,9 +295,9 @@ public class CommandListener implements CommandExecutor {
                 Bukkit.getScheduler().runTask(plugin, multiMsg);
                 return true;
             }
-        };
+        });
 
-        new ArtMapCommand("get", "artmap.admin", 2, 2, "/artmap get <item>", null, this) {
+        commands.put("get", new ArtMapCommand("artmap.admin", 2, 2, "/artmap get <item>") {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -321,7 +318,10 @@ public class CommandListener implements CommandExecutor {
                 }
                 return false;
             }
-        };
+        });
+        for (ArtMapCommand command : commands.values()) {
+            command.plugin = plugin;
+        }
     }
 
     @Override

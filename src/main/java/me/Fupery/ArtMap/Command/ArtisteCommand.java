@@ -16,30 +16,20 @@ abstract class ArtMapCommand implements AbstractCommand {
     ArtMap plugin;
     String usage;
     private String permission;
-    private String success;
     private int minArgs;
     private int maxArgs;
 
-    ArtMapCommand(String command, String permission, int minArgs, int maxArgs,
-                  String usage, String success, CommandListener commands) {
+    ArtMapCommand(String permission, int minArgs, int maxArgs,
+                  String usage) {
         this.permission = permission;
-        this.plugin = commands.getPlugin();
         this.minArgs = minArgs;
         this.maxArgs = maxArgs;
-        commands.getCommands().put(command, this);
 
         if (usage != null) {
             this.usage = usage;
 
         } else {
             this.usage = null;
-        }
-
-        if (success != null) {
-            this.success = success;
-
-        } else {
-            this.success = null;
         }
     }
 
@@ -57,10 +47,7 @@ abstract class ArtMapCommand implements AbstractCommand {
                     if (args.length >= minArgs && args.length <= maxArgs) {
 
                         if (ArtMapCommand.runCommand(sender, args, returnMsg)) {
-
-                            if (success != null) {
-                                returnMsg.message = playerMessage(success);
-                            }
+                            return;
                         }
 
                     } else {
