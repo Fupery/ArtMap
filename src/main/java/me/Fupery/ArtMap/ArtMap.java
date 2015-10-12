@@ -235,7 +235,7 @@ public class ArtMap extends JavaPlugin {
             stopPreviewing(player);
         }
         ItemStack item = art.getMapItem();
-        MapPreview preview = new MapPreview(this, player);
+        MapPreview preview = new MapPreview(this, player, item);
         preview.runTaskLaterAsynchronously(this, 300);
         player.setItemInHand(item);
         previewing.put(player, preview);
@@ -244,8 +244,9 @@ public class ArtMap extends JavaPlugin {
     public void stopPreviewing(Player player) {
 
         if (previewing.containsKey(player)) {
-            player.setItemInHand(new ItemStack(Material.AIR));
-            previewing.get(player).cancel();
+            MapPreview preview = previewing.get(player);
+            player.getInventory().removeItem(preview.preview);
+            preview.cancel();
             previewing.remove(player);
         }
     }
@@ -290,10 +291,12 @@ public class ArtMap extends JavaPlugin {
     private class MapPreview extends BukkitRunnable {
         ArtMap plugin;
         Player player;
+        ItemStack preview;
 
-        MapPreview(ArtMap plugin, Player player) {
+        MapPreview(ArtMap plugin, Player player, ItemStack preview) {
             this.plugin = plugin;
             this.player = player;
+            this.preview = preview;
         }
 
         public void run() {

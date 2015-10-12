@@ -49,7 +49,7 @@ public class EaselInteractListener implements Listener {
 
                                 if (meta.hasDisplayName()
                                         && meta.getDisplayName().equals(Recipe.canvasTitle)) {
-                                    easel.mountCanvas(player, player.getItemInHand());
+                                    easel.mountCanvas(player);
                                     return;
 
                                 } else {

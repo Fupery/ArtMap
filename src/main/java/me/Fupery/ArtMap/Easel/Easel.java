@@ -180,20 +180,13 @@ public class Easel {
         }
     }
 
-    public void mountCanvas(Player player, ItemStack itemInHand) {
+    public void mountCanvas(Player player) {
 
         MapView mapView = Bukkit.createMap(player.getWorld());
         plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
         frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
-        ItemStack item = player.getItemInHand().clone();
-
-        if (itemInHand.getAmount() > 1) {
-            item.setAmount(player.getItemInHand().getAmount() - 1);
-
-        } else {
-            item = new ItemStack(Material.AIR);
-        }
-        player.setItemInHand(item);
+        ItemStack canvas = Recipe.CANVAS.getResult();
+        player.getInventory().removeItem(canvas);
 
         if (mapView.getRenderers() != null) {
 
