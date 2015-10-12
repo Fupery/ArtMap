@@ -58,22 +58,16 @@ public class PlayerInteractEaselListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
-        if (event.getDamager() instanceof Player) {
-
-            Player player = ((Player) event.getDamager());
-            callEaselEvent(player, event.getEntity(), event,
-                    EaselEvent.ClickType.LEFT_CLICK);
-        }
+        callEaselEvent(event.getDamager(), event.getEntity(), event,
+                EaselEvent.ClickType.LEFT_CLICK);
     }
 
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 
-        if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY
-                && event.getRemover() instanceof Player) {
+        if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY) {
 
-            Player player = ((Player) event.getRemover());
-            callEaselEvent(player, event.getEntity(), event,
+            callEaselEvent(event.getRemover(), event.getEntity(), event,
                     EaselEvent.ClickType.LEFT_CLICK);
         }
     }
@@ -89,7 +83,7 @@ public class PlayerInteractEaselListener implements Listener {
         checkSignBreak(event.getBlock(), event);
     }
 
-    private void callEaselEvent(Player player, Entity clicked,
+    private void callEaselEvent(Entity clicker, Entity clicked,
                                 Cancellable event, EaselEvent.ClickType click) {
 
         PartType part = PartType.getPartType(clicked);
@@ -102,9 +96,13 @@ public class PlayerInteractEaselListener implements Listener {
                 boolean wasCancelled = event.isCancelled();
                 event.setCancelled(true);
 
-                if (!checkIsPainting(player, event) && !wasCancelled) {
-                    plugin.getServer().getPluginManager().callEvent(
-                            new EaselEvent(easel, click, player));
+                if (clicker instanceof Player) {
+                    Player player = (Player) clicker;
+
+                    if (!checkIsPainting(player, event) && !wasCancelled) {
+                        plugin.getServer().getPluginManager().callEvent(
+                                new EaselEvent(easel, click, player));
+                    }
                 }
             }
         }
