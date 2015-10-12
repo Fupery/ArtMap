@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Protocol;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
@@ -59,38 +60,27 @@ public class ArtistHandler {
 
                         ItemStack item = sender.getItemInHand();
 
-                        //brush tool
-                        if (item.getType() == Material.INK_SACK) {
-
-                            DyeColor colour = DyeColor.getByData((byte) (15 - item.getDurability()));
-
-                            renderer.drawPixel(getColourData(colour));
-
-                        //void brush paints empty pixels
-                        } else if (item.getType() == Material.EYE_OF_ENDER) {
-
-                            renderer.drawPixel(((byte) 0));
-
                         //paint bucket tool
-                        } else if (item.getType() == Material.BUCKET) {
+                        if (item.getType() == Material.BUCKET) {
 
                             if (item.hasItemMeta()) {
                                 ItemMeta meta = item.getItemMeta();
 
                                 if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
                                         && meta.hasLore()) {
-                                    DyeColor colour = null;
+                                    ArtDye colour = null;
                                     String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
-                                    for (DyeColor d : DyeColor.values()) {
+                                    for (ArtDye dye : ArtDye.values()) {
 
-                                        if (lore[0].equals("§r" + d.name())) {
-                                            colour = d;
+                                        if (lore[0].equals("§r" + dye.name())) {
+                                            colour = dye;
+                                            break;
                                         }
                                     }
 
                                     if (colour != null) {
-                                        renderer.fillPixel(getColourData(colour));
+                                        renderer.fillPixel(colour.getData());
 
                                     } else {
 
@@ -100,8 +90,16 @@ public class ArtistHandler {
                                     }
                                 }
                             }
+                            //brush tool
+                        } else {
+                            ArtDye dye = ArtDye.getArtDye(item);
+
+                            if (dye != null) {
+
+                                renderer.drawPixel(dye.getData());
+                                return null;
+                            }
                         }
-                        return null;
 
                         //listens for when the player dismounts the easel
                     } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
@@ -113,6 +111,7 @@ public class ArtistHandler {
                             return null;
                         }
                     }
+
 
                 } else {
                     removePlayer(sender);

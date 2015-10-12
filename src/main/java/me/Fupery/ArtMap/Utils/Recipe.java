@@ -11,14 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
 public enum Recipe {
 
-    CANVAS(new ItemCanvas()), EASEL(new ItemEasel()), PAINT_BUCKET(new PaintBucket(DyeColor.BLACK));
+    CANVAS(new ItemCanvas()), EASEL(new ItemEasel()), PAINT_BUCKET(new PaintBucket(ArtDye.BLACK));
 
     public static final String canvasTitle = "Canvas";
     public static final String paintBucketTitle = "PaintBucket";
@@ -115,23 +114,11 @@ class PaintBucket extends RecipeItem {
         colourWheel.put(DyeColor.RED, ChatColor.RED);
     }
 
-    PaintBucket(DyeColor colour) {
+    PaintBucket(ArtDye colour) {
         super(Material.BUCKET);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(colourWheel.get(colour) + Recipe.paintBucketTitle);
+        meta.setDisplayName(colour.getDisplay() + Recipe.paintBucketTitle);
         meta.setLore(Arrays.asList("§r" + colour.name(), "Combine with dyes to",
-                "get different colours", "Use with an Easel and", "Canvas to fill colours"));
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        addUnsafeEnchantment(Enchantment.LUCK, 1);
-        setItemMeta(meta);
-    }
-
-    //void bucket fills with empty pixels
-    PaintBucket() {
-        super(Material.BUCKET);
-        ItemMeta meta = getItemMeta();
-        meta.setDisplayName(ChatColor.DARK_GREEN + Recipe.paintBucketTitle);
-        meta.setLore(Arrays.asList(Recipe.voidPaint, "Combine with dyes to",
                 "get different colours", "Use with an Easel and", "Canvas to fill colours"));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
@@ -140,17 +127,12 @@ class PaintBucket extends RecipeItem {
 
     @Override
     public void addRecipe() {
-        for (DyeColor d : DyeColor.values()) {
+        for (ArtDye d : ArtDye.values()) {
             ShapelessRecipe paintBucket = new ShapelessRecipe(new PaintBucket(d));
             paintBucket.addIngredient(1, Material.BUCKET);
-            paintBucket.addIngredient(1,
-                    new MaterialData(Material.INK_SACK, (byte) (15 - d.ordinal())));
+            paintBucket.addIngredient(1, d.getRecipeItem());
             Bukkit.getServer().addRecipe(paintBucket);
         }
-        ShapelessRecipe voidBucket = new ShapelessRecipe(new PaintBucket());
-        voidBucket.addIngredient(1, Material.BUCKET);
-        voidBucket.addIngredient(1, Material.EYE_OF_ENDER);
-        Bukkit.getServer().addRecipe(voidBucket);
     }
 }
 
