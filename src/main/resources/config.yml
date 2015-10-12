@@ -1,8 +1,5 @@
 #ArtMap Config
 
-# The ID for the default background for each new canvas -
-# Don't change this unless you want to set a specific design
-backgroundID: 0
 # The resolution for artmap maps. Acceptable values: 128, 64, 32, 16
 # 64 or 32 are recommended.
 mapResolutionFactor: 32

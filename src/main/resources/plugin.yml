@@ -13,6 +13,7 @@ commands:
         <command> preview <title> : Previews an artwork
         <command> list <playername|all> <pg> : Lists artworks
         <command> help : Displays help
+        <command> get <recipe> : gives recipe items to admin
 permissions:
   artmap.artist:
     description: Allows creation of artworks

@@ -37,7 +37,6 @@ public class ArtMap extends JavaPlugin {
     private File mapList;
     private FileConfiguration maps;
     private List<String> titleFilter;
-    private int backgroundID;
     private ConcurrentHashMap<Location, Easel> easels;
     private ConcurrentHashMap<Player, MapPreview> previewing;
     private ArtistHandler artistHandler;
@@ -66,7 +65,6 @@ public class ArtMap extends JavaPlugin {
                 updateMaps();
             }
         }
-        backgroundID = getConfig().getInt("backgroundID");
         int factor = getConfig().getInt("mapResolutionFactor");
 
         if (factor % 16 == 0 && factor <= 128) {
@@ -106,7 +104,6 @@ public class ArtMap extends JavaPlugin {
             for (Player player : artistHandler.getArtists().keySet()) {
                 artistHandler.removePlayer(player);
             }
-            artistHandler.getProtocol().close();
         }
 
         if (previewing != null && previewing.size() > 0) {
@@ -114,12 +111,6 @@ public class ArtMap extends JavaPlugin {
             for (Player player : previewing.keySet()) {
                 stopPreviewing(player);
             }
-        }
-        FileConfiguration config = getConfig();
-
-        if (backgroundID != config.getInt("backgroundID")) {
-            config.set("backgroundID", backgroundID);
-            saveDefaultConfig();
         }
     }
 
@@ -238,12 +229,6 @@ public class ArtMap extends JavaPlugin {
         return mapResolutionFactor;
     }
 
-    public void setupBackgroundID(World world) {
-        MapView mapView = Bukkit.createMap(world);
-        nmsInterface.setWorldMap(mapView, getBlankMap());
-        setBackgroundID(mapView.getId());
-    }
-
     public void startPreviewing(Player player, MapArt art) {
 
         if (previewing.containsKey(player)) {
@@ -287,16 +272,6 @@ public class ArtMap extends JavaPlugin {
 
     public PixelTable getPixelTable() {
         return pixelTable;
-    }
-
-    public int getBackgroundID() {
-        return backgroundID;
-    }
-
-    private void setBackgroundID(int id) {
-        backgroundID = id;
-        getConfig().set("backgroundID", id);
-        saveDefaultConfig();
     }
 
     public NMSInterface getNmsInterface() {
