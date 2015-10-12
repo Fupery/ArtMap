@@ -36,6 +36,8 @@ public class Formatting {
             "and consist of only letters and numbers.";
     public static String titleUsed = "Sorry, this title is already being used.";
     public static String previewing = "Previewing artwork '%s'.";
+    public static String unknownError = "Oops! Something strange has happened. " +
+            "Check that your canvas isn't missing parts, and try again.";
     public static String emptyHandPreview = "You need to have an empty hand to preview.";
     private static String
             prefix = ChatColor.AQUA + "[ArtMap] ";

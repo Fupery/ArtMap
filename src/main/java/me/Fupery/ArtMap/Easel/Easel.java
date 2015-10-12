@@ -171,7 +171,10 @@ public class Easel {
         plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
         frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
         ItemStack canvas = Recipe.CANVAS.getResult();
-        player.getInventory().removeItem(canvas);
+
+        if (frame.getItem() != null) {
+            player.getInventory().removeItem(canvas);
+        }
 
         if (mapView.getRenderers() != null) {
 

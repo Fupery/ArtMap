@@ -82,15 +82,26 @@ public class CommandListener implements CommandExecutor {
 
                                     MapArt art = new MapArt(easel.getItem().getDurability(),
                                             title, player);
-                                    art.saveArtwork(plugin);
-                                    plugin.getArtistHandler().removePlayer(player);
-                                    ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
 
-                                    if (leftOver != null) {
-                                        player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                                    //Makes sure that frame is empty before saving
+                                    for (int i = 0; i < 3; i ++) {
+
+                                        easel.getFrame().setItem(new ItemStack(Material.AIR));
+
+                                        if (!easel.hasItem()) {
+                                            art.saveArtwork(plugin);
+                                            easel.getFrame().setItem(new ItemStack(Material.AIR));
+                                            plugin.getArtistHandler().removePlayer(player);
+                                            ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
+
+                                            if (leftOver != null) {
+                                                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                                            }
+                                            player.sendMessage(playerMessage(String.format(saveSuccess, title)));
+                                            return;
+                                        }
                                     }
-                                    easel.getFrame().setItem(new ItemStack(Material.AIR));
-                                    player.sendMessage(playerMessage(String.format(saveSuccess, title)));
+                                    player.sendMessage(playerError(unknownError));
                                     return;
                                 }
                                 player.sendMessage(playerError(notRidingEasel));
@@ -124,7 +135,7 @@ public class CommandListener implements CommandExecutor {
                 }
 
                 if (MapArt.deleteArtwork(plugin, args[1])) {
-                    msg.message = playerError(String.format(deleted, args[1]));
+                    msg.message = playerMessage(String.format(deleted, args[1]));
                     return true;
 
                 } else {
@@ -225,7 +236,7 @@ public class CommandListener implements CommandExecutor {
                 String title, cmd, hover;
 
                 for (int i = 0; i < lines.length && (i + msgIndex) < list.length; i++) {
-                    title = extractListTitle(list[i]);
+                    title = extractListTitle(list[i + msgIndex]);
                     cmd = String.format("/artmap preview %s", title);
                     hover = String.format(listLineHover, title);
 
