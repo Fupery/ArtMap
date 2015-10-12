@@ -157,7 +157,6 @@ public class Easel {
             return true;
 
         } else {
-            this.breakEasel();
 
             if (plugin.getEasels().containsKey(location)) {
                 plugin.getEasels().remove(location);
@@ -218,10 +217,6 @@ public class Easel {
     public void breakEasel() {
 
         plugin.getEasels().remove(location);
-
-        if (frame == null || stand == null) {
-            getParts();
-        }
 
         if (stand != null) {
             stand.remove();
