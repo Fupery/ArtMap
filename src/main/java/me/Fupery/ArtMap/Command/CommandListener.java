@@ -81,19 +81,18 @@ public class CommandListener implements CommandExecutor {
 
                                 if (easel != null) {
 
-                                    if (player.getItemInHand().getType() == Material.AIR) {
+                                    MapArt art = new MapArt(easel.getItem().getDurability(),
+                                            title, player);
+                                    art.saveArtwork(plugin);
+                                    plugin.getArtistHandler().removePlayer(player);
+                                    ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
 
-                                        MapArt art = new MapArt(easel.getItem().getDurability(),
-                                                title, player);
-                                        plugin.getArtistHandler().removePlayer(player);
-                                        player.setItemInHand(art.getMapItem());
-                                        easel.getFrame().setItem(new ItemStack(Material.AIR));
-                                        art.saveArtwork(plugin);
-                                        player.sendMessage(playerMessage(String.format(saveSuccess, title)));
-                                        return;
-                                    } else {
-                                        player.sendMessage(playerError(emptyHand));
+                                    if (leftOver != null) {
+                                        player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                                     }
+                                    easel.getFrame().setItem(new ItemStack(Material.AIR));
+                                    player.sendMessage(playerMessage(String.format(saveSuccess, title)));
+                                    return;
                                 }
                                 player.sendMessage(playerError(notRidingEasel));
                             }
