@@ -14,7 +14,7 @@ public enum ArtDye {
     BLUE(101, Material.INK_SACK, ChatColor.DARK_BLUE, 4),
     PURPLE(97, Material.INK_SACK, ChatColor.DARK_PURPLE, 5),
     CYAN(93, Material.INK_SACK, ChatColor.DARK_AQUA, 6),
-    SILVER(89, Material.INK_SACK, ChatColor.GRAY, 7),
+    SILVER(32, Material.INK_SACK, ChatColor.GRAY, 7),
     GRAY(85, Material.INK_SACK, ChatColor.DARK_GRAY, 8),
     PINK(81, Material.INK_SACK, ChatColor.LIGHT_PURPLE, 9),
     LIME(77, Material.INK_SACK, ChatColor.GREEN, 10),
@@ -30,7 +30,7 @@ public enum ArtDye {
     VOID(0, Material.EYE_OF_ENDER, ChatColor.DARK_GREEN),
     //extra colours
     GRAPHITE(87, Material.FLINT, ChatColor.DARK_GRAY),
-    GUNPOWDER(32, Material.SULPHUR, ChatColor.GRAY),
+    GUNPOWDER(89, Material.SULPHUR, ChatColor.GRAY),
     MAROON(142, Material.NETHER_STALK, ChatColor.DARK_RED),
     AQUA(125, Material.PRISMARINE_CRYSTALS, ChatColor.AQUA),
     GRASS(5, Material.SEEDS, ChatColor.DARK_GREEN),
