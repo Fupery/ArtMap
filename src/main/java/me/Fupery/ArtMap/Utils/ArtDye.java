@@ -25,7 +25,7 @@ public enum ArtDye {
     WHITE(58, Material.INK_SACK, ChatColor.WHITE, 15),
     //skin tones
     CREAM(10, Material.PUMPKIN_SEEDS, ChatColor.GOLD),
-    COFFEE(138, Material.MELON_SEEDS, ChatColor.DARK_RED),
+    COFFEE(41, Material.MELON_SEEDS, ChatColor.DARK_RED),
     //transparent colour
     VOID(0, Material.EYE_OF_ENDER, ChatColor.DARK_GREEN),
     //extra colours
