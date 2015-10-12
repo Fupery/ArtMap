@@ -6,7 +6,6 @@ public class Formatting {
     public static String noConsole = "This command can only be used by players.";
     public static String invalidPos = "You can't place an easel here";
     public static String noperm = "You don't have permission to do this.";
-    public static String emptyHand = "Use an empty hand to retrieve your artwork.";
     public static String elseUsing = "Someone else is using this canvas!";
     public static String saveUsage = "Use " + ChatColor.YELLOW + "/artmap save <title> "
             + ChatColor.GOLD + "to save your artwork.";

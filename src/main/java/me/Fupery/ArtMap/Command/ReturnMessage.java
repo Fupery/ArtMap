@@ -20,6 +20,7 @@ class ReturnMessage implements Runnable {
         sender.sendMessage(message);
     }
 }
+
 class MultiLineReturnMessage extends ReturnMessage {
 
     private TextComponent[] lines;
@@ -52,10 +53,11 @@ class MultiLineReturnMessage extends ReturnMessage {
     public void setLines(String[] lines) {
         this.lines = new TextComponent[lines.length];
 
-        for (int i = 0; i < lines.length; i ++) {
+        for (int i = 0; i < lines.length; i++) {
             this.lines[i] = new TextComponent(lines[i]);
         }
     }
+
     public void setFooter(TextComponent footer) {
         this.footer = footer;
     }

@@ -3,11 +3,8 @@ package me.Fupery.ArtMap.Protocol;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.PixelTable;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 

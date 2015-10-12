@@ -2,7 +2,6 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandListener;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -10,6 +9,7 @@ import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Utils.PixelTable;
+import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

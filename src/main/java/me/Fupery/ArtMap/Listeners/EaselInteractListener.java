@@ -1,7 +1,8 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Easel.*;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Material;

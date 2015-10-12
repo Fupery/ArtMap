@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.PartType;
-import me.Fupery.ArtMap.Utils.Formatting;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -23,8 +21,6 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import static me.Fupery.ArtMap.Easel.Easel.getEasel;
-import static me.Fupery.ArtMap.Utils.Formatting.breakCanvas;
-import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 public class PlayerInteractEaselListener implements Listener {
 

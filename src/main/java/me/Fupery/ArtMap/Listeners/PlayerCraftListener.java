@@ -11,8 +11,8 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
-import static me.Fupery.ArtMap.IO.MapArt.getArtwork;
-import static me.Fupery.ArtMap.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.noCraftPerm;
+import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 // Disallows players from copying ArtMap maps in the crafting table
 public class PlayerCraftListener implements Listener {

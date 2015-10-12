@@ -2,11 +2,11 @@ package me.Fupery.ArtMap.Protocol;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.ArtDye;
-import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
+import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -20,6 +20,9 @@ import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import static me.Fupery.ArtMap.Utils.Formatting.playerMessage;
+import static me.Fupery.ArtMap.Utils.Formatting.saveUsage;
+
 public class ArtistHandler {
 
     private ConcurrentHashMap<Player, CanvasRenderer> artists;
@@ -27,7 +30,7 @@ public class ArtistHandler {
     private ArtMap plugin;
     private ArtistProtocol protocol;
 
-    public ArtistHandler(ArtMap plugin) {
+    public ArtistHandler(final ArtMap plugin) {
         this.plugin = plugin;
         artists = new ConcurrentHashMap<>();
         final NMSInterface nmsInterface = plugin.getNmsInterface();
@@ -107,6 +110,7 @@ public class ArtistHandler {
                         ArtistPacket.PacketVehicle packetVehicle
                                 = ((ArtistPacket.PacketVehicle) artMapPacket);
                         if (packetVehicle.isDismount()) {
+                            sender.sendMessage(playerMessage(saveUsage));
                             removePlayer(sender);
                             return null;
                         }
@@ -159,11 +163,6 @@ public class ArtistHandler {
             protocol.close();
             plugin.setArtistHandler(null);
         }
-    }
-
-    private static byte getColourData(DyeColor colour) {
-        Color c = colour.getColor();
-        return (MapPalette.matchColor(c.getRed(), c.getGreen(), c.getBlue()));
     }
 
     public ArtistProtocol getProtocol() {

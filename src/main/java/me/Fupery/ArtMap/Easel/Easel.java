@@ -19,7 +19,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Collection;
 
-import static me.Fupery.ArtMap.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.painting;
+import static me.Fupery.ArtMap.Utils.Formatting.playerMessage;
 
 public class Easel {
 
@@ -273,6 +274,7 @@ public class Easel {
     public ItemStack getItem() {
         return (frame != null) ? frame.getItem() : null;
     }
+
     public boolean hasItem() {
         if (frame != null) {
             return frame.getItem().getType() != Material.AIR;

@@ -38,6 +38,7 @@ public enum Recipe {
         recipeItem.addRecipe();
     }
 }
+
 abstract class RecipeItem extends ItemStack {
     public RecipeItem(Material material) {
         super(material);

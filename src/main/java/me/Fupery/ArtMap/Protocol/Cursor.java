@@ -91,6 +91,7 @@ class Cursor {
         pitchOffCanvas = (pitch > 45 || pitch < -45);
         return checkBounds(pitch);
     }
+
     private float checkBounds(float value) {
 
         if (value > 40) {

@@ -2,10 +2,10 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Utils.Recipe;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import me.Fupery.ArtMap.Utils.Recipe;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -227,7 +227,7 @@ public class CommandListener implements CommandExecutor {
                 int msgIndex = (pg - 1) * 8;
                 String title, cmd, hover;
 
-                for (int i = 0; i < lines.length &&  (i + msgIndex) < list.length; i ++) {
+                for (int i = 0; i < lines.length && (i + msgIndex) < list.length; i++) {
                     title = extractListTitle(list[i]);
                     cmd = String.format("/artmap preview %s", title);
                     hover = String.format(listLineHover, title);
@@ -282,7 +282,7 @@ public class CommandListener implements CommandExecutor {
                     TextComponent footer = new TextComponent(ChatColor.AQUA + "Recipes: ");
                     TextComponent[] items = new TextComponent[Recipe.values().length];
 
-                    for (int i = 0; i < items.length; i ++) {
+                    for (int i = 0; i < items.length; i++) {
                         String title = Recipe.values()[i].name().toLowerCase();
                         items[i] = new TextComponent(String.format(recipeButton, title) +
                                 ChatColor.GOLD + " | ");
