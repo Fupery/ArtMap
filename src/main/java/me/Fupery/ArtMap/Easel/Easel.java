@@ -29,7 +29,6 @@ public class Easel {
     private ArtMap plugin;
     private Location location;
     private ArmorStand stand;
-    private ArmorStand seat;
     private ItemFrame frame;
 
     private Easel(ArtMap plugin, Location location) {
@@ -67,7 +66,6 @@ public class Easel {
         sign.setData(signFace);
         sign.setLine(3, arbitrarySignID);
         sign.update(true, false);
-
 
         ItemFrame frame = stand.getWorld().spawn(face.getLocation(), ItemFrame.class);
 
@@ -114,12 +112,11 @@ public class Easel {
     }
 
     private boolean getParts() {
-        Sign sign = null;
 
         if (location.getBlock().getType() == Material.WALL_SIGN) {
 
             if (location.getBlock().getState() instanceof Sign) {
-                sign = ((Sign) location.getBlock().getState());
+                Sign sign = ((Sign) location.getBlock().getState());
 
                 if (!sign.getLine(3).equals(arbitrarySignID)) {
                     return false;
@@ -143,15 +140,6 @@ public class Easel {
                     if (part.getEaselPos(s.getLocation()).getBlock().equals(location.getBlock())) {
                         stand = s;
                     }
-
-                    //check if entity is a seat
-                } else {
-                    EaselPart part = new EaselPart(PartType.SEAT,
-                            EaselPart.getFacing(s.getLocation().getYaw()));
-
-                    if (part.getEaselPos(s.getLocation()).getBlock().equals(location.getBlock())) {
-                        seat = s;
-                    }
                 }
 
             } else if (e.getType() == EntityType.ITEM_FRAME) {
@@ -165,12 +153,11 @@ public class Easel {
                 }
             }
         }
-        if (sign != null
-                && frame != null
-                && stand != null) {
+        if (frame != null && stand != null) {
             return true;
 
         } else {
+            this.breakEasel();
 
             if (plugin.getEasels().containsKey(location)) {
                 plugin.getEasels().remove(location);
@@ -207,7 +194,7 @@ public class Easel {
         Location seatLocation = seatPart.getPartPos(stand.getLocation());
         seatLocation.setYaw(stand.getLocation().getYaw() - 180);
 
-        seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
+        ArmorStand seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
                 seatLocation, EntityType.ARMOR_STAND);
 
         seat.setVisible(false);
@@ -232,22 +219,24 @@ public class Easel {
 
         plugin.getEasels().remove(location);
 
-        if (frame == null || stand == null || seat == null) {
+        if (frame == null || stand == null) {
             getParts();
         }
-        location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
-        stand.remove();
 
-        if (frame.getItem().getType() != Material.AIR) {
-            ItemStack item = Recipe.CANVAS.getResult();
-            location.getWorld().dropItemNaturally(location, item);
+        if (stand != null) {
+            stand.remove();
+            location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
         }
 
-        frame.remove();
+        if (frame != null) {
 
-        if (seat != null) {
-            seat.remove();
+            if (frame.getItem().getType() == Material.MAP) {
+                ItemStack item = Recipe.CANVAS.getResult();
+                location.getWorld().dropItemNaturally(location, item);
+            }
+            frame.remove();
         }
+
         location.getBlock().setType(Material.AIR);
     }
 
@@ -268,9 +257,6 @@ public class Easel {
     }
 
     public boolean hasItem() {
-        if (frame != null) {
-            return frame.getItem().getType() != Material.AIR;
-        }
-        return false;
+        return frame != null && frame.getItem().getType() != Material.AIR;
     }
 }
