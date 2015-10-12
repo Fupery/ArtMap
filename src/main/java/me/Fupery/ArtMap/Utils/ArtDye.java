@@ -42,18 +42,18 @@ public enum ArtDye {
     private int durability;
     private ChatColor display;
 
-    ArtDye(int data, Material material, ChatColor display, int durability) {
-        this.data = ((byte) data);
-        this.material = material;
-        this.display = display;
-        this.durability = durability;
-    }
-
     ArtDye(int data, Material material, ChatColor display) {
         this.data = ((byte) data);
         this.material = material;
         this.display = display;
         this.durability = -1;
+    }
+
+    ArtDye(int data, Material material, ChatColor display, int durability) {
+        this.data = ((byte) data);
+        this.material = material;
+        this.display = display;
+        this.durability = durability;
     }
 
     public static ArtDye getArtDye(ItemStack item) {

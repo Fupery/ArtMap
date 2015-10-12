@@ -7,15 +7,12 @@ import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Recipe;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,6 +90,11 @@ public class ArtistHandler {
                                     }
                                 }
                             }
+                            //dodge/burn tools
+                        } else if (item.getType() == Material.FEATHER
+                                || item.getType() == Material.COAL) {
+
+
                             //brush tool
                         } else {
                             ArtDye dye = ArtDye.getArtDye(item);

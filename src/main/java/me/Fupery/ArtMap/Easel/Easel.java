@@ -37,7 +37,6 @@ public class Easel {
         this.location = location;
     }
 
-
     //Spawns an easel at the location provided, facing the direction provided
     public static Easel spawnEasel(ArtMap plugin, Location location, BlockFace facing) {
 

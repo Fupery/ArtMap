@@ -4,7 +4,8 @@ import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import static me.Fupery.ArtMap.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.noperm;
+import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 interface AbstractCommand {
     boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg);
