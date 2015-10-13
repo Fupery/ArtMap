@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.PartType;
+import me.Fupery.ArtMap.Utils.Formatting;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -70,7 +71,10 @@ public class PlayerInteractEaselListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        checkSignBreak(event.getBlock(), event);
+
+        if (checkSignBreak(event.getBlock(), event)) {
+            event.getPlayer().sendMessage(Formatting.playerError(Formatting.breakCanvas));
+        }
         checkIsPainting(event.getPlayer(), event);
     }
 
@@ -131,7 +135,7 @@ public class PlayerInteractEaselListener implements Listener {
         }
     }
 
-    private void checkSignBreak(Block block, Cancellable event) {
+    private boolean checkSignBreak(Block block, Cancellable event) {
 
         if (block.getType() == Material.WALL_SIGN) {
             Sign sign = ((Sign) block.getState());
@@ -141,8 +145,10 @@ public class PlayerInteractEaselListener implements Listener {
                 if (plugin.getEasels().containsKey(block.getLocation())
                         || Easel.checkForEasel(plugin, block.getLocation())) {
                     event.setCancelled(true);
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

@@ -16,7 +16,8 @@ public class Formatting {
     public static String notACanvas = "You can only place ArtMap canvases on the easel.";
     public static String notYourEasel = "You cannot destroy %s's artwork!";
     public static String breakCanvas = "Shift + Right-Click the easel to break it.";
-    public static String painting = "Left-Click the canvas with dye or a paint bucket to paint.";
+    public static String painting = "Use dyes or a paint bucket to paint. " +
+            "Left-Click to draw pixels, Right-Click and drag to draw lines.";
     public static String deleted = "Sucessfully deleted '%s'.";
     public static String mapNotFound = "Artwork '%s' could not be found.";
     public static String noCraftPerm = "You can't copy other players' artworks";

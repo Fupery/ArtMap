@@ -46,7 +46,7 @@ public final class EaselEvent extends Event implements Cancellable {
         return handlers;
     }
 
-    public enum ClickType {
+    public static enum ClickType {
         LEFT_CLICK, RIGHT_CLICK, SHIFT_RIGHT_CLICK
     }
 }
