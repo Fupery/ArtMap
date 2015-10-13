@@ -149,6 +149,10 @@ public class ArtistHandler {
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
         protocol.uninjectPlayer(player);
+
+        renderer.stop();
+        renderer.saveMap();
+
         Entity seat = player.getVehicle();
         player.leaveVehicle();
 
@@ -164,8 +168,6 @@ public class ArtistHandler {
             }
             seat.remove();
         }
-        renderer.saveMap();
-        renderer.clearRenderers();
 
         if (artists.size() == 0) {
             protocol.close();

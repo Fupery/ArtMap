@@ -117,7 +117,7 @@ class ItemCarbonPaper extends RecipeItem {
 
         ShapelessRecipe carbon = new ShapelessRecipe(new ItemCarbonPaper(true));
         carbon.addIngredient(Material.MAP);
-        carbon.addIngredient(1, Material.PAPER);
+        carbon.addIngredient(Material.PAPER);
         Bukkit.getServer().addRecipe(carbon);
     }
 }
