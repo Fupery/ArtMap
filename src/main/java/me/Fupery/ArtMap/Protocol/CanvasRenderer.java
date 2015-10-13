@@ -286,7 +286,6 @@ public class CanvasRenderer extends MapRenderer {
 
     void stop() {
         active = false;
-        iterator.remove();
         dirtyPixels.clear();
         cursor = null;
     }
