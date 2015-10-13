@@ -100,7 +100,7 @@ public class ArtistHandler {
                             }
                         }
 
-                    //flow brush allows for click & drag
+                        //flow brush allows for click & drag
                     } else if (artMapPacket instanceof ArtistPacket.PacketInteract) {
 
                         ItemStack item = sender.getItemInHand();
@@ -113,7 +113,7 @@ public class ArtistHandler {
                             return null;
                         }
 
-                    //listens for when the player dismounts the easel
+                        //listens for when the player dismounts the easel
                     } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
 
                         ArtistPacket.PacketVehicle packetVehicle

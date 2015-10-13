@@ -139,27 +139,28 @@ public class CanvasRenderer extends MapRenderer {
                 if (lastFlowPixel != null) {
 
                     if (Math.abs(lastFlowPixel[0] - pixel[0]) > 4
-                            || Math.abs(lastFlowPixel[1] - pixel[1]) > 4) {
+                            || Math.abs(lastFlowPixel[1] - pixel[1]) > 4
+                            || lastFlowPixel[2] == colour) {
                         lastFlowPixel = null;
 
                     } else {
                         flowBrush(lastFlowPixel[0], lastFlowPixel[1], pixel[0], pixel[1], colour);
-                        lastFlowPixel = pixel;
+                        lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
                         return;
                     }
                 }
                 addPixel(pixel[0], pixel[1], colour);
-                lastFlowPixel = pixel;
+                lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
             }
         }
     }
 
     private void flowBrush(int x, int y, int x2, int y2, byte colour) {
 
-        int w = x2 - x ;
-        int h = y2 - y ;
+        int w = x2 - x;
+        int h = y2 - y;
 
-        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0 ;
+        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
 
         if (w != 0) {
             dx1 = (w > 0) ? 1 : -1;
@@ -170,35 +171,35 @@ public class CanvasRenderer extends MapRenderer {
             dy1 = (h > 0) ? 1 : -1;
         }
 
-        int longest = Math.abs(w) ;
-        int shortest = Math.abs(h) ;
+        int longest = Math.abs(w);
+        int shortest = Math.abs(h);
 
         if (!(longest > shortest)) {
-            longest = Math.abs(h) ;
-            shortest = Math.abs(w) ;
+            longest = Math.abs(h);
+            shortest = Math.abs(w);
 
             if (h < 0) {
-                dy2 = -1 ;
+                dy2 = -1;
 
             } else if (h > 0) {
-                dy2 = 1 ;
+                dy2 = 1;
             }
-            dx2 = 0 ;
+            dx2 = 0;
         }
-        int numerator = longest >> 1 ;
+        int numerator = longest >> 1;
 
         for (int i = 0; i <= longest; i++) {
             addPixel(x, y, colour);
-            numerator += shortest ;
+            numerator += shortest;
 
             if (!(numerator < longest)) {
-                numerator -= longest ;
-                x += dx1 ;
-                y += dy1 ;
+                numerator -= longest;
+                x += dx1;
+                y += dy1;
 
             } else {
-                x += dx2 ;
-                y += dy2 ;
+                x += dx2;
+                y += dy2;
             }
         }
     }
@@ -279,10 +280,6 @@ public class CanvasRenderer extends MapRenderer {
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
-    }
-
-    public byte[][] getPixelBuffer() {
-        return pixelBuffer;
     }
 
     public void setYaw(float yaw) {

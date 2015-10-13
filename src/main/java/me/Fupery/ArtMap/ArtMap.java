@@ -8,6 +8,7 @@ import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.PixelTable;
 import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Bukkit;
@@ -16,7 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapPalette;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -57,8 +57,8 @@ public class ArtMap extends JavaPlugin {
         if (setupRegistry()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
 
-            if (maps.getConfigurationSection("artworks") == null) {
-                maps.createSection("artworks");
+            if (maps.getConfigurationSection(MapArt.artworks) == null) {
+                maps.createSection(MapArt.artworks);
                 updateMaps();
             }
         }
@@ -280,7 +280,7 @@ public class ArtMap extends JavaPlugin {
         byte[] mapOutput = new byte[128 * 128];
 
         for (int i = 0; i < mapOutput.length; i++) {
-            mapOutput[i] = MapPalette.matchColor(255, 255, 255);
+            mapOutput[i] = ArtDye.WHITE.getData();
         }
         return mapOutput;
     }
