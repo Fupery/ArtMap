@@ -138,9 +138,9 @@ public class CanvasRenderer extends MapRenderer {
 
                 if (lastFlowPixel != null) {
 
-                    if (Math.abs(lastFlowPixel[0] - pixel[0]) > 4
-                            || Math.abs(lastFlowPixel[1] - pixel[1]) > 4
-                            || lastFlowPixel[2] == colour) {
+                    if (Math.abs(lastFlowPixel[0] - pixel[0]) > 5
+                            || Math.abs(lastFlowPixel[1] - pixel[1]) > 5
+                            || lastFlowPixel[2] != colour) {
                         lastFlowPixel = null;
 
                     } else {
@@ -227,6 +227,8 @@ public class CanvasRenderer extends MapRenderer {
 
     public void clearRenderers() {
 
+        cursor = null;
+
         if (mapView.getRenderers() != null) {
 
             for (MapRenderer r : mapView.getRenderers()) {
@@ -280,6 +282,13 @@ public class CanvasRenderer extends MapRenderer {
                 addPixel(px, py, colours[x + (y * 128)]);
             }
         }
+    }
+
+    void stop() {
+        active = false;
+        iterator.remove();
+        dirtyPixels.clear();
+        cursor = null;
     }
 
     public void setYaw(float yaw) {
