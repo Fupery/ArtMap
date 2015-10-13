@@ -17,12 +17,11 @@ import java.util.*;
 
 import static me.Fupery.ArtMap.Utils.Formatting.listLine;
 
-@SuppressWarnings("ALL")
 public class MapArt {
 
     public static final String artworkTag = "§aPlayer Artwork";
+    public static final String artworks = "artworks";
     private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private static final String artworks = "artworks";
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
     private static final String dateID = "date";
@@ -161,6 +160,10 @@ public class MapArt {
             return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
+    }
+
+    public short getMapID() {
+        return mapIDValue;
     }
 
     public OfflinePlayer getPlayer() {

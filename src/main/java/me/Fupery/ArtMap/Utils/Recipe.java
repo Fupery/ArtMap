@@ -2,8 +2,6 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -13,20 +11,24 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 public enum Recipe {
 
-    CANVAS(new ItemCanvas()), EASEL(new ItemEasel()), PAINT_BUCKET(new PaintBucket(ArtDye.BLACK));
+    CANVAS(new ItemCanvas()), CARBON_PAPER(new ItemCarbonPaper(false)),
+    EASEL(new ItemEasel()), PAINT_BUCKET(new PaintBucket(ArtDye.BLACK));
 
     public static final String canvasTitle = "Canvas";
     public static final String paintBucketTitle = "PaintBucket";
+    public static final String carbonPaperTitle = "Carbon Paper";
 
     RecipeItem recipeItem;
 
-
     Recipe(RecipeItem recipeItem) {
         this.recipeItem = recipeItem;
+    }
+
+    public static ItemStack getActivatedCarbonPaper() {
+        return new ItemCarbonPaper(true);
     }
 
     public RecipeItem getResult() {
@@ -39,6 +41,7 @@ public enum Recipe {
 }
 
 abstract class RecipeItem extends ItemStack {
+
     public RecipeItem(Material material) {
         super(material);
     }
@@ -90,29 +93,36 @@ class ItemCanvas extends RecipeItem {
     }
 }
 
-class PaintBucket extends RecipeItem {
+class ItemCarbonPaper extends RecipeItem {
 
-    private static HashMap<DyeColor, ChatColor> colourWheel;
-
-    static {
-        colourWheel = new HashMap<>();
-        colourWheel.put(DyeColor.BLACK, ChatColor.WHITE);
-        colourWheel.put(DyeColor.BLUE, ChatColor.BLUE);
-        colourWheel.put(DyeColor.BROWN, ChatColor.DARK_RED);
-        colourWheel.put(DyeColor.CYAN, ChatColor.DARK_AQUA);
-        colourWheel.put(DyeColor.GRAY, ChatColor.DARK_GRAY);
-        colourWheel.put(DyeColor.GREEN, ChatColor.DARK_GREEN);
-        colourWheel.put(DyeColor.LIGHT_BLUE, ChatColor.BLUE);
-        colourWheel.put(DyeColor.LIME, ChatColor.GREEN);
-        colourWheel.put(DyeColor.MAGENTA, ChatColor.LIGHT_PURPLE);
-        colourWheel.put(DyeColor.ORANGE, ChatColor.GOLD);
-        colourWheel.put(DyeColor.PINK, ChatColor.LIGHT_PURPLE);
-        colourWheel.put(DyeColor.PURPLE, ChatColor.DARK_PURPLE);
-        colourWheel.put(DyeColor.WHITE, ChatColor.WHITE);
-        colourWheel.put(DyeColor.YELLOW, ChatColor.YELLOW);
-        colourWheel.put(DyeColor.SILVER, ChatColor.GRAY);
-        colourWheel.put(DyeColor.RED, ChatColor.RED);
+    public ItemCarbonPaper(boolean active) {
+        super(active ? Material.PAPER : Material.EMPTY_MAP);
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName(Recipe.carbonPaperTitle);
+        String[] lore = active ?
+                new String[]{"§r[Filled]", "Place on an easel", "to edit artwork"} :
+                new String[]{"§r[Blank]", "Craft with an artwork", "to create editable copy"};
+        meta.setLore(Arrays.asList(lore));
+        setItemMeta(meta);
     }
+
+    @Override
+    public void addRecipe() {
+        ShapedRecipe blankCarbon = new ShapedRecipe(new ItemCarbonPaper(false));
+        blankCarbon.shape("lel", "epe", "lel");
+        blankCarbon.setIngredient('l', Material.COAL);
+        blankCarbon.setIngredient('p', Material.PAPER);
+        blankCarbon.setIngredient('e', Material.DIAMOND);
+        Bukkit.getServer().addRecipe(blankCarbon);
+
+        ShapelessRecipe carbon = new ShapelessRecipe(new ItemCarbonPaper(true));
+        carbon.addIngredient(Material.MAP);
+        carbon.addIngredient(1, Material.PAPER);
+        Bukkit.getServer().addRecipe(carbon);
+    }
+}
+
+class PaintBucket extends RecipeItem {
 
     PaintBucket(ArtDye colour) {
         super(Material.BUCKET);

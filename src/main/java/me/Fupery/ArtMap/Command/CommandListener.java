@@ -84,7 +84,7 @@ public class CommandListener implements CommandExecutor {
                                             title, player);
 
                                     //Makes sure that frame is empty before saving
-                                    for (int i = 0; i < 3; i ++) {
+                                    for (int i = 0; i < 3; i++) {
 
                                         easel.getFrame().setItem(new ItemStack(Material.AIR));
 

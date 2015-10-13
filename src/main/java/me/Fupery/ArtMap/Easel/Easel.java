@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
-import me.Fupery.ArtMap.Protocol.CanvasRenderer;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Bukkit;
@@ -13,7 +12,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -165,26 +163,8 @@ public class Easel {
         }
     }
 
-    public void mountCanvas(Player player) {
-
-        MapView mapView = Bukkit.createMap(player.getWorld());
-        plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
+    public void mountCanvas(MapView mapView) {
         frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
-        ItemStack canvas = Recipe.CANVAS.getResult();
-
-        if (frame.getItem() != null) {
-            player.getInventory().removeItem(canvas);
-        }
-
-        if (mapView.getRenderers() != null) {
-
-            for (MapRenderer r : mapView.getRenderers()) {
-
-                if (!(r instanceof CanvasRenderer)) {
-                    mapView.removeRenderer(r);
-                }
-            }
-        }
     }
 
     public void rideEasel(Player player) {

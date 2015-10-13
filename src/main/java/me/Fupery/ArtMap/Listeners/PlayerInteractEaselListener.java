@@ -5,6 +5,7 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.PartType;
 import me.Fupery.ArtMap.Utils.Formatting;
+import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -20,6 +21,8 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import static me.Fupery.ArtMap.Easel.Easel.getEasel;
 
@@ -39,6 +42,19 @@ public class PlayerInteractEaselListener implements Listener {
         callEaselEvent(player, event.getRightClicked(), event,
                 isSneaking(player));
 
+        ItemStack item = event.getPlayer().getItemInHand();
+
+        if (item != null
+                && item.getType() == Material.EMPTY_MAP) {
+
+            if (item.hasItemMeta()) {
+                ItemMeta meta = item.getItemMeta();
+
+                if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                    player.setItemInHand(Recipe.CARBON_PAPER.getResult());
+                }
+            }
+        }
         checkPreviewing(player, event);
     }
 

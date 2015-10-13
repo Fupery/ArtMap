@@ -2,9 +2,11 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -85,6 +87,22 @@ public class PlayerInteractListener implements Listener {
                                 event.getPlayer().sendMessage(playerError(invalidPos));
                             }
                         }
+                    }
+                }
+            }
+
+        } else if (event.getItem()
+                != null && event.getMaterial() == Material.EMPTY_MAP) {
+
+            if (event.getAction() == Action.RIGHT_CLICK_AIR
+                    || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+                if (event.getItem().hasItemMeta()) {
+                    ItemMeta meta = event.getItem().getItemMeta();
+
+                    if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                        event.setUseItemInHand(Event.Result.DENY);
+                        event.getPlayer().setItemInHand(Recipe.CARBON_PAPER.getResult());
                     }
                 }
             }

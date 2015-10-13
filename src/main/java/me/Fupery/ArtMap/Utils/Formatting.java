@@ -15,6 +15,7 @@ public class Formatting {
     public static String needCanvas = "You need to place a canvas on the easel to paint.";
     public static String notACanvas = "You can only place ArtMap canvases on the easel.";
     public static String notYourEasel = "You cannot destroy %s's artwork!";
+    public static String needToCopy = "You must craft this carbon paper with an artwork to edit.";
     public static String breakCanvas = "Shift + Right-Click the easel to break it.";
     public static String painting = "Use dyes or a paint bucket to paint. " +
             "Left-Click to draw pixels, Right-Click and drag to draw lines.";
