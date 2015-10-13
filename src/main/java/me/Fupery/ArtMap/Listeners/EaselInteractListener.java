@@ -62,7 +62,7 @@ public class EaselInteractListener implements Listener {
                                             MapArt art = MapArt.getArtwork(plugin, title);
 
                                             if (art != null) {
-                                                mapView = Bukkit.getMap(art.getMapID());
+                                                mapView = MapArt.cloneArtwork(plugin, player.getWorld(), art.getMapID());
                                             }
                                         }
 

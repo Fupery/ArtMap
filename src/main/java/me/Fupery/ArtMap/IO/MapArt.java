@@ -1,10 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -160,6 +157,14 @@ public class MapArt {
             return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
+    }
+
+    public static MapView cloneArtwork(ArtMap plugin, World world, short mapID) {
+        MapView oldMapView = Bukkit.getServer().getMap(mapID);
+        MapView newMapView = Bukkit.getServer().createMap(world);
+        byte[] oldMap = plugin.getNmsInterface().getMap(oldMapView);
+        plugin.getNmsInterface().setWorldMap(newMapView, oldMap);
+        return newMapView;
     }
 
     public short getMapID() {
