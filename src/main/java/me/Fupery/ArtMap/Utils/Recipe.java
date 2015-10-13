@@ -21,7 +21,6 @@ public enum Recipe {
 
     public static final String canvasTitle = "Canvas";
     public static final String paintBucketTitle = "PaintBucket";
-    public static final String voidPaint = "§rVoidPaint";
 
     RecipeItem recipeItem;
 

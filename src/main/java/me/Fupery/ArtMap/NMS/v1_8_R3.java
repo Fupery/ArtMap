@@ -5,6 +5,7 @@ import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import net.minecraft.server.v1_8_R3.PacketPlayInSteerVehicle;
+import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.map.CraftMapView;
 import org.bukkit.entity.Player;
@@ -33,6 +34,17 @@ public class v1_8_R3 implements NMSInterface {
 
                 case ARM_ANIMATION:
                     return new ArtistPacket.PacketArmSwing(packet, type);
+
+                case INTERACT:
+                    PacketPlayInUseEntity packetInteract =
+                            (PacketPlayInUseEntity) packet;
+
+                    ArtistPacket.PacketInteract.InteractType interactType =
+                            (packetInteract.a() == PacketPlayInUseEntity.EnumEntityUseAction.ATTACK) ?
+                                    ArtistPacket.PacketInteract.InteractType.ATTACK :
+                                    ArtistPacket.PacketInteract.InteractType.INTERACT;
+
+                    return new ArtistPacket.PacketInteract(packet, type, interactType);
 
                 case STEER_VEHICLE:
                     PacketPlayInSteerVehicle packetVehicle

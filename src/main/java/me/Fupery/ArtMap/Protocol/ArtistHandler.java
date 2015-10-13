@@ -81,12 +81,6 @@ public class ArtistHandler {
 
                                     if (colour != null) {
                                         renderer.fillPixel(colour.getData());
-
-                                    } else {
-
-                                        if (lore[0].equals(Recipe.voidPaint)) {
-                                            renderer.fillPixel((byte) 0);
-                                        }
                                     }
                                 }
                             }
@@ -106,7 +100,20 @@ public class ArtistHandler {
                             }
                         }
 
-                        //listens for when the player dismounts the easel
+                    //flow brush allows for click & drag
+                    } else if (artMapPacket instanceof ArtistPacket.PacketInteract) {
+
+                        ItemStack item = sender.getItemInHand();
+
+                        ArtDye dye = ArtDye.getArtDye(item);
+
+                        if (dye != null) {
+
+                            renderer.flowPixel(dye.getData());
+                            return null;
+                        }
+
+                    //listens for when the player dismounts the easel
                     } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
 
                         ArtistPacket.PacketVehicle packetVehicle
@@ -117,7 +124,6 @@ public class ArtistHandler {
                             return null;
                         }
                     }
-
 
                 } else {
                     removePlayer(sender);

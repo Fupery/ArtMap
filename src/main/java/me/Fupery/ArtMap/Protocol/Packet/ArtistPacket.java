@@ -35,6 +35,23 @@ public class ArtistPacket {
         }
     }
 
+    public static class PacketInteract extends ArtistPacket {
+        private InteractType interaction;
+
+        public PacketInteract(Object packet, PacketType type, InteractType interaction) {
+            super(packet, type);
+            this.interaction = interaction;
+        }
+
+        public InteractType getInteraction() {
+            return interaction;
+        }
+
+        public enum InteractType {
+            INTERACT, ATTACK
+        }
+    }
+
     public static class PacketVehicle extends ArtistPacket {
         private boolean dismount;
 
