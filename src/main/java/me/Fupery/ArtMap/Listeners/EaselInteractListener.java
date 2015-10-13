@@ -72,6 +72,7 @@ public class EaselInteractListener implements Listener {
                                             if (easel.getItem() != null) {
                                                 player.getInventory().removeItem(item);
                                             }
+                                            return;
                                         }
                                         player.sendMessage(playerError(needToCopy));
                                         return;
