@@ -204,6 +204,54 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
+    public void shadePixel(boolean darken) {
+
+        if (!cursor.isOffCanvas()) {
+            byte[] pixel = getPixel();
+
+            if (pixel != null) {
+                byte colour = pixelBuffer[pixel[0]][pixel[1]];
+
+                if (colour < 4) {
+                    return;
+                }
+                byte shade = colour;
+                byte shift;
+
+                while (shade >= 4) {
+                    shade -= 4;
+                }
+
+                if (darken) {
+
+                    if (shade > 0 && shade < 3) {
+                        shift = -1;
+
+                    } else if (shade == 0) {
+                        shift = 3;
+
+                    } else {
+                        return;
+                    }
+
+                } else {
+
+                    if (shade < 2 && shade >= 0) {
+                        shift = 1;
+
+                    } else if (shade == 3) {
+                        shift = -3;
+
+                    } else {
+                        return;
+                    }
+                }
+                pixelBuffer[pixel[0]][pixel[1]] = (byte) (colour + shift);
+                iterator.add(pixel);
+            }
+        }
+    }
+
     public void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         iterator.add(new byte[]{((byte) x), ((byte) y)});

@@ -84,10 +84,11 @@ public class ArtistHandler {
                                     }
                                 }
                             }
-                            //dodge/burn tools
+                            //shade tool tool
                         } else if (item.getType() == Material.FEATHER
                                 || item.getType() == Material.COAL) {
 
+                            renderer.shadePixel(item.getType() == Material.COAL);
 
                             //brush tool
                         } else {
