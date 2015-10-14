@@ -58,60 +58,66 @@ public class ArtistHandler {
                         //adds pixels when the player clicks
                     } else if (artMapPacket instanceof ArtistPacket.PacketArmSwing) {
 
-                        ItemStack item = sender.getItemInHand();
+                        if (!renderer.isOffCanvas()) {
 
-                        //paint bucket tool
-                        if (item.getType() == Material.BUCKET) {
+                            ItemStack item = sender.getItemInHand();
 
-                            if (item.hasItemMeta()) {
-                                ItemMeta meta = item.getItemMeta();
+                            //paint bucket tool
+                            if (item.getType() == Material.BUCKET) {
 
-                                if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
-                                        && meta.hasLore()) {
-                                    ArtDye colour = null;
-                                    String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
+                                if (item.hasItemMeta()) {
+                                    ItemMeta meta = item.getItemMeta();
 
-                                    for (ArtDye dye : ArtDye.values()) {
+                                    if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
+                                            && meta.hasLore()) {
+                                        ArtDye colour = null;
+                                        String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
-                                        if (lore[0].equals("§r" + dye.name())) {
-                                            colour = dye;
-                                            break;
+                                        for (ArtDye dye : ArtDye.values()) {
+
+                                            if (lore[0].equals("§r" + dye.name())) {
+                                                colour = dye;
+                                                break;
+                                            }
+                                        }
+
+                                        if (colour != null) {
+                                            renderer.fillPixel(colour.getData());
                                         }
                                     }
-
-                                    if (colour != null) {
-                                        renderer.fillPixel(colour.getData());
-                                    }
                                 }
-                            }
-                            //shade tool tool
-                        } else if (item.getType() == Material.FEATHER
-                                || item.getType() == Material.COAL) {
+                                //shade tool tool
+                            } else if (item.getType() == Material.FEATHER
+                                    || item.getType() == Material.COAL) {
 
-                            renderer.shadePixel(item.getType() == Material.COAL);
+                                renderer.shadePixel(item.getType() == Material.COAL);
 
-                            //brush tool
-                        } else {
-                            ArtDye dye = ArtDye.getArtDye(item);
+                                //brush tool
+                            } else {
+                                ArtDye dye = ArtDye.getArtDye(item);
 
-                            if (dye != null) {
+                                if (dye != null) {
 
-                                renderer.drawPixel(dye.getData());
-                                return null;
+                                    renderer.drawPixel(dye.getData());
+                                    return null;
+                                }
                             }
                         }
 
                         //flow brush allows for click & drag
                     } else if (artMapPacket instanceof ArtistPacket.PacketInteract) {
 
-                        ItemStack item = sender.getItemInHand();
+                        if (!renderer.isOffCanvas()) {
 
-                        ArtDye dye = ArtDye.getArtDye(item);
+                            ItemStack item = sender.getItemInHand();
 
-                        if (dye != null) {
+                            ArtDye dye = ArtDye.getArtDye(item);
 
-                            renderer.flowPixel(dye.getData());
-                            return null;
+                            if (dye != null) {
+
+                                renderer.flowPixel(dye.getData());
+                                return null;
+                            }
                         }
 
                         //listens for when the player dismounts the easel

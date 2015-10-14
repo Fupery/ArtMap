@@ -70,38 +70,38 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
+    private void addPixel(int x, int y, byte colour) {
+        pixelBuffer[x][y] = colour;
+        iterator.add(new byte[]{((byte) x), ((byte) y)});
+    }
+
     public void drawPixel(byte colour) {
+        lastFlowPixel = null;
+        byte[] pixel = getPixel();
 
-        if (!cursor.isOffCanvas()) {
-            lastFlowPixel = null;
-            byte[] pixel = getPixel();
-
-            if (pixel != null) {
-                pixelBuffer[pixel[0]][pixel[1]] = colour;
-                iterator.add(pixel);
-            }
+        if (pixel != null) {
+            pixelBuffer[pixel[0]][pixel[1]] = colour;
+            iterator.add(pixel);
+            addPixel(pixel[0], pixel[1], colour);
         }
     }
 
     public void fillPixel(byte colour) {
+        lastFlowPixel = null;
+        final byte[] pixel = getPixel();
 
-        if (!cursor.isOffCanvas()) {
-            lastFlowPixel = null;
-            final byte[] pixel = getPixel();
+        if (pixel != null) {
 
-            if (pixel != null) {
+            final boolean[][] coloured = new boolean[axisLength][axisLength];
+            final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
+            final byte setColour = colour;
 
-                final boolean[][] coloured = new boolean[axisLength][axisLength];
-                final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
-                final byte setColour = colour;
-
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
-                    }
-                });
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
+                }
+            });
         }
     }
 
@@ -131,27 +131,25 @@ public class CanvasRenderer extends MapRenderer {
 
     public void flowPixel(byte colour) {
 
-        if (!cursor.isOffCanvas()) {
-            byte[] pixel = getPixel();
+        byte[] pixel = getPixel();
 
-            if (pixel != null) {
+        if (pixel != null) {
 
-                if (lastFlowPixel != null) {
+            if (lastFlowPixel != null) {
 
-                    if (Math.abs(lastFlowPixel[0] - pixel[0]) > 5
-                            || Math.abs(lastFlowPixel[1] - pixel[1]) > 5
-                            || lastFlowPixel[2] != colour) {
-                        lastFlowPixel = null;
+                if (Math.abs(lastFlowPixel[0] - pixel[0]) > 5
+                        || Math.abs(lastFlowPixel[1] - pixel[1]) > 5
+                        || lastFlowPixel[2] != colour) {
+                    lastFlowPixel = null;
 
-                    } else {
-                        flowBrush(lastFlowPixel[0], lastFlowPixel[1], pixel[0], pixel[1], colour);
-                        lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
-                        return;
-                    }
+                } else {
+                    flowBrush(lastFlowPixel[0], lastFlowPixel[1], pixel[0], pixel[1], colour);
+                    lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
+                    return;
                 }
-                addPixel(pixel[0], pixel[1], colour);
-                lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
             }
+            addPixel(pixel[0], pixel[1], colour);
+            lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
         }
     }
 
@@ -206,55 +204,48 @@ public class CanvasRenderer extends MapRenderer {
 
     public void shadePixel(boolean darken) {
 
-        if (!cursor.isOffCanvas()) {
-            byte[] pixel = getPixel();
+        byte[] pixel = getPixel();
 
-            if (pixel != null) {
-                byte colour = pixelBuffer[pixel[0]][pixel[1]];
+        if (pixel != null) {
+            byte colour = pixelBuffer[pixel[0]][pixel[1]];
 
-                if (colour < 4) {
-                    return;
-                }
-                byte shade = colour;
-                byte shift;
+            if (colour < 4) {
+                return;
+            }
+            byte shade = colour;
+            byte shift;
 
-                while (shade >= 4) {
-                    shade -= 4;
-                }
+            while (shade >= 4) {
+                shade -= 4;
+            }
 
-                if (darken) {
+            if (darken) {
 
-                    if (shade > 0 && shade < 3) {
-                        shift = -1;
+                if (shade > 0 && shade < 3) {
+                    shift = -1;
 
-                    } else if (shade == 0) {
-                        shift = 3;
-
-                    } else {
-                        return;
-                    }
+                } else if (shade == 0) {
+                    shift = 3;
 
                 } else {
-
-                    if (shade < 2 && shade >= 0) {
-                        shift = 1;
-
-                    } else if (shade == 3) {
-                        shift = -3;
-
-                    } else {
-                        return;
-                    }
+                    return;
                 }
-                pixelBuffer[pixel[0]][pixel[1]] = (byte) (colour + shift);
-                iterator.add(pixel);
-            }
-        }
-    }
 
-    public void addPixel(int x, int y, byte colour) {
-        pixelBuffer[x][y] = colour;
-        iterator.add(new byte[]{((byte) x), ((byte) y)});
+            } else {
+
+                if (shade < 2 && shade >= 0) {
+                    shift = 1;
+
+                } else if (shade == 3) {
+                    shift = -3;
+
+                } else {
+                    return;
+                }
+            }
+            pixelBuffer[pixel[0]][pixel[1]] = (byte) (colour + shift);
+            iterator.add(pixel);
+        }
     }
 
     //finds the corresponding pixel for the yaw & pitch clicked
@@ -336,6 +327,10 @@ public class CanvasRenderer extends MapRenderer {
         active = false;
         dirtyPixels.clear();
         cursor = null;
+    }
+
+    public boolean isOffCanvas() {
+        return cursor.isOffCanvas();
     }
 
     public void setYaw(float yaw) {
