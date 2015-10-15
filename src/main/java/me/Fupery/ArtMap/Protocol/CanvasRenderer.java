@@ -17,8 +17,6 @@ public class CanvasRenderer extends MapRenderer {
     private ArrayList<byte[]> dirtyPixels;
     private ListIterator<byte[]> iterator;
 
-    private byte[] lastFlowPixel;
-
     private int resolutionFactor;
     private int axisLength;
 
@@ -27,6 +25,7 @@ public class CanvasRenderer extends MapRenderer {
 
     private ArtMap plugin;
     private Cursor cursor;
+    private ArtBrush brush;
 
     public CanvasRenderer(ArtMap plugin, MapView mapView, int yawOffset) {
         this.plugin = plugin;
@@ -46,6 +45,7 @@ public class CanvasRenderer extends MapRenderer {
             return;
         }
         cursor = new Cursor(plugin, yawOffset);
+        brush = new ArtBrush(plugin, this, axisLength);
     }
 
     @Override
@@ -70,182 +70,10 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    private void addPixel(int x, int y, byte colour) {
+    //adds pixel at location
+    public void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         iterator.add(new byte[]{((byte) x), ((byte) y)});
-    }
-
-    public void drawPixel(byte colour) {
-        lastFlowPixel = null;
-        byte[] pixel = getPixel();
-
-        if (pixel != null) {
-            pixelBuffer[pixel[0]][pixel[1]] = colour;
-            iterator.add(pixel);
-            addPixel(pixel[0], pixel[1], colour);
-        }
-    }
-
-    public void fillPixel(byte colour) {
-        lastFlowPixel = null;
-        final byte[] pixel = getPixel();
-
-        if (pixel != null) {
-
-            final boolean[][] coloured = new boolean[axisLength][axisLength];
-            final byte clickedColour = pixelBuffer[pixel[0]][pixel[1]];
-            final byte setColour = colour;
-
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
-                }
-            });
-        }
-    }
-
-    private void fillBucket(boolean[][] coloured, int x, int y, byte source, byte target) {
-        if (x < 0 || y < 0) {
-            return;
-        }
-        if (x >= axisLength || y >= axisLength) {
-            return;
-        }
-
-        if (coloured[x][y]) {
-            return;
-        }
-
-        if (pixelBuffer[x][y] != source) {
-            return;
-        }
-        addPixel(x, y, target);
-        coloured[x][y] = true;
-
-        fillBucket(coloured, x - 1, y, source, target);
-        fillBucket(coloured, x + 1, y, source, target);
-        fillBucket(coloured, x, y - 1, source, target);
-        fillBucket(coloured, x, y + 1, source, target);
-    }
-
-    public void flowPixel(byte colour) {
-
-        byte[] pixel = getPixel();
-
-        if (pixel != null) {
-
-            if (lastFlowPixel != null) {
-
-                if (Math.abs(lastFlowPixel[0] - pixel[0]) > 5
-                        || Math.abs(lastFlowPixel[1] - pixel[1]) > 5
-                        || lastFlowPixel[2] != colour) {
-                    lastFlowPixel = null;
-
-                } else {
-                    flowBrush(lastFlowPixel[0], lastFlowPixel[1], pixel[0], pixel[1], colour);
-                    lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
-                    return;
-                }
-            }
-            addPixel(pixel[0], pixel[1], colour);
-            lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
-        }
-    }
-
-    private void flowBrush(int x, int y, int x2, int y2, byte colour) {
-
-        int w = x2 - x;
-        int h = y2 - y;
-
-        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-
-        if (w != 0) {
-            dx1 = (w > 0) ? 1 : -1;
-            dx2 = (w > 0) ? 1 : -1;
-        }
-
-        if (h != 0) {
-            dy1 = (h > 0) ? 1 : -1;
-        }
-
-        int longest = Math.abs(w);
-        int shortest = Math.abs(h);
-
-        if (!(longest > shortest)) {
-            longest = Math.abs(h);
-            shortest = Math.abs(w);
-
-            if (h < 0) {
-                dy2 = -1;
-
-            } else if (h > 0) {
-                dy2 = 1;
-            }
-            dx2 = 0;
-        }
-        int numerator = longest >> 1;
-
-        for (int i = 0; i <= longest; i++) {
-            addPixel(x, y, colour);
-            numerator += shortest;
-
-            if (!(numerator < longest)) {
-                numerator -= longest;
-                x += dx1;
-                y += dy1;
-
-            } else {
-                x += dx2;
-                y += dy2;
-            }
-        }
-    }
-
-    public void shadePixel(boolean darken) {
-
-        byte[] pixel = getPixel();
-
-        if (pixel != null) {
-            byte colour = pixelBuffer[pixel[0]][pixel[1]];
-
-            if (colour < 4) {
-                return;
-            }
-            byte shade = colour;
-            byte shift;
-
-            while (shade >= 4) {
-                shade -= 4;
-            }
-
-            if (darken) {
-
-                if (shade > 0 && shade < 3) {
-                    shift = -1;
-
-                } else if (shade == 0) {
-                    shift = 3;
-
-                } else {
-                    return;
-                }
-
-            } else {
-
-                if (shade < 2 && shade >= 0) {
-                    shift = 1;
-
-                } else if (shade == 3) {
-                    shift = -3;
-
-                } else {
-                    return;
-                }
-            }
-            pixelBuffer[pixel[0]][pixel[1]] = (byte) (colour + shift);
-            iterator.add(pixel);
-        }
     }
 
     //finds the corresponding pixel for the yaw & pitch clicked
@@ -329,8 +157,16 @@ public class CanvasRenderer extends MapRenderer {
         cursor = null;
     }
 
+    public ArtBrush getBrush() {
+        return brush;
+    }
+
     public boolean isOffCanvas() {
         return cursor.isOffCanvas();
+    }
+
+    public byte[][] getPixelBuffer() {
+        return pixelBuffer;
     }
 
     public void setYaw(float yaw) {

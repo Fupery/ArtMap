@@ -7,6 +7,7 @@ import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Recipe;
+import org.bukkit.Art;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -45,6 +46,7 @@ public class ArtistHandler {
                         return packet;
                     }
                     CanvasRenderer renderer = artists.get(sender);
+                    ArtBrush brush = renderer.getBrush();
 
                     //keeps track of where the player is looking
                     if (artMapPacket instanceof ArtistPacket.PacketLook) {
@@ -55,70 +57,18 @@ public class ArtistHandler {
                         renderer.setPitch(packetLook.getPitch());
                         return packet;
 
-                        //adds pixels when the player clicks
+                        //paints when player clicks
                     } else if (artMapPacket instanceof ArtistPacket.PacketArmSwing) {
 
-                        if (!renderer.isOffCanvas()) {
+                        brush.paint(sender.getItemInHand(), true);
+                        return null;
 
-                            ItemStack item = sender.getItemInHand();
+                    } else if (artMapPacket instanceof ArtistPacket.PacketInteract
+                            && ((ArtistPacket.PacketInteract) artMapPacket).getInteraction()
+                            == ArtistPacket.PacketInteract.InteractType.INTERACT) {
 
-                            //paint bucket tool
-                            if (item.getType() == Material.BUCKET) {
-
-                                if (item.hasItemMeta()) {
-                                    ItemMeta meta = item.getItemMeta();
-
-                                    if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
-                                            && meta.hasLore()) {
-                                        ArtDye colour = null;
-                                        String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
-
-                                        for (ArtDye dye : ArtDye.values()) {
-
-                                            if (lore[0].equals("§r" + dye.name())) {
-                                                colour = dye;
-                                                break;
-                                            }
-                                        }
-
-                                        if (colour != null) {
-                                            renderer.fillPixel(colour.getData());
-                                        }
-                                    }
-                                }
-                                //shade tool tool
-                            } else if (item.getType() == Material.FEATHER
-                                    || item.getType() == Material.COAL) {
-
-                                renderer.shadePixel(item.getType() == Material.COAL);
-
-                                //brush tool
-                            } else {
-                                ArtDye dye = ArtDye.getArtDye(item);
-
-                                if (dye != null) {
-
-                                    renderer.drawPixel(dye.getData());
-                                    return null;
-                                }
-                            }
-                        }
-
-                        //flow brush allows for click & drag
-                    } else if (artMapPacket instanceof ArtistPacket.PacketInteract) {
-
-                        if (!renderer.isOffCanvas()) {
-
-                            ItemStack item = sender.getItemInHand();
-
-                            ArtDye dye = ArtDye.getArtDye(item);
-
-                            if (dye != null) {
-
-                                renderer.flowPixel(dye.getData());
-                                return null;
-                            }
-                        }
+                        brush.paint(sender.getItemInHand(), false);
+                        return null;
 
                         //listens for when the player dismounts the easel
                     } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
