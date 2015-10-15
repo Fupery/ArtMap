@@ -70,7 +70,9 @@ public class EaselInteractListener implements Listener {
                                             easel.mountCanvas(mapView);
 
                                             if (easel.getItem() != null) {
-                                                player.getInventory().removeItem(item);
+                                                ItemStack removed = item.clone();
+                                                removed.setAmount(1);
+                                                player.getInventory().removeItem(removed);
                                             }
                                             return;
                                         }
@@ -83,7 +85,9 @@ public class EaselInteractListener implements Listener {
                                         easel.mountCanvas(mapView);
 
                                         if (easel.getItem() != null) {
-                                            player.getInventory().removeItem(item);
+                                            ItemStack removed = item.clone();
+                                            removed.setAmount(1);
+                                            player.getInventory().removeItem(removed);
                                         }
                                         return;
                                     }
