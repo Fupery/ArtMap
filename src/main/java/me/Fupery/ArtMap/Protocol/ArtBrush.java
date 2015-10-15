@@ -21,7 +21,7 @@ public class ArtBrush {
         this.plugin = plugin;
     }
 
-    public void paint(ItemStack item, boolean leftClick) {
+    public synchronized void paint(ItemStack item, boolean leftClick) {
 
         if (!renderer.isOffCanvas()) {
 
@@ -110,7 +110,7 @@ public class ArtBrush {
         }
     }
 
-    private void fillBucket(boolean[][] coloured, int x, int y, byte source, byte target) {
+    private synchronized void fillBucket(boolean[][] coloured, int x, int y, byte source, byte target) {
         if (x < 0 || y < 0) {
             return;
         }
