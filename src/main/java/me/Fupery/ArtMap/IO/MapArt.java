@@ -126,6 +126,14 @@ public class MapArt {
         return null;
     }
 
+    public static MapView cloneArtwork(ArtMap plugin, World world, short mapID) {
+        MapView oldMapView = Bukkit.getServer().getMap(mapID);
+        MapView newMapView = Bukkit.getServer().createMap(world);
+        byte[] oldMap = plugin.getNmsInterface().getMap(oldMapView);
+        plugin.getNmsInterface().setWorldMap(newMapView, oldMap);
+        return newMapView;
+    }
+
     public ItemStack getMapItem() {
 
         ItemStack map = new ItemStack(Material.MAP, 1, mapIDValue);
@@ -157,14 +165,6 @@ public class MapArt {
             return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
-    }
-
-    public static MapView cloneArtwork(ArtMap plugin, World world, short mapID) {
-        MapView oldMapView = Bukkit.getServer().getMap(mapID);
-        MapView newMapView = Bukkit.getServer().createMap(world);
-        byte[] oldMap = plugin.getNmsInterface().getMap(oldMapView);
-        plugin.getNmsInterface().setWorldMap(newMapView, oldMap);
-        return newMapView;
     }
 
     public short getMapID() {

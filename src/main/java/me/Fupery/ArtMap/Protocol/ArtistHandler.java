@@ -4,16 +4,10 @@ import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
-import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.LocationTag;
-import me.Fupery.ArtMap.Utils.Recipe;
-import org.bukkit.Art;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
