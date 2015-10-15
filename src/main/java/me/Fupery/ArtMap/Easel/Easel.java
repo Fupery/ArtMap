@@ -16,6 +16,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Collection;
+import java.util.List;
 
 import static me.Fupery.ArtMap.Utils.Formatting.painting;
 import static me.Fupery.ArtMap.Utils.Formatting.playerMessage;
@@ -201,18 +202,52 @@ public class Easel {
 
         plugin.getEasels().remove(location);
 
+        List<Entity> entities = null;
+        boolean frameHasItem = false;
+
         if (stand != null) {
             stand.remove();
-            location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
+            entities = stand.getNearbyEntities(3, 3, 3);
         }
 
         if (frame != null) {
 
-            if (frame.getItem().getType() == Material.MAP) {
-                ItemStack item = Recipe.CANVAS.getResult();
-                location.getWorld().dropItemNaturally(location, item);
-            }
+            frameHasItem = (frame.getItem().getType() == Material.MAP);
+
+            frame.setItem(new ItemStack(Material.AIR));
             frame.remove();
+        }
+
+        if (entities != null) {
+            final List<Entity> finalEntities = entities;
+            final boolean finalFrameHasItem = frameHasItem;
+
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    int removed = 0;
+
+                    for (Entity e : finalEntities) {
+
+                        if (e.getType() == EntityType.DROPPED_ITEM
+                                && e.getTicksLived() < 40) {
+
+                            Material type = ((Item) e).getItemStack().getType();
+
+                            if (removed < 3 && type == Material.ARMOR_STAND
+                                    || type == Material.MAP
+                                    || type == Material.ITEM_FRAME) {
+                                removed ++;
+                                e.remove();
+                            }
+                        }
+                    }
+                    if (finalFrameHasItem) {
+                        location.getWorld().dropItemNaturally(location, Recipe.CANVAS.getResult());
+                    }
+                    location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
+                }
+            });
         }
 
         location.getBlock().setType(Material.AIR);
