@@ -2,7 +2,9 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.Recipe;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -10,6 +12,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -106,6 +110,41 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
+
+        if (event.getClick() == ClickType.CREATIVE) {
+
+            final ItemStack item = event.getCursor();
+            final Player player = (Player) event.getWhoClicked();
+
+            if (item != null && item.getType() == Material.MAP) {
+
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+
+                        ItemMeta meta = item.getItemMeta();
+
+                        if (!meta.hasLore()) {
+
+                            MapArt art = MapArt.getArtwork(plugin, item.getDurability());
+
+                            if (art != null) {
+
+                                ItemStack correctLore = art.getMapItem();
+                                player.getInventory().setItem(event.getSlot(), correctLore);
+                            }
+                        }
+                    }
+                });
+            }
+
+        } else {
+            event.getWhoClicked().sendMessage(event.getClick().name());
         }
     }
 }

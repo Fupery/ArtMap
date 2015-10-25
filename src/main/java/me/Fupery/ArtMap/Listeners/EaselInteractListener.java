@@ -108,8 +108,20 @@ public class EaselInteractListener implements Listener {
 
                     case SHIFT_RIGHT_CLICK:
 
+                        MapArt art = null;
+
                         if (easel.hasItem()) {
-                            MapArt art = MapArt.getArtwork(plugin, easel.getItem());
+
+                            ItemStack itemStack = easel.getItem();
+
+                            if (itemStack.hasItemMeta()) {
+                                ItemMeta meta = itemStack.getItemMeta();
+
+                                if (meta.getLore().get(0).equals(MapArt.artworkTag)) {
+
+                                    art = MapArt.getArtwork(plugin, meta.getDisplayName());
+                                }
+                            }
 
                             if (art != null) {
 

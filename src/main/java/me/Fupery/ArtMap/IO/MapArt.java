@@ -59,14 +59,23 @@ public class MapArt {
         return null;
     }
 
-    public static MapArt getArtwork(ArtMap plugin, ItemStack itemStack) {
+    public static MapArt getArtwork(ArtMap plugin, short mapData) {
 
-        if (itemStack.hasItemMeta()) {
-            ItemMeta meta = itemStack.getItemMeta();
+        if (plugin.getMaps() != null) {
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection(artworks);
+            Set<String> keys = mapList.getKeys(false);
 
-            if (meta.getLore().get(0).equals(artworkTag)) {
+            for (String title : keys) {
 
-                return getArtwork(plugin, meta.getDisplayName());
+                ConfigurationSection map = mapList.getConfigurationSection(title);
+                short data = (short) map.getInt(mapID);
+
+                if (mapData == data) {
+
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistID)));
+                    String date = map.getString(dateID);
+                    return new MapArt(mapData, title, player, date);
+                }
             }
         }
         return null;
