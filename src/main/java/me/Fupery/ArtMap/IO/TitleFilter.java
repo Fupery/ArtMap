@@ -22,9 +22,12 @@ public class TitleFilter {
 
             for (String reject : plugin.getTitleFilter()) {
 
-                if (title.toLowerCase().contains(reject)
-                        || adjTitle.contains(reject)) {
-                    return false;
+                if (plugin.getConfig().getBoolean("swearFilter")) {
+
+                    if (title.toLowerCase().contains(reject)
+                            || adjTitle.contains(reject)) {
+                        return false;
+                    }
                 }
             }
 
