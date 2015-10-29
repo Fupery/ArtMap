@@ -1,4 +1,4 @@
-# ArtMap
+![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 Bukkit plugin - allows players to draw directly onto minecraft maps. 
 Pixel tables will be loaded asynchronously first run - this may take some time.
 User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
