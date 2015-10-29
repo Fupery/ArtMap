@@ -3,8 +3,9 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Recipe;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -17,9 +18,6 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import static me.Fupery.ArtMap.Utils.Formatting.invalidPos;
-import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 public class PlayerInteractListener implements Listener {
 
@@ -67,29 +65,29 @@ public class PlayerInteractListener implements Listener {
 
                         if (event.getBlockFace().equals(BlockFace.UP)) {
 
-                            if (!Easel.checkForEasel(plugin, event.getClickedBlock().getLocation().add(0, 2, 0))) {
+                            event.setCancelled(true);
 
-                                Easel easel = Easel.spawnEasel(plugin, event.getClickedBlock().getLocation().add(0, 2, 0),
-                                        getFacing(event.getPlayer()));
-                                Player player = event.getPlayer();
-                                ItemStack item = player.getItemInHand().clone();
+                            Location easelLocation
+                                    = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
+                            BlockFace facing = getFacing(event.getPlayer());
 
-                                if (item.getAmount() > 1) {
-                                    item.setAmount(player.getItemInHand().getAmount() - 1);
+                            if (easelLocation.getBlock().getType() == Material.AIR) {
 
-                                } else {
-                                    item = new ItemStack(Material.AIR);
+                                if (!Easel.checkForEasel(plugin, easelLocation)) {
+
+                                    Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
+                                    Player player = event.getPlayer();
+                                    ItemStack item = player.getItemInHand().clone();
+                                    item.setAmount(1);
+
+                                    player.getInventory().removeItem(item);
+
+                                    if (easel != null) {
+                                        return;
+                                    }
                                 }
-                                player.setItemInHand(item);
-                                event.setCancelled(true);
-
-                                if (easel == null) {
-                                    event.getPlayer().sendMessage(playerError(invalidPos));
-                                }
-
-                            } else {
-                                event.getPlayer().sendMessage(playerError(invalidPos));
                             }
+                            event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
                         }
                     }
                 }
@@ -142,9 +140,6 @@ public class PlayerInteractListener implements Listener {
                     }
                 });
             }
-
-        } else {
-            event.getWhoClicked().sendMessage(event.getClick().name());
         }
     }
 }

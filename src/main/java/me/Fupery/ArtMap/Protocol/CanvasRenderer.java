@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Protocol;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.PixelTable;
+import me.Fupery.DataTables.PixelTable;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;

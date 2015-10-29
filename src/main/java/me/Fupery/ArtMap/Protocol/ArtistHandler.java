@@ -6,14 +6,12 @@ import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
-
-import static me.Fupery.ArtMap.Utils.Formatting.playerMessage;
-import static me.Fupery.ArtMap.Utils.Formatting.saveUsage;
 
 public class ArtistHandler {
 
@@ -53,7 +51,6 @@ public class ArtistHandler {
 
                         //paints when player clicks
                     } else if (artMapPacket instanceof ArtistPacket.PacketArmSwing) {
-
                         brush.paint(sender.getItemInHand(), true);
                         return null;
 
@@ -70,7 +67,7 @@ public class ArtistHandler {
                         ArtistPacket.PacketVehicle packetVehicle
                                 = ((ArtistPacket.PacketVehicle) artMapPacket);
                         if (packetVehicle.isDismount()) {
-                            sender.sendMessage(playerMessage(saveUsage));
+                            sender.sendMessage(ArtMap.Lang.SAVE_USAGE.message());
                             removePlayer(sender);
                             return null;
                         }
@@ -105,6 +102,7 @@ public class ArtistHandler {
         renderer.saveMap();
 
         Entity seat = player.getVehicle();
+        player.playSound(player.getLocation(), Sound.STEP_LADDER, (float) 0.5, -3);
         player.leaveVehicle();
 
         if (seat != null) {

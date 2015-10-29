@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +29,7 @@ public class PlayerQuitListener implements Listener {
 
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
 
-                plugin.stopPreviewing(event.getPlayer());
+                Preview.stop(plugin, event.getPlayer());
             }
         }
     }
@@ -43,7 +44,7 @@ public class PlayerQuitListener implements Listener {
 
         if (plugin.isPreviewing(event.getEntity())) {
 
-            plugin.stopPreviewing(event.getEntity());
+            Preview.stop(plugin, event.getEntity());
         }
     }
 

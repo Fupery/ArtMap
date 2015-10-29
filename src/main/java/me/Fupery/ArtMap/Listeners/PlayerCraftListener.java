@@ -2,7 +2,7 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Recipe;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,9 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-
-import static me.Fupery.ArtMap.Utils.Formatting.noCraftPerm;
-import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 // Disallows players from copying ArtMap maps in the crafting table
 public class PlayerCraftListener implements Listener {
@@ -89,7 +86,7 @@ public class PlayerCraftListener implements Listener {
                     }
 
                 } else {
-                    event.getWhoClicked().sendMessage(playerError(noCraftPerm));
+                    event.getWhoClicked().sendMessage(ArtMap.Lang.NO_CRAFT_PERM.message());
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
                 }

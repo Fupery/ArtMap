@@ -3,9 +3,9 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
-import me.Fupery.ArtMap.Easel.PartType;
-import me.Fupery.ArtMap.Utils.Formatting;
-import me.Fupery.ArtMap.Utils.Recipe;
+import me.Fupery.ArtMap.Easel.EaselPart;
+import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -89,7 +89,7 @@ public class PlayerInteractEaselListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
 
         if (checkSignBreak(event.getBlock(), event)) {
-            event.getPlayer().sendMessage(Formatting.playerError(Formatting.breakCanvas));
+            event.getPlayer().sendMessage(ArtMap.Lang.BREAK_CANVAS.message());
         }
         checkIsPainting(event.getPlayer(), event);
     }
@@ -102,9 +102,9 @@ public class PlayerInteractEaselListener implements Listener {
     private void callEaselEvent(Entity clicker, Entity clicked,
                                 Cancellable event, EaselEvent.ClickType click) {
 
-        PartType part = PartType.getPartType(clicked);
+        EaselPart part = EaselPart.getPartType(clicked);
 
-        if (part != null && part != PartType.SEAT) {
+        if (part != null && part != EaselPart.SEAT) {
 
             Easel easel = getEasel(plugin, clicked.getLocation(), part);
 
@@ -145,7 +145,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (player.getItemInHand().getType() == Material.MAP) {
 
-                plugin.stopPreviewing(player);
+                Preview.stop(plugin, player);
                 event.setCancelled(true);
             }
         }
@@ -156,7 +156,7 @@ public class PlayerInteractEaselListener implements Listener {
         if (block.getType() == Material.WALL_SIGN) {
             Sign sign = ((Sign) block.getState());
 
-            if (sign.getLine(3).equals(Easel.arbitrarySignID)) {
+            if (sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
 
                 if (plugin.getEasels().containsKey(block.getLocation())
                         || Easel.checkForEasel(plugin, block.getLocation())) {

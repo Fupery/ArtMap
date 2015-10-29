@@ -4,7 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Recipe;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
-
-import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 public class EaselInteractListener implements Listener {
 
@@ -31,7 +29,7 @@ public class EaselInteractListener implements Listener {
 
         if (player.hasPermission("artmap.artist")) {
 
-            Easel easel = event.getEasel();
+            final Easel easel = event.getEasel();
 
             if (!easel.isPainting()) {
 
@@ -39,7 +37,7 @@ public class EaselInteractListener implements Listener {
 
                     case LEFT_CLICK:
 
-                        player.sendMessage(playerMessage(easelHelp));
+                        player.sendMessage(ArtMap.Lang.EASEL_HELP.message());
                         return;
 
                     case RIGHT_CLICK:
@@ -62,7 +60,8 @@ public class EaselInteractListener implements Listener {
                                             MapArt art = MapArt.getArtwork(plugin, title);
 
                                             if (art != null) {
-                                                mapView = MapArt.cloneArtwork(plugin, player.getWorld(), art.getMapID());
+                                                mapView = MapArt.cloneArtwork(plugin,
+                                                        player.getWorld(), art.getMapID());
                                             }
                                         }
 
@@ -76,12 +75,12 @@ public class EaselInteractListener implements Listener {
                                             }
                                             return;
                                         }
-                                        player.sendMessage(playerError(needToCopy));
+                                        player.sendMessage(ArtMap.Lang.NEED_TO_COPY.message());
                                         return;
 
                                     } else if (meta.getDisplayName().equals(Recipe.canvasTitle)) {
-                                        mapView = Bukkit.createMap(player.getWorld());
-                                        plugin.getNmsInterface().setWorldMap(mapView, plugin.getBlankMap());
+                                        mapView = MapArt.generateMapID(plugin, player.getWorld());
+                                        plugin.getNmsInterface().setWorldMap(mapView, MapArt.blankMap);
                                         easel.mountCanvas(mapView);
 
                                         if (easel.getItem() != null) {
@@ -93,11 +92,11 @@ public class EaselInteractListener implements Listener {
                                     }
 
                                 } else {
-                                    player.sendMessage(playerError(notACanvas));
+                                    player.sendMessage(ArtMap.Lang.NOT_A_CANVAS.message());
                                 }
 
                             } else {
-                                player.sendMessage(playerError(needCanvas));
+                                player.sendMessage(ArtMap.Lang.NEED_CANVAS.message());
                             }
 
                         } else {
@@ -128,20 +127,33 @@ public class EaselInteractListener implements Listener {
                                 if (!art.getPlayer().getUniqueId().equals(player.getUniqueId())
                                         && !player.hasPermission("artmap.admin")) {
 
-                                    player.sendMessage(String.format(notYourEasel, art.getPlayer().getName()));
+                                    player.sendMessage(String.format(ArtMap.Lang.NOT_YOUR_EASEL.message(),
+                                            art.getPlayer().getName()));
+                                    return;
                                 }
+
+                            } else {
+                                final short id = itemStack.getDurability();
+
+                                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MapArt.recycleID(plugin, id);
+                                    }
+                                });
                             }
+                            easel.removeItem();
                         }
                         easel.breakEasel();
                         break;
                 }
 
             } else {
-                player.sendRawMessage(playerError(elseUsing));
+                player.sendRawMessage(ArtMap.Lang.ELSE_USING.message());
             }
 
         } else {
-            player.sendMessage(playerError(noperm));
+            player.sendMessage(ArtMap.Lang.NO_PERM.message());
         }
     }
 }

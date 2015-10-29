@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -33,7 +34,7 @@ public class InventoryInteractListener implements Listener {
 
         if (plugin.isPreviewing(event.getPlayer())) {
             event.getItemDrop().remove();
-            plugin.stopPreviewing(event.getPlayer());
+            Preview.stop(plugin, event.getPlayer());
         }
     }
 
@@ -42,7 +43,7 @@ public class InventoryInteractListener implements Listener {
         if (plugin.isPreviewing(player)) {
 
             event.setCancelled(true);
-            plugin.stopPreviewing(player);
+            Preview.stop(plugin, player);
         }
     }
 }
