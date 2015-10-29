@@ -5,11 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.Fupery</groupId>
     <artifactId>ArtMap</artifactId>
-    <version>2.1.12</version>
+    <version>2.2.0</version>
     <description>Make pixel art!</description>
     <profiles>
         <profile>
             <id>testServer</id>
+            <dependencies>
+                <dependency>
+                    <groupId>me.Fupery</groupId>
+                    <artifactId>DataTables</artifactId>
+                    <version>1.0</version>
+                </dependency>
+            </dependencies>
             <build>
                 <directory>/Users/aiden/Documents/JavaResources/1.8.6/Server/plugins</directory>
             </build>
@@ -19,8 +26,15 @@
         <finalName>${project.name}</finalName>
         <resources>
             <resource>
-                <filtering>true</filtering>
+                <filtering>false</filtering>
                 <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/plugin.yml</include>
+                </includes>
             </resource>
         </resources>
         <plugins>
@@ -33,6 +47,33 @@
                     <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>false</minimizeJar>
+                            <relocations>
+                            </relocations>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.Fupery:*</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>org.spigotmc:*</exclude>
+                                    <exclude>org.bukkit:*</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -52,6 +93,11 @@
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>me.Fupery</groupId>
+            <artifactId>DataTables</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>
