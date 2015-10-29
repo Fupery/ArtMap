@@ -2,12 +2,12 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import me.Fupery.ArtMap.Utils.LocationTag;
-import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
@@ -16,14 +16,9 @@ import org.bukkit.map.MapView;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Collection;
-import java.util.List;
-
-import static me.Fupery.ArtMap.Utils.Formatting.painting;
-import static me.Fupery.ArtMap.Utils.Formatting.playerMessage;
 
 public class Easel {
 
-    public static String arbitrarySignID = "*{=}*";
     private boolean isPainting;
     private ArtMap plugin;
     private Location location;
@@ -37,49 +32,27 @@ public class Easel {
 
     //Spawns an easel at the location provided, facing the direction provided
     public static Easel spawnEasel(ArtMap plugin, Location location, BlockFace facing) {
+        EaselPart.SIGN.spawn(location, facing);
+        ArmorStand stand = ((ArmorStand) EaselPart.STAND.spawn(location, facing));
+        ItemFrame frame = (ItemFrame) EaselPart.FRAME.spawn(location, facing);
+        location.getWorld().playSound(location, Sound.DIG_WOOD, 1, 0);
 
-        EaselPart standPart = new EaselPart(PartType.STAND, facing);
-        EaselPart framePart = new EaselPart(PartType.FRAME, facing);
-
-        //Checks frame is not obstructed
-        if (framePart.getPartPos(location).getBlock().getType() != Material.AIR) {
-            return null;
-        }
-        BlockFace signFacing = EaselPart.getSignFacing(facing);
-
-        ArmorStand stand = (ArmorStand) location.getWorld().spawnEntity(
-                standPart.getPartPos(location), EntityType.ARMOR_STAND);
-
-        stand.setBasePlate(false);
-        stand.setCustomNameVisible(true);
-        stand.setCustomName(ArtMap.entityTag);
-        stand.setGravity(false);
-
-        Block face = location.getBlock().getRelative(facing);
-
-        org.bukkit.material.Sign signFace = new org.bukkit.material.Sign(Material.SIGN);
-        signFace.setFacingDirection(signFacing);
-
-        location.getBlock().setType(Material.WALL_SIGN);
-        Sign sign = ((Sign) location.getBlock().getState());
-        sign.setData(signFace);
-        sign.setLine(3, arbitrarySignID);
-        sign.update(true, false);
-
-        ItemFrame frame = stand.getWorld().spawn(face.getLocation(), ItemFrame.class);
-
-        frame.setFacingDirection(facing, true);
-        frame.setCustomNameVisible(true);
-        frame.setCustomName(ArtMap.entityTag);
         Easel easel = new Easel(plugin, location).setEasel(stand, frame);
         plugin.getEasels().put(location, easel);
-        return easel;
+
+        if (stand == null || frame == null) {
+            easel.breakEasel();
+            return null;
+
+        } else {
+            return easel;
+        }
     }
 
-    public static Easel getEasel(ArtMap plugin, Location partLocation, PartType type) {
-
-        EaselPart part = new EaselPart(type, EaselPart.getFacing(partLocation.getYaw()));
-        Location easelLocation = part.getEaselPos(partLocation).getBlock().getLocation();
+    //Attempts to get an easel at the location provided
+    public static Easel getEasel(ArtMap plugin, Location partLocation, EaselPart part) {
+        Location easelLocation =
+                part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
         if (plugin.getEasels() != null && plugin.getEasels().containsKey(easelLocation)) {
 
@@ -94,7 +67,6 @@ public class Easel {
                 plugin.getEasels().put(easel.location, easel);
                 return easel;
             }
-
         }
         return null;
     }
@@ -110,6 +82,7 @@ public class Easel {
         return this;
     }
 
+    //Checks the immediate area for easel parts
     private boolean getParts() {
 
         if (location.getBlock().getType() == Material.WALL_SIGN) {
@@ -117,7 +90,7 @@ public class Easel {
             if (location.getBlock().getState() instanceof Sign) {
                 Sign sign = ((Sign) location.getBlock().getState());
 
-                if (!sign.getLine(3).equals(arbitrarySignID)) {
+                if (!sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
                     return false;
                 }
             }
@@ -128,15 +101,14 @@ public class Easel {
 
         for (Entity e : entities) {
 
+            BlockFace facing = EaselPart.getFacing(e.getLocation().getYaw());
+
             if (e.getType() == EntityType.ARMOR_STAND) {
                 ArmorStand s = (ArmorStand) e;
 
                 //Check if entity is a stand
                 if (s.isCustomNameVisible() && s.getCustomName().equals(ArtMap.entityTag)) {
-                    EaselPart part = new EaselPart(PartType.STAND,
-                            EaselPart.getFacing(s.getLocation().getYaw()));
-
-                    if (part.getEaselPos(s.getLocation()).getBlock().equals(location.getBlock())) {
+                    if (EaselPart.STAND.getEaselPos(s.getLocation(), facing).equals(location)) {
                         stand = s;
                     }
                 }
@@ -145,9 +117,7 @@ public class Easel {
                 ItemFrame f = (ItemFrame) e;
 
                 //check if entity is a frame
-                EaselPart part = new EaselPart(PartType.FRAME, f.getFacing());
-
-                if (part.getEaselPos(f.getLocation()).getBlock().equals(location.getBlock())) {
+                if (EaselPart.FRAME.getEaselPos(f.getLocation(), facing).equals(location)) {
                     frame = f;
                 }
             }
@@ -165,24 +135,20 @@ public class Easel {
     }
 
     public void mountCanvas(MapView mapView) {
+        location.getWorld().playSound(location, Sound.STEP_WOOL, 1, 0);
         frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
     }
 
     public void rideEasel(Player player) {
 
-        player.sendMessage(playerMessage(painting));
+        ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, frame.getFacing()));
 
-        EaselPart seatPart = new EaselPart(PartType.SEAT, frame.getFacing());
+        if (seat == null) {
+            return;
+        }
+        player.sendMessage(ArtMap.Lang.PAINTING.message());
 
-        Location seatLocation = seatPart.getPartPos(stand.getLocation());
-        seatLocation.setYaw(stand.getLocation().getYaw() - 180);
-
-        ArmorStand seat = (ArmorStand) seatLocation.getWorld().spawnEntity(
-                seatLocation, EntityType.ARMOR_STAND);
-
-        seat.setVisible(false);
-        seat.setGravity(false);
-        seat.setRemoveWhenFarAway(true);
+        location.getWorld().playSound(location, Sound.ITEM_PICKUP, (float) 0.5, -3);
         seat.setPassenger(player);
         seat.setMetadata("easel",
                 new FixedMetadataValue(plugin, LocationTag.createTag(location)));
@@ -197,60 +163,33 @@ public class Easel {
                 EaselPart.getYawOffset(frame.getFacing()));
     }
 
+    public void removeItem() {
+        frame.setItem(new ItemStack(Material.AIR));
+        location.getWorld().dropItemNaturally(location, Recipe.CANVAS.getResult());
+    }
 
     public void breakEasel() {
 
         plugin.getEasels().remove(location);
 
-        List<Entity> entities = null;
-        boolean frameHasItem = false;
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                location.getBlock().setType(Material.AIR);
+                location.getWorld().playSound(location, Sound.DIG_WOOD, 1, -1);
 
-        if (stand != null) {
-            stand.remove();
-            entities = stand.getNearbyEntities(3, 3, 3);
-        }
-
-        if (frame != null) {
-
-            frameHasItem = (frame.getItem().getType() == Material.MAP);
-
-            frame.setItem(new ItemStack(Material.AIR));
-            frame.remove();
-        }
-
-        if (entities != null) {
-            final List<Entity> finalEntities = entities;
-            final boolean finalFrameHasItem = frameHasItem;
-
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    int removed = 0;
-
-                    for (Entity e : finalEntities) {
-
-                        if (e.getType() == EntityType.DROPPED_ITEM
-                                && e.getTicksLived() < 40) {
-
-                            Material type = ((Item) e).getItemStack().getType();
-
-                            if (removed < 3 && type == Material.ARMOR_STAND
-                                    || type == Material.MAP
-                                    || type == Material.ITEM_FRAME) {
-                                removed ++;
-                                e.remove();
-                            }
-                        }
-                    }
-                    if (finalFrameHasItem) {
-                        location.getWorld().dropItemNaturally(location, Recipe.CANVAS.getResult());
-                    }
+                if (stand != null) {
+                    stand.remove();
                     location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
                 }
-            });
-        }
 
-        location.getBlock().setType(Material.AIR);
+                if (frame != null) {
+                    frame.setItem(new ItemStack(Material.AIR));
+                    frame.remove();
+                }
+            }
+        });
+
     }
 
     public boolean isPainting() {
