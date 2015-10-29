@@ -1,8 +1,10 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
@@ -18,12 +20,12 @@ public class MapArt {
 
     public static final String artworkTag = "§aPlayer Artwork";
     public static final String artworks = "artworks";
+    public static final String recycled_keys = "recycled_keys";
+    public static final byte[] blankMap = getBlankMap();
     private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
     private static final String dateID = "date";
-
-
     private short mapIDValue;
     private String title;
     private OfflinePlayer player;
@@ -141,6 +143,62 @@ public class MapArt {
         byte[] oldMap = plugin.getNmsInterface().getMap(oldMapView);
         plugin.getNmsInterface().setWorldMap(newMapView, oldMap);
         return newMapView;
+    }
+
+    public static void recycleID(ArtMap plugin, short id) {
+        FileConfiguration maps = plugin.getMaps();
+
+        if (maps != null) {
+            ConfigurationSection keys = maps.getConfigurationSection(recycled_keys);
+
+            List<Short> shortList;
+
+            if (keys == null) {
+                keys = maps.createSection(recycled_keys);
+            }
+            shortList = keys.getShortList("keys");
+
+            if (shortList == null) {
+                shortList = new ArrayList<>();
+            }
+            shortList.add(id);
+            keys.set("keys", shortList);
+            plugin.updateMaps();
+        }
+    }
+
+    public static MapView generateMapID(ArtMap plugin, World world) {
+        FileConfiguration maps = plugin.getMaps();
+        MapView mapView = null;
+
+        if (maps != null) {
+            ConfigurationSection keys = maps.getConfigurationSection(recycled_keys);
+
+            if (keys != null) {
+                List<Short> shortList = keys.getShortList("keys");
+
+                if (shortList != null && shortList.size() > 0) {
+                    mapView = Bukkit.getMap(shortList.get(0));
+                    shortList.remove(0);
+                    keys.set("keys", shortList);
+                    plugin.updateMaps();
+                }
+            }
+        }
+
+        if (mapView == null) {
+            mapView = Bukkit.createMap(world);
+        }
+        return mapView;
+    }
+
+    private static byte[] getBlankMap() {
+        byte[] mapOutput = new byte[128 * 128];
+
+        for (int i = 0; i < mapOutput.length; i++) {
+            mapOutput[i] = ArtDye.WHITE.getData();
+        }
+        return mapOutput;
     }
 
     public ItemStack getMapItem() {
