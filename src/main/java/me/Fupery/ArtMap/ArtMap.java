@@ -8,34 +8,34 @@ import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import me.Fupery.ArtMap.Utils.PixelTable;
-import me.Fupery.ArtMap.Utils.Recipe;
+import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.DataTables.DataTables;
+import me.Fupery.DataTables.PixelTable;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class ArtMap extends JavaPlugin {
 
     public static String entityTag = "Easel";
-    private File data;
     private File mapList;
     private FileConfiguration maps;
     private List<String> titleFilter;
     private ConcurrentHashMap<Location, Easel> easels;
-    private ConcurrentHashMap<Player, MapPreview> previewing;
+    private ConcurrentHashMap<Player, Preview> previewing;
     private ArtistHandler artistHandler;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
@@ -44,17 +44,7 @@ public class ArtMap extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        nmsInterface = new VersionHandler(this).getNMSInterface();
-
-        if (nmsInterface instanceof InvalidVersion) {
-            String version = ((InvalidVersion) nmsInterface).getVersion();
-            getLogger().warning(String.format(
-                    "Version %s of craftbukkit is not supported - disabling ArtMap", version));
-            getPluginLoader().disablePlugin(this);
-            return;
-        }
-
-        if (setupRegistry()) {
+        if (loadPluginData()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
 
             if (maps.getConfigurationSection(MapArt.artworks) == null) {
@@ -69,7 +59,22 @@ public class ArtMap extends JavaPlugin {
 
         } else {
             mapResolutionFactor = 4;
-            getLogger().warning("Invalid mapResolutionFactor in config, default will be used");
+            getLogger().warning(Lang.INVALID_RESOLUTION.rawMessage());
+        }
+
+        if (!loadTables()) {
+            getLogger().warning(Lang.INVALID_DATA_TABLES.rawMessage());
+            getPluginLoader().disablePlugin(this);
+        }
+
+        nmsInterface = new VersionHandler(this).getNMSInterface();
+
+        if (nmsInterface instanceof InvalidVersion) {
+            String version = ((InvalidVersion) nmsInterface).getVersion();
+            getLogger().warning(String.format(
+                    Lang.INVALID_VERSION.rawMessage(), version));
+            getPluginLoader().disablePlugin(this);
+            return;
         }
 
         easels = new ConcurrentHashMap<>();
@@ -89,8 +94,6 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(this), this);
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
-
-        loadTables();
     }
 
     @Override
@@ -106,20 +109,18 @@ public class ArtMap extends JavaPlugin {
         if (previewing != null && previewing.size() > 0) {
 
             for (Player player : previewing.keySet()) {
-                stopPreviewing(player);
+                Preview.stop(this, player);
             }
         }
     }
 
-    private boolean setupRegistry() {
+    private boolean loadPluginData() {
 
         saveDefaultConfig();
 
         mapResolutionFactor = getConfig().getInt("mapResolutionFactor");
 
         mapList = new File(getDataFolder(), "mapList.yml");
-
-        data = new File(getDataFolder(), "data");
 
         FileConfiguration filter =
                 YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
@@ -147,62 +148,13 @@ public class ArtMap extends JavaPlugin {
 
     private boolean loadTables() {
 
-        getLogger().fine("Loading pixel tables ...");
-
-        final File pixelTables = new File(data, mapResolutionFactor + "_tables.dat");
-
-        if (data.exists() && pixelTables.exists()) {
-
-            try {
-                ObjectInputStream in = new ObjectInputStream(
-                        new GZIPInputStream(new FileInputStream(pixelTables)));
-
-                pixelTable = (PixelTable) in.readObject();
-
-                in.close();
-                return true;
-
-            } catch (ClassNotFoundException | IOException e) {
-                getLogger().warning("Pixel data files corrupted");
-            }
-        }
-        getLogger().warning("No pixel tables found, generating tables ...");
-        getLogger().warning("(This will only need be done once)");
-
-        pixelTable = new PixelTable(mapResolutionFactor);
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-            @Override
-            public void run() {
-                pixelTable.generate();
-                saveTables(pixelTables);
-                getLogger().info("Table generation successful!");
-            }
-        });
-        return true;
-    }
-
-    private void saveTables(File datafile) {
-
-        if (!data.exists()) {
-            data.mkdir();
-        }
-
         try {
-
-            if (datafile.exists()) {
-                datafile.delete();
-            }
-            datafile.createNewFile();
-
-            ObjectOutputStream out = new ObjectOutputStream(
-                    new GZIPOutputStream(new FileOutputStream(datafile)));
-            out.writeObject(pixelTable);
-            out.flush();
-            out.close();
-
-        } catch (IOException e) {
+            pixelTable = DataTables.loadTable(mapResolutionFactor);
+        } catch (DataTables.InvalidResolutionFactorException e) {
+            pixelTable = null;
             e.printStackTrace();
         }
+        return (pixelTable != null);
     }
 
     public void updateMaps() {
@@ -224,28 +176,6 @@ public class ArtMap extends JavaPlugin {
 
     public int getMapResolutionFactor() {
         return mapResolutionFactor;
-    }
-
-    public void startPreviewing(Player player, MapArt art) {
-
-        if (previewing.containsKey(player)) {
-            stopPreviewing(player);
-        }
-        ItemStack item = art.getMapItem();
-        MapPreview preview = new MapPreview(this, player, item);
-        preview.runTaskLaterAsynchronously(this, 300);
-        player.setItemInHand(item);
-        previewing.put(player, preview);
-    }
-
-    public void stopPreviewing(Player player) {
-
-        if (previewing.containsKey(player)) {
-            MapPreview preview = previewing.get(player);
-            player.getInventory().removeItem(preview.preview);
-            preview.cancel();
-            previewing.remove(player);
-        }
     }
 
     public boolean isPreviewing(Player player) {
@@ -276,28 +206,53 @@ public class ArtMap extends JavaPlugin {
         return nmsInterface;
     }
 
-    public byte[] getBlankMap() {
-        byte[] mapOutput = new byte[128 * 128];
-
-        for (int i = 0; i < mapOutput.length; i++) {
-            mapOutput[i] = ArtDye.WHITE.getData();
-        }
-        return mapOutput;
+    public ConcurrentHashMap<Player, Preview> getPreviewing() {
+        return previewing;
     }
 
-    private class MapPreview extends BukkitRunnable {
-        ArtMap plugin;
-        Player player;
-        ItemStack preview;
+    public enum Lang {
+        NO_CONSOLE(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
+        SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false),
+        NEED_CANVAS(true), NOT_A_CANVAS(true), NOT_YOUR_EASEL(true), NEED_TO_COPY(true),
+        BREAK_CANVAS(false), PAINTING(false), DELETED(false), MAP_NOT_FOUND(true),
+        NO_CRAFT_PERM(true), GET_ITEM(false), RECIPE_BUTTON(false), NO_ARTWORKS_FOUND(true),
+        LIST_HEADER(false), LIST_LINE_HOVER(false), LIST_FOOTER_PAGE(false),
+        LIST_FOOTER_BUTTON(false), LIST_FOOTER_NXT(false), SEPERATOR(false),
+        HELP_HEADER(false), HELP_MESSAGE(false), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false),
+        UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), INVALID_VERSION(true),
+        INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false), RECIPE_HOVER(false);
 
-        MapPreview(ArtMap plugin, Player player, ItemStack preview) {
-            this.plugin = plugin;
-            this.player = player;
-            this.preview = preview;
+        public static String prefix = ChatColor.AQUA + "[ArtMap] ";
+        String message;
+        boolean isErrorMessage;
+
+        Lang(boolean isErrorMessage) {
+            this.isErrorMessage = isErrorMessage;
+            ArtMap plugin = getPlugin(ArtMap.class);
+            String language = plugin.getConfig().getString("language");
+            FileConfiguration langFile =
+                    YamlConfiguration.loadConfiguration(plugin.getTextResource("lang.yml"));
+
+            if (!langFile.contains(language)) {
+                language = "english";
+            }
+            ConfigurationSection lang = langFile.getConfigurationSection(language);
+
+            if (lang.get(name()) != null) {
+                message = lang.getString(name());
+
+            } else {
+                Bukkit.getLogger().warning(String.format("Error loading %s from lang.yml", name()));
+            }
         }
 
-        public void run() {
-            stopPreviewing(player);
+        public String message() {
+            ChatColor colour = (isErrorMessage) ? ChatColor.RED : ChatColor.GOLD;
+            return prefix + colour + message;
+        }
+
+        public String rawMessage() {
+            return message;
         }
     }
 }

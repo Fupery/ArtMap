@@ -4,21 +4,21 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import me.Fupery.ArtMap.Utils.LocationTag;
-import me.Fupery.ArtMap.Utils.Recipe;
+import me.Fupery.ArtMap.Utils.Preview;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -46,14 +46,14 @@ public class CommandListener implements CommandExecutor {
                     final Player player = (Player) sender;
 
                     if (!new TitleFilter(plugin, title).check()) {
-                        msg.message = playerError(badTitle);
+                        msg.message = ArtMap.Lang.BAD_TITLE.message();
                         return false;
                     }
 
                     MapArt art = MapArt.getArtwork(plugin, title);
 
                     if (art != null) {
-                        msg.message = playerError(titleUsed);
+                        msg.message = ArtMap.Lang.TITLE_USED.message();
                         return false;
                     }
 
@@ -93,29 +93,30 @@ public class CommandListener implements CommandExecutor {
                                             easel.getFrame().setItem(new ItemStack(Material.AIR));
                                             plugin.getArtistHandler().removePlayer(player);
                                             ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
+                                            player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
 
                                             if (leftOver != null) {
                                                 player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                                             }
-                                            player.sendMessage(playerMessage(String.format(saveSuccess, title)));
+                                            player.sendMessage(String.format(ArtMap.Lang.SAVE_SUCCESS.message(), title));
                                             return;
                                         }
                                     }
-                                    player.sendMessage(playerError(unknownError));
+                                    player.sendMessage(ArtMap.Lang.UNKNOWN_ERROR.message());
                                     return;
                                 }
-                                player.sendMessage(playerError(notRidingEasel));
+                                player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
                             }
                         });
                         return true;
 
                     } else {
-                        player.sendMessage(playerError(notRidingEasel));
+                        player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
                         return false;
                     }
 
                 } else {
-                    msg.message = playerError(noConsole);
+                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
                     return false;
                 }
             }
@@ -130,16 +131,16 @@ public class CommandListener implements CommandExecutor {
                 if (art != null && sender instanceof Player
                         && !art.getPlayer().getName().equalsIgnoreCase(sender.getName())
                         && !sender.hasPermission("artmap.admin")) {
-                    msg.message = playerMessage(noperm);
+                    msg.message = ArtMap.Lang.NO_PERM.message();
                     return false;
                 }
 
                 if (MapArt.deleteArtwork(plugin, args[1])) {
-                    msg.message = playerMessage(String.format(deleted, args[1]));
+                    msg.message = String.format(ArtMap.Lang.DELETED.message(), args[1]);
                     return true;
 
                 } else {
-                    msg.message = playerError(String.format(mapNotFound, args[1]));
+                    msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
                     return false;
                 }
             }
@@ -164,21 +165,21 @@ public class CommandListener implements CommandExecutor {
                                 player.setItemInHand(art.getMapItem());
 
                             } else {
-                                plugin.startPreviewing(((Player) sender), art);
+                                Preview.artwork(plugin, ((Player) sender), art);
                             }
-                            msg.message = playerMessage(String.format(previewing, args[1]));
+                            msg.message = String.format(ArtMap.Lang.PREVIEWING.message(), args[1]);
                             return true;
 
                         } else {
-                            msg.message = playerError(String.format(mapNotFound, args[1]));
+                            msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
                         }
 
                     } else {
-                        msg.message = playerMessage(emptyHandPreview);
+                        msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
                     }
 
                 } else {
-                    msg.message = playerError(noConsole);
+                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
                 }
                 return false;
             }
@@ -214,7 +215,7 @@ public class CommandListener implements CommandExecutor {
 
                 //returns if no artworks found
                 if (list == null || list.length == 0) {
-                    msg.message = playerError(String.format(noArtworksFound, artist));
+                    msg.message = String.format(ArtMap.Lang.NO_ARTWORKS_FOUND.message(), artist);
                     return false;
                 }
 
@@ -229,7 +230,7 @@ public class CommandListener implements CommandExecutor {
                 }
 
                 MultiLineReturnMessage multiMsg = new MultiLineReturnMessage(sender,
-                        String.format(listHeader, artist));
+                        String.format(ArtMap.Lang.LIST_HEADER.message(), artist));
 
                 TextComponent[] lines = new TextComponent[8];
                 int msgIndex = (pg - 1) * 8;
@@ -238,7 +239,7 @@ public class CommandListener implements CommandExecutor {
                 for (int i = 0; i < lines.length && (i + msgIndex) < list.length; i++) {
                     title = extractListTitle(list[i + msgIndex]);
                     cmd = String.format("/artmap preview %s", title);
-                    hover = String.format(listLineHover, title);
+                    hover = String.format(ArtMap.Lang.LIST_LINE_HOVER.rawMessage(), title);
 
                     lines[i] = new TextComponent(list[i + msgIndex]);
                     lines[i].setHoverEvent(
@@ -250,18 +251,18 @@ public class CommandListener implements CommandExecutor {
 
                 //footer shows current page number, footerButton links to next page
                 TextComponent footer =
-                        new TextComponent(String.format(listFooterPage, pg, totalPages));
+                        new TextComponent(String.format(ArtMap.Lang.LIST_FOOTER_PAGE.rawMessage(), pg, totalPages));
 
                 //attaches a clickable button to open the next page to the footer
                 if (totalPages > pg) {
-                    TextComponent footerButton = new TextComponent(listFooterButton);
+                    TextComponent footerButton = new TextComponent(ArtMap.Lang.LIST_FOOTER_BUTTON.rawMessage());
                     cmd = String.format("/artmap list %s %s", artist, pg + 1);
 
                     footerButton.setClickEvent(
                             new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
                     footerButton.setHoverEvent(
                             new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new ComponentBuilder(listFooterNxt).create()));
+                                    new ComponentBuilder(ArtMap.Lang.LIST_FOOTER_NXT.rawMessage()).create()));
                     footer.addExtra(footerButton);
                 }
                 multiMsg.setLines(lines);
@@ -277,28 +278,29 @@ public class CommandListener implements CommandExecutor {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MultiLineReturnMessage multiMsg =
-                        new MultiLineReturnMessage(sender, playerMessage(helpHeader));
+                        new MultiLineReturnMessage(sender, ArtMap.Lang.HELP_HEADER.message());
                 multiMsg.setLines(new String[]{
                         helpLine("/artmap save <title>", "save your artwork"),
                         helpLine("/artmap delete <title>", "delete your artwork"),
                         helpLine("/artmap preview <title>", "preview an artwork"),
                         helpLine("/artmap list [playername|all] [pg]", "list artworks"),
-                        helpMessage
+                        ArtMap.Lang.HELP_MESSAGE.rawMessage()
                 });
-                if (sender instanceof Player && sender.hasPermission("artmap.admin")) {
+                if (sender instanceof Player) {
+                    String hoverMessage = sender.hasPermission("artmap.admin") ?
+                            ArtMap.Lang.GET_ITEM.rawMessage() : ArtMap.Lang.RECIPE_HOVER.rawMessage();
 
                     TextComponent footer = new TextComponent(ChatColor.AQUA + "Recipes: ");
                     TextComponent[] items = new TextComponent[Recipe.values().length];
 
                     for (int i = 0; i < items.length; i++) {
                         String title = Recipe.values()[i].name().toLowerCase();
-                        items[i] = new TextComponent(String.format(recipeButton, title) +
+                        items[i] = new TextComponent(String.format(ArtMap.Lang.RECIPE_BUTTON.rawMessage(), title) +
                                 ChatColor.GOLD + " | ");
                         items[i].setClickEvent(
                                 new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/artmap get " + title));
-                        items[i].setHoverEvent(
-                                new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        new ComponentBuilder(String.format(getItem, title)).create()));
+                        items[i].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new ComponentBuilder(String.format(hoverMessage, title)).create()));
                         footer.addExtra(items[i]);
                     }
                     multiMsg.setFooter(footer);
@@ -308,7 +310,7 @@ public class CommandListener implements CommandExecutor {
             }
         });
 
-        commands.put("get", new ArtMapCommand("artmap.admin", 2, 2, "/artmap get <item>") {
+        commands.put("get", new ArtMapCommand(null, 2, 2, "/artmap get <item>") {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -319,17 +321,33 @@ public class CommandListener implements CommandExecutor {
                     for (Recipe recipe : Recipe.values()) {
 
                         if (args[1].equalsIgnoreCase(recipe.name())) {
-                            ItemStack leftOver =
-                                    player.getInventory().addItem(recipe.getResult()).get(0);
+
+                            if (player.hasPermission("artmap.admin")) {
+                                ItemStack leftOver =
+                                        player.getInventory().addItem(recipe.getResult()).get(0);
+                            } else {
+                                Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
+                                        String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
+                                                recipe.name().toLowerCase()));
+
+                                ItemStack[] ingredients = recipe.getResult().getPreview();
+                                for (int i = 0; i < ingredients.length; i++) {
+                                    inventory.setItem(i + 1, ingredients[i]);
+                                }
+                                inventory.setItem(0, recipe.getResult());
+                                Preview.inventory(plugin, player, inventory);
+                            }
                         }
                     }
 
                 } else {
-                    msg.message = playerError(noConsole);
+                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
                 }
                 return false;
             }
         });
+
+        //Put commands before this
         for (ArtMapCommand command : commands.values()) {
             command.plugin = plugin;
         }
@@ -347,10 +365,6 @@ public class CommandListener implements CommandExecutor {
         }
         sender.sendMessage(playerError("/artmap help for a list of commands."));
         return true;
-    }
-
-    public HashMap<String, ArtMapCommand> getCommands() {
-        return commands;
     }
 
     public ArtMap getPlugin() {

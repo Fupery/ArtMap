@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import static me.Fupery.ArtMap.Utils.Formatting.noperm;
 import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 interface AbstractCommand {
@@ -56,7 +55,7 @@ abstract class ArtMapCommand implements AbstractCommand {
                     }
 
                 } else {
-                    returnMsg.message = playerError(noperm);
+                    returnMsg.message = ArtMap.Lang.NO_PERM.message();
                 }
 
                 if (returnMsg.message != null) {

@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap.Command;
 
-import me.Fupery.ArtMap.Utils.Formatting;
+import me.Fupery.ArtMap.ArtMap;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ class MultiLineReturnMessage extends ReturnMessage {
 
     @Override
     public void run() {
-        sender.sendMessage(Formatting.seperator);
+        sender.sendMessage(ArtMap.Lang.SEPERATOR.rawMessage());
         sender.sendMessage(message);
 
         for (TextComponent line : lines) {

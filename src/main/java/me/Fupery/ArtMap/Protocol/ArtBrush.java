@@ -1,8 +1,8 @@
 package me.Fupery.ArtMap.Protocol;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Recipe.Recipe;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import me.Fupery.ArtMap.Utils.Recipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
