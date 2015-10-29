@@ -21,5 +21,8 @@ User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
 The following values are configurable
 * Canvas resolution
 * Base canvas image
+ 
+### NOTE
+Use a plugin manager to reload your server whenever you update ArtMap - the Spigot reload command will freak out and throw a bunch of exceptions.
 
 ### Latest Jar available in [releases](https://github.com/Fupery/ArtMap/releases).
