@@ -51,18 +51,5 @@ public class ArtistPacket {
             INTERACT, ATTACK
         }
     }
-
-//    public static class PacketVehicle extends ArtistPacket {
-//        private boolean dismount;
-//
-//        public PacketVehicle(Object packet, PacketType type, boolean dismount) {
-//            super(packet, type);
-//            this.dismount = dismount;
-//        }
-//
-//        public boolean isDismount() {
-//            return dismount;
-//        }
-//    }
 }
 
