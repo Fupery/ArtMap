@@ -46,11 +46,6 @@ public class v1_8_R3 implements NMSInterface {
 
                     return new ArtistPacket.PacketInteract(packet, type, interactType);
 
-                case STEER_VEHICLE:
-                    PacketPlayInSteerVehicle packetVehicle
-                            = (PacketPlayInSteerVehicle) packet;
-                    return new ArtistPacket.PacketVehicle(packet, type, packetVehicle.d());
-
                 default:
                     break;
             }

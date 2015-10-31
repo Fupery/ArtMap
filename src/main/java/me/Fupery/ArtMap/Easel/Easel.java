@@ -180,13 +180,13 @@ public class Easel {
 
                 if (stand != null) {
                     stand.remove();
-                    location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
                 }
 
                 if (frame != null) {
                     frame.setItem(new ItemStack(Material.AIR));
                     frame.remove();
                 }
+                location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
             }
         });
 

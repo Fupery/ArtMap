@@ -60,17 +60,6 @@ public class ArtistHandler {
 
                         brush.paint(sender.getItemInHand(), false);
                         return null;
-
-                        //listens for when the player dismounts the easel
-                    } else if (artMapPacket instanceof ArtistPacket.PacketVehicle) {
-
-                        ArtistPacket.PacketVehicle packetVehicle
-                                = ((ArtistPacket.PacketVehicle) artMapPacket);
-                        if (packetVehicle.isDismount()) {
-                            sender.sendMessage(ArtMap.Lang.SAVE_USAGE.message());
-                            removePlayer(sender);
-                            return null;
-                        }
                     }
 
                 } else {

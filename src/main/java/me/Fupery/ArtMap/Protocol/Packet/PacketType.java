@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 public enum PacketType {
     LOOK("PacketPlayInFlying.PacketPlayInLook"),
     ARM_ANIMATION("PacketPlayInArmAnimation"),
-    STEER_VEHICLE("PacketPlayInSteerVehicle"),
     INTERACT("PacketPlayInUseEntity"),
     INVALID(null);
 
