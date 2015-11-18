@@ -2,9 +2,11 @@ package me.Fupery.ArtMap.Protocol;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -87,10 +89,8 @@ public class ArtistHandler {
         artists.remove(player);
         protocol.uninjectPlayer(player);
 
-        renderer.stop();
-        renderer.saveMap();
-
         Entity seat = player.getVehicle();
+        String mapID = "[Not Found]";
         player.playSound(player.getLocation(), Sound.STEP_LADDER, (float) 0.5, -3);
         player.leaveVehicle();
 
@@ -101,24 +101,41 @@ public class ArtistHandler {
                 Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
                 if (plugin.getEasels().containsKey(location)) {
-                    plugin.getEasels().get(location).setIsPainting(false);
+                    Easel easel = plugin.getEasels().get(location);
+                    easel.setIsPainting(false);
+
+                    if (easel.hasItem()) {
+                        mapID = "" + easel.getItem().getDurability();
+                    }
                 }
             }
             seat.remove();
+        }
+
+        if (renderer != null) {
+            renderer.stop();
+            renderer.saveMap();
+
+        } else {
+            plugin.getLogger().warning(ChatColor.RED + String.format(
+                    "Renderer not found for player: %s, mapID: %s", player.getName(), mapID));
         }
 
         if (artists.size() == 0) {
             protocol.close();
             plugin.setArtistHandler(null);
         }
+
+    }
+
+    public void clearPlayers() {
+        for (Player player : artists.keySet()) {
+            removePlayer(player);
+        }
     }
 
     public ArtistProtocol getProtocol() {
         return protocol;
-    }
-
-    public ConcurrentHashMap<Player, CanvasRenderer> getArtists() {
-        return artists;
     }
 
     public ArtMap getPlugin() {
