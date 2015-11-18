@@ -100,10 +100,7 @@ public class ArtMap extends JavaPlugin {
     public void onDisable() {
 
         if (artistHandler != null) {
-
-            for (Player player : artistHandler.getArtists().keySet()) {
-                artistHandler.removePlayer(player);
-            }
+            artistHandler.clearPlayers();
         }
 
         if (previewing != null && previewing.size() > 0) {
