@@ -9,7 +9,6 @@ import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.Recipe;
-import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;

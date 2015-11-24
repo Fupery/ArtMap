@@ -73,7 +73,6 @@ public class MapArt {
                 short data = (short) map.getInt(mapID);
 
                 if (mapData == data) {
-
                     OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistID)));
                     String date = map.getString(dateID);
                     return new MapArt(mapData, title, player, date);
@@ -171,20 +170,25 @@ public class MapArt {
         FileConfiguration maps = plugin.getMaps();
         MapView mapView = null;
 
-        if (maps != null) {
-            ConfigurationSection keys = maps.getConfigurationSection(recycled_keys);
+            if (maps != null) {
+                ConfigurationSection keys = maps.getConfigurationSection(recycled_keys);
 
-            if (keys != null) {
-                List<Short> shortList = keys.getShortList("keys");
+                if (keys != null) {
 
-                if (shortList != null && shortList.size() > 0) {
-                    mapView = Bukkit.getMap(shortList.get(0));
-                    shortList.remove(0);
-                    keys.set("keys", shortList);
-                    plugin.updateMaps();
+                    List<Short> shortList = keys.getShortList("keys");
+
+                    if (shortList != null && shortList.size() > 0) {
+                        short id = shortList.get(0);
+
+                        if (getArtwork(plugin, id) == null) {
+                            mapView = Bukkit.getMap(id);
+                            shortList.remove(0);
+                            keys.set("keys", shortList);
+                            plugin.updateMaps();
+                        }
+                    }
                 }
             }
-        }
 
         if (mapView == null) {
             mapView = Bukkit.createMap(world);
