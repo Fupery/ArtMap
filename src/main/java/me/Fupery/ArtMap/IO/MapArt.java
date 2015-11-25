@@ -170,25 +170,25 @@ public class MapArt {
         FileConfiguration maps = plugin.getMaps();
         MapView mapView = null;
 
-            if (maps != null) {
-                ConfigurationSection keys = maps.getConfigurationSection(recycled_keys);
+        if (maps != null) {
+            ConfigurationSection keys = maps.getConfigurationSection(recycled_keys);
 
-                if (keys != null) {
+            if (keys != null) {
 
-                    List<Short> shortList = keys.getShortList("keys");
+                List<Short> shortList = keys.getShortList("keys");
 
-                    if (shortList != null && shortList.size() > 0) {
-                        short id = shortList.get(0);
+                if (shortList != null && shortList.size() > 0) {
+                    short id = shortList.get(0);
 
-                        if (getArtwork(plugin, id) == null) {
-                            mapView = Bukkit.getMap(id);
-                            shortList.remove(0);
-                            keys.set("keys", shortList);
-                            plugin.updateMaps();
-                        }
+                    if (getArtwork(plugin, id) == null) {
+                        mapView = Bukkit.getMap(id);
+                        shortList.remove(0);
+                        keys.set("keys", shortList);
+                        plugin.updateMaps();
                     }
                 }
             }
+        }
 
         if (mapView == null) {
             mapView = Bukkit.createMap(world);
