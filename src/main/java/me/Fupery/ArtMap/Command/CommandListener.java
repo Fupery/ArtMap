@@ -41,84 +41,80 @@ public class CommandListener implements CommandExecutor {
 
                 final String title = args[1];
 
-                if (sender instanceof Player) {
-
-                    final Player player = (Player) sender;
-
-                    if (!new TitleFilter(plugin, title).check()) {
-                        msg.message = ArtMap.Lang.BAD_TITLE.message();
-                        return false;
-                    }
-
-                    MapArt art = MapArt.getArtwork(plugin, title);
-
-                    if (art != null) {
-                        msg.message = ArtMap.Lang.TITLE_USED.message();
-                        return false;
-                    }
-
-                    if (plugin.getArtistHandler() != null
-                            && plugin.getArtistHandler().containsPlayer(player)) {
-
-
-                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                Easel easel = null;
-
-                                Entity seat = player.getVehicle();
-
-                                if (seat != null) {
-
-                                    if (seat.hasMetadata("easel")) {
-                                        String tag = seat.getMetadata("easel").get(0).asString();
-                                        Location location = LocationTag.getLocation(seat.getWorld(), tag);
-
-                                        easel = plugin.getEasels().get(location);
-                                    }
-                                }
-
-                                if (easel != null) {
-
-                                    MapArt art = new MapArt(easel.getItem().getDurability(),
-                                            title, player);
-
-                                    //Makes sure that frame is empty before saving
-                                    for (int i = 0; i < 3; i++) {
-
-                                        easel.getFrame().setItem(new ItemStack(Material.AIR));
-
-                                        if (!easel.hasItem()) {
-                                            art.saveArtwork(plugin);
-                                            easel.getFrame().setItem(new ItemStack(Material.AIR));
-                                            plugin.getArtistHandler().removePlayer(player);
-                                            ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
-                                            player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
-
-                                            if (leftOver != null) {
-                                                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-                                            }
-                                            player.sendMessage(String.format(ArtMap.Lang.SAVE_SUCCESS.message(), title));
-                                            return;
-                                        }
-                                    }
-                                    player.sendMessage(ArtMap.Lang.UNKNOWN_ERROR.message());
-                                    return;
-                                }
-                                player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
-                            }
-                        });
-                        return true;
-
-                    } else {
-                        player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
-                        return false;
-                    }
-
-                } else {
+                if (!(sender instanceof Player)) {
                     msg.message = ArtMap.Lang.NO_CONSOLE.message();
                     return false;
                 }
+
+                final Player player = (Player) sender;
+
+                if (!new TitleFilter(plugin, title).check()) {
+                    msg.message = ArtMap.Lang.BAD_TITLE.message();
+                    return false;
+                }
+
+                MapArt art = MapArt.getArtwork(plugin, title);
+
+                if (art != null) {
+                    msg.message = ArtMap.Lang.TITLE_USED.message();
+                    return false;
+                }
+
+                if (plugin.getArtistHandler() == null
+                        || !plugin.getArtistHandler().containsPlayer(player)) {
+                    player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
+                    return false;
+                }
+
+
+                Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        Easel easel = null;
+
+                        Entity seat = player.getVehicle();
+
+                        if (seat != null) {
+
+                            if (seat.hasMetadata("easel")) {
+                                String tag = seat.getMetadata("easel").get(0).asString();
+                                Location location = LocationTag.getLocation(seat.getWorld(), tag);
+
+                                easel = plugin.getEasels().get(location);
+                            }
+                        }
+
+                        if (easel == null) {
+                            player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
+                            return;
+                        }
+
+                        MapArt art = new MapArt(easel.getItem().getDurability(),
+                                title, player);
+
+                        //Makes sure that frame is empty before saving
+                        for (int i = 0; i < 3; i++) {
+
+                            easel.getFrame().setItem(new ItemStack(Material.AIR));
+
+                            if (!easel.hasItem()) {
+                                art.saveArtwork(plugin);
+                                easel.getFrame().setItem(new ItemStack(Material.AIR));
+                                plugin.getArtistHandler().removePlayer(player);
+                                ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
+                                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
+
+                                if (leftOver != null) {
+                                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                                }
+                                player.sendMessage(String.format(ArtMap.Lang.SAVE_SUCCESS.message(), title));
+                                return;
+                            }
+                        }
+                        player.sendMessage(ArtMap.Lang.UNKNOWN_ERROR.message());
+                    }
+                });
+                return true;
             }
         });
 
@@ -151,37 +147,34 @@ public class CommandListener implements CommandExecutor {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
+                if (!(sender instanceof Player)) {
+                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
+                    return false;
+                }
 
-                    if (player.getItemInHand().getType() == Material.AIR) {
+                Player player = (Player) sender;
 
-                        MapArt art = MapArt.getArtwork(plugin, args[1]);
+                if (player.getItemInHand().getType() != Material.AIR) {
+                    msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
+                    return false;
+                }
 
-                        if (art != null) {
+                MapArt art = MapArt.getArtwork(plugin, args[1]);
 
-                            if (player.hasPermission("artmap.admin")) {
+                if (art == null) {
+                    msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
+                    return false;
+                }
 
-                                player.setItemInHand(art.getMapItem());
+                if (player.hasPermission("artmap.admin")) {
 
-                            } else {
-                                Preview.artwork(plugin, ((Player) sender), art);
-                            }
-                            msg.message = String.format(ArtMap.Lang.PREVIEWING.message(), args[1]);
-                            return true;
-
-                        } else {
-                            msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
-                        }
-
-                    } else {
-                        msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
-                    }
+                    player.setItemInHand(art.getMapItem());
 
                 } else {
-                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
+                    Preview.artwork(plugin, ((Player) sender), art);
                 }
-                return false;
+                msg.message = String.format(ArtMap.Lang.PREVIEWING.message(), args[1]);
+                return true;
             }
         });
 
@@ -250,19 +243,20 @@ public class CommandListener implements CommandExecutor {
                 }
 
                 //footer shows current page number, footerButton links to next page
-                TextComponent footer =
-                        new TextComponent(String.format(ArtMap.Lang.LIST_FOOTER_PAGE.rawMessage(), pg, totalPages));
+                TextComponent footer = new TextComponent(String.format(
+                        ArtMap.Lang.LIST_FOOTER_PAGE.rawMessage(), pg, totalPages));
 
                 //attaches a clickable button to open the next page to the footer
                 if (totalPages > pg) {
-                    TextComponent footerButton = new TextComponent(ArtMap.Lang.LIST_FOOTER_BUTTON.rawMessage());
+                    TextComponent footerButton = new TextComponent(
+                            ArtMap.Lang.LIST_FOOTER_BUTTON.rawMessage());
                     cmd = String.format("/artmap list %s %s", artist, pg + 1);
 
                     footerButton.setClickEvent(
                             new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
                     footerButton.setHoverEvent(
-                            new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new ComponentBuilder(ArtMap.Lang.LIST_FOOTER_NXT.rawMessage()).create()));
+                            new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
+                                    ArtMap.Lang.LIST_FOOTER_NXT.rawMessage()).create()));
                     footer.addExtra(footerButton);
                 }
                 multiMsg.setLines(lines);
@@ -295,8 +289,8 @@ public class CommandListener implements CommandExecutor {
 
                     for (int i = 0; i < items.length; i++) {
                         String title = Recipe.values()[i].name().toLowerCase();
-                        items[i] = new TextComponent(String.format(ArtMap.Lang.RECIPE_BUTTON.rawMessage(), title) +
-                                ChatColor.GOLD + " | ");
+                        items[i] = new TextComponent(String.format(ArtMap.Lang.RECIPE_BUTTON.rawMessage(),
+                                title) + ChatColor.GOLD + " | ");
                         items[i].setClickEvent(
                                 new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/artmap get " + title));
                         items[i].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -314,35 +308,35 @@ public class CommandListener implements CommandExecutor {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
-                if (sender instanceof Player) {
+                if (!(sender instanceof Player)) {
+                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
+                    return false;
+                }
 
-                    Player player = (Player) sender;
+                Player player = (Player) sender;
 
-                    for (Recipe recipe : Recipe.values()) {
+                for (Recipe recipe : Recipe.values()) {
 
-                        if (args[1].equalsIgnoreCase(recipe.name())) {
+                    if (args[1].equalsIgnoreCase(recipe.name())) {
 
-                            if (player.hasPermission("artmap.admin")) {
-                                ItemStack leftOver =
-                                        player.getInventory().addItem(recipe.getResult()).get(0);
-                            } else {
-                                Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
-                                        String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
-                                                recipe.name().toLowerCase()));
+                        if (player.hasPermission("artmap.admin")) {
+                            ItemStack leftOver =
+                                    player.getInventory().addItem(recipe.getResult()).get(0);
+                        } else {
+                            Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
+                                    String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
+                                            recipe.name().toLowerCase()));
 
-                                ItemStack[] ingredients = recipe.getResult().getPreview();
-                                for (int i = 0; i < ingredients.length; i++) {
-                                    inventory.setItem(i + 1, ingredients[i]);
-                                }
-                                inventory.setItem(0, recipe.getResult());
-                                Preview.inventory(plugin, player, inventory);
+                            ItemStack[] ingredients = recipe.getResult().getPreview();
+                            for (int i = 0; i < ingredients.length; i++) {
+                                inventory.setItem(i + 1, ingredients[i]);
                             }
+                            inventory.setItem(0, recipe.getResult());
+                            Preview.inventory(plugin, player, inventory);
                         }
                     }
-
-                } else {
-                    msg.message = ArtMap.Lang.NO_CONSOLE.message();
                 }
+
                 return false;
             }
         });
