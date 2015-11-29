@@ -50,7 +50,8 @@ public class PlayerInteractEaselListener implements Listener {
             if (item.hasItemMeta()) {
                 ItemMeta meta = item.getItemMeta();
 
-                if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                if (meta.hasDisplayName()
+                        && meta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
                     player.setItemInHand(Recipe.CARBON_PAPER.getResult());
                 }
             }

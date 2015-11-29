@@ -33,7 +33,7 @@ public class ArtBrush {
                     if (item.hasItemMeta()) {
                         ItemMeta meta = item.getItemMeta();
 
-                        if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
+                        if (meta.getDisplayName().contains(Recipe.PAINT_BUCKET.getItemKey())
                                 && meta.hasLore()) {
                             ArtDye colour = null;
                             String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);

@@ -107,7 +107,7 @@ public class Easel {
                 ArmorStand s = (ArmorStand) e;
 
                 //Check if entity is a stand
-                if (s.isCustomNameVisible() && s.getCustomName().equals(ArtMap.entityTag)) {
+                if (s.isCustomNameVisible() && s.getCustomName().equals(Recipe.EASEL.getItemKey())) {
                     if (EaselPart.STAND.getEaselPos(s.getLocation(), facing).equals(location)) {
                         stand = s;
                     }

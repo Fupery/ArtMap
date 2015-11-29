@@ -335,21 +335,27 @@ public class CommandListener implements CommandExecutor {
                         if (player.hasPermission("artmap.admin")) {
                             ItemStack leftOver =
                                     player.getInventory().addItem(recipe.getResult()).get(0);
+
+                            if (leftOver != null) {
+                                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                            }
+
                         } else {
+                            ItemStack[] ingredients = recipe.getResult().getPreview();
+
                             Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
                                     String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
                                             recipe.name().toLowerCase()));
 
-                            ItemStack[] ingredients = recipe.getResult().getPreview();
                             for (int i = 0; i < ingredients.length; i++) {
                                 inventory.setItem(i + 1, ingredients[i]);
                             }
                             inventory.setItem(0, recipe.getResult());
                             Preview.inventory(plugin, player, inventory);
+
                         }
                     }
                 }
-
                 return false;
             }
         });

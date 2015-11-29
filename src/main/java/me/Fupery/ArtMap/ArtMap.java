@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    public static String entityTag = "Easel";
     private File mapList;
     private FileConfiguration maps;
     private List<String> titleFilter;
@@ -79,9 +78,7 @@ public class ArtMap extends JavaPlugin {
         easels = new ConcurrentHashMap<>();
         previewing = new ConcurrentHashMap<>();
 
-        for (Recipe recipe : Recipe.values()) {
-            recipe.setupRecipe();
-        }
+        Recipe.setupRecipes();
 
         this.getCommand("artmap").setExecutor(new CommandListener(this));
 

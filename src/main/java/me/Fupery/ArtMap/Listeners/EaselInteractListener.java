@@ -72,7 +72,7 @@ public class EaselInteractListener implements Listener {
                 MapView mapView = null;
 
                 //Check if carbon paper links to a valid artwork
-                if (itemInHandMeta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                if (itemInHandMeta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
 
                     if (itemInHandMeta.hasLore()) {
                         String title = itemInHandMeta.getLore().get(0).substring(2);
@@ -98,7 +98,7 @@ public class EaselInteractListener implements Listener {
                     return;
 
                     //Mount the canvas
-                } else if (itemInHandMeta.getDisplayName().equals(Recipe.canvasTitle)) {
+                } else if (itemInHandMeta.getDisplayName().equals(Recipe.CANVAS.getItemKey())) {
                     mapView = MapArt.generateMapID(plugin, player.getWorld());
                     plugin.getNmsInterface().setWorldMap(mapView, MapArt.blankMap);
                     easel.mountCanvas(mapView);

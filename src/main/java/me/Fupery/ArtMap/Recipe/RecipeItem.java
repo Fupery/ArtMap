@@ -1,14 +1,12 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
@@ -16,6 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 abstract public class RecipeItem extends ItemStack {
+
+    public static final String canvasKey = "Canvas";
+    public static final String carbonPaperKey = "Carbon Paper";
+    public static final String easelKey = "Easel";
+    public static final String paintBucketKey = "PaintBucket";
 
     public RecipeItem(Material material) {
         super(material);
@@ -55,7 +58,6 @@ abstract public class RecipeItem extends ItemStack {
             for (int i = 0; i < list.size(); i++) {
                 ingredients[i] = list.get(i);
             }
-
         }
         return ingredients;
     }
@@ -66,7 +68,7 @@ class ItemEasel extends RecipeItem {
     ItemEasel() {
         super(Material.ARMOR_STAND);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(ArtMap.entityTag);
+        meta.setDisplayName(easelKey);
         meta.setLore(Arrays.asList("Used to edit artworks", "Right click to place"));
         setItemMeta(meta);
     }
@@ -89,7 +91,7 @@ class ItemCanvas extends RecipeItem {
     ItemCanvas() {
         super(Material.PAPER);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(Recipe.canvasTitle);
+        meta.setDisplayName(canvasKey);
         meta.setLore(Arrays.asList("Use with an Easel", "to create artworks"));
         setItemMeta(meta);
     }
@@ -110,7 +112,7 @@ class ItemCarbonPaper extends RecipeItem {
     public ItemCarbonPaper(boolean active) {
         super(active ? Material.PAPER : Material.EMPTY_MAP);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(Recipe.carbonPaperTitle);
+        meta.setDisplayName(carbonPaperKey);
         String[] lore = active ?
                 new String[]{"§r[Filled]", "Place on an easel", "to edit artwork"} :
                 new String[]{"§r[Blank]", "Craft with an artwork", "to create editable copy"};
@@ -128,13 +130,28 @@ class ItemCarbonPaper extends RecipeItem {
         return recipe;
     }
 }
+class ItemMapArt extends RecipeItem {
+
+    public ItemMapArt() {
+        super(Material.MAP);
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName("Artwork Copy");
+        meta.setLore(Arrays.asList(MapArt.artworkTag, "Use with an Easel", "to create artworks"));
+        setItemMeta(meta);
+    }
+
+    @Override
+    public Recipe getRecipe() {
+        return null;
+    }
+}
 
 class PaintBucket extends RecipeItem {
 
     PaintBucket(ArtDye colour) {
         super(Material.BUCKET);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName(colour.getDisplay() + Recipe.paintBucketTitle);
+        meta.setDisplayName(colour.getDisplay() + paintBucketKey);
         meta.setLore(Arrays.asList("§r" + colour.name(), "Combine with dyes to",
                 "get different colours", "Use with an Easel and", "Canvas to fill colours"));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

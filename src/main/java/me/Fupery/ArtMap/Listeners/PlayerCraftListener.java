@@ -46,7 +46,7 @@ public class PlayerCraftListener implements Listener {
 
                             if (item.getType() == Material.EMPTY_MAP
                                     && itemMeta.hasDisplayName()
-                                    && itemMeta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                                    && itemMeta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
                                 carbonCopies++;
                             }
                         }

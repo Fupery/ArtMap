@@ -58,7 +58,7 @@ public class PlayerInteractListener implements Listener {
 
             if (meta != null && meta.hasDisplayName()) {
 
-                if (meta.getDisplayName().equals(ArtMap.entityTag)) {
+                if (meta.getDisplayName().equals(Recipe.EASEL.getItemKey())) {
 
                     if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                         event.setCancelled(true);
@@ -102,7 +102,8 @@ public class PlayerInteractListener implements Listener {
                 if (event.getItem().hasItemMeta()) {
                     ItemMeta meta = event.getItem().getItemMeta();
 
-                    if (meta.hasDisplayName() && meta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                    if (meta.hasDisplayName()
+                            && meta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.getPlayer().setItemInHand(Recipe.CARBON_PAPER.getResult());
                     }
