@@ -18,7 +18,7 @@ public class TitleFilter {
 
     public boolean check() {
 
-        if (checkLength() && checkValidType()) {
+        if (title.matches("[\\w]{3,16}")) {
 
             for (String reject : plugin.getTitleFilter()) {
 
@@ -32,25 +32,6 @@ public class TitleFilter {
             }
 
         } else {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkLength() {
-        return (title.length() >= 3 && title.length() <= 16);
-    }
-
-    //ensure characters are only alphabetic, numerical, or underscores
-    private boolean checkValidType() {
-
-        for (char c : chars) {
-
-            if (Character.isDigit(c)
-                    || Character.isAlphabetic(c)
-                    || c == '_') {
-                continue;
-            }
             return false;
         }
         return true;
