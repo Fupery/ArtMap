@@ -154,11 +154,6 @@ public class CommandListener implements CommandExecutor {
 
                 Player player = (Player) sender;
 
-                if (player.getItemInHand().getType() != Material.AIR) {
-                    msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
-                    return false;
-                }
-
                 MapArt art = MapArt.getArtwork(plugin, args[1]);
 
                 if (art == null) {
@@ -167,10 +162,28 @@ public class CommandListener implements CommandExecutor {
                 }
 
                 if (player.hasPermission("artmap.admin")) {
-
+                    ItemStack currentItem = player.getItemInHand();
                     player.setItemInHand(art.getMapItem());
 
+                    if (currentItem != null) {
+                        ItemStack leftOver = player.getInventory().addItem(currentItem).get(0);
+
+                        if (leftOver != null) {
+                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                        }
+                    }
+
                 } else {
+
+                    if (plugin.isPreviewing(player)) {
+                        plugin.getPreviewing().get(player).stopPreviewing();
+                    }
+
+                    if (player.getItemInHand().getType() != Material.AIR) {
+                        msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
+                        return false;
+                    }
+
                     Preview.artwork(plugin, ((Player) sender), art);
                 }
                 msg.message = String.format(ArtMap.Lang.PREVIEWING.message(), args[1]);
