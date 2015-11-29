@@ -354,10 +354,14 @@ public class CommandListener implements CommandExecutor {
 
             if (commands.containsKey(args[0].toLowerCase())) {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
-                return true;
+
+            } else {
+                sender.sendMessage(playerError("/artmap help for a list of commands."));
             }
+
+        } else {
+            commands.get("help").runPlayerCommand(sender, args);
         }
-        sender.sendMessage(playerError("/artmap help for a list of commands."));
         return true;
     }
 
