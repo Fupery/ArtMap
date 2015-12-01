@@ -7,7 +7,7 @@ import org.bukkit.map.MapView;
 
 public class InvalidVersion implements NMSInterface {
 
-    private String version;
+    private final String version;
 
     InvalidVersion(String version) {
         this.version = version;

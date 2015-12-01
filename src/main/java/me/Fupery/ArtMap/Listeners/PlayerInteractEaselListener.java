@@ -4,7 +4,8 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,7 +29,7 @@ import static me.Fupery.ArtMap.Easel.Easel.getEasel;
 
 public class PlayerInteractEaselListener implements Listener {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
 
     public PlayerInteractEaselListener(ArtMap plugin) {
         this.plugin = plugin;
@@ -51,8 +52,8 @@ public class PlayerInteractEaselListener implements Listener {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta.hasDisplayName()
-                        && meta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
-                    player.setItemInHand(Recipe.CARBON_PAPER.getResult());
+                        && meta.getDisplayName().equals(ArtItem.carbonPaperKey)) {
+                    player.setItemInHand(ArtMaterial.CARBON_PAPER.getItem());
                 }
             }
         }

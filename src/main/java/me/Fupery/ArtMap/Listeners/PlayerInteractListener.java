@@ -3,7 +3,8 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerInteractListener implements Listener {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
 
     public PlayerInteractListener(ArtMap plugin) {
         this.plugin = plugin;
@@ -52,64 +53,82 @@ public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
-        if (event.getItem() != null && event.getMaterial().equals(Material.ARMOR_STAND)) {
+        if (ArtMaterial.EASEL.isValidMaterial(event.getItem())) {
 
-            ItemMeta meta = event.getItem().getItemMeta();
+            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                event.setCancelled(true);
 
-            if (meta != null && meta.hasDisplayName()) {
+                if (event.getBlockFace().equals(BlockFace.UP)) {
 
-                if (meta.getDisplayName().equals(Recipe.EASEL.getItemKey())) {
+                    event.setCancelled(true);
 
-                    if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                        event.setCancelled(true);
+                    Location easelLocation
+                            = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
+                    BlockFace facing = getFacing(event.getPlayer());
 
-                        if (event.getBlockFace().equals(BlockFace.UP)) {
+                    if (easelLocation.getBlock().getType() == Material.AIR) {
 
-                            event.setCancelled(true);
+                        if (!Easel.checkForEasel(plugin, easelLocation)) {
 
-                            Location easelLocation
-                                    = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
-                            BlockFace facing = getFacing(event.getPlayer());
+                            Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
+                            Player player = event.getPlayer();
+                            ItemStack item = player.getItemInHand().clone();
+                            item.setAmount(1);
 
-                            if (easelLocation.getBlock().getType() == Material.AIR) {
+                            player.getInventory().removeItem(item);
 
-                                if (!Easel.checkForEasel(plugin, easelLocation)) {
-
-                                    Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
-                                    Player player = event.getPlayer();
-                                    ItemStack item = player.getItemInHand().clone();
-                                    item.setAmount(1);
-
-                                    player.getInventory().removeItem(item);
-
-                                    if (easel != null) {
-                                        return;
-                                    }
-                                }
+                            if (easel != null) {
+                                return;
                             }
-                            event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
                         }
                     }
+                    event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
                 }
             }
 
-        } else if (event.getItem()
-                != null && event.getMaterial() == Material.EMPTY_MAP) {
-
-            if (event.getAction() == Action.RIGHT_CLICK_AIR
-                    || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-                if (event.getItem().hasItemMeta()) {
-                    ItemMeta meta = event.getItem().getItemMeta();
-
-                    if (meta.hasDisplayName()
-                            && meta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
-                        event.setUseItemInHand(Event.Result.DENY);
-                        event.getPlayer().setItemInHand(Recipe.CARBON_PAPER.getResult());
-                    }
-                }
-            }
         }
+
+//        if (event.getItem() != null && event.getMaterial().equals(Material.ARMOR_STAND)) {
+//
+//            ItemMeta meta = event.getItem().getItemMeta();
+//
+//            if (meta != null && meta.hasDisplayName()) {
+//
+//                if (meta.getDisplayName().equals(ArtItem.easelKey)) {
+//
+//                    if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+//                        event.setCancelled(true);
+//
+//                        if (event.getBlockFace().equals(BlockFace.UP)) {
+//
+//                            event.setCancelled(true);
+//
+//                            Location easelLocation
+//                                    = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
+//                            BlockFace facing = getFacing(event.getPlayer());
+//
+//                            if (easelLocation.getBlock().getType() == Material.AIR) {
+//
+//                                if (!Easel.checkForEasel(plugin, easelLocation)) {
+//
+//                                    Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
+//                                    Player player = event.getPlayer();
+//                                    ItemStack item = player.getItemInHand().clone();
+//                                    item.setAmount(1);
+//
+//                                    player.getInventory().removeItem(item);
+//
+//                                    if (easel != null) {
+//                                        return;
+//                                    }
+//                                }
+//                            }
+//                            event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     @EventHandler

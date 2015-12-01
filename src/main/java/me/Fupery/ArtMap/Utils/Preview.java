@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class Preview extends BukkitRunnable {
-    protected ArtMap plugin;
-    protected Player player;
+    final ArtMap plugin;
+    final Player player;
 
     Preview(ArtMap plugin, Player player) {
         this.plugin = plugin;
@@ -56,7 +56,7 @@ public abstract class Preview extends BukkitRunnable {
 
 class ItemPreview extends Preview {
 
-    private ItemStack preview;
+    private final ItemStack preview;
 
     ItemPreview(ArtMap plugin, Player player, ItemStack preview) {
         super(plugin, player);
@@ -73,7 +73,7 @@ class ItemPreview extends Preview {
 
 class RecipePreview extends Preview {
 
-    Inventory recipeWindow;
+    private final Inventory recipeWindow;
 
     RecipePreview(ArtMap plugin, Player player, Inventory recipeWindow) {
         super(plugin, player);

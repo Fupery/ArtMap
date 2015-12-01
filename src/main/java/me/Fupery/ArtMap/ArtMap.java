@@ -8,7 +8,7 @@ import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
@@ -78,16 +78,17 @@ public class ArtMap extends JavaPlugin {
         easels = new ConcurrentHashMap<>();
         previewing = new ConcurrentHashMap<>();
 
-        Recipe.setupRecipes();
+        ArtMaterial.setupRecipes();
 
         this.getCommand("artmap").setExecutor(new CommandListener(this));
 
         PluginManager manager = getServer().getPluginManager();
+        manager.registerEvents(new ArtCraftListener(this), this);
         manager.registerEvents(new PlayerInteractListener(this), this);
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
         manager.registerEvents(new ChunkUnloadListener(this), this);
-        manager.registerEvents(new PlayerCraftListener(this), this);
+//        manager.registerEvents(new PlayerCraftListener(this), this);
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
     }
@@ -215,9 +216,9 @@ public class ArtMap extends JavaPlugin {
         UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), INVALID_VERSION(true),
         INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false), RECIPE_HOVER(false);
 
-        public static String prefix = ChatColor.AQUA + "[ArtMap] ";
-        String message;
+        public static final String prefix = ChatColor.AQUA + "[ArtMap] ";
         boolean isErrorMessage;
+        String message;
 
         Lang(boolean isErrorMessage) {
             this.isErrorMessage = isErrorMessage;

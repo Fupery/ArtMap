@@ -2,7 +2,8 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,9 +20,9 @@ import java.util.Collection;
 
 public class Easel {
 
+    private final ArtMap plugin;
+    private final Location location;
     private boolean isPainting;
-    private ArtMap plugin;
-    private Location location;
     private ArmorStand stand;
     private ItemFrame frame;
 
@@ -107,7 +108,7 @@ public class Easel {
                 ArmorStand s = (ArmorStand) e;
 
                 //Check if entity is a stand
-                if (s.isCustomNameVisible() && s.getCustomName().equals(Recipe.EASEL.getItemKey())) {
+                if (s.isCustomNameVisible() && s.getCustomName().equals(ArtItem.easelKey)) {
                     if (EaselPart.STAND.getEaselPos(s.getLocation(), facing).equals(location)) {
                         stand = s;
                     }
@@ -165,7 +166,7 @@ public class Easel {
 
     public void removeItem() {
         frame.setItem(new ItemStack(Material.AIR));
-        location.getWorld().dropItemNaturally(location, Recipe.CANVAS.getResult());
+        location.getWorld().dropItemNaturally(location, ArtMaterial.CANVAS.getItem());
     }
 
     public void breakEasel() {
@@ -186,7 +187,7 @@ public class Easel {
                     frame.setItem(new ItemStack(Material.AIR));
                     frame.remove();
                 }
-                location.getWorld().dropItemNaturally(location, Recipe.EASEL.getResult());
+                location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
             }
         });
 

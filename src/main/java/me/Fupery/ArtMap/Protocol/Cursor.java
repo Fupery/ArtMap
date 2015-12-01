@@ -4,13 +4,13 @@ import me.Fupery.ArtMap.ArtMap;
 
 class Cursor {
 
-    private float[] yawTable;
-    private Object[] pitchTables;
+    private final float[] yawTable;
+    private final Object[] pitchTables;
+    private final int limit;
+    private final int yawOffset;
     private int x, y;
     private float pitch, yaw;
     private float leftBound, rightBound, upBound, downBound;
-    private int limit;
-    private int yawOffset;
     private boolean yawOffCanvas;
     private boolean pitchOffCanvas;
 

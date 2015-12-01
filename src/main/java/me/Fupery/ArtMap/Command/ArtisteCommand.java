@@ -12,12 +12,12 @@ interface AbstractCommand {
 
 abstract class ArtMapCommand implements AbstractCommand {
 
-    private final AbstractCommand ArtMapCommand = this;
-    ArtMap plugin;
     String usage;
+    private AbstractCommand ArtMapCommand = this;
     private String permission;
     private int minArgs;
     private int maxArgs;
+    ArtMap plugin;
 
     ArtMapCommand(String permission, int minArgs, int maxArgs,
                   String usage) {

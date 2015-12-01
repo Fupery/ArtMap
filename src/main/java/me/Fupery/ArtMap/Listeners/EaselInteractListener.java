@@ -4,7 +4,8 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ import org.bukkit.map.MapView;
 
 public class EaselInteractListener implements Listener {
 
-    ArtMap plugin;
+    private final ArtMap plugin;
 
     public EaselInteractListener(ArtMap plugin) {
         this.plugin = plugin;
@@ -70,12 +71,19 @@ public class EaselInteractListener implements Listener {
                 }
 
                 MapView mapView = null;
+                ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 //Check if carbon paper links to a valid artwork
-                if (itemInHandMeta.getDisplayName().equals(Recipe.CARBON_PAPER.getItemKey())) {
+                if (material == ArtMaterial.CARBON_PAPER_FILLED) {
 
                     if (itemInHandMeta.hasLore()) {
-                        String title = itemInHandMeta.getLore().get(0).substring(2);
+                        String loreID = itemInHandMeta.getLore().get(0);
+                        int a = loreID.indexOf("[") + 1, b = loreID.lastIndexOf("]");
+
+                        if (a < 0 || b < 0) {
+                            return;
+                        }
+                        String title = loreID.substring(a, b);
                         MapArt art = MapArt.getArtwork(plugin, title);
 
                         if (art != null) {
@@ -98,7 +106,11 @@ public class EaselInteractListener implements Listener {
                     return;
 
                     //Mount the canvas
-                } else if (itemInHandMeta.getDisplayName().equals(Recipe.CANVAS.getItemKey())) {
+                } else if (material == ArtMaterial.CARBON_PAPER) {
+                    player.sendMessage(ArtMap.Lang.NEED_TO_COPY.message());
+                    return;
+
+                } else if (material == ArtMaterial.CANVAS) {
                     mapView = MapArt.generateMapID(plugin, player.getWorld());
                     plugin.getNmsInterface().setWorldMap(mapView, MapArt.blankMap);
                     easel.mountCanvas(mapView);
@@ -117,16 +129,10 @@ public class EaselInteractListener implements Listener {
                 MapArt art = null;
 
                 if (easel.hasItem()) {
-
                     ItemStack easelItem = easel.getItem();
 
-                    if (easelItem.hasItemMeta()) {
-                        ItemMeta easelItemMeta = easelItem.getItemMeta();
-
-                        if (easelItemMeta.getLore().get(0).equals(MapArt.artworkTag)) {
-
-                            art = MapArt.getArtwork(plugin, easelItemMeta.getDisplayName());
-                        }
+                    if (ArtMaterial.MAP_ART.isValidMaterial(easelItem)) {
+                        art = MapArt.getArtwork(plugin, easelItem.getItemMeta().getDisplayName());
                     }
 
                     if (art != null) {

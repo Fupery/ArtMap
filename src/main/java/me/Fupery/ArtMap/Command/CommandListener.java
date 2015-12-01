@@ -4,7 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Preview;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -27,12 +27,13 @@ import static me.Fupery.ArtMap.Utils.Formatting.*;
 
 public class CommandListener implements CommandExecutor {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
     private HashMap<String, ArtMapCommand> commands;
 
     public CommandListener(final ArtMap plugin) {
         this.plugin = plugin;
         commands = new HashMap<>();
+        //Commands go here - note that they are run on an async thread
 
         commands.put("save", new ArtMapCommand("artmap.artist", 2, 2, "/artmap save <title>") {
 
@@ -290,18 +291,20 @@ public class CommandListener implements CommandExecutor {
                         helpLine("/artmap save <title>", "save your artwork"),
                         helpLine("/artmap delete <title>", "delete your artwork"),
                         helpLine("/artmap preview <title>", "preview an artwork"),
-                        helpLine("/artmap list [playername|all] [pg]", "list artworks"),
+                        helpLine("/artmap list [player|all] [pg]", "list artworks"),
                         ArtMap.Lang.HELP_MESSAGE.rawMessage()
                 });
                 if (sender instanceof Player) {
                     String hoverMessage = sender.hasPermission("artmap.admin") ?
                             ArtMap.Lang.GET_ITEM.rawMessage() : ArtMap.Lang.RECIPE_HOVER.rawMessage();
 
+                    ArtMaterial[] recipes = ArtMaterial.values(true);
+
                     TextComponent footer = new TextComponent(ChatColor.AQUA + "Recipes: ");
-                    TextComponent[] items = new TextComponent[Recipe.values().length];
+                    TextComponent[] items = new TextComponent[recipes.length];
 
                     for (int i = 0; i < items.length; i++) {
-                        String title = Recipe.values()[i].name().toLowerCase();
+                        String title = recipes[i].name().toLowerCase();
                         items[i] = new TextComponent(String.format(ArtMap.Lang.RECIPE_BUTTON.rawMessage(),
                                 title) + ChatColor.GOLD + " | ");
                         items[i].setClickEvent(
@@ -328,20 +331,20 @@ public class CommandListener implements CommandExecutor {
 
                 Player player = (Player) sender;
 
-                for (Recipe recipe : Recipe.values()) {
+                for (ArtMaterial recipe : ArtMaterial.values()) {
 
                     if (args[1].equalsIgnoreCase(recipe.name())) {
 
                         if (player.hasPermission("artmap.admin")) {
                             ItemStack leftOver =
-                                    player.getInventory().addItem(recipe.getResult()).get(0);
+                                    player.getInventory().addItem(recipe.getItem()).get(0);
 
                             if (leftOver != null) {
                                 player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                             }
 
                         } else {
-                            ItemStack[] ingredients = recipe.getResult().getPreview();
+                            ItemStack[] ingredients = recipe.getPreview();
 
                             Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
                                     String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
@@ -350,8 +353,9 @@ public class CommandListener implements CommandExecutor {
                             for (int i = 0; i < ingredients.length; i++) {
                                 inventory.setItem(i + 1, ingredients[i]);
                             }
-                            inventory.setItem(0, recipe.getResult());
+                            inventory.setItem(0, recipe.getItem());
                             Preview.inventory(plugin, player, inventory);
+                            player.updateInventory();
 
                         }
                     }
