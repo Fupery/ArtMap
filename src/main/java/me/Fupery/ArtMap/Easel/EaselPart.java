@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Easel;
 
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,6 +15,7 @@ public enum EaselPart {
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false), SEAT(1.2, -2.22, true);
 
     public static final String arbitrarySignID = "*{=}*";
+    public static final String easelID = "Easel";
     final double modifier;
     final double heightOffset;
     final boolean centred;
@@ -125,7 +125,7 @@ public enum EaselPart {
                         ArmorStand stand = (ArmorStand) entity;
                         stand.setBasePlate(false);
                         stand.setCustomNameVisible(true);
-                        stand.setCustomName(ArtItem.easelKey);
+                        stand.setCustomName(easelID);
                         stand.setGravity(false);
                         return stand;
 

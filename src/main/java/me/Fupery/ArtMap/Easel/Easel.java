@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
@@ -108,7 +107,7 @@ public class Easel {
                 ArmorStand s = (ArmorStand) e;
 
                 //Check if entity is a stand
-                if (s.isCustomNameVisible() && s.getCustomName().equals(ArtItem.easelKey)) {
+                if (s.isCustomNameVisible() && s.getCustomName().equals(EaselPart.easelID)) {
                     if (EaselPart.STAND.getEaselPos(s.getLocation(), facing).equals(location)) {
                         stand = s;
                     }
