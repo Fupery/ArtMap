@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 // Disallows players from copying ArtMap maps in the crafting table
-class PlayerCraftListener implements Listener {
+public class PlayerCraftListener implements Listener {
 
     private final ArtMap plugin;
 
