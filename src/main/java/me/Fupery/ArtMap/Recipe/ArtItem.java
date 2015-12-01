@@ -155,6 +155,7 @@ class ItemCarbonPaper extends ArtItem {
         return carbonPaperKey + " §7[Blank]";
     }
 }
+
 class ItemCarbonPaperFilled extends ArtItem {
 
     ItemCarbonPaperFilled() {
@@ -182,6 +183,7 @@ class ItemCarbonPaperFilled extends ArtItem {
         return carbonPaperFilled;
     }
 }
+
 class ItemMapArt extends ArtItem {
 
     ItemMapArt(short id, String title, OfflinePlayer player) {
@@ -233,7 +235,7 @@ class PaintBucket extends ArtItem {
 
     @Override
     String getLoreID() {
-        return paintBucketKey + " §7["+ colour.name() + "]";
+        return paintBucketKey + " §7[" + colour.name() + "]";
     }
 
     private org.bukkit.inventory.Recipe getRecipe(ArtDye d) {

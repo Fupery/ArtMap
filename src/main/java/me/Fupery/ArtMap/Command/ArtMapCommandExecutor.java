@@ -1,29 +1,13 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.LocationTag;
-import me.Fupery.ArtMap.Utils.Preview;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-import static me.Fupery.ArtMap.Utils.Formatting.*;
+import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 public class ArtMapCommandExecutor implements CommandExecutor {
 

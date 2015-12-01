@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

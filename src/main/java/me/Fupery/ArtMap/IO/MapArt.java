@@ -1,14 +1,14 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
@@ -22,8 +22,8 @@ public class MapArt {
 
     public static final String artworks = "artworks";
     public static final byte[] blankMap = getBlankMap();
-    private static final String recycled_keys = "recycled_keys";
     public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private static final String recycled_keys = "recycled_keys";
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
     private static final String dateID = "date";

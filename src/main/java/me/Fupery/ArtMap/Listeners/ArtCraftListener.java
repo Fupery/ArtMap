@@ -180,6 +180,7 @@ public class ArtCraftListener implements Listener {
         }
         return craftAction;
     }
+
     private enum CraftAction {
         PLACE, CRAFT, NONE
     }

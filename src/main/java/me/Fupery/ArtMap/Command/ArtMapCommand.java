@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
 
 import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
@@ -16,12 +15,12 @@ interface AbstractCommand {
 public abstract class ArtMapCommand implements AbstractCommand {
 
     String usage;
+    ArtMap plugin;
     private AbstractCommand ArtMapCommand = this;
     private String permission;
     private int minArgs;
     private int maxArgs;
     private boolean consoleAllowed;
-    ArtMap plugin;
 
     ArtMapCommand(String permission, String usage, boolean consoleAllowed) {
         this.permission = permission;

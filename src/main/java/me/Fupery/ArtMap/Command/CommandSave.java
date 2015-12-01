@@ -14,7 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandSave extends ArtMapCommand{
+public class CommandSave extends ArtMapCommand {
 
     CommandSave(ArtMap plugin) {
         super("artmap.artist", "/artmap save <title>", false);

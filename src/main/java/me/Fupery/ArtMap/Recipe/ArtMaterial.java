@@ -77,6 +77,10 @@ public enum ArtMaterial {
         return recipes.toArray(new ArtMaterial[recipes.size()]);
     }
 
+    public static ItemMapArt getMapArt(short id, String title, OfflinePlayer player) {
+        return new ItemMapArt(id, title, player);
+    }
+
     public Recipe getRecipe() {
         return recipe;
     }
@@ -94,10 +98,6 @@ public enum ArtMaterial {
             }
         }
         return false;
-    }
-
-    public static ItemMapArt getMapArt(short id, String title, OfflinePlayer player) {
-        return new ItemMapArt(id, title, player);
     }
 
     public ItemStack getItem() {

@@ -39,7 +39,7 @@ public class ArtBrush {
 
                             for (ArtDye dye : ArtDye.values()) {
 
-                                if (lore[0].equals(ArtItem.paintBucketKey + " §7["+ dye.name() + "]")) {
+                                if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
                                     colour = dye;
                                     break;
                                 }
