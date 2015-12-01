@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtistHandler {
 
-    private ConcurrentHashMap<Player, CanvasRenderer> artists;
+    private final ConcurrentHashMap<Player, CanvasRenderer> artists;
 
-    private ArtMap plugin;
-    private ArtistProtocol protocol;
+    private final ArtMap plugin;
+    private final ArtistProtocol protocol;
 
     public ArtistHandler(final ArtMap plugin) {
         this.plugin = plugin;

@@ -4,10 +4,10 @@ import me.Fupery.ArtMap.ArtMap;
 
 public class TitleFilter {
 
-    private ArtMap plugin;
-    private String title;
-    private char[] chars;
-    private String adjTitle;
+    private final ArtMap plugin;
+    private final String title;
+    private final char[] chars;
+    private final String adjTitle;
 
     public TitleFilter(ArtMap plugin, String title) {
         this.plugin = plugin;
@@ -44,28 +44,28 @@ public class TitleFilter {
         char repeatChar = '$';
         char currentChar;
 
-        for (int i = 0; i < chars.length; i++) {
+        for (char aChar : chars) {
 
-            if (chars[i] == '1') {
+            if (aChar == '1') {
                 currentChar = 'i';
 
-            } else if (chars[i] == '3') {
+            } else if (aChar == '3') {
                 currentChar = 'e';
 
-            } else if (chars[i] == '0') {
+            } else if (aChar == '0') {
                 currentChar = 'o';
 
-            } else if (chars[i] == '5') {
+            } else if (aChar == '5') {
                 currentChar = 's';
 
-            } else if (Character.toLowerCase(chars[i]) == 'z') {
+            } else if (Character.toLowerCase(aChar) == 'z') {
                 currentChar = 's';
 
-            } else if (chars[i] == '_') {
+            } else if (aChar == '_') {
                 continue;
 
             } else {
-                currentChar = Character.toLowerCase(chars[i]);
+                currentChar = Character.toLowerCase(aChar);
             }
 
             if (repeatChar != currentChar) {

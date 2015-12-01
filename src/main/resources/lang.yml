@@ -37,6 +37,7 @@ english:
   INVALID_VERSION: "Version %s of craftbukkit is not supported - disabling ArtMap"
   INVALID_RESOLUTION: "Invalid mapResolutionFactor in config, default will be used"
   INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
-  #Recipe Tooltips
+  #Menu Tooltips
   RECIPE_HEADER: "Recipe for §a[%s]"
   RECIPE_HOVER: "§eClick to view the recipe for '%s'"
+  #Recipe Tooltips

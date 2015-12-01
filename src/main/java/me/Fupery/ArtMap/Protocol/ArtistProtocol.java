@@ -14,12 +14,12 @@ import java.util.logging.Level;
 
 public abstract class ArtistProtocol {
 
-    private Plugin plugin;
-    private NMSInterface nmsInterface;
+    private final Plugin plugin;
+    private final NMSInterface nmsInterface;
 
-    private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
+    private final Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
-    private String handlerName = "ArtMapHandler";
+    private final String handlerName = "ArtMapHandler";
 
     public ArtistProtocol(Plugin plugin, NMSInterface nmsInterface) {
         this.plugin = plugin;

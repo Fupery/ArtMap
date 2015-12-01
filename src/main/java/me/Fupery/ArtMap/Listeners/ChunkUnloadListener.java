@@ -9,7 +9,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class ChunkUnloadListener implements Listener {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
 
     public ChunkUnloadListener(ArtMap plugin) {
         this.plugin = plugin;

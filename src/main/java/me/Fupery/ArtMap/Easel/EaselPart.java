@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap.Easel;
 
-import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,10 +15,10 @@ public enum EaselPart {
 
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false), SEAT(1.2, -2.22, true);
 
-    public static String arbitrarySignID = "*{=}*";
-    double modifier;
-    double heightOffset;
-    boolean centred;
+    public static final String arbitrarySignID = "*{=}*";
+    final double modifier;
+    final double heightOffset;
+    final boolean centred;
 
     EaselPart(double modifier, double heightOffset, boolean centred) {
         this.modifier = modifier;
@@ -53,7 +53,7 @@ public enum EaselPart {
         return BlockFace.SOUTH;
     }
 
-    public static BlockFace getSignFacing(BlockFace facing) {
+    private static BlockFace getSignFacing(BlockFace facing) {
         BlockFace orientation = facing.getOppositeFace();
 
         if (orientation == BlockFace.SOUTH) {
@@ -125,7 +125,7 @@ public enum EaselPart {
                         ArmorStand stand = (ArmorStand) entity;
                         stand.setBasePlate(false);
                         stand.setCustomNameVisible(true);
-                        stand.setCustomName(ArtMap.entityTag);
+                        stand.setCustomName(ArtItem.easelKey);
                         stand.setGravity(false);
                         return stand;
 
@@ -133,7 +133,6 @@ public enum EaselPart {
                         ItemFrame frame = (ItemFrame) entity;
                         frame.setFacingDirection(facing, true);
                         frame.setCustomNameVisible(true);
-                        frame.setCustomName(ArtMap.entityTag);
                         return frame;
 
                     case SEAT:
@@ -178,7 +177,7 @@ public enum EaselPart {
         return new Location(world, x, heightOffset, z, yaw, 0);
     }
 
-    public Location getPartPos(Location easelLocation, BlockFace facing) {
+    private Location getPartPos(Location easelLocation, BlockFace facing) {
         Location offset = getOffset(easelLocation.getWorld(), facing);
         float yaw = (this == SEAT) ? 180 + offset.getYaw() : offset.getYaw();
         Location partLocation = easelLocation.clone().add(offset);

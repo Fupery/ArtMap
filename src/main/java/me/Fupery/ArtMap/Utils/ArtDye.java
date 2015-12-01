@@ -7,7 +7,7 @@ import org.bukkit.material.MaterialData;
 
 public enum ArtDye {
     //Bukkit Dye Colours
-    BLACK(119, Material.INK_SACK, ChatColor.WHITE, 0),
+    BLACK(119, Material.INK_SACK, ChatColor.DARK_GRAY, 0),
     RED(17, Material.INK_SACK, ChatColor.RED, 1),
     GREEN(109, Material.INK_SACK, ChatColor.DARK_GREEN, 2),
     BROWN(105, Material.INK_SACK, ChatColor.DARK_RED, 3),
@@ -37,10 +37,10 @@ public enum ArtDye {
     GOLD(121, Material.GOLD_NUGGET, ChatColor.GOLD);
 
     //Instance fields
-    private byte data;
-    private Material material;
-    private int durability;
-    private ChatColor display;
+    private final byte data;
+    private final Material material;
+    private final int durability;
+    private final ChatColor display;
 
     ArtDye(int data, Material material, ChatColor display) {
         this.data = ((byte) data);

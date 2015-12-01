@@ -2,7 +2,8 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,12 +14,10 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
-
 // Disallows players from copying ArtMap maps in the crafting table
-public class PlayerCraftListener implements Listener {
+class PlayerCraftListener implements Listener {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
 
     public PlayerCraftListener(ArtMap plugin) {
         this.plugin = plugin;
@@ -26,6 +25,8 @@ public class PlayerCraftListener implements Listener {
 
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
+
+        event.getWhoClicked().sendMessage("boop");
 
         ItemStack result = event.getCurrentItem();
 
@@ -46,7 +47,7 @@ public class PlayerCraftListener implements Listener {
 
                             if (item.getType() == Material.EMPTY_MAP
                                     && itemMeta.hasDisplayName()
-                                    && itemMeta.getDisplayName().equals(Recipe.carbonPaperTitle)) {
+                                    && itemMeta.getDisplayName().equals(ArtItem.carbonPaperKey)) {
                                 carbonCopies++;
                             }
                         }
@@ -71,18 +72,19 @@ public class PlayerCraftListener implements Listener {
                             event.setResult(Event.Result.DENY);
                             return;
                         }
-                        ItemMeta carbonMeta = Recipe.getActivatedCarbonPaper().getItemMeta();
-                        List<String> lore = carbonMeta.getLore();
-                        lore.set(0, "§r" + result.getItemMeta().getDisplayName());
-
-                        ItemMeta resultMeta = result.getItemMeta();
-                        resultMeta.setLore(lore);
-                        resultMeta.setDisplayName(carbonMeta.getDisplayName());
-
-                        result.setItemMeta(resultMeta);
-                        result.setDurability((short) 0);
-                        result.setType(Material.PAPER);
-                        result.setAmount(1);
+//                        ItemMeta carbonMeta = Recipe.getActivatedCarbonPaper();
+//                        List<String> lore = carbonMeta.getLore();
+//                        lore.set(0, "§r" + result.getItemMeta().getDisplayName());
+//
+//                        ItemMeta resultMeta = result.getItemMeta();
+//                        resultMeta.setLore(lore);
+//                        resultMeta.setDisplayName(carbonMeta.getDisplayName());
+//
+//                        result.setItemMeta(resultMeta);
+//                        result.setDurability((short) 0);
+//                        result.setType(Material.PAPER);
+//                        result.setAmount(1);
+                        result = ArtMaterial.fillCarbonPaper(art);
                     }
 
                 } else {

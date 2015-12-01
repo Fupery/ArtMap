@@ -3,8 +3,8 @@ package me.Fupery.ArtMap.NMS;
 import me.Fupery.ArtMap.ArtMap;
 
 public class VersionHandler {
-    private ArtMap plugin;
-    private String version;
+    private final ArtMap plugin;
+    private final String version;
 
     public VersionHandler(ArtMap plugin) {
         this.plugin = plugin;

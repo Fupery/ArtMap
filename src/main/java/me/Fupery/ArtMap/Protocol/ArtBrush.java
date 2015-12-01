@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Protocol;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Recipe.Recipe;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,9 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ArtBrush {
 
-    private ArtMap plugin;
-    private CanvasRenderer renderer;
-    private int axisLength;
+    private final ArtMap plugin;
+    private final CanvasRenderer renderer;
+    private final int axisLength;
     private byte[] lastFlowPixel;
 
     public ArtBrush(ArtMap plugin, CanvasRenderer renderer, int axisLength) {
@@ -33,14 +33,13 @@ public class ArtBrush {
                     if (item.hasItemMeta()) {
                         ItemMeta meta = item.getItemMeta();
 
-                        if (meta.getDisplayName().contains(Recipe.paintBucketTitle)
-                                && meta.hasLore()) {
+                        if (meta.hasLore()) {
                             ArtDye colour = null;
                             String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
                             for (ArtDye dye : ArtDye.values()) {
 
-                                if (lore[0].equals("§r" + dye.name())) {
+                                if (lore[0].equals(ArtItem.paintBucketKey + " §7["+ dye.name() + "]")) {
                                     colour = dye;
                                     break;
                                 }
@@ -84,7 +83,7 @@ public class ArtBrush {
         lastFlowPixel = null;
     }
 
-    public void drawPixel(byte colour) {
+    private void drawPixel(byte colour) {
         byte[] pixel = renderer.getPixel();
 
         if (pixel != null) {
@@ -92,7 +91,7 @@ public class ArtBrush {
         }
     }
 
-    public void fillPixel(byte colour) {
+    private void fillPixel(byte colour) {
         final byte[] pixel = renderer.getPixel();
 
         if (pixel != null) {
@@ -134,7 +133,7 @@ public class ArtBrush {
         fillBucket(coloured, x, y + 1, source, target);
     }
 
-    public void flowPixel(byte colour) {
+    private void flowPixel(byte colour) {
 
         byte[] pixel = renderer.getPixel();
 
@@ -207,21 +206,21 @@ public class ArtBrush {
         }
     }
 
-    public void shadePixel(boolean darken) {
+    private void shadePixel(boolean darken) {
         byte[] pixel = renderer.getPixel();
         byte colour = getPixelShade(darken,
                 renderer.getPixelBuffer()[pixel[0]][pixel[1]]);
         renderer.addPixel(pixel[0], pixel[1], colour);
     }
 
-    public void fillShade(boolean darken) {
+    private void fillShade(boolean darken) {
         byte[] pixel = renderer.getPixel();
         byte colour = getPixelShade(darken,
                 renderer.getPixelBuffer()[pixel[0]][pixel[1]]);
         fillPixel(colour);
     }
 
-    public byte getPixelShade(boolean darken, byte colour) {
+    private byte getPixelShade(boolean darken, byte colour) {
 
         if (colour < 4) {
             return colour;

@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerQuitListener implements Listener {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
 
     public PlayerQuitListener(ArtMap plugin) {
         this.plugin = plugin;

@@ -17,7 +17,7 @@ public class Formatting {
 
     public static String helpLine(String usage, String helpMsg) {
         return ChatColor.GOLD + "  - " + ChatColor.AQUA + usage +
-                ChatColor.GOLD + "  |  " + ChatColor.DARK_AQUA + helpMsg;
+                ChatColor.GOLD + "  |  " + ChatColor.GRAY + helpMsg;
     }
 
     public static String extractListTitle(String listLine) {

@@ -10,19 +10,16 @@ import org.bukkit.map.MapView;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class CanvasRenderer extends MapRenderer {
+class CanvasRenderer extends MapRenderer {
 
+    private final int resolutionFactor;
+    private final int axisLength;
+    private final MapView mapView;
+    private final ArtMap plugin;
     private byte[][] pixelBuffer;
     private ArrayList<byte[]> dirtyPixels;
     private ListIterator<byte[]> iterator;
-
-    private int resolutionFactor;
-    private int axisLength;
-
-    private MapView mapView;
     private boolean active;
-
-    private ArtMap plugin;
     private Cursor cursor;
     private ArtBrush brush;
 
@@ -91,7 +88,7 @@ public class CanvasRenderer extends MapRenderer {
         return pixel;
     }
 
-    public void clearRenderers() {
+    private void clearRenderers() {
 
         cursor = null;
 

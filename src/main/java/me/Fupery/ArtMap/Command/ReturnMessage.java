@@ -62,7 +62,7 @@ class MultiLineReturnMessage extends ReturnMessage {
         this.footer = footer;
     }
 
-    public void sendMessage(TextComponent line) {
+    private void sendMessage(TextComponent line) {
 
         if (line != null) {
 

@@ -7,9 +7,9 @@ import org.bukkit.event.HandlerList;
 
 public final class EaselEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    Easel easel;
-    ClickType click;
-    Player player;
+    private final Easel easel;
+    private final ClickType click;
+    private final Player player;
     private boolean cancelled;
 
     public EaselEvent(Easel easel, ClickType click, Player player) {

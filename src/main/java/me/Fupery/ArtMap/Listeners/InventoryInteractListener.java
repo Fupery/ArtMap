@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryInteractListener implements Listener {
 
-    private ArtMap plugin;
+    private final ArtMap plugin;
 
     public InventoryInteractListener(ArtMap plugin) {
         this.plugin = plugin;

@@ -8,7 +8,7 @@ public enum PacketType {
     INTERACT("PacketPlayInUseEntity"),
     INVALID(null);
 
-    private String className;
+    private final String className;
 
     PacketType(String className) {
         String server = Bukkit.getServer().getClass().getPackage().getName();

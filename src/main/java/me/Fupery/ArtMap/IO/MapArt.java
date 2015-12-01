@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,18 +20,17 @@ import static me.Fupery.ArtMap.Utils.Formatting.listLine;
 
 public class MapArt {
 
-    public static final String artworkTag = "§aPlayer Artwork";
     public static final String artworks = "artworks";
-    public static final String recycled_keys = "recycled_keys";
     public static final byte[] blankMap = getBlankMap();
-    private static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private static final String recycled_keys = "recycled_keys";
+    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
     private static final String dateID = "date";
-    private short mapIDValue;
-    private String title;
-    private OfflinePlayer player;
-    private String date;
+    private final short mapIDValue;
+    private final String title;
+    private final OfflinePlayer player;
+    private final String date;
 
     public MapArt(short mapIDValue, String title, OfflinePlayer player) {
         this.mapIDValue = mapIDValue;
@@ -206,22 +207,7 @@ public class MapArt {
     }
 
     public ItemStack getMapItem() {
-
-        ItemStack map = new ItemStack(Material.MAP, 1, mapIDValue);
-
-        Date d = new Date();
-
-        ItemMeta meta = map.getItemMeta();
-
-        meta.setDisplayName(title);
-
-        meta.setLore(Arrays.asList(
-                artworkTag,
-                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
-                dateFormat.format(d)));
-        map.setItemMeta(meta);
-
-        return map;
+        return ArtMaterial.getMapArt(mapIDValue, title, player);
     }
 
     public MapArt saveArtwork(ArtMap plugin) {
@@ -244,5 +230,9 @@ public class MapArt {
 
     public OfflinePlayer getPlayer() {
         return player;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }
