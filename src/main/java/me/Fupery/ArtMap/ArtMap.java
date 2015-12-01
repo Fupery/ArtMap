@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap;
 
-import me.Fupery.ArtMap.Command.CommandListener;
+import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Listeners.*;
@@ -63,6 +63,7 @@ public class ArtMap extends JavaPlugin {
         if (!loadTables()) {
             getLogger().warning(Lang.INVALID_DATA_TABLES.rawMessage());
             getPluginLoader().disablePlugin(this);
+            return;
         }
 
         nmsInterface = new VersionHandler(this).getNMSInterface();
@@ -80,7 +81,7 @@ public class ArtMap extends JavaPlugin {
 
         ArtMaterial.setupRecipes();
 
-        this.getCommand("artmap").setExecutor(new CommandListener(this));
+        this.getCommand("artmap").setExecutor(new ArtMapCommandExecutor(this));
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new ArtCraftListener(this), this);
@@ -88,7 +89,7 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
         manager.registerEvents(new ChunkUnloadListener(this), this);
-//        manager.registerEvents(new PlayerCraftListener(this), this);
+        manager.registerEvents(new PlayerCraftListener(this), this);
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
     }
