@@ -10,14 +10,14 @@ import java.util.HashMap;
 
 public class InventoryMenu {
 
-    private final Inventory inventory;
-    private HashMap<Integer, MenuButton> buttons;
     protected final InventoryMenu parent;
     protected final Player player;
     protected final ArtMap plugin;
+    private final Inventory inventory;
+    private HashMap<Integer, MenuButton> buttons;
 
     InventoryMenu(ArtMap plugin, InventoryMenu parent, Player player, String title,
-                  InventoryType type, MenuButton ... buttons) {
+                  InventoryType type, MenuButton... buttons) {
         this.plugin = plugin;
         this.inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
         this.buttons = new HashMap<>();
@@ -26,7 +26,7 @@ public class InventoryMenu {
         addButtons(buttons);
     }
 
-    void addButtons(MenuButton ... buttons) {
+    void addButtons(MenuButton... buttons) {
 
         if (buttons != null && buttons.length > 0) {
 

@@ -1,12 +1,11 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Command.CommandPreview;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -18,10 +17,10 @@ import java.util.UUID;
 public abstract class ListMenu extends InventoryMenu {
 
     protected static final int maxButtons = 25;
-    int page;
     protected MenuButton[] listItems;
+    int page;
 
-    ListMenu(InventoryMenu parent, String title, int page, MenuButton ... listItems) {
+    ListMenu(InventoryMenu parent, String title, int page, MenuButton... listItems) {
         super(parent.plugin, parent, parent.getPlayer(), title, InventoryType.CHEST);
         this.page = page;
         this.listItems = listItems;
@@ -59,8 +58,8 @@ public abstract class ListMenu extends InventoryMenu {
         boolean forward;
 
         public PageButton(boolean forward) {
-            super(forward ? Material.NETHER_STAR : Material.BARRIER,
-                    forward ? "Forward" : "Back");
+            super(forward ? Material.EMERALD : Material.BARRIER,
+                    forward ? "§a§l➡" : "§c§l⬅");
             this.forward = forward;
         }
 
@@ -79,7 +78,7 @@ class ArtworkListMenu extends ListMenu {
     UUID artist;
 
     ArtworkListMenu(InventoryMenu parent, UUID artist, int page) {
-        super(parent,processTitle(artist), page, generateButtons(parent.getPlugin(), artist));
+        super(parent, processTitle(artist), page, generateButtons(parent.getPlugin(), artist));
         this.artist = artist;
     }
 
@@ -88,7 +87,7 @@ class ArtworkListMenu extends ListMenu {
         MenuButton[] buttons;
 
         if (artworks != null && artworks.length > 0) {
-             buttons = new MenuButton[artworks.length];
+            buttons = new MenuButton[artworks.length];
 
             for (int i = 0; i < artworks.length; i++) {
                 buttons[i] = new PreviewButton(artworks[i]);
@@ -98,6 +97,23 @@ class ArtworkListMenu extends ListMenu {
             buttons = new MenuButton[0];
         }
         return buttons;
+    }
+
+    private static String processTitle(UUID artist) {
+        String name = Bukkit.getOfflinePlayer(artist).getName();
+        String processedName;
+        String title = "§1%s's art";
+
+        if (name.length() >= 25) {
+            processedName = name.substring(0, 24);
+
+        } else if (name.length() >= 17) {
+            processedName = name;
+
+        } else {
+            processedName = String.format(title, name);
+        }
+        return processedName;
     }
 
     private static class PreviewButton extends MenuButton {
@@ -117,25 +133,8 @@ class ArtworkListMenu extends ListMenu {
         @Override
         public void run() {
             getMenu().getPlayer().closeInventory();
-            Preview.artwork(getMenu().getPlugin(), getPlayer(), artwork);
+            CommandPreview.previewArtwork(getMenu().getPlugin(), getPlayer(), artwork);
         }
-    }
-
-    private static  String processTitle(UUID artist) {
-        String name = Bukkit.getOfflinePlayer(artist).getName();
-        String processedName;
-        String title = "§1%s's art";
-
-        if (name.length() >= 25) {
-            processedName = name.substring(0, 24);
-
-        } else if (name.length() >= 17) {
-            processedName = name;
-
-        } else {
-            processedName = String.format(title, name);
-        }
-        return processedName;
     }
 }
 
@@ -147,14 +146,15 @@ class ArtistListMenu extends ListMenu {
         paginateButtons();
     }
 
-    private static MenuButton[] generateButtons(InventoryMenu menu) {
-        UUID[] artists = MapArt.listArtists(menu.getPlugin());
+    private MenuButton[] generateButtons(InventoryMenu menu) {
+        UUID[] artists = MapArt.listArtists(menu.getPlugin(), menu.getPlayer().getUniqueId());
         MenuButton[] buttons;
 
         if (artists != null && artists.length > 0) {
-           buttons = new MenuButton[artists.length];
+            buttons = new MenuButton[artists.length];
 
             for (int i = 0; i < artists.length; i++) {
+
                 buttons[i] = new LinkedButton(
                         new ArtworkListMenu(menu, artists[i], 0), Material.SKULL_ITEM);
 

@@ -15,17 +15,7 @@ public class CommandPreview extends ArtMapCommand {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-
-        Player player = (Player) sender;
-
-        MapArt art = MapArt.getArtwork(plugin, args[1]);
-
-        if (art == null) {
-            msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
-            return false;
-        }
+    public static boolean previewArtwork(ArtMap plugin, Player player, MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
             ItemStack currentItem = player.getItemInHand();
@@ -46,11 +36,29 @@ public class CommandPreview extends ArtMapCommand {
             }
 
             if (player.getItemInHand().getType() != Material.AIR) {
-                msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
                 return false;
             }
 
-            Preview.artwork(plugin, ((Player) sender), art);
+            Preview.artwork(plugin, player, art);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+
+        Player player = (Player) sender;
+
+        MapArt art = MapArt.getArtwork(plugin, args[1]);
+
+        if (art == null) {
+            msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
+            return false;
+        }
+
+        if (!previewArtwork(plugin, player, art)) {
+            msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
+            return false;
         }
         msg.message = String.format(ArtMap.Lang.PREVIEWING.message(), args[1]);
         return true;

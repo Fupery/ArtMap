@@ -27,8 +27,6 @@ public class ArtMapCommandExecutor implements CommandExecutor {
 
         commands.put("preview", new CommandPreview(plugin));
 
-        commands.put("recipe", new CommandRecipe(plugin));
-
         commands.put("help", new ArtMapCommand(null, "/artmap [help]", false) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {

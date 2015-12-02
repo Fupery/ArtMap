@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Command.CommandRecipe;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
@@ -32,28 +31,6 @@ public class RecipeMenu extends InventoryMenu {
         return buttons;
     }
 
-    private static class RecipeButton extends MenuButton {
-
-        ArtMaterial recipe;
-
-        public RecipeButton(ArtMaterial recipe) {
-            super(recipe.getItem().getType());
-            this.recipe = recipe;
-            ItemMeta meta = recipe.getItem().getItemMeta();
-            List<String> lore = meta.getLore();
-            lore.set(3, HelpMenu.click + "Recipe");
-            meta.setLore(lore);
-            setItemMeta(meta);
-        }
-
-        @Override
-        public void run() {
-            getMenu().getPlayer().closeInventory();
-            Preview.inventory(getMenu().getPlugin(), getPlayer(),
-                    recipePreview(getPlayer(), recipe));
-            getPlayer().updateInventory();
-        }
-    }
     public static Inventory recipePreview(Player player, ArtMaterial recipe) {
         ItemStack[] ingredients = recipe.getPreview();
 
@@ -66,5 +43,39 @@ public class RecipeMenu extends InventoryMenu {
         }
         inventory.setItem(0, recipe.getItem());
         return inventory;
+    }
+
+    private static class RecipeButton extends MenuButton {
+
+        ArtMaterial recipe;
+
+        public RecipeButton(ArtMaterial recipe) {
+            super(recipe.getItem().getType());
+            this.recipe = recipe;
+            ItemMeta meta = recipe.getItem().getItemMeta();
+            List<String> lore = meta.getLore();
+            lore.set(3, HelpMenu.click + " Recipe");
+            meta.setLore(lore);
+            setItemMeta(meta);
+        }
+
+        @Override
+        public void run() {
+            Player player = getPlayer();
+            player.closeInventory();
+
+            if (player.hasPermission("artmap.admin")) {
+                Preview.inventory(getMenu().getPlugin(), getPlayer(),
+                        recipePreview(getPlayer(), recipe));
+                getPlayer().updateInventory();
+
+            } else {
+                ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);
+
+                if (leftOver != null) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                }
+            }
+        }
     }
 }

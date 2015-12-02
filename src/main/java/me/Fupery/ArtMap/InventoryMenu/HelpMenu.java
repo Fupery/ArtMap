@@ -7,21 +7,7 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class HelpMenu extends MainMenu {
 
-    public HelpMenu(final ArtMap plugin, final Player player) {
-        super(plugin, "§1Choose a help topic", player, InventoryType.HOPPER);
-        addButtons(generateButtons(this));
-    }
-    private static MenuButton[] generateButtons(InventoryMenu menu) {
-        MenuButton[] buttons = new MenuButton[5];
-        buttons[0] = new StaticButton(Material.SIGN, gettingStarted);
-        buttons[1] = new LinkedButton(new RecipeMenu(menu), Material.WORKBENCH, recipes);
-        buttons[2] = new StaticButton(Material.BOOK_AND_QUILL, commands);
-        buttons[3] = new LinkedButton(new ArtistListMenu(menu, 0), Material.PAINTING, list);
-        buttons[4] = new CloseButton();
-        return buttons;
-    }
-
-    public static final String[] gettingStarted =  new String[] {
+    public static final String[] gettingStarted = new String[]{
             "                §6§l⊱§e§lGetting Started§6§l⊰",
             "               §3❉§b§oWelcome to ArtMap!§3❉",
             "§7To get started painting, you will need to craft",
@@ -37,12 +23,12 @@ public class HelpMenu extends MainMenu {
             "§b❂§3Coal&Feather§b﴿",
             "§7Click with §3Coal§7 or §bFeather§7 to §3darken§7 or §blighten"
     };
-    public static final String[] recipes =  new String[] {
+    public static final String[] recipes = new String[]{
             "   §6§l⊱§e§lRecipes§6§l⊰",
             "§3✸§b§oClick to View§3✸",
     };
-    public static final String[] commands =  new String[] {
-            "               §6§l⊱§e§lArtMap Commands§6§l⊰",
+    public static final String[] commands = new String[]{
+            "                     §6§l⊱§e§lCommands§6§l⊰",
             "                §3❀§b§o/artmap§3 for help§3❀",
             "  §8░░░░░░░░░░░░░░░░░░░░░░░░░░░ ",
             "§6•§f/artmap save <title>    §6➯   §7save your artwork",
@@ -50,18 +36,32 @@ public class HelpMenu extends MainMenu {
             "§6•§f/artmap preview <title> §6➯  §7preview an artwork",
             "§2You can also preview art in the list menu§e§l➚"
     };
-    public static final String[] list =  new String[] {
-            "          §6§l⊱§e§lArtwork List§6§l⊰",
+    public static final String[] list = new String[]{
+            "             §6§l⊱§e§lArtworks§6§l⊰",
             "      §3✺§b§oView Player Artworks§3✺",
             "§7View your artwork or view other",
             "§7players' work grouped by artist.",
             "           §2Click to browse",
 
     };
-    public static final String[] close =  new String[] {
+    public static final String[] close = new String[]{
             "    §6§l⊱§e§lBack§6§l⊰",
             "§4﴾§cClose Menu§4﴿"
     };
-
     public static String click = "§aClick to View";
+
+    public HelpMenu(final ArtMap plugin, final Player player) {
+        super(plugin, "§1Choose a help topic", player, InventoryType.HOPPER);
+        addButtons(generateButtons(this));
+    }
+
+    private static MenuButton[] generateButtons(InventoryMenu menu) {
+        MenuButton[] buttons = new MenuButton[5];
+        buttons[0] = new StaticButton(Material.SIGN, gettingStarted);
+        buttons[1] = new LinkedButton(new RecipeMenu(menu), Material.WORKBENCH, recipes);
+        buttons[2] = new StaticButton(Material.BOOK_AND_QUILL, commands);
+        buttons[3] = new LinkedButton(new ArtistListMenu(menu, 0), Material.PAINTING, list);
+        buttons[4] = new CloseButton();
+        return buttons;
+    }
 }

@@ -16,8 +16,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static me.Fupery.ArtMap.Utils.Formatting.listLine;
-
 public class MapArt {
 
     public static final String artworks = "artworks";
@@ -107,35 +105,6 @@ public class MapArt {
         return false;
     }
 
-    public static String[] listArtworks(ArtMap plugin, String artist) {
-        ArrayList<String> returnList;
-
-        if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
-
-            Set<String> list = mapList.getKeys(false);
-            returnList = new ArrayList<>();
-
-            int i = 0;
-            for (String title : list) {
-                MapArt art = getArtwork(plugin, title);
-
-                if (art != null) {
-
-                    if (!artist.equals("all")) {
-
-                        if (!art.getPlayer().getName().equalsIgnoreCase(artist)) {
-                            continue;
-                        }
-                    }
-                    returnList.add(listLine(title, art.player.getName(), art.date, art.mapIDValue));
-                    i++;
-                }
-            }
-            return returnList.toArray(new String[returnList.size()]);
-        }
-        return null;
-    }
     public static MapArt[] listMapArt(ArtMap plugin, String artist) {
         ArrayList<MapArt> returnList;
 
@@ -166,7 +135,7 @@ public class MapArt {
         return null;
     }
 
-    public static UUID[] listArtists(ArtMap plugin) {
+    public static UUID[] listArtists(ArtMap plugin, UUID player) {
         ArrayList<UUID> returnList;
 
         if (plugin.getMaps() != null) {
@@ -175,14 +144,18 @@ public class MapArt {
             Set<String> list = mapList.getKeys(true);
             returnList = new ArrayList<>();
 
-            int i = 0;
             for (String title : list) {
                 MapArt art = getArtwork(plugin, title);
 
                 if (art != null && !returnList.contains(art.player.getUniqueId())) {
                     returnList.add(art.player.getUniqueId());
-                    i++;
                 }
+            }
+            if (returnList.contains(player) && returnList.indexOf(player) != 0) {
+                int index = returnList.indexOf(player);
+                UUID first = returnList.get(0);
+                returnList.set(index, first);
+                returnList.set(0, player);
             }
             return returnList.toArray(new UUID[returnList.size()]);
         }

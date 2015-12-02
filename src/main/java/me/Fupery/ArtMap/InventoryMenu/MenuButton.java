@@ -74,7 +74,8 @@ class StaticButton extends MenuButton {
     }
 
     @Override
-    public void run() { }
+    public void run() {
+    }
 }
 
 class CloseButton extends MenuButton {

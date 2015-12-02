@@ -186,6 +186,10 @@ public class ArtMap extends JavaPlugin {
         return artistHandler;
     }
 
+    public void setArtistHandler(ArtistHandler artistHandler) {
+        this.artistHandler = artistHandler;
+    }
+
     public boolean isOpenMenu(Inventory inventory) {
         return openMenus.containsKey(inventory);
     }
@@ -200,10 +204,6 @@ public class ArtMap extends JavaPlugin {
 
     public void removeMenu(Inventory inventory) {
         openMenus.remove(inventory);
-    }
-
-    public void setArtistHandler(ArtistHandler artistHandler) {
-        this.artistHandler = artistHandler;
     }
 
     public ConcurrentHashMap<Location, Easel> getEasels() {

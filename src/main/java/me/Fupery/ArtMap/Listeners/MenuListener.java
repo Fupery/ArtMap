@@ -39,6 +39,7 @@ public class MenuListener implements Listener {
             }
         }
     }
+
     @EventHandler
     void onMenuClose(InventoryCloseEvent event) {
 //
