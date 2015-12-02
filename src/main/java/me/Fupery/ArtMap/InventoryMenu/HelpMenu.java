@@ -55,7 +55,7 @@ public class HelpMenu extends MainMenu {
             "      §3✺§b§oView Player Artworks§3✺",
             "§7View your artwork or view other",
             "§7players' work grouped by artist.",
-            "         §2Click to browse",
+            "           §2Click to browse",
 
     };
     public static final String[] close =  new String[] {

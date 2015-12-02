@@ -1,9 +1,14 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Command.CommandRecipe;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Preview;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -36,7 +41,7 @@ public class RecipeMenu extends InventoryMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(3, HelpMenu.click);
+            lore.set(3, HelpMenu.click + "Recipe");
             meta.setLore(lore);
             setItemMeta(meta);
         }
@@ -45,7 +50,21 @@ public class RecipeMenu extends InventoryMenu {
         public void run() {
             getMenu().getPlayer().closeInventory();
             Preview.inventory(getMenu().getPlugin(), getPlayer(),
-                    CommandRecipe.recipePreview(getPlayer(), recipe));
+                    recipePreview(getPlayer(), recipe));
+            getPlayer().updateInventory();
         }
+    }
+    public static Inventory recipePreview(Player player, ArtMaterial recipe) {
+        ItemStack[] ingredients = recipe.getPreview();
+
+        Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
+                String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
+                        recipe.name().toLowerCase()));
+
+        for (int i = 0; i < ingredients.length; i++) {
+            inventory.setItem(i + 1, ingredients[i]);
+        }
+        inventory.setItem(0, recipe.getItem());
+        return inventory;
     }
 }

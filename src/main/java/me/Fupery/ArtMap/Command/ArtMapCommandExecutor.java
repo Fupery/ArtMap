@@ -27,26 +27,23 @@ public class ArtMapCommandExecutor implements CommandExecutor {
 
         commands.put("preview", new CommandPreview(plugin));
 
-        commands.put("list", new CommandList(plugin));
-
-        commands.put("help", new CommandHelp(plugin));
-
         commands.put("recipe", new CommandRecipe(plugin));
 
-        commands.put("newhelp", new ArtMapCommand(null, "/artmap newHelp", false) {
+        commands.put("help", new ArtMapCommand(null, "/artmap [help]", false) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 new HelpMenu(plugin, ((Player) sender)).open();
                 return true;
             }
         });
-        commands.get("newhelp").plugin = plugin;
+        commands.get("help").plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length > 0) {
+            sender.sendMessage(args[0]);
 
             if (commands.containsKey(args[0].toLowerCase())) {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
