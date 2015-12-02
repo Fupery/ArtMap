@@ -47,8 +47,11 @@ public class MenuListener implements Listener {
 //        if (plugin.isOpenMenu(inventory)) {
 //            InventoryMenu menu = plugin.getMenu(inventory);
 //
-//            if (!menu.hasParent() || menu.) {
+//            if (!menu.hasParent()) {
 //                plugin.removeMenu(inventory);
+//
+//            } else {
+//                menu.getParent().open();
 //            }
 //        }
     }

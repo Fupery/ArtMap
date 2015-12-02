@@ -3,10 +3,9 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import static me.Fupery.ArtMap.Utils.Formatting.playerError;
 
 interface AbstractCommand {
     boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg);
@@ -51,7 +50,7 @@ public abstract class ArtMapCommand implements AbstractCommand {
                     returnMsg.message = ArtMap.Lang.NO_CONSOLE.message();
 
                 } else if (args.length < minArgs || args.length > maxArgs) {
-                    returnMsg.message = playerError(usage);
+                    returnMsg.message = ArtMap.Lang.prefix + ChatColor.RED + ", " + usage;
 
                 } else if (ArtMapCommand.runCommand(sender, args, returnMsg)) {
                     return;

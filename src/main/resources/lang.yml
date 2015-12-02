@@ -1,5 +1,6 @@
 english:
   #Return Messages
+  HELP: "/artmap help for a list of commands."
   NO_CONSOLE: "This command can only be used by players."
   INVALID_POS: "You can't place an easel here"
   NO_PERM: "You don't have permission to do this."
