@@ -1,9 +1,11 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
@@ -29,7 +31,16 @@ public class ArtMapCommandExecutor implements CommandExecutor {
 
         commands.put("help", new CommandHelp(plugin));
 
-        commands.put("get", new CommandGet(plugin));
+        commands.put("recipe", new CommandRecipe(plugin));
+
+        commands.put("newhelp", new ArtMapCommand(null, "/artmap newHelp", false) {
+            @Override
+            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                new HelpMenu(plugin, ((Player) sender)).open();
+                return true;
+            }
+        });
+        commands.get("newhelp").plugin = plugin;
     }
 
     @Override

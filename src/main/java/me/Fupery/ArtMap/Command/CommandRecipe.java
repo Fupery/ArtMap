@@ -10,10 +10,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandGet extends ArtMapCommand {
+public class CommandRecipe extends ArtMapCommand {
 
-    public CommandGet(ArtMap plugin) {
-        super(null, "/artmap get <item>", false);
+    public CommandRecipe(ArtMap plugin) {
+        super(null, "/artmap recipe <item>", false);
         this.plugin = plugin;
     }
 
@@ -35,21 +35,25 @@ public class CommandGet extends ArtMapCommand {
                     }
 
                 } else {
-                    ItemStack[] ingredients = recipe.getPreview();
-
-                    Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
-                            String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
-                                    recipe.name().toLowerCase()));
-
-                    for (int i = 0; i < ingredients.length; i++) {
-                        inventory.setItem(i + 1, ingredients[i]);
-                    }
-                    inventory.setItem(0, recipe.getItem());
-                    Preview.inventory(plugin, player, inventory);
+                    Preview.inventory(plugin, player, recipePreview(player, recipe));
                     player.updateInventory();
                 }
             }
         }
         return false;
+    }
+
+    public static Inventory recipePreview(Player player, ArtMaterial recipe) {
+        ItemStack[] ingredients = recipe.getPreview();
+
+        Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
+                String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
+                        recipe.name().toLowerCase()));
+
+        for (int i = 0; i < ingredients.length; i++) {
+            inventory.setItem(i + 1, ingredients[i]);
+        }
+        inventory.setItem(0, recipe.getItem());
+        return inventory;
     }
 }

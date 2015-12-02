@@ -3,6 +3,7 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
@@ -19,6 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,6 +36,7 @@ public class ArtMap extends JavaPlugin {
     private List<String> titleFilter;
     private ConcurrentHashMap<Location, Easel> easels;
     private ConcurrentHashMap<Player, Preview> previewing;
+    private ConcurrentHashMap<Inventory, InventoryMenu> openMenus;
     private ArtistHandler artistHandler;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
@@ -78,6 +81,7 @@ public class ArtMap extends JavaPlugin {
 
         easels = new ConcurrentHashMap<>();
         previewing = new ConcurrentHashMap<>();
+        openMenus = new ConcurrentHashMap<>();
 
         ArtMaterial.setupRecipes();
 
@@ -92,6 +96,7 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(this), this);
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
+        manager.registerEvents(new MenuListener(this), this);
     }
 
     @Override
@@ -179,6 +184,22 @@ public class ArtMap extends JavaPlugin {
 
     public ArtistHandler getArtistHandler() {
         return artistHandler;
+    }
+
+    public boolean isOpenMenu(Inventory inventory) {
+        return openMenus.containsKey(inventory);
+    }
+
+    public InventoryMenu getMenu(Inventory inventory) {
+        return openMenus.get(inventory);
+    }
+
+    public void addMenu(Inventory inventory, InventoryMenu menu) {
+        openMenus.put(inventory, menu);
+    }
+
+    public void removeMenu(Inventory inventory) {
+        openMenus.remove(inventory);
     }
 
     public void setArtistHandler(ArtistHandler artistHandler) {

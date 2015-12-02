@@ -27,7 +27,7 @@ english:
   LIST_FOOTER_NXT: "§aClick to view the next page"
   SEPERATOR: "§3-------------------------"
   HELP_HEADER: "Help:"
-  HELP_MESSAGE: "§6Craft an Easel and Canvas to create artworks.\n §6Use Dyes and PaintBuckets to paint on your canvas."
+  HELP_MESSAGE: "§7Craft an §aEasel §7and §aCanvas §7to create artworks.\n §7Use dyes §7and §aPaint_Bucket §7to paint on your canvas."
   BAD_TITLE: "Invalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
   TITLE_USED: "Sorry, this title is already being used."
   PREVIEWING: "Previewing artwork '%s'."
@@ -41,3 +41,10 @@ english:
   RECIPE_HEADER: "Recipe for §a[%s]"
   RECIPE_HOVER: "§eClick to view the recipe for '%s'"
   #Recipe Tooltips
+
+  #help menu
+#  HELP_GETTING_STARTED: ["Welcome to ArtMap!]
+#  HELP_RECIPES:
+#  HELP_COMMANDS:
+#  HELP_LIST:
+#  HELP_CLOSE:

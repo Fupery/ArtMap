@@ -136,6 +136,58 @@ public class MapArt {
         }
         return null;
     }
+    public static MapArt[] listMapArt(ArtMap plugin, String artist) {
+        ArrayList<MapArt> returnList;
+
+        if (plugin.getMaps() != null) {
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+
+            Set<String> list = mapList.getKeys(false);
+            returnList = new ArrayList<>();
+
+            int i = 0;
+            for (String title : list) {
+                MapArt art = getArtwork(plugin, title);
+
+                if (art != null) {
+
+                    if (!artist.equals("all")) {
+
+                        if (!art.getPlayer().getName().equalsIgnoreCase(artist)) {
+                            continue;
+                        }
+                    }
+                    returnList.add(art);
+                    i++;
+                }
+            }
+            return returnList.toArray(new MapArt[returnList.size()]);
+        }
+        return null;
+    }
+
+    public static UUID[] listArtists(ArtMap plugin) {
+        ArrayList<UUID> returnList;
+
+        if (plugin.getMaps() != null) {
+            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+
+            Set<String> list = mapList.getKeys(true);
+            returnList = new ArrayList<>();
+
+            int i = 0;
+            for (String title : list) {
+                MapArt art = getArtwork(plugin, title);
+
+                if (art != null && !returnList.contains(art.player.getUniqueId())) {
+                    returnList.add(art.player.getUniqueId());
+                    i++;
+                }
+            }
+            return returnList.toArray(new UUID[returnList.size()]);
+        }
+        return null;
+    }
 
     public static MapView cloneArtwork(ArtMap plugin, World world, short mapID) {
         MapView oldMapView = Bukkit.getServer().getMap(mapID);
