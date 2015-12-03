@@ -9,8 +9,6 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
-import static me.Fupery.ArtMap.Utils.Formatting.playerError;
-
 public class ArtMapCommandExecutor implements CommandExecutor {
 
     private final ArtMap plugin;
@@ -41,13 +39,12 @@ public class ArtMapCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length > 0) {
-            sender.sendMessage(args[0]);
 
             if (commands.containsKey(args[0].toLowerCase())) {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
 
             } else {
-                sender.sendMessage(playerError("/artmap help for a list of commands."));
+                sender.sendMessage(ArtMap.Lang.HELP.message());
             }
 
         } else {
