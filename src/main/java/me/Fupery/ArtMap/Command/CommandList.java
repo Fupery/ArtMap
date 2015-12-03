@@ -53,8 +53,8 @@ public class CommandList extends ArtMapCommand {
             return false;
         }
 
-        //index of the last page
-        int totalPages = (list.length / 8) + 1;
+        //maximum number of pages
+        int totalPages = (list.length - 1) / 8 + 1;
 
         if (pg > totalPages) {
             pg = totalPages;
