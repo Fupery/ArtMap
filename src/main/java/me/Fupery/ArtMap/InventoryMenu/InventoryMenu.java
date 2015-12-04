@@ -18,8 +18,8 @@ public class InventoryMenu {
     String title;
     private HashMap<Integer, MenuButton> buttons;
 
-    InventoryMenu(ArtMap plugin, InventoryMenu parent, String title,
-                  InventoryType type, MenuButton... buttons) {
+    protected InventoryMenu(ArtMap plugin, InventoryMenu parent, String title,
+                            InventoryType type, MenuButton... buttons) {
         this.plugin = plugin;
         this.buttons = new HashMap<>();
         this.parent = parent;
@@ -28,7 +28,7 @@ public class InventoryMenu {
         addButtons(buttons);
     }
 
-    void addButtons(MenuButton... buttons) {
+    protected void addButtons(MenuButton... buttons) {
 
         if (buttons != null && buttons.length > 0) {
 

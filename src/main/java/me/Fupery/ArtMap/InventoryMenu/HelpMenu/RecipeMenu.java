@@ -1,6 +1,8 @@
-package me.Fupery.ArtMap.InventoryMenu;
+package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
+import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
@@ -17,7 +19,7 @@ public class RecipeMenu extends InventoryMenu {
     private static MenuButton buttons[] = generateButtons();
 
     RecipeMenu(InventoryMenu parent) {
-        super(parent.plugin, parent, "§1Choose a Recipe", InventoryType.HOPPER, buttons);
+        super(parent.getPlugin(), parent, "§1Choose a Recipe", InventoryType.HOPPER, buttons);
     }
 
     private static MenuButton[] generateButtons() {
@@ -26,7 +28,7 @@ public class RecipeMenu extends InventoryMenu {
         buttons[1] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[2] = new RecipeButton(ArtMaterial.CARBON_PAPER);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
-        buttons[4] = new CloseButton();
+        buttons[4] = new MenuButton.CloseButton();
         return buttons;
     }
 

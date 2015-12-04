@@ -28,21 +28,19 @@ public class MenuListener implements Listener {
         if (inventory != null && inventory.getTitle() != null
                 && inventory.getTitle().contains(ArtMap.Lang.prefix)) {
 
-            if (plugin.isOpenMenu(inventory)) {
-                event.setResult(Event.Result.DENY);
-                event.setCancelled(true);
-                event.getWhoClicked().setItemOnCursor(null);
-                InventoryMenu menu = plugin.getMenu(inventory);
-                final MenuButton button = menu.getButton(event.getSlot());
+            event.setResult(Event.Result.DENY);
+            event.setCancelled(true);
+            event.getWhoClicked().setItemOnCursor(null);
+            InventoryMenu menu = plugin.getMenu(inventory);
+            final MenuButton button = menu.getButton(event.getSlot());
 
-                if (button != null) {
-                    Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            button.onClick(((Player) event.getWhoClicked()));
-                        }
-                    });
-                }
+            if (button != null) {
+                Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        button.onClick(((Player) event.getWhoClicked()));
+                    }
+                });
             }
         }
     }

@@ -1,10 +1,10 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
 
@@ -38,52 +38,53 @@ public abstract class MenuButton extends ItemStack {
     void setMenu(InventoryMenu menu) {
         this.menu = menu;
     }
-}
 
-class LinkedButton extends MenuButton {
+    public static class LinkedButton extends MenuButton {
 
-    InventoryMenu linkedMenu;
+        InventoryMenu linkedMenu;
 
-    public LinkedButton(InventoryMenu linkedMenu, Material type, String... text) {
-        super(type, text);
-        this.linkedMenu = linkedMenu;
-    }
-
-    @Override
-    public void onClick(Player player) {
-
-        if (linkedMenu instanceof PlayerDataSensitiveMenu) {
-            ((PlayerDataSensitiveMenu) linkedMenu).initializeMenu(player);
+        public LinkedButton(InventoryMenu linkedMenu, Material type, String... text) {
+            super(type, text);
+            this.linkedMenu = linkedMenu;
         }
-        linkedMenu.open(player);
-    }
-}
 
-class StaticButton extends MenuButton {
+        @Override
+        public void onClick(Player player) {
 
-    public StaticButton(Material type, String... text) {
-        super(type, text);
-    }
-
-    @Override
-    public void onClick(Player player) {
-    }
-}
-
-class CloseButton extends MenuButton {
-
-    public CloseButton() {
-        super(Material.BARRIER, HelpMenu.close);
-    }
-
-    @Override
-    public void onClick(Player player) {
-
-        if (menu.hasParent()) {
-            menu.getParent().open(player);
-
-        } else {
-            player.closeInventory();
+            if (linkedMenu instanceof PlayerDataSensitiveMenu) {
+                ((PlayerDataSensitiveMenu) linkedMenu).initializeMenu(player);
+            }
+            linkedMenu.open(player);
         }
     }
+
+    public static class StaticButton extends MenuButton {
+
+        public StaticButton(Material type, String... text) {
+            super(type, text);
+        }
+
+        @Override
+        public void onClick(Player player) {
+        }
+    }
+
+    public static class CloseButton extends MenuButton {
+
+        public CloseButton() {
+            super(Material.BARRIER, HelpMenu.close);
+        }
+
+        @Override
+        public void onClick(Player player) {
+
+            if (menu.hasParent()) {
+                menu.getParent().open(player);
+
+            } else {
+                player.closeInventory();
+            }
+        }
+    }
 }
+

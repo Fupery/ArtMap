@@ -1,8 +1,8 @@
-package me.Fupery.ArtMap.InventoryMenu;
+package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.InventoryMenu.*;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 
 public class HelpMenu extends MainMenu {
@@ -57,11 +57,11 @@ public class HelpMenu extends MainMenu {
 
     private static MenuButton[] generateButtons(InventoryMenu menu) {
         MenuButton[] buttons = new MenuButton[5];
-        buttons[0] = new StaticButton(Material.SIGN, gettingStarted);
-        buttons[1] = new LinkedButton(new RecipeMenu(menu), Material.WORKBENCH, recipes);
-        buttons[2] = new StaticButton(Material.BOOK_AND_QUILL, commands);
-        buttons[3] = new LinkedButton(new ArtistListMenu(menu, 0), Material.PAINTING, list);
-        buttons[4] = new CloseButton();
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, gettingStarted);
+        buttons[1] = new MenuButton.LinkedButton(new RecipeMenu(menu), Material.WORKBENCH, recipes);
+        buttons[2] = new MenuButton.StaticButton(Material.BOOK_AND_QUILL, commands);
+        buttons[3] = new MenuButton.LinkedButton(new ArtistListMenu(menu, 0), Material.PAINTING, list);
+        buttons[4] = new MenuButton.CloseButton();
         return buttons;
     }
 }
