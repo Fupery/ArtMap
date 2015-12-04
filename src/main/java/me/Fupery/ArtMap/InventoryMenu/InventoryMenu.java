@@ -2,27 +2,29 @@ package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
 public class InventoryMenu {
 
     protected final InventoryMenu parent;
-    protected final Player player;
     protected final ArtMap plugin;
-    private final Inventory inventory;
+    InventoryType type;
+    String title;
     private HashMap<Integer, MenuButton> buttons;
 
-    InventoryMenu(ArtMap plugin, InventoryMenu parent, Player player, String title,
+    InventoryMenu(ArtMap plugin, InventoryMenu parent, String title,
                   InventoryType type, MenuButton... buttons) {
         this.plugin = plugin;
-        this.inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
         this.buttons = new HashMap<>();
         this.parent = parent;
-        this.player = player;
+        this.type = type;
+        this.title = title;
         addButtons(buttons);
     }
 
@@ -30,10 +32,9 @@ public class InventoryMenu {
 
         if (buttons != null && buttons.length > 0) {
 
-            for (int slot = 0; slot < inventory.getSize(); slot++) {
+            for (int slot = 0; slot < type.getDefaultSize(); slot++) {
 
                 if (buttons[slot] != null) {
-                    inventory.setItem(slot, buttons[slot]);
                     this.buttons.put(slot, buttons[slot]);
                     buttons[slot].setMenu(this);
                 }
@@ -43,25 +44,43 @@ public class InventoryMenu {
 
     void clearButtons() {
         buttons.clear();
-        inventory.clear();
+    }
+
+    void updateInventory(Player player) {
+        Inventory inventory = player.getOpenInventory().getTopInventory();
+
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+
+            if (buttons.get(slot) != null) {
+                inventory.setItem(slot, buttons.get(slot));
+
+            } else {
+                inventory.setItem(slot, new ItemStack(Material.AIR));
+            }
+        }
+        player.updateInventory();
     }
 
     public MenuButton getButton(int slot) {
         return buttons.get(slot);
     }
 
-    public void open() {
+    public void open(Player player) {
+        Inventory inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
+
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+
+            if (buttons.get(slot) != null) {
+                inventory.setItem(slot, buttons.get(slot));
+            }
+        }
         getPlugin().addMenu(inventory, this);
-        getPlayer().openInventory(inventory);
+        player.openInventory(inventory);
     }
 
-    public void close() {
-        getPlayer().closeInventory();
-        getPlugin().removeMenu(inventory);
-    }
-
-    protected Inventory getInventory() {
-        return inventory;
+    public void close(Player player) {
+        getPlugin().removeMenu(player.getInventory());
+        player.closeInventory();
     }
 
     public boolean hasParent() {
@@ -70,10 +89,6 @@ public class InventoryMenu {
 
     public InventoryMenu getParent() {
         return parent;
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     public ArtMap getPlugin() {

@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,12 +16,13 @@ public class MenuListener implements Listener {
 
     private ArtMap plugin;
 
+
     public MenuListener(ArtMap plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    void onMenuInteract(InventoryClickEvent event) {
+    void onMenuInteract(final InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
 
         if (inventory != null && inventory.getTitle() != null
@@ -31,10 +33,15 @@ public class MenuListener implements Listener {
                 event.setCancelled(true);
                 event.getWhoClicked().setItemOnCursor(null);
                 InventoryMenu menu = plugin.getMenu(inventory);
-                MenuButton button = menu.getButton(event.getSlot());
+                final MenuButton button = menu.getButton(event.getSlot());
 
                 if (button != null) {
-                    Bukkit.getScheduler().runTask(plugin, button);
+                    Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            button.onClick(((Player) event.getWhoClicked()));
+                        }
+                    });
                 }
             }
         }

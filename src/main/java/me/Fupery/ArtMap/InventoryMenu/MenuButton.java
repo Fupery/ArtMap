@@ -8,7 +8,7 @@ import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
 
-public abstract class MenuButton extends ItemStack implements Runnable {
+public abstract class MenuButton extends ItemStack {
 
     protected InventoryMenu menu;
 
@@ -29,9 +29,7 @@ public abstract class MenuButton extends ItemStack implements Runnable {
         setItemMeta(meta);
     }
 
-    protected Player getPlayer() {
-        return (menu != null) ? menu.getPlayer() : null;
-    }
+    public abstract void onClick(Player player);
 
     public InventoryMenu getMenu() {
         return menu;
@@ -39,16 +37,6 @@ public abstract class MenuButton extends ItemStack implements Runnable {
 
     void setMenu(InventoryMenu menu) {
         this.menu = menu;
-    }
-
-    @Override
-    public void setData(MaterialData data) {
-        super.setData(data);
-    }
-
-    @Override
-    public void setDurability(short durability) {
-        super.setDurability(durability);
     }
 }
 
@@ -62,8 +50,12 @@ class LinkedButton extends MenuButton {
     }
 
     @Override
-    public void run() {
-        linkedMenu.open();
+    public void onClick(Player player) {
+
+        if (linkedMenu instanceof PlayerDataSensitiveMenu) {
+            ((PlayerDataSensitiveMenu) linkedMenu).initializeMenu(player);
+        }
+        linkedMenu.open(player);
     }
 }
 
@@ -74,7 +66,7 @@ class StaticButton extends MenuButton {
     }
 
     @Override
-    public void run() {
+    public void onClick(Player player) {
     }
 }
 
@@ -85,13 +77,13 @@ class CloseButton extends MenuButton {
     }
 
     @Override
-    public void run() {
+    public void onClick(Player player) {
 
         if (menu.hasParent()) {
-            menu.getPlayer().openInventory(menu.getParent().getInventory());
+            menu.getParent().open(player);
 
         } else {
-            menu.getPlayer().closeInventory();
+            player.closeInventory();
         }
     }
 }

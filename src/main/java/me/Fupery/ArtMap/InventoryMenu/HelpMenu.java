@@ -50,8 +50,8 @@ public class HelpMenu extends MainMenu {
     };
     public static String click = "§aClick to View";
 
-    public HelpMenu(final ArtMap plugin, final Player player) {
-        super(plugin, "§1Choose a help topic", player, InventoryType.HOPPER);
+    public HelpMenu(final ArtMap plugin) {
+        super(plugin, "§1Choose a help topic", InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 

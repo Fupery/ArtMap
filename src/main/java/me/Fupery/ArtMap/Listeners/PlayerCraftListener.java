@@ -26,8 +26,6 @@ public class PlayerCraftListener implements Listener {
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
 
-        event.getWhoClicked().sendMessage("boop");
-
         ItemStack result = event.getCurrentItem();
 
         if (result.getType() == Material.MAP && result.hasItemMeta()) {

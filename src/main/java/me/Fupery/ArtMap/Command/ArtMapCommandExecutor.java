@@ -28,7 +28,7 @@ public class ArtMapCommandExecutor implements CommandExecutor {
         commands.put("help", new ArtMapCommand(null, "/artmap [help]", false) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                new HelpMenu(plugin, ((Player) sender)).open();
+                ArtMap.openHelpMenu((Player) sender);
                 return true;
             }
         });

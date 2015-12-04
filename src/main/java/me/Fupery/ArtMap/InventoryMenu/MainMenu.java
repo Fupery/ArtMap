@@ -8,9 +8,8 @@ public class MainMenu extends InventoryMenu {
 
     final ArtMap plugin;
 
-    public MainMenu(ArtMap plugin, String title, Player player,
-                    InventoryType type, MenuButton... buttons) {
-        super(plugin, null, player, title, type, buttons);
+    public MainMenu(ArtMap plugin, String title, InventoryType type, MenuButton... buttons) {
+        super(plugin, null, title, type, buttons);
         this.plugin = plugin;
     }
 }

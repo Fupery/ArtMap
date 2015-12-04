@@ -6,7 +6,9 @@ import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -21,7 +23,7 @@ public abstract class ListMenu extends InventoryMenu {
     int page;
 
     ListMenu(InventoryMenu parent, String title, int page, MenuButton... listItems) {
-        super(parent.plugin, parent, parent.getPlayer(), title, InventoryType.CHEST);
+        super(parent.plugin, parent, title, InventoryType.CHEST);
         this.page = page;
         this.listItems = listItems;
         paginateButtons();
@@ -43,14 +45,14 @@ public abstract class ListMenu extends InventoryMenu {
         addButtons(buttons);
     }
 
-    protected void changePage(boolean forward) {
+    protected void changePage(Player player, boolean forward) {
 
         if (page == 0 && !forward) {
-            getParent().open();
+            getParent().open(player);
         }
         page += forward ? 1 : -1;
         paginateButtons();
-        getPlayer().updateInventory();
+        updateInventory(player);
     }
 
     static class PageButton extends MenuButton {
@@ -64,9 +66,9 @@ public abstract class ListMenu extends InventoryMenu {
         }
 
         @Override
-        public void run() {
+        public void onClick(Player player) {
             if (getMenu() instanceof ListMenu) {
-                ((ListMenu) menu).changePage(forward);
+                ((ListMenu) menu).changePage(player, forward);
             }
         }
     }
@@ -131,23 +133,21 @@ class ArtworkListMenu extends ListMenu {
         }
 
         @Override
-        public void run() {
-            getMenu().getPlayer().closeInventory();
-            CommandPreview.previewArtwork(getMenu().getPlugin(), getPlayer(), artwork);
+        public void onClick(Player player) {
+            player.closeInventory();
+            CommandPreview.previewArtwork(getMenu().getPlugin(), player, artwork);
         }
     }
 }
 
-class ArtistListMenu extends ListMenu {
+class ArtistListMenu extends ListMenu implements PlayerDataSensitiveMenu {
 
     ArtistListMenu(InventoryMenu parent, int page) {
         super(parent, "§1Click an Artist", page);
-        listItems = generateButtons(this);
-        paginateButtons();
     }
 
-    private MenuButton[] generateButtons(InventoryMenu menu) {
-        UUID[] artists = MapArt.listArtists(menu.getPlugin(), menu.getPlayer().getUniqueId());
+    private MenuButton[] generateButtons(Player player, InventoryMenu menu) {
+        UUID[] artists = MapArt.listArtists(menu.getPlugin(), player.getUniqueId());
         MenuButton[] buttons;
 
         if (artists != null && artists.length > 0) {
@@ -158,12 +158,12 @@ class ArtistListMenu extends ListMenu {
                 buttons[i] = new LinkedButton(
                         new ArtworkListMenu(menu, artists[i], 0), Material.SKULL_ITEM);
 
-                OfflinePlayer player = Bukkit.getOfflinePlayer(artists[i]);
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artists[i]);
                 buttons[i].setDurability((short) 3);
                 SkullMeta meta = (SkullMeta) (buttons[i].getItemMeta());
 
-                meta.setOwner(player.getName());
-                meta.setDisplayName(player.getName());
+                meta.setOwner(offlinePlayer.getName());
+                meta.setDisplayName(offlinePlayer.getName());
                 meta.setLore(Collections.singletonList(HelpMenu.click));
                 buttons[i].setItemMeta(meta);
             }
@@ -172,6 +172,12 @@ class ArtistListMenu extends ListMenu {
             buttons = new MenuButton[0];
         }
         return buttons;
+    }
+
+    @Override
+    public void initializeMenu(Player player) {
+        listItems = generateButtons(player, this);
+        paginateButtons();
     }
 }
 

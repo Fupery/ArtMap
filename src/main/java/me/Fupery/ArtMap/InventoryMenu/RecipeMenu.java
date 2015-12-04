@@ -17,8 +17,7 @@ public class RecipeMenu extends InventoryMenu {
     private static MenuButton buttons[] = generateButtons();
 
     RecipeMenu(InventoryMenu parent) {
-        super(parent.plugin, parent, parent.getPlayer(),
-                "§1Choose a Recipe", InventoryType.HOPPER, buttons);
+        super(parent.plugin, parent, "§1Choose a Recipe", InventoryType.HOPPER, buttons);
     }
 
     private static MenuButton[] generateButtons() {
@@ -60,14 +59,13 @@ public class RecipeMenu extends InventoryMenu {
         }
 
         @Override
-        public void run() {
-            Player player = getPlayer();
+        public void onClick(Player player) {
             player.closeInventory();
 
             if (player.hasPermission("artmap.admin")) {
-                Preview.inventory(getMenu().getPlugin(), getPlayer(),
-                        recipePreview(getPlayer(), recipe));
-                getPlayer().updateInventory();
+                Preview.inventory(getMenu().getPlugin(), player,
+                        recipePreview(player, recipe));
+                player.updateInventory();
 
             } else {
                 ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);

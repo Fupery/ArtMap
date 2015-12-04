@@ -3,6 +3,7 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -41,6 +42,7 @@ public class ArtMap extends JavaPlugin {
     private int mapResolutionFactor;
     private PixelTable pixelTable;
     private NMSInterface nmsInterface;
+    private static HelpMenu helpMenu;
 
     @Override
     public void onEnable() {
@@ -97,6 +99,8 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
         manager.registerEvents(new MenuListener(this), this);
+
+        helpMenu = new HelpMenu(getPlugin(ArtMap.class));
     }
 
     @Override
@@ -224,6 +228,13 @@ public class ArtMap extends JavaPlugin {
 
     public ConcurrentHashMap<Player, Preview> getPreviewing() {
         return previewing;
+    }
+
+    public static void openHelpMenu(Player player) {
+        if (helpMenu == null) {
+            helpMenu = new HelpMenu(getPlugin(ArtMap.class));
+        }
+        helpMenu.open(player);
     }
 
     public enum Lang {
