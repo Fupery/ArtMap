@@ -63,16 +63,16 @@ public class RecipeMenu extends InventoryMenu {
             player.closeInventory();
 
             if (player.hasPermission("artmap.admin")) {
-                Preview.inventory(getMenu().getPlugin(), player,
-                        recipePreview(player, recipe));
-                player.updateInventory();
-
-            } else {
                 ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);
 
                 if (leftOver != null) {
                     player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                 }
+
+            } else {
+                Preview.inventory(getMenu().getPlugin(), player,
+                        recipePreview(player, recipe));
+                player.updateInventory();
             }
         }
     }
