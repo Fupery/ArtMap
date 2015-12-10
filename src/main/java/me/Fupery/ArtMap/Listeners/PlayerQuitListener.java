@@ -40,7 +40,6 @@ public class PlayerQuitListener implements Listener {
         if (plugin.hasOpenMenu(player)) {
             plugin.removeMenu(player);
         }
-
     }
 
     @EventHandler
@@ -60,25 +59,11 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent event) {
 
-        final Player player = event.getPlayer();
-
         if (plugin.getArtistHandler() != null
                 && plugin.getArtistHandler().containsPlayer(event.getPlayer())) {
 
             if (event.getPlayer().isInsideVehicle()) {
                 plugin.getArtistHandler().removePlayer(event.getPlayer());
-
-            } else {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (plugin.getArtistHandler() != null
-                                && plugin.getArtistHandler().containsPlayer(player)) {
-                            plugin.getArtistHandler().removePlayer(player);
-                        }
-                    }
-                });
             }
         }
     }

@@ -14,18 +14,19 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtistHandler {
 
-    private final ConcurrentHashMap<Player, CanvasRenderer> artists;
+    private final HashMap<Player, CanvasRenderer> artists;
 
     private final ArtMap plugin;
     private final ArtistProtocol protocol;
 
     public ArtistHandler(final ArtMap plugin) {
         this.plugin = plugin;
-        artists = new ConcurrentHashMap<>();
+        artists = new HashMap<>();
         final NMSInterface nmsInterface = plugin.getNmsInterface();
 
         protocol = new ArtistProtocol(plugin, nmsInterface) {
@@ -73,7 +74,7 @@ public class ArtistHandler {
         };
     }
 
-    public void addPlayer(Player player, MapView mapView, int yawOffset) {
+    public synchronized void addPlayer(Player player, MapView mapView, int yawOffset) {
 
         if (plugin.getPixelTable() != null) {
             artists.put(player, new CanvasRenderer(plugin, mapView, yawOffset));
@@ -85,16 +86,21 @@ public class ArtistHandler {
         return (artists.containsKey(player));
     }
 
-    public void removePlayer(final Player player) {
+    public synchronized void removePlayer(final Player player) {
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                protocol.uninjectPlayer(player);
-            }
-        });
+        if (plugin.isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    protocol.uninjectPlayer(player);
+                }
+            });
+
+        } else {
+            protocol.uninjectPlayer(player);
+        }
         Entity seat = player.getVehicle();
         String mapID = "[Not Found]";
         player.playSound(player.getLocation(), Sound.STEP_LADDER, (float) 0.5, -3);
