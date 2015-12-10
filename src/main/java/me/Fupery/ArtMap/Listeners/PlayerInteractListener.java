@@ -89,7 +89,7 @@ public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
 
-        if (event.getClick() == ClickType.CREATIVE) {
+        if (event.getClick() == ClickType.CREATIVE && event.getClickedInventory() != null) {
 
             final ItemStack item = event.getCursor();
             final Player player = (Player) event.getWhoClicked();
@@ -109,7 +109,7 @@ public class PlayerInteractListener implements Listener {
                             if (art != null) {
 
                                 ItemStack correctLore = art.getMapItem();
-                                player.getInventory().setItem(event.getSlot(), correctLore);
+                                event.getClickedInventory().setItem(event.getSlot(), correctLore);
                             }
                         }
                     }
