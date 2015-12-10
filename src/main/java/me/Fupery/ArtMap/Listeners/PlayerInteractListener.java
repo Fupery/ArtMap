@@ -83,50 +83,7 @@ public class PlayerInteractListener implements Listener {
                     event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
                 }
             }
-
         }
-
-//        if (event.getItem() != null && event.getMaterial().equals(Material.ARMOR_STAND)) {
-//
-//            ItemMeta meta = event.getItem().getItemMeta();
-//
-//            if (meta != null && meta.hasDisplayName()) {
-//
-//                if (meta.getDisplayName().equals(ArtItem.easelKey)) {
-//
-//                    if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-//                        event.setCancelled(true);
-//
-//                        if (event.getBlockFace().equals(BlockFace.UP)) {
-//
-//                            event.setCancelled(true);
-//
-//                            Location easelLocation
-//                                    = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
-//                            BlockFace facing = getFacing(event.getPlayer());
-//
-//                            if (easelLocation.getBlock().getType() == Material.AIR) {
-//
-//                                if (!Easel.checkForEasel(plugin, easelLocation)) {
-//
-//                                    Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
-//                                    Player player = event.getPlayer();
-//                                    ItemStack item = player.getItemInHand().clone();
-//                                    item.setAmount(1);
-//
-//                                    player.getInventory().removeItem(item);
-//
-//                                    if (easel != null) {
-//                                        return;
-//                                    }
-//                                }
-//                            }
-//                            event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 
     @EventHandler
