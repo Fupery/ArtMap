@@ -1,11 +1,10 @@
 package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.*;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
-public class HelpMenu extends MainMenu {
+public class HelpMenu extends InventoryMenu {
 
     public static final String[] gettingStarted = new String[]{
             "                §6§l⊱§e§lGetting Started§6§l⊰",
@@ -50,8 +49,8 @@ public class HelpMenu extends MainMenu {
     };
     public static String click = "§aClick to View";
 
-    public HelpMenu(final ArtMap plugin) {
-        super(plugin, "§1Choose a help topic", InventoryType.HOPPER);
+    public HelpMenu() {
+        super(null, "§1Choose a help topic", InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 
@@ -60,8 +59,9 @@ public class HelpMenu extends MainMenu {
         buttons[0] = new MenuButton.StaticButton(Material.SIGN, gettingStarted);
         buttons[1] = new MenuButton.LinkedButton(new RecipeMenu(menu), Material.WORKBENCH, recipes);
         buttons[2] = new MenuButton.StaticButton(Material.BOOK_AND_QUILL, commands);
-        buttons[3] = new MenuButton.LinkedButton(new ArtistListMenu(menu, 0), Material.PAINTING, list);
-        buttons[4] = new MenuButton.CloseButton();
+        buttons[3] = new MenuButton.LinkedButton(new ArtistMenu(menu), Material.PAINTING, list);
+        buttons[4] = new MenuButton.CloseButton(menu);
         return buttons;
     }
+
 }

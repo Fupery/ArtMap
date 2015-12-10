@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public class ArtMapCommandExecutor implements CommandExecutor {
         commands.put("help", new ArtMapCommand(null, "/artmap [help]", false) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ArtMap.openHelpMenu((Player) sender);
+                ArtMap.helpMenu.open(plugin, (Player) sender);
                 return true;
             }
         });

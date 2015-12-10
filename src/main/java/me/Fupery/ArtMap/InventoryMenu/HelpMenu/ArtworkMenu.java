@@ -14,12 +14,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 import java.util.UUID;
 
-class ArtworkListMenu extends ListMenu {
+public class ArtworkMenu extends ListMenu {
 
-    UUID artist;
+    private UUID artist;
 
-    ArtworkListMenu(InventoryMenu parent, UUID artist, int page) {
-        super(parent, processTitle(artist), page, generateButtons(parent.getPlugin(), artist));
+    public ArtworkMenu(InventoryMenu parent, UUID artist) {
+        super(parent, "Player Artworks");
         this.artist = artist;
     }
 
@@ -31,7 +31,7 @@ class ArtworkListMenu extends ListMenu {
             buttons = new MenuButton[artworks.length];
 
             for (int i = 0; i < artworks.length; i++) {
-                buttons[i] = new ArtworkListMenu.PreviewButton(artworks[i]);
+                buttons[i] = new ArtworkMenu.PreviewButton(artworks[i]);
             }
 
         } else {
@@ -57,9 +57,16 @@ class ArtworkListMenu extends ListMenu {
         return processedName;
     }
 
+    @Override
+    public void open(ArtMap plugin, Player player) {
+        listItems = generateButtons(plugin, artist);
+        title = processTitle(artist);
+        super.open(plugin, player);
+    }
+
     private static class PreviewButton extends MenuButton {
 
-        MapArt artwork;
+        final MapArt artwork;
 
         public PreviewButton(MapArt artwork) {
             super(Material.MAP);
@@ -72,9 +79,9 @@ class ArtworkListMenu extends ListMenu {
         }
 
         @Override
-        public void onClick(Player player) {
+        public void onClick(ArtMap plugin, Player player) {
             player.closeInventory();
-            CommandPreview.previewArtwork(getMenu().getPlugin(), player, artwork);
+            CommandPreview.previewArtwork(plugin, player, artwork);
         }
     }
 }

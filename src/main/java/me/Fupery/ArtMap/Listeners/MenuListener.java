@@ -16,7 +16,6 @@ public class MenuListener implements Listener {
 
     private ArtMap plugin;
 
-
     public MenuListener(ArtMap plugin) {
         this.plugin = plugin;
     }
@@ -30,34 +29,31 @@ public class MenuListener implements Listener {
 
             event.setResult(Event.Result.DENY);
             event.setCancelled(true);
-            event.getWhoClicked().setItemOnCursor(null);
-            InventoryMenu menu = plugin.getMenu(inventory);
-            final MenuButton button = menu.getButton(event.getSlot());
+            event.getWhoClicked().setItemOnCursor(null);//TODO
 
-            if (button != null) {
-                Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        button.onClick(((Player) event.getWhoClicked()));
-                    }
-                });
+            if (plugin.hasOpenMenu(((Player) event.getWhoClicked()))) {
+                InventoryMenu menu = plugin.getMenu(((Player) event.getWhoClicked()));
+
+                final MenuButton button = menu.getButton(event.getSlot());
+
+                if (button != null) {
+
+                    Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            button.onClick(plugin, ((Player) event.getWhoClicked()));
+                        }
+                    });
+                }
             }
         }
     }
-
     @EventHandler
     void onMenuClose(InventoryCloseEvent event) {
-//
-//        Inventory inventory = event.getInventory();
-//        if (plugin.isOpenMenu(inventory)) {
-//            InventoryMenu menu = plugin.getMenu(inventory);
-//
-//            if (!menu.hasParent()) {
-//                plugin.removeMenu(inventory);
-//
-//            } else {
-//                menu.getParent().open();
-//            }
-//        }
+        Player player = ((Player) event.getPlayer());
+
+        if (player != null && plugin.hasOpenMenu(player)) {
+            plugin.removeMenu(player);
+        }
     }
 }

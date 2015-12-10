@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,14 +12,11 @@ import java.util.Arrays;
 
 public abstract class MenuButton extends ItemStack {
 
-    protected InventoryMenu menu;
-
     public MenuButton(Material type, String... text) {
         super(type);
         ItemMeta meta = getItemMeta();
-        menu = null;
 
-        if (text.length > 0) {
+        if (text != null && text.length > 0) {
             meta.setDisplayName(text[0]);
 
             if (text.length > 1) {
@@ -29,19 +28,11 @@ public abstract class MenuButton extends ItemStack {
         setItemMeta(meta);
     }
 
-    public abstract void onClick(Player player);
-
-    public InventoryMenu getMenu() {
-        return menu;
-    }
-
-    void setMenu(InventoryMenu menu) {
-        this.menu = menu;
-    }
+    public abstract void onClick(ArtMap plugin, Player player);
 
     public static class LinkedButton extends MenuButton {
 
-        InventoryMenu linkedMenu;
+        final InventoryMenu linkedMenu;
 
         public LinkedButton(InventoryMenu linkedMenu, Material type, String... text) {
             super(type, text);
@@ -49,12 +40,8 @@ public abstract class MenuButton extends ItemStack {
         }
 
         @Override
-        public void onClick(Player player) {
-
-            if (linkedMenu instanceof PlayerDataSensitiveMenu) {
-                ((PlayerDataSensitiveMenu) linkedMenu).initializeMenu(player);
-            }
-            linkedMenu.open(player);
+        public void onClick(ArtMap plugin, Player player) {
+            linkedMenu.open(plugin, player);
         }
     }
 
@@ -65,24 +52,25 @@ public abstract class MenuButton extends ItemStack {
         }
 
         @Override
-        public void onClick(Player player) {
+        public void onClick(ArtMap plugin, Player player) {
         }
     }
 
     public static class CloseButton extends MenuButton {
 
-        public CloseButton() {
+        InventoryMenu menu;
+
+        public CloseButton(InventoryMenu menu) {
             super(Material.BARRIER, HelpMenu.close);
+            this.menu = menu;
         }
 
         @Override
-        public void onClick(Player player) {
+        public void onClick(ArtMap plugin, Player player) {
+            menu.close(plugin, player);
 
-            if (menu.hasParent()) {
-                menu.getParent().open(player);
-
-            } else {
-                player.closeInventory();
+            if (menu.parent != null) {
+                menu.parent.open(plugin, player);
             }
         }
     }

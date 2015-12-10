@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -8,19 +9,24 @@ public abstract class ListMenu extends InventoryMenu {
 
     protected static final int maxButtons = 25;
     protected MenuButton[] listItems;
-    int page;
 
-    protected ListMenu(InventoryMenu parent, String title, int page, MenuButton... listItems) {
-        super(parent.plugin, parent, title, InventoryType.CHEST);
-        this.page = page;
-        this.listItems = listItems;
-        paginateButtons();
+    protected ListMenu(InventoryMenu parent, String title) {
+        super(parent, title, InventoryType.CHEST);
     }
 
-    protected void paginateButtons() {
+    protected MenuButton[] paginateButtons(int page, MenuButton ... listItems) {
         MenuButton[] buttons = new MenuButton[maxButtons + 2];
 
-        buttons[0] = (page == 0) ? new MenuButton.CloseButton() : new PageButton(false);
+        if (page < 1) {
+            buttons[0] = new MenuButton.CloseButton(this);
+
+        } else {
+            buttons[0] = new PageButton(this, false);
+
+            if (page > 0) {
+                buttons[0].setAmount(page - 1);
+            }
+        }
 
         int start = page * maxButtons;
         int pageLength = listItems.length - start;
@@ -28,36 +34,53 @@ public abstract class ListMenu extends InventoryMenu {
 
         System.arraycopy(listItems, start, buttons, 1, end);
 
-        buttons[maxButtons + 1] = (listItems.length > (maxButtons + start)) ? new PageButton(true) : null;
-        clearButtons();
-        addButtons(buttons);
+        if (listItems.length > (maxButtons + start)) {
+            buttons[maxButtons + 1] = new PageButton(this, true);
+
+            if (page < 64) {
+                buttons[maxButtons + 1].setAmount(page + 1);
+            }
+
+        } else {
+            buttons[maxButtons + 1] = null;
+        }
+        return buttons;
     }
 
-    protected void changePage(Player player, boolean forward) {
+    @Override
+    public void open(ArtMap plugin, Player player) {
+        MenuButton[] buttons = paginateButtons(0, listItems);
+        clearButtons();
+        addButtons(buttons);
+        updateInventory(player);
+        super.open(plugin, player);
+    }
 
-        if (page == 0 && !forward) {
-            getParent().open(player);
-        }
+    protected void changePage(Player player, int page, boolean forward) {
         page += forward ? 1 : -1;
-        paginateButtons();
+        MenuButton[] buttons = paginateButtons(page, listItems);
+        clearButtons();
+        addButtons(buttons);
         updateInventory(player);
     }
 
     static class PageButton extends MenuButton {
 
         boolean forward;
+        ListMenu menu;
 
-        public PageButton(boolean forward) {
+        public PageButton(ListMenu menu, boolean forward) {
             super(forward ? Material.EMERALD : Material.BARRIER,
                     forward ? "§a§l➡" : "§c§l⬅");
             this.forward = forward;
+            this.menu = menu;
         }
 
         @Override
-        public void onClick(Player player) {
-            if (getMenu() instanceof ListMenu) {
-                ((ListMenu) menu).changePage(player, forward);
-            }
+        public void onClick(ArtMap plugin, Player player) {
+            int page = getAmount();
+            page += forward ? -1 : 1;
+            menu.changePage(player, page, forward);
         }
     }
 

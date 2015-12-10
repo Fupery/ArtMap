@@ -16,19 +16,18 @@ import java.util.List;
 
 public class RecipeMenu extends InventoryMenu {
 
-    private static MenuButton buttons[] = generateButtons();
-
-    RecipeMenu(InventoryMenu parent) {
-        super(parent.getPlugin(), parent, "§1Choose a Recipe", InventoryType.HOPPER, buttons);
+    public RecipeMenu(InventoryMenu parent) {
+        super(parent, "§1Choose a Recipe", InventoryType.HOPPER);
+        addButtons(generateButtons(this));
     }
 
-    private static MenuButton[] generateButtons() {
+    private static MenuButton[] generateButtons(InventoryMenu menu) {
         MenuButton[] buttons = new MenuButton[5];
         buttons[0] = new RecipeButton(ArtMaterial.EASEL);
         buttons[1] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[2] = new RecipeButton(ArtMaterial.CARBON_PAPER);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
-        buttons[4] = new MenuButton.CloseButton();
+        buttons[4] = new MenuButton.CloseButton(menu);
         return buttons;
     }
 
@@ -61,7 +60,7 @@ public class RecipeMenu extends InventoryMenu {
         }
 
         @Override
-        public void onClick(Player player) {
+        public void onClick(ArtMap plugin, Player player) {
             player.closeInventory();
 
             if (player.hasPermission("artmap.admin")) {
@@ -72,7 +71,7 @@ public class RecipeMenu extends InventoryMenu {
                 }
 
             } else {
-                Preview.inventory(getMenu().getPlugin(), player,
+                Preview.inventory(plugin, player,
                         recipePreview(player, recipe));
                 player.updateInventory();
             }

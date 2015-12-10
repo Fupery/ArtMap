@@ -3,7 +3,10 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtistMenu;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtworkMenu;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.RecipeMenu;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -21,7 +24,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,12 +39,13 @@ public class ArtMap extends JavaPlugin {
     private List<String> titleFilter;
     private ConcurrentHashMap<Location, Easel> easels;
     private ConcurrentHashMap<Player, Preview> previewing;
-    private ConcurrentHashMap<Inventory, InventoryMenu> openMenus;
+    private ConcurrentHashMap<Player, InventoryMenu> openMenus;
     private ArtistHandler artistHandler;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
     private NMSInterface nmsInterface;
-    private static HelpMenu helpMenu;
+
+    public static final HelpMenu helpMenu = new HelpMenu();
 
     @Override
     public void onEnable() {
@@ -99,8 +102,6 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
         manager.registerEvents(new MenuListener(this), this);
-
-        helpMenu = new HelpMenu(getPlugin(ArtMap.class));
     }
 
     @Override
@@ -194,20 +195,20 @@ public class ArtMap extends JavaPlugin {
         this.artistHandler = artistHandler;
     }
 
-    public boolean isOpenMenu(Inventory inventory) {
-        return openMenus.containsKey(inventory);
+    public boolean hasOpenMenu(Player player) {
+        return openMenus.containsKey(player);
     }
 
-    public InventoryMenu getMenu(Inventory inventory) {
-        return openMenus.get(inventory);
+    public InventoryMenu getMenu(Player player) {
+        return openMenus.get(player);
     }
 
-    public void addMenu(Inventory inventory, InventoryMenu menu) {
-        openMenus.put(inventory, menu);
+    public void addMenu(Player player, InventoryMenu menu) {
+        openMenus.put(player, menu);
     }
 
-    public void removeMenu(Inventory inventory) {
-        openMenus.remove(inventory);
+    public void removeMenu(Player player) {
+        openMenus.remove(player);
     }
 
     public ConcurrentHashMap<Location, Easel> getEasels() {
@@ -230,13 +231,6 @@ public class ArtMap extends JavaPlugin {
         return previewing;
     }
 
-    public static void openHelpMenu(Player player) {
-        if (helpMenu == null) {
-            helpMenu = new HelpMenu(getPlugin(ArtMap.class));
-        }
-        helpMenu.open(player);
-    }
-
     public enum Lang {
         HELP(false), NO_CONSOLE(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
         SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false),
@@ -249,7 +243,7 @@ public class ArtMap extends JavaPlugin {
         UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), INVALID_VERSION(true),
         INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false), RECIPE_HOVER(false);
 
-        public static final String prefix = ChatColor.AQUA + "[ArtMap] ";
+        public static final String prefix = "§3[ArtMap] ";
         boolean isErrorMessage;
         String message;
 

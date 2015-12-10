@@ -14,7 +14,7 @@ import java.util.List;
 
 public enum ArtMaterial {
 
-    MAP_ART(new ItemMapArt((short) 0, "Artwork", Bukkit.getOfflinePlayer("Fupery"))),
+    MAP_ART(new ItemMapArt((short) 0, "Artwork", null)),
     CANVAS(new ItemCanvas()),
     CARBON_PAPER(new ItemCarbonPaper()),
     CARBON_PAPER_FILLED(new ItemCarbonPaperFilled()),

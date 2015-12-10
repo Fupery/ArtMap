@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -20,18 +21,25 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
+        Player player = event.getPlayer();
+
         if (plugin.getArtistHandler() != null
-                && plugin.getArtistHandler().containsPlayer(event.getPlayer())) {
-            plugin.getArtistHandler().removePlayer(event.getPlayer());
+                && plugin.getArtistHandler().containsPlayer(player)) {
+            plugin.getArtistHandler().removePlayer(player);
         }
 
-        if (plugin.isPreviewing(event.getPlayer())) {
+        if (plugin.isPreviewing(player)) {
 
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
 
-                Preview.stop(plugin, event.getPlayer());
+                Preview.stop(plugin, player);
             }
         }
+
+        if (plugin.hasOpenMenu(player)) {
+            plugin.removeMenu(player);
+        }
+
     }
 
     @EventHandler
