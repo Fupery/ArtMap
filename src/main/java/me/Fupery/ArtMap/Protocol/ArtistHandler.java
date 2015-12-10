@@ -7,6 +7,7 @@ import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -84,11 +85,16 @@ public class ArtistHandler {
         return (artists.containsKey(player));
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(final Player player) {
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
-        protocol.uninjectPlayer(player);
 
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                protocol.uninjectPlayer(player);
+            }
+        });
         Entity seat = player.getVehicle();
         String mapID = "[Not Found]";
         player.playSound(player.getLocation(), Sound.STEP_LADDER, (float) 0.5, -3);
