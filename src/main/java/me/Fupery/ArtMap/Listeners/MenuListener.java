@@ -64,7 +64,7 @@ public class MenuListener implements Listener {
         event.setResult(Event.Result.DENY);
         event.setCancelled(true);
     }
-    
+
     @EventHandler
     void onMenuClose(InventoryCloseEvent event) {
         Player player = ((Player) event.getPlayer());

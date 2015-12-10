@@ -42,6 +42,7 @@ public abstract class MenuButton extends ItemStack {
         public void onClick(ArtMap plugin, Player player) {
             linkedMenu.open(plugin, player);
         }
+
     }
 
     public static class StaticButton extends MenuButton {

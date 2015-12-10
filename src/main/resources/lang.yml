@@ -2,6 +2,7 @@ english:
   #Return Messages
   HELP: "/artmap help for a list of commands."
   NO_CONSOLE: "This command can only be used by players."
+  PLAYER_NOT_FOUND: "Player '%s' could not be found."
   INVALID_POS: "You can't place an easel here"
   NO_PERM: "You don't have permission to do this."
   ELSE_USING: "Someone else is using this canvas!"
@@ -48,11 +49,13 @@ english:
   HELP_RECIPES: ["   §6§l⊱§e§lRecipes§6§l⊰",
                 "§3✸§b§oClick to View§3✸"]
 
-  HELP_COMMANDS: ["             §6§l⊱§e§lArtworks§6§l⊰",
-                 "      §3✺§b§oView Player Artworks§3✺",
-                 "§7View your artwork or view other",
-                 "§7players' work grouped by artist.",
-                 "           §2Click to browse"]
+  HELP_COMMANDS: ["                     §6§l⊱§e§lCommands§6§l⊰",
+                  "                §3❀§b§o/artmap§3 for help§3❀",
+                  "  §8░░░░░░░░░░░░░░░░░░░░░░░░░░░ ",
+                  "§6•§f/artmap save <title>    §6➯   §7save your artwork",
+                  "§6•§f/artmap delete <title>  §6➯ §7delete your artwork",
+                  "§6•§f/artmap preview <title> §6➯  §7preview an artwork",
+                  "§2You can also preview art in the list menu§e§l➚"]
 
   HELP_LIST: ["             §6§l⊱§e§lArtworks§6§l⊰",
              "      §3✺§b§oView Player Artworks§3✺",
