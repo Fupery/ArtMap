@@ -25,13 +25,12 @@ public class MapArt {
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
     private static final String dateID = "date";
+    private static UUID[] artistList = null;
+    private static boolean artistsUpToDate = false;
     private final short mapIDValue;
     private final String title;
     private final OfflinePlayer player;
     private final String date;
-
-    private static UUID[] artistList = null;
-    private static boolean artistsUpToDate = false;
 
     public MapArt(short mapIDValue, String title, OfflinePlayer player) {
         this.mapIDValue = mapIDValue;

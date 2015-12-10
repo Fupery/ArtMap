@@ -52,7 +52,8 @@ public abstract class MenuButton extends ItemStack {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) { }
+        public void onClick(ArtMap plugin, Player player) {
+        }
     }
 
     public static class CloseButton extends MenuButton {
