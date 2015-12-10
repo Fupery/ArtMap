@@ -69,7 +69,7 @@ public class MenuListener implements Listener {
 
         if (button != null) {
 
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     button.onClick(plugin, ((Player) event.getWhoClicked()));

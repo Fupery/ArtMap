@@ -64,6 +64,12 @@ public class ArtworkMenu extends ListMenu {
         super.open(plugin, player);
     }
 
+//    @Override
+//    public void close(ArtMap plugin, Player player) {
+//        plugin.removeMenu(player);
+//        player.closeInventory();
+//    }
+
     private static class PreviewButton extends MenuButton {
 
         final MapArt artwork;

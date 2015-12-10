@@ -43,6 +43,11 @@ public class ArtistMenu extends ListMenu {
         super.open(plugin, player);
     }
 
+    //For smooth transitions from ArtworkMenu back button
+    void openSmoothly(InventoryMenu menu, ArtMap plugin, Player player) {
+
+    }
+
     private class ArtworkListButton extends MenuButton {
 
         final UUID artist;

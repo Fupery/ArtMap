@@ -9,8 +9,8 @@ import static me.Fupery.ArtMap.ArtMap.Lang.Array.*;
 
 public class HelpMenu extends InventoryMenu {
 
+    public static final String click = "§aClick to View";
     public static final HelpMenu helpMenu = new HelpMenu();
-    public static String click = "§aClick to View";
 
     public HelpMenu() {
         super(null, "§1Choose a help topic", InventoryType.HOPPER);

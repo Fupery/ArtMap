@@ -55,12 +55,12 @@ public abstract class ListMenu extends InventoryMenu {
         super.open(plugin, player);
     }
 
-    protected void changePage(Player player, int page, boolean forward) {
+    protected void changePage(ArtMap plugin, Player player, int page, boolean forward) {
         page += forward ? 1 : -1;
         MenuButton[] buttons = paginateButtons(page, listItems);
         clearButtons();
         addButtons(buttons);
-        updateInventory(player);
+        updateInventory(plugin, player);
     }
 
     static class PageButton extends MenuButton {
@@ -79,7 +79,7 @@ public abstract class ListMenu extends InventoryMenu {
         public void onClick(ArtMap plugin, Player player) {
             int page = getAmount();
             page += forward ? -1 : 1;
-            menu.changePage(player, page, forward);
+            menu.changePage(plugin, player, page, forward);
         }
     }
 

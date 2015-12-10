@@ -33,40 +33,53 @@ public class InventoryMenu {
         buttons = new MenuButton[type.getDefaultSize()];
     }
 
-    void updateInventory(Player player) {
-        Inventory inventory = player.getOpenInventory().getTopInventory();
+    protected void updateInventory(ArtMap plugin, final Player player) {
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                Inventory inventory = player.getOpenInventory().getTopInventory();
 
-        for (int slot = 0; slot < inventory.getSize(); slot++) {
+                for (int slot = 0; slot < inventory.getSize(); slot++) {
 
-            if (getButton(slot) != null) {
-                inventory.setItem(slot, getButton(slot));
+                    if (getButton(slot) != null) {
+                        inventory.setItem(slot, getButton(slot));
 
-            } else {
-                inventory.setItem(slot, new ItemStack(Material.AIR));
+                    } else {
+                        inventory.setItem(slot, new ItemStack(Material.AIR));
+                    }
+                }
+                player.updateInventory();
             }
-        }
-        player.updateInventory();
+        });
     }
 
     public MenuButton getButton(int slot) {
         return buttons[slot];
     }
 
-    public void open(ArtMap plugin, Player player) {
+    public void open(final ArtMap plugin, final Player player) {
+        final InventoryMenu menu = this;
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            @Override
+            public void run() {
 
-        if (plugin.hasOpenMenu(player)) {
-            plugin.getMenu(player).close(plugin, player);
-        }
-        Inventory inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
+                if (plugin.hasOpenMenu(player)) {
+                    plugin.getMenu(player).close(plugin, player);
+                }
 
-        for (int slot = 0; slot < inventory.getSize(); slot++) {
+                Inventory inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
 
-            if (getButton(slot) != null) {
-                inventory.setItem(slot, getButton(slot));
+                for (int slot = 0; slot < inventory.getSize(); slot++) {
+
+                    if (getButton(slot) != null) {
+                        inventory.setItem(slot, getButton(slot));
+                    }
+                }
+                plugin.addMenu(player, menu);
+                player.openInventory(inventory);
             }
-        }
-        plugin.addMenu(player, this);
-        player.openInventory(inventory);
+        });
+
     }
 
     public void close(ArtMap plugin, Player player) {
@@ -76,14 +89,6 @@ public class InventoryMenu {
 
     public String getTitle() {
         return title;
-    }
-
-    public InventoryMenu getParent() {
-        return parent;
-    }
-
-    public void setParent(InventoryMenu parent) {
-        this.parent = parent;
     }
 }
 
