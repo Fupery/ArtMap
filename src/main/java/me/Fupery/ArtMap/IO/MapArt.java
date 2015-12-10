@@ -147,6 +147,7 @@ public class MapArt {
 
                 Set<String> list = mapList.getKeys(true);
                 returnList = new ArrayList<>();
+                returnList.add(0, player);
 
                 for (String title : list) {
                     MapArt art = getArtwork(plugin, title);
@@ -154,12 +155,6 @@ public class MapArt {
                     if (art != null && !returnList.contains(art.player.getUniqueId())) {
                         returnList.add(art.player.getUniqueId());
                     }
-                }
-                if (returnList.contains(player) && returnList.indexOf(player) != 0) {
-                    int index = returnList.indexOf(player);
-                    UUID first = returnList.get(0);
-                    returnList.set(index, first);
-                    returnList.set(0, player);
                 }
                 artistList = returnList.toArray(new UUID[returnList.size()]);
                 artistsUpToDate = true;
