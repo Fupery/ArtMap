@@ -3,10 +3,6 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtistMenu;
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtworkMenu;
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.RecipeMenu;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -270,6 +266,7 @@ public class ArtMap extends JavaPlugin {
         public String rawMessage() {
             return message;
         }
+
         public enum Array {
             HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS, HELP_LIST, HELP_CLOSE;
 

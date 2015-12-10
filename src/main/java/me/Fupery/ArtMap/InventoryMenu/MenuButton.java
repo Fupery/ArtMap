@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

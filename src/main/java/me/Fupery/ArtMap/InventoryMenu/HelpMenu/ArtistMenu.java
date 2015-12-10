@@ -2,7 +2,9 @@ package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.InventoryMenu.*;
+import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
+import me.Fupery.ArtMap.InventoryMenu.ListMenu;
+import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -43,8 +45,8 @@ public class ArtistMenu extends ListMenu {
 
     private class ArtworkListButton extends MenuButton {
 
-        InventoryMenu menu;
         final UUID artist;
+        InventoryMenu menu;
 
         public ArtworkListButton(InventoryMenu menu, UUID artist) {
             super(Material.SKULL_ITEM);

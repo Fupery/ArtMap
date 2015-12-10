@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 
 public class MenuListener implements Listener {
@@ -18,6 +19,30 @@ public class MenuListener implements Listener {
 
     public MenuListener(ArtMap plugin) {
         this.plugin = plugin;
+    }
+
+    private static void handleClick(InventoryClickEvent event) {
+        Inventory top = event.getWhoClicked().getOpenInventory().getTopInventory();
+        Inventory bottom = event.getWhoClicked().getOpenInventory().getBottomInventory();
+
+        if (event.getClickedInventory() == top) {
+            event.setResult(Event.Result.DENY);
+            event.setCancelled(true);
+
+        } else if (event.getClickedInventory() == bottom) {
+
+            switch (event.getAction()) {
+                case MOVE_TO_OTHER_INVENTORY:
+                case HOTBAR_MOVE_AND_READD:
+                case COLLECT_TO_CURSOR:
+                case UNKNOWN:
+                    event.setResult(Event.Result.DENY);
+                    event.setCancelled(true);
+                    return;
+                default:
+                    break;
+            }
+        }
     }
 
     @EventHandler
@@ -71,30 +96,6 @@ public class MenuListener implements Listener {
 
         if (player != null && plugin.hasOpenMenu(player)) {
             plugin.removeMenu(player);
-        }
-    }
-
-    private static void handleClick(InventoryClickEvent event) {
-        Inventory top = event.getWhoClicked().getOpenInventory().getTopInventory();
-        Inventory bottom = event.getWhoClicked().getOpenInventory().getBottomInventory();
-
-        if (event.getClickedInventory() == top) {
-            event.setResult(Event.Result.DENY);
-            event.setCancelled(true);
-
-        } else if (event.getClickedInventory() == bottom) {
-
-            switch (event.getAction()) {
-                case MOVE_TO_OTHER_INVENTORY:
-                case HOTBAR_MOVE_AND_READD:
-                case COLLECT_TO_CURSOR:
-                case UNKNOWN:
-                    event.setResult(Event.Result.DENY);
-                    event.setCancelled(true);
-                    return;
-                default:
-                    break;
-            }
         }
     }
 }

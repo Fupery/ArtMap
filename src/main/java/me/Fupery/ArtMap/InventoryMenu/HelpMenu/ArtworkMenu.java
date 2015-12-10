@@ -45,10 +45,10 @@ public class ArtworkMenu extends ListMenu {
         String processedName;
         String title = "§1%s's art";
 
-        if (name.length() >= 25) {
-            processedName = name.substring(0, 24);
+        if (name.length() >= 22) {
+            processedName = name.substring(0, 21);
 
-        } else if (name.length() >= 17) {
+        } else if (name.length() >= 14) {
             processedName = name;
 
         } else {

@@ -14,7 +14,7 @@ public abstract class ListMenu extends InventoryMenu {
         super(parent, title, InventoryType.CHEST);
     }
 
-    protected MenuButton[] paginateButtons(int page, MenuButton ... listItems) {
+    protected MenuButton[] paginateButtons(int page, MenuButton... listItems) {
         MenuButton[] buttons = new MenuButton[maxButtons + 2];
 
         if (page < 1) {

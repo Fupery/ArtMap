@@ -35,7 +35,6 @@ public class InventoryMenu {
 
     void updateInventory(Player player) {
         Inventory inventory = player.getOpenInventory().getTopInventory();
-        
 
         for (int slot = 0; slot < inventory.getSize(); slot++) {
 

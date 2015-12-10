@@ -3,13 +3,11 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtworkMenu;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
-import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

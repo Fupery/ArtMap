@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
-import me.Fupery.ArtMap.InventoryMenu.*;
+import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
+import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
@@ -8,8 +9,8 @@ import static me.Fupery.ArtMap.ArtMap.Lang.Array.*;
 
 public class HelpMenu extends InventoryMenu {
 
-    public static String click = "§aClick to View";
     public static final HelpMenu helpMenu = new HelpMenu();
+    public static String click = "§aClick to View";
 
     public HelpMenu() {
         super(null, "§1Choose a help topic", InventoryType.HOPPER);
