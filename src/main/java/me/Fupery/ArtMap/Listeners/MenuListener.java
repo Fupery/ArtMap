@@ -79,7 +79,7 @@ public class MenuListener implements Listener {
     }
 
     @EventHandler
-    void onItemDrop(InventoryDragEvent event) {
+    void onItemDrag(InventoryDragEvent event) {
         Inventory inventory = event.getWhoClicked().getOpenInventory().getTopInventory();
 
         if (inventory == null || inventory.getTitle() == null
