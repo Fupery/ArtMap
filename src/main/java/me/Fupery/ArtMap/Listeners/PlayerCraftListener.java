@@ -36,53 +36,15 @@ public class PlayerCraftListener implements Listener {
 
                 if (event.getWhoClicked().getUniqueId().equals(art.getPlayer().getUniqueId())) {
 
-                    int carbonCopies = 0;
+                    Player player = (Player) event.getWhoClicked();
 
-                    for (ItemStack item : event.getInventory().getMatrix()) {
+                    ItemStack artworkItem = art.getMapItem();
 
-                        if (item != null && item.hasItemMeta()) {
-                            ItemMeta itemMeta = item.getItemMeta();
-
-                            if (item.getType() == Material.EMPTY_MAP
-                                    && itemMeta.hasDisplayName()
-                                    && itemMeta.getDisplayName().equals(ArtItem.carbonPaperKey)) {
-                                carbonCopies++;
-                            }
-                        }
-                    }
-
-                    if (carbonCopies == 0) {
-
-                        Player player = (Player) event.getWhoClicked();
-
-                        ItemStack artworkItem = art.getMapItem();
-
-                        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                            onShiftClick(artworkItem, player, event);
-
-                        } else {
-                            result.setItemMeta(artworkItem.getItemMeta());
-                        }
+                    if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        onShiftClick(artworkItem, player, event);
 
                     } else {
-
-                        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                            event.setResult(Event.Result.DENY);
-                            return;
-                        }
-//                        ItemMeta carbonMeta = Recipe.getActivatedCarbonPaper();
-//                        List<String> lore = carbonMeta.getLore();
-//                        lore.set(0, "§r" + result.getItemMeta().getDisplayName());
-//
-//                        ItemMeta resultMeta = result.getItemMeta();
-//                        resultMeta.setLore(lore);
-//                        resultMeta.setDisplayName(carbonMeta.getDisplayName());
-//
-//                        result.setItemMeta(resultMeta);
-//                        result.setDurability((short) 0);
-//                        result.setType(Material.PAPER);
-//                        result.setAmount(1);
-                        result = ArtMaterial.fillCarbonPaper(art);
+                        result.setItemMeta(artworkItem.getItemMeta());
                     }
 
                 } else {
