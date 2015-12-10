@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -61,7 +60,7 @@ public abstract class MenuButton extends ItemStack {
         InventoryMenu menu;
 
         public CloseButton(InventoryMenu menu) {
-            super(Material.BARRIER, HelpMenu.close);
+            super(Material.BARRIER, ArtMap.Lang.Array.HELP_CLOSE.messages());
             this.menu = menu;
         }
 

@@ -61,7 +61,6 @@ public class RecipeMenu extends InventoryMenu {
 
         @Override
         public void onClick(ArtMap plugin, Player player) {
-            player.closeInventory();
 
             if (player.hasPermission("artmap.admin")) {
                 ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);
@@ -71,6 +70,7 @@ public class RecipeMenu extends InventoryMenu {
                 }
 
             } else {
+                player.closeInventory();
                 Preview.inventory(plugin, player,
                         recipePreview(player, recipe));
                 player.updateInventory();

@@ -18,17 +18,6 @@ english:
   DELETED: "Sucessfully deleted '%s'."
   MAP_NOT_FOUND: "Artwork '%s' could not be found."
   NO_CRAFT_PERM: "You can't copy other players' artworks"
-  GET_ITEM: "§eClick to get one %s"
-  RECIPE_BUTTON: "§a[%s]"
-  NO_ARTWORKS_FOUND: "No artworks were found by '%s'."
-  LIST_HEADER: "Artworks by '%s':"
-  LIST_LINE_HOVER: "§eClick to preview '%s'"
-  LIST_FOOTER_PAGE: "§dShowing pg [%s/%s] "
-  LIST_FOOTER_BUTTON: "§a[Next Page]"
-  LIST_FOOTER_NXT: "§aClick to view the next page"
-  SEPERATOR: "§3-------------------------"
-  HELP_HEADER: "Help:"
-  HELP_MESSAGE: "§7Craft an §aEasel §7and §aCanvas §7to create artworks.\n §7Use dyes §7and §aPaint_Bucket §7to paint on your canvas."
   BAD_TITLE: "Invalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
   TITLE_USED: "Sorry, this title is already being used."
   PREVIEWING: "Previewing artwork '%s'."
@@ -38,14 +27,38 @@ english:
   INVALID_VERSION: "Version %s of craftbukkit is not supported - disabling ArtMap"
   INVALID_RESOLUTION: "Invalid mapResolutionFactor in config, default will be used"
   INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
-  #Menu Tooltips
   RECIPE_HEADER: "Recipe for §a[%s]"
-  RECIPE_HOVER: "§eClick to view the recipe for '%s'"
-  #Recipe Tooltips
 
   #help menu
-#  HELP_GETTING_STARTED: ["Welcome to ArtMap!]
-#  HELP_RECIPES:
-#  HELP_COMMANDS:
-#  HELP_LIST:
-#  HELP_CLOSE:
+  HELP_GETTING_STARTED: ["                §6§l⊱§e§lGetting Started§6§l⊰",
+                        "               §3❉§b§oWelcome to ArtMap!§3❉",
+                        "§7To get started painting, you will need to craft",
+                        "§7yourself an §6Easel §7and §6Canvas§7. Once you place",
+                        "§7your easel, click the canvas with §etools§7 to paint.",
+                        "   §8░░░░§e❃§lTools §r§e⤸§8░░░░░░░░░░░░░░░░",
+                        "§a❂§2Dye§a﴿",
+                        "§2§oLeft-Click§r§7 to draw a point, §2§oRight-Click§r§7 for lines",
+                        "",
+                        "                                         §e﴾§6PaintBucket§e❂",
+                        "     §7Craft a §o§6PaintBucket§7 with dye to fill an area",
+                        "",
+                        "§b❂§3Coal&Feather§b﴿",
+                        "§7Click with §3Coal§7 or §bFeather§7 to §3darken§7 or §blighten"]
+
+  HELP_RECIPES: ["   §6§l⊱§e§lRecipes§6§l⊰",
+                "§3✸§b§oClick to View§3✸"]
+
+  HELP_COMMANDS: ["             §6§l⊱§e§lArtworks§6§l⊰",
+                 "      §3✺§b§oView Player Artworks§3✺",
+                 "§7View your artwork or view other",
+                 "§7players' work grouped by artist.",
+                 "           §2Click to browse"]
+
+  HELP_LIST: ["             §6§l⊱§e§lArtworks§6§l⊰",
+             "      §3✺§b§oView Player Artworks§3✺",
+             "§7View your artwork or view other",
+             "§7players' work grouped by artist.",
+             "           §2Click to browse"]
+
+  HELP_CLOSE: ["    §6§l⊱§e§lBack§6§l⊰",
+              "§4﴾§cClose Menu§4﴿"]
