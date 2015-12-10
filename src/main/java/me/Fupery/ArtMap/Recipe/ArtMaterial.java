@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -96,37 +95,9 @@ public enum ArtMaterial {
             if (itemMeta.hasLore() && itemMeta.getLore().get(0).contains(artItem.getLoreID())) {
                 return true;
             }
-
-            if (isLegacyMaterial(itemStack)) {
-                itemStack.setItemMeta(recipe.getResult().getItemMeta());
-                return true;
-            }
         }
         return false;
     }
-
-    //todo for backwards compatability - to be removed
-    @Deprecated
-    public boolean isLegacyMaterial(ItemStack itemStack) {
-
-        if (itemStack.getItemMeta().hasLore()) {
-
-            if (this == CANVAS) {
-                return itemStack.getItemMeta().getDisplayName().equals(legacyCanvasKey);
-
-            } else if (this == MAP_ART) {
-                return itemStack.getItemMeta().getLore().get(0).equals(legacyMapArtKey);
-
-            } else if (this == EASEL) {
-                return itemStack.getItemMeta().getDisplayName().equals(legacyEaselKey);
-            }
-        }
-        return false;
-    }
-
-    private static final String legacyCanvasKey = "Canvas";
-    private static final String legacyMapArtKey = "§aPlayer Artwork";
-    private static final String legacyEaselKey = "Easel";
 
     public ItemStack getItem() {
         return artItem;
