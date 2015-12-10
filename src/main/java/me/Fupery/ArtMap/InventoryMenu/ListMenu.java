@@ -52,7 +52,6 @@ public abstract class ListMenu extends InventoryMenu {
         MenuButton[] buttons = paginateButtons(0, listItems);
         clearButtons();
         addButtons(buttons);
-        updateInventory(player);
         super.open(plugin, player);
     }
 

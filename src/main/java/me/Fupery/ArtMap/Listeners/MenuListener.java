@@ -95,7 +95,7 @@ public class MenuListener implements Listener {
         Player player = ((Player) event.getPlayer());
 
         if (player != null && plugin.hasOpenMenu(player)) {
-            plugin.removeMenu(player);
+            plugin.getMenu(player).close(plugin, player);
         }
     }
 }
