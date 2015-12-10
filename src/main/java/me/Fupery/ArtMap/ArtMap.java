@@ -230,7 +230,7 @@ public class ArtMap extends JavaPlugin {
     }
 
     public enum Lang {
-        HELP(false), NO_CONSOLE(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
+        HELP(false), NO_CONSOLE(true), PLAYER_NOT_FOUND(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
         SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false),
         NEED_CANVAS(true), NOT_A_CANVAS(true), NOT_YOUR_EASEL(true), NEED_TO_COPY(true),
         BREAK_CANVAS(false), PAINTING(false), DELETED(false), MAP_NOT_FOUND(true),
