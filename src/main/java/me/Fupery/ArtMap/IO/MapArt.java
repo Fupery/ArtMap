@@ -29,6 +29,12 @@ public class MapArt {
     private final String title;
     private final OfflinePlayer player;
     private final String date;
+    private static MapArt[] artworkList = null;
+    private static UUID[] artistList = null;
+    private static boolean artworksUpToDate = false;
+    private static boolean artistsUpToDate = false;
+
+
 
     public MapArt(short mapIDValue, String title, OfflinePlayer player) {
         this.mapIDValue = mapIDValue;
@@ -99,6 +105,8 @@ public class MapArt {
                 //remove map from list
                 mapList.set(title, null);
                 plugin.updateMaps();
+                artistsUpToDate = false;
+                artworksUpToDate = false;
                 return true;
             }
         }
@@ -106,60 +114,66 @@ public class MapArt {
     }
 
     public static MapArt[] listMapArt(ArtMap plugin, String artist) {
-        ArrayList<MapArt> returnList;
+        if (!artworksUpToDate) {
+            ArrayList<MapArt> returnList;
 
-        if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+            if (plugin.getMaps() != null) {
+                ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
 
-            Set<String> list = mapList.getKeys(false);
-            returnList = new ArrayList<>();
+                Set<String> list = mapList.getKeys(false);
+                returnList = new ArrayList<>();
 
-            int i = 0;
-            for (String title : list) {
-                MapArt art = getArtwork(plugin, title);
+                int i = 0;
+                for (String title : list) {
+                    MapArt art = getArtwork(plugin, title);
 
-                if (art != null) {
+                    if (art != null) {
 
-                    if (!artist.equals("all")) {
+                        if (!artist.equals("all")) {
 
-                        if (!art.getPlayer().getName().equalsIgnoreCase(artist)) {
-                            continue;
+                            if (!art.getPlayer().getName().equalsIgnoreCase(artist)) {
+                                continue;
+                            }
                         }
+                        returnList.add(art);
+                        i++;
                     }
-                    returnList.add(art);
-                    i++;
                 }
+                artworkList = returnList.toArray(new MapArt[returnList.size()]);
+                artworksUpToDate = true;
             }
-            return returnList.toArray(new MapArt[returnList.size()]);
         }
-        return null;
+        return artworkList;
     }
 
     public static UUID[] listArtists(ArtMap plugin, UUID player) {
-        ArrayList<UUID> returnList;
+        if (!artistsUpToDate) {
+            ArrayList<UUID> returnList;
 
-        if (plugin.getMaps() != null) {
-            ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+            if (plugin.getMaps() != null) {
+                ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
 
-            Set<String> list = mapList.getKeys(true);
-            returnList = new ArrayList<>();
+                Set<String> list = mapList.getKeys(true);
+                returnList = new ArrayList<>();
 
-            for (String title : list) {
-                MapArt art = getArtwork(plugin, title);
+                for (String title : list) {
+                    MapArt art = getArtwork(plugin, title);
 
-                if (art != null && !returnList.contains(art.player.getUniqueId())) {
-                    returnList.add(art.player.getUniqueId());
+                    if (art != null && !returnList.contains(art.player.getUniqueId())) {
+                        returnList.add(art.player.getUniqueId());
+                    }
                 }
+                if (returnList.contains(player) && returnList.indexOf(player) != 0) {
+                    int index = returnList.indexOf(player);
+                    UUID first = returnList.get(0);
+                    returnList.set(index, first);
+                    returnList.set(0, player);
+                }
+                artistList = returnList.toArray(new UUID[returnList.size()]);
+                artistsUpToDate = true;
             }
-            if (returnList.contains(player) && returnList.indexOf(player) != 0) {
-                int index = returnList.indexOf(player);
-                UUID first = returnList.get(0);
-                returnList.set(index, first);
-                returnList.set(0, player);
-            }
-            return returnList.toArray(new UUID[returnList.size()]);
         }
-        return null;
+        return artistList;
     }
 
     public static MapView cloneArtwork(ArtMap plugin, World world, short mapID) {
@@ -244,6 +258,8 @@ public class MapArt {
             map.set(artistID, player.getUniqueId().toString());
             map.set(dateID, date);
             plugin.updateMaps();
+            artistsUpToDate = false;
+            artworksUpToDate = false;
             return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
