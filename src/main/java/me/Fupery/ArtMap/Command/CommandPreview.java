@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.Preview;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,19 +16,24 @@ public class CommandPreview extends ArtMapCommand {
         this.plugin = plugin;
     }
 
-    public static boolean previewArtwork(ArtMap plugin, Player player, MapArt art) {
+    public static boolean previewArtwork(ArtMap plugin, final Player player, final MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
-            ItemStack currentItem = player.getItemInHand();
-            player.setItemInHand(art.getMapItem());
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    ItemStack currentItem = player.getItemInHand();
+                    player.setItemInHand(art.getMapItem());
 
-            if (currentItem != null) {
-                ItemStack leftOver = player.getInventory().addItem(currentItem).get(0);
+                    if (currentItem != null) {
+                        ItemStack leftOver = player.getInventory().addItem(currentItem).get(0);
 
-                if (leftOver != null) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                        if (leftOver != null) {
+                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                        }
+                    }
                 }
-            }
+            });
 
         } else {
 
