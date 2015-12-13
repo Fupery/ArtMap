@@ -2,8 +2,6 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -12,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 // Disallows players from copying ArtMap maps in the crafting table
 public class PlayerCraftListener implements Listener {
@@ -26,8 +23,6 @@ public class PlayerCraftListener implements Listener {
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
 
-        event.getWhoClicked().sendMessage("boop");
-
         ItemStack result = event.getCurrentItem();
 
         if (result.getType() == Material.MAP && result.hasItemMeta()) {
@@ -38,53 +33,15 @@ public class PlayerCraftListener implements Listener {
 
                 if (event.getWhoClicked().getUniqueId().equals(art.getPlayer().getUniqueId())) {
 
-                    int carbonCopies = 0;
+                    Player player = (Player) event.getWhoClicked();
 
-                    for (ItemStack item : event.getInventory().getMatrix()) {
+                    ItemStack artworkItem = art.getMapItem();
 
-                        if (item != null && item.hasItemMeta()) {
-                            ItemMeta itemMeta = item.getItemMeta();
-
-                            if (item.getType() == Material.EMPTY_MAP
-                                    && itemMeta.hasDisplayName()
-                                    && itemMeta.getDisplayName().equals(ArtItem.carbonPaperKey)) {
-                                carbonCopies++;
-                            }
-                        }
-                    }
-
-                    if (carbonCopies == 0) {
-
-                        Player player = (Player) event.getWhoClicked();
-
-                        ItemStack artworkItem = art.getMapItem();
-
-                        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                            onShiftClick(artworkItem, player, event);
-
-                        } else {
-                            result.setItemMeta(artworkItem.getItemMeta());
-                        }
+                    if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        onShiftClick(artworkItem, player, event);
 
                     } else {
-
-                        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                            event.setResult(Event.Result.DENY);
-                            return;
-                        }
-//                        ItemMeta carbonMeta = Recipe.getActivatedCarbonPaper();
-//                        List<String> lore = carbonMeta.getLore();
-//                        lore.set(0, "§r" + result.getItemMeta().getDisplayName());
-//
-//                        ItemMeta resultMeta = result.getItemMeta();
-//                        resultMeta.setLore(lore);
-//                        resultMeta.setDisplayName(carbonMeta.getDisplayName());
-//
-//                        result.setItemMeta(resultMeta);
-//                        result.setDurability((short) 0);
-//                        result.setType(Material.PAPER);
-//                        result.setAmount(1);
-                        result = ArtMaterial.fillCarbonPaper(art);
+                        result.setItemMeta(artworkItem.getItemMeta());
                     }
 
                 } else {

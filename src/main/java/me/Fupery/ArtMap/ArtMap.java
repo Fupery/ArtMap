@@ -3,6 +3,7 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
@@ -34,6 +35,7 @@ public class ArtMap extends JavaPlugin {
     private List<String> titleFilter;
     private ConcurrentHashMap<Location, Easel> easels;
     private ConcurrentHashMap<Player, Preview> previewing;
+    private ConcurrentHashMap<Player, InventoryMenu> openMenus;
     private ArtistHandler artistHandler;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
@@ -78,6 +80,7 @@ public class ArtMap extends JavaPlugin {
 
         easels = new ConcurrentHashMap<>();
         previewing = new ConcurrentHashMap<>();
+        openMenus = new ConcurrentHashMap<>();
 
         ArtMaterial.setupRecipes();
 
@@ -92,6 +95,7 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(this), this);
         manager.registerEvents(new InventoryInteractListener(this), this);
         manager.registerEvents(new EaselInteractListener(this), this);
+        manager.registerEvents(new MenuListener(this), this);
     }
 
     @Override
@@ -185,6 +189,22 @@ public class ArtMap extends JavaPlugin {
         this.artistHandler = artistHandler;
     }
 
+    public boolean hasOpenMenu(Player player) {
+        return openMenus.containsKey(player);
+    }
+
+    public InventoryMenu getMenu(Player player) {
+        return openMenus.get(player);
+    }
+
+    public void addMenu(Player player, InventoryMenu menu) {
+        openMenus.put(player, menu);
+    }
+
+    public void removeMenu(Player player) {
+        openMenus.remove(player);
+    }
+
     public ConcurrentHashMap<Location, Easel> getEasels() {
         return easels;
     }
@@ -206,18 +226,15 @@ public class ArtMap extends JavaPlugin {
     }
 
     public enum Lang {
-        NO_CONSOLE(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
+        HELP(false), NO_CONSOLE(true), PLAYER_NOT_FOUND(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
         SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false),
         NEED_CANVAS(true), NOT_A_CANVAS(true), NOT_YOUR_EASEL(true), NEED_TO_COPY(true),
         BREAK_CANVAS(false), PAINTING(false), DELETED(false), MAP_NOT_FOUND(true),
-        NO_CRAFT_PERM(true), GET_ITEM(false), RECIPE_BUTTON(false), NO_ARTWORKS_FOUND(true),
-        LIST_HEADER(false), LIST_LINE_HOVER(false), LIST_FOOTER_PAGE(false),
-        LIST_FOOTER_BUTTON(false), LIST_FOOTER_NXT(false), SEPERATOR(false),
-        HELP_HEADER(false), HELP_MESSAGE(false), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false),
+        NO_CRAFT_PERM(true), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false),
         UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), INVALID_VERSION(true),
-        INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false), RECIPE_HOVER(false);
+        INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false);
 
-        public static final String prefix = ChatColor.AQUA + "[ArtMap] ";
+        public static final String prefix = "§b[ArtMap] ";
         boolean isErrorMessage;
         String message;
 
@@ -237,7 +254,7 @@ public class ArtMap extends JavaPlugin {
                 message = lang.getString(name());
 
             } else {
-                Bukkit.getLogger().warning(String.format("Error loading %s from lang.yml", name()));
+                Bukkit.getLogger().warning(String.format("%sError loading %s from lang.yml", prefix, name()));
             }
         }
 
@@ -248,6 +265,36 @@ public class ArtMap extends JavaPlugin {
 
         public String rawMessage() {
             return message;
+        }
+
+        public enum Array {
+            HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS, HELP_LIST, HELP_CLOSE;
+
+            String[] messages;
+
+            Array() {
+                ArtMap plugin = getPlugin(ArtMap.class);
+                String language = plugin.getConfig().getString("language");
+                FileConfiguration langFile =
+                        YamlConfiguration.loadConfiguration(plugin.getTextResource("lang.yml"));
+
+                if (!langFile.contains(language)) {
+                    language = "english";
+                }
+                ConfigurationSection lang = langFile.getConfigurationSection(language);
+
+                if (lang.get(name()) != null) {
+                    List<String> strings = lang.getStringList(name());
+                    messages = strings.toArray(new String[strings.size()]);
+
+                } else {
+                    Bukkit.getLogger().warning(String.format("Error loading %s from lang.yml", name()));
+                }
+            }
+
+            public String[] messages() {
+                return messages;
+            }
         }
     }
 }

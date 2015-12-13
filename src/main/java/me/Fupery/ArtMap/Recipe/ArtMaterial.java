@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public enum ArtMaterial {
 
-    MAP_ART(new ItemMapArt((short) 0, "Artwork", Bukkit.getOfflinePlayer("Fupery"))),
+    MAP_ART(new ItemMapArt((short) 0, "Artwork", null)),
     CANVAS(new ItemCanvas()),
     CARBON_PAPER(new ItemCarbonPaper()),
     CARBON_PAPER_FILLED(new ItemCarbonPaperFilled()),

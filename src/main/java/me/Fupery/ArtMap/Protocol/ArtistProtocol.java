@@ -41,10 +41,17 @@ public abstract class ArtistProtocol {
     public void uninjectPlayer(Player player) {
 
         try {
-            Channel channel = getChannel(player);
+            final Channel channel = getChannel(player);
 
             if (channel.pipeline().get(handlerName) != null) {
-                channel.pipeline().remove(handlerName);
+
+                channel.eventLoop().execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        channel.pipeline().remove(handlerName);
+                    }
+                });
             }
 
         } catch (Exception e) {

@@ -189,6 +189,7 @@ class ItemMapArt extends ArtItem {
     ItemMapArt(short id, String title, OfflinePlayer player) {
         super(Material.MAP, 1, id);
         Date d = new Date();
+        String name = player != null ? player.getName() : "Player";
 
         ItemMeta meta = getItemMeta();
 
@@ -196,7 +197,7 @@ class ItemMapArt extends ArtItem {
 
         meta.setLore(Arrays.asList(
                 getLoreID(),
-                ChatColor.GOLD + "by " + ChatColor.YELLOW + player.getName(),
+                ChatColor.GOLD + "by " + ChatColor.YELLOW + name,
                 ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + MapArt.dateFormat.format(d)));
         setItemMeta(meta);
     }

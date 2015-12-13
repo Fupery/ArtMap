@@ -29,12 +29,12 @@ public class EaselInteractListener implements Listener {
         final Easel easel = event.getEasel();
 
         if (!player.hasPermission("artmap.artist")) {
-            player.sendRawMessage(ArtMap.Lang.ELSE_USING.message());
+            player.sendRawMessage(ArtMap.Lang.NO_PERM.message());
             return;
         }
 
         if (easel.isPainting()) {
-            player.sendMessage(ArtMap.Lang.NO_PERM.message());
+            player.sendMessage(ArtMap.Lang.ELSE_USING.message());
             return;
         }
 

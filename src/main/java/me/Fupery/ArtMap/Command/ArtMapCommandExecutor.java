@@ -1,13 +1,17 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtworkMenu;
+import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-
-import static me.Fupery.ArtMap.Utils.Formatting.playerError;
+import java.util.UUID;
 
 public class ArtMapCommandExecutor implements CommandExecutor {
 
@@ -25,11 +29,49 @@ public class ArtMapCommandExecutor implements CommandExecutor {
 
         commands.put("preview", new CommandPreview(plugin));
 
-        commands.put("list", new CommandList(plugin));
+        //convenience commands
+        commands.put("help", new ArtMapCommand(null, "/artmap [help]", false) {
+            @Override
+            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                HelpMenu.helpMenu.open(plugin, (Player) sender);
+                return true;
+            }
+        });
+        commands.put("recipe", new ArtMapCommand(null, "/artmap recipe", false) {
+            @Override
+            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                HelpMenu.helpMenu.getButton(1).onClick(plugin, (Player) sender);
+                return true;
+            }
+        });
+        commands.put("list", new ArtMapCommand(null, "/artmap list [player]", false) {
+            @Override
+            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
-        commands.put("help", new CommandHelp(plugin));
+                if (args.length > 1) {
 
-        commands.put("get", new CommandGet(plugin));
+                    OfflinePlayer artist;
+                    artist = Bukkit.getOfflinePlayer(args[1]);
+
+                    if (artist == null || !artist.hasPlayedBefore()) {
+                        msg.message = String.format(ArtMap.Lang.PLAYER_NOT_FOUND.message(), args[1]);
+                        return false;
+                    }
+                    UUID uuid = artist.getUniqueId();
+
+                    ArtworkMenu menu = new ArtworkMenu(null, uuid);
+                    menu.open(plugin, (Player) sender);
+
+                } else {
+                    HelpMenu.helpMenu.getButton(3).onClick(plugin, (Player) sender);
+                }
+                return true;
+            }
+        });
+
+        commands.get("help").plugin = plugin;
+        commands.get("recipe").plugin = plugin;
+        commands.get("list").plugin = plugin;
     }
 
     @Override
@@ -41,7 +83,7 @@ public class ArtMapCommandExecutor implements CommandExecutor {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
 
             } else {
-                sender.sendMessage(playerError("/artmap help for a list of commands."));
+                sender.sendMessage(ArtMap.Lang.HELP.message());
             }
 
         } else {

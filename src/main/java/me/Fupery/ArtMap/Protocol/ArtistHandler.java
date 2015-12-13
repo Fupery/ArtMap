@@ -7,24 +7,26 @@ import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtistHandler {
 
-    private final ConcurrentHashMap<Player, CanvasRenderer> artists;
+    private final HashMap<Player, CanvasRenderer> artists;
 
     private final ArtMap plugin;
     private final ArtistProtocol protocol;
 
     public ArtistHandler(final ArtMap plugin) {
         this.plugin = plugin;
-        artists = new ConcurrentHashMap<>();
+        artists = new HashMap<>();
         final NMSInterface nmsInterface = plugin.getNmsInterface();
 
         protocol = new ArtistProtocol(plugin, nmsInterface) {
@@ -72,7 +74,7 @@ public class ArtistHandler {
         };
     }
 
-    public void addPlayer(Player player, MapView mapView, int yawOffset) {
+    public synchronized void addPlayer(Player player, MapView mapView, int yawOffset) {
 
         if (plugin.getPixelTable() != null) {
             artists.put(player, new CanvasRenderer(plugin, mapView, yawOffset));
@@ -84,11 +86,21 @@ public class ArtistHandler {
         return (artists.containsKey(player));
     }
 
-    public void removePlayer(Player player) {
+    public synchronized void removePlayer(final Player player) {
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
-        protocol.uninjectPlayer(player);
 
+        if (plugin.isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    protocol.uninjectPlayer(player);
+                }
+            });
+
+        } else {
+            protocol.uninjectPlayer(player);
+        }
         Entity seat = player.getVehicle();
         String mapID = "[Not Found]";
         player.playSound(player.getLocation(), Sound.STEP_LADDER, (float) 0.5, -3);

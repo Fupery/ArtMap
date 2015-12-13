@@ -16,8 +16,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static me.Fupery.ArtMap.Utils.Formatting.listLine;
-
 public class MapArt {
 
     public static final String artworks = "artworks";
@@ -27,6 +25,8 @@ public class MapArt {
     private static final String artistID = "artist";
     private static final String mapID = "mapID";
     private static final String dateID = "date";
+    private static UUID[] artistList = null;
+    private static boolean artistsUpToDate = false;
     private final short mapIDValue;
     private final String title;
     private final OfflinePlayer player;
@@ -101,14 +101,15 @@ public class MapArt {
                 //remove map from list
                 mapList.set(title, null);
                 plugin.updateMaps();
+                artistsUpToDate = false;
                 return true;
             }
         }
         return false;
     }
 
-    public static String[] listArtworks(ArtMap plugin, String artist) {
-        ArrayList<String> returnList;
+    public static MapArt[] listMapArt(ArtMap plugin, String artist) {
+        ArrayList<MapArt> returnList;
 
         if (plugin.getMaps() != null) {
             ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
@@ -128,13 +129,38 @@ public class MapArt {
                             continue;
                         }
                     }
-                    returnList.add(listLine(title, art.player.getName(), art.date, art.mapIDValue));
+                    returnList.add(art);
                     i++;
                 }
             }
-            return returnList.toArray(new String[returnList.size()]);
+            return returnList.toArray(new MapArt[returnList.size()]);
         }
         return null;
+    }
+
+    public static UUID[] listArtists(ArtMap plugin, UUID player) {
+        if (!artistsUpToDate) {
+            ArrayList<UUID> returnList;
+
+            if (plugin.getMaps() != null) {
+                ConfigurationSection mapList = plugin.getMaps().getConfigurationSection("artworks");
+
+                Set<String> list = mapList.getKeys(true);
+                returnList = new ArrayList<>();
+                returnList.add(0, player);
+
+                for (String title : list) {
+                    MapArt art = getArtwork(plugin, title);
+
+                    if (art != null && !returnList.contains(art.player.getUniqueId())) {
+                        returnList.add(art.player.getUniqueId());
+                    }
+                }
+                artistList = returnList.toArray(new UUID[returnList.size()]);
+                artistsUpToDate = true;
+            }
+        }
+        return artistList;
     }
 
     public static MapView cloneArtwork(ArtMap plugin, World world, short mapID) {
@@ -219,6 +245,7 @@ public class MapArt {
             map.set(artistID, player.getUniqueId().toString());
             map.set(dateID, date);
             plugin.updateMaps();
+            artistsUpToDate = false;
             return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
