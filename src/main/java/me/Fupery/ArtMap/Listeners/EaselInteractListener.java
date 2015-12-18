@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,8 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class EaselInteractListener implements Listener {
 
+    public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();
     private final ArtMap plugin;
 
     public EaselInteractListener(ArtMap plugin) {

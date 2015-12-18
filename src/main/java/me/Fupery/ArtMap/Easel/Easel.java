@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ public class Easel {
         location.getWorld().playSound(location, Sound.DIG_WOOD, 1, 0);
 
         Easel easel = new Easel(plugin, location).setEasel(stand, frame);
-        plugin.getEasels().put(location, easel);
+        EaselInteractListener.easels.put(location, easel);
 
         if (stand == null || frame == null) {
             easel.breakEasel();
@@ -54,9 +54,9 @@ public class Easel {
         Location easelLocation =
                 part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
-        if (plugin.getEasels() != null && plugin.getEasels().containsKey(easelLocation)) {
+        if (EaselInteractListener.easels.containsKey(easelLocation)) {
 
-            return plugin.getEasels().get(easelLocation);
+            return EaselInteractListener.easels.get(easelLocation);
 
         } else {
 
@@ -64,7 +64,7 @@ public class Easel {
 
             if (easel.getParts()) {
 
-                plugin.getEasels().put(easel.location, easel);
+                EaselInteractListener.easels.put(easel.location, easel);
                 return easel;
             }
         }
@@ -127,8 +127,8 @@ public class Easel {
 
         } else {
 
-            if (plugin.getEasels().containsKey(location)) {
-                plugin.getEasels().remove(location);
+            if (EaselInteractListener.easels.containsKey(location)) {
+                EaselInteractListener.easels.remove(location);
             }
             return false;
         }
@@ -153,13 +153,10 @@ public class Easel {
         seat.setMetadata("easel",
                 new FixedMetadataValue(plugin, LocationTag.createTag(location)));
 
-        if (plugin.getArtistHandler() == null) {
-            plugin.setArtistHandler(new ArtistHandler(plugin));
-        }
         setIsPainting(true);
         MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
 
-        plugin.getArtistHandler().addPlayer(player, mapView,
+        plugin.getArtistHandler().addPlayer(plugin, player, mapView,
                 EaselPart.getYawOffset(frame.getFacing()));
     }
 
@@ -170,7 +167,7 @@ public class Easel {
 
     public void breakEasel() {
 
-        plugin.getEasels().remove(location);
+        EaselInteractListener.easels.remove(location);
 
         Bukkit.getScheduler().runTask(plugin, new Runnable() {
             @Override

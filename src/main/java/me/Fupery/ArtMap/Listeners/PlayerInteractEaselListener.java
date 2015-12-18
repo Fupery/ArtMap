@@ -133,8 +133,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private boolean checkIsPainting(Player player, Cancellable event) {
 
-        if (player.isInsideVehicle() && plugin.getArtistHandler() != null
-                && plugin.getArtistHandler().containsPlayer(player)) {
+        if (player.isInsideVehicle() && plugin.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }
@@ -143,7 +142,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private void checkPreviewing(Player player, Cancellable event) {
 
-        if (plugin.isPreviewing(player)) {
+        if (Preview.previewing.containsKey(player)) {
 
             if (player.getItemInHand().getType() == Material.MAP) {
 
@@ -160,7 +159,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
 
-                if (plugin.getEasels().containsKey(block.getLocation())
+                if (EaselInteractListener.easels.containsKey(block.getLocation())
                         || Easel.checkForEasel(plugin, block.getLocation())) {
                     event.setCancelled(true);
                     return true;

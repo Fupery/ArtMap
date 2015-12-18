@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Listeners.MenuListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,8 +64,8 @@ public class InventoryMenu {
             @Override
             public void run() {
 
-                if (plugin.hasOpenMenu(player)) {
-                    plugin.getMenu(player).close(plugin, player);
+                if (MenuListener.openMenus.containsKey(player)) {
+                    MenuListener.openMenus.get(player).close(plugin, player);
                 }
 
                 Inventory inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
@@ -75,7 +76,7 @@ public class InventoryMenu {
                         inventory.setItem(slot, getButton(slot));
                     }
                 }
-                plugin.addMenu(player, menu);
+                MenuListener.openMenus.put(player, menu);
                 player.openInventory(inventory);
             }
         });
@@ -83,7 +84,7 @@ public class InventoryMenu {
     }
 
     public void close(ArtMap plugin, Player player) {
-        plugin.removeMenu(player);
+        MenuListener.openMenus.remove(player);
         player.closeInventory();
     }
 

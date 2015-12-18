@@ -3,9 +3,11 @@ package me.Fupery.ArtMap.Protocol;
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.NMS.NMSInterface;
+import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import me.Fupery.DataTables.DataTables;
+import me.Fupery.DataTables.PixelTable;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,29 +16,24 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtistHandler {
 
-    private final HashMap<Player, CanvasRenderer> artists;
-
-    private final ArtMap plugin;
+    private final ConcurrentHashMap<Player, CanvasRenderer> artists;
     private final ArtistProtocol protocol;
 
-    public ArtistHandler(final ArtMap plugin) {
-        this.plugin = plugin;
-        artists = new HashMap<>();
-        final NMSInterface nmsInterface = plugin.getNmsInterface();
+    public ArtistHandler() {
+        artists = new ConcurrentHashMap<>();
 
-        protocol = new ArtistProtocol(plugin, nmsInterface) {
+        protocol = new ArtistProtocol() {
 
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
 
-                if (artists != null && artists.containsKey(sender)) {
+                if (artists.containsKey(sender)) {
 
-                    ArtistPacket artMapPacket = nmsInterface.getArtistPacket(packet);
+                    ArtistPacket artMapPacket = ArtMap.nmsInterface.getArtistPacket(packet);
 
                     if (artMapPacket == null) {
                         return packet;
@@ -74,33 +71,33 @@ public class ArtistHandler {
         };
     }
 
-    public synchronized void addPlayer(Player player, MapView mapView, int yawOffset) {
-
-        if (plugin.getPixelTable() != null) {
-            artists.put(player, new CanvasRenderer(plugin, mapView, yawOffset));
-            protocol.injectPlayer(player);
+    private static PixelTable loadTables() {
+        PixelTable pixelTable;
+        try {
+            pixelTable = DataTables.loadTable(4);
+        } catch (DataTables.InvalidResolutionFactorException e) {
+            pixelTable = null;
+            e.printStackTrace();
         }
+        return pixelTable;
     }
 
-    public boolean containsPlayer(Player player) {
+    public synchronized void addPlayer(ArtMap plugin, Player player, MapView mapView, int yawOffset) {
+        artists.put(player, new CanvasRenderer(plugin, mapView, yawOffset));
+        protocol.injectPlayer(player);
+    }
+
+    public synchronized boolean containsPlayer(Player player) {
         return (artists.containsKey(player));
     }
 
     public synchronized void removePlayer(final Player player) {
+        Bukkit.getLogger().info("remove " + player.getName());
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
 
-        if (plugin.isEnabled()) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    protocol.uninjectPlayer(player);
-                }
-            });
+        protocol.uninjectPlayer(player);
 
-        } else {
-            protocol.uninjectPlayer(player);
-        }
         Entity seat = player.getVehicle();
         String mapID = "[Not Found]";
         player.playSound(player.getLocation(), Sound.STEP_LADDER, (float) 0.5, -3);
@@ -112,8 +109,8 @@ public class ArtistHandler {
                 String tag = seat.getMetadata("easel").get(0).asString();
                 Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-                if (plugin.getEasels().containsKey(location)) {
-                    Easel easel = plugin.getEasels().get(location);
+                if (EaselInteractListener.easels.containsKey(location)) {
+                    Easel easel = EaselInteractListener.easels.get(location);
                     easel.setIsPainting(false);
 
                     if (easel.hasItem()) {
@@ -129,18 +126,12 @@ public class ArtistHandler {
             renderer.saveMap();
 
         } else {
-            plugin.getLogger().warning(ChatColor.RED + String.format(
+            Bukkit.getLogger().warning(ArtMap.Lang.prefix + ChatColor.RED + String.format(
                     "Renderer not found for player: %s, mapID: %s", player.getName(), mapID));
         }
-
-        if (artists.size() == 0) {
-            protocol.close();
-            plugin.setArtistHandler(null);
-        }
-
     }
 
-    public void clearPlayers() {
+    public synchronized void clearPlayers() {
         for (Player player : artists.keySet()) {
             removePlayer(player);
         }
@@ -150,7 +141,4 @@ public class ArtistHandler {
         return protocol;
     }
 
-    public ArtMap getPlugin() {
-        return plugin;
-    }
 }

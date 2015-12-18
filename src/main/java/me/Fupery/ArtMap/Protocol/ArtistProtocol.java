@@ -4,27 +4,18 @@ import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import me.Fupery.ArtMap.NMS.NMSInterface;
+import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 import java.util.logging.Level;
 
 public abstract class ArtistProtocol {
 
-    private final Plugin plugin;
-    private final NMSInterface nmsInterface;
-
     private final Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
     private final String handlerName = "ArtMapHandler";
-
-    public ArtistProtocol(Plugin plugin, NMSInterface nmsInterface) {
-        this.plugin = plugin;
-        this.nmsInterface = nmsInterface;
-    }
 
     public void injectPlayer(Player player) {
 
@@ -64,7 +55,7 @@ public abstract class ArtistProtocol {
         Channel channel = channelLookup.get(player.getName());
 
         if (channel == null) {
-            channel = nmsInterface.getPlayerChannel(player);
+            channel = ArtMap.nmsInterface.getPlayerChannel(player);
 
             if (channel == null) {
                 uninjectPlayer(player);
@@ -103,7 +94,7 @@ public abstract class ArtistProtocol {
                 msg = onPacketInAsync(player, channel, msg);
 
             } catch (Exception e) {
-                plugin.getLogger().log(Level.SEVERE, "Error in onPacketInAsync().", e);
+                Bukkit.getLogger().log(Level.SEVERE, ArtMap.Lang.prefix + "Error in onPacketInAsync().", e);
             }
 
             if (msg != null) {

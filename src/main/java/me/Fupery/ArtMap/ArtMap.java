@@ -1,9 +1,7 @@
 package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
-import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
@@ -15,7 +13,6 @@ import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -26,23 +23,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
+    public static final NMSInterface nmsInterface = new VersionHandler().getNMSInterface();
+    public static final ArtistHandler artistHandler = new ArtistHandler();
     private File mapList;
     private FileConfiguration maps;
     private List<String> titleFilter;
-    private ConcurrentHashMap<Location, Easel> easels;
-    private ConcurrentHashMap<Player, Preview> previewing;
-    private ConcurrentHashMap<Player, InventoryMenu> openMenus;
-    private ArtistHandler artistHandler;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
-    private NMSInterface nmsInterface;
 
     @Override
     public void onEnable() {
+
+        if (nmsInterface instanceof InvalidVersion) {
+            String version = ((InvalidVersion) nmsInterface).getVersion();
+            getLogger().warning(String.format(
+                    Lang.INVALID_VERSION.rawMessage(), version));
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
 
         if (loadPluginData()) {
             maps = YamlConfiguration.loadConfiguration(mapList);
@@ -68,20 +69,6 @@ public class ArtMap extends JavaPlugin {
             return;
         }
 
-        nmsInterface = new VersionHandler(this).getNMSInterface();
-
-        if (nmsInterface instanceof InvalidVersion) {
-            String version = ((InvalidVersion) nmsInterface).getVersion();
-            getLogger().warning(String.format(
-                    Lang.INVALID_VERSION.rawMessage(), version));
-            getPluginLoader().disablePlugin(this);
-            return;
-        }
-
-        easels = new ConcurrentHashMap<>();
-        previewing = new ConcurrentHashMap<>();
-        openMenus = new ConcurrentHashMap<>();
-
         ArtMaterial.setupRecipes();
 
         this.getCommand("artmap").setExecutor(new ArtMapCommandExecutor(this));
@@ -100,14 +87,12 @@ public class ArtMap extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        artistHandler.clearPlayers();
+        artistHandler.getProtocol().close();
 
-        if (artistHandler != null) {
-            artistHandler.clearPlayers();
-        }
+        if (Preview.previewing.size() > 0) {
 
-        if (previewing != null && previewing.size() > 0) {
-
-            for (Player player : previewing.keySet()) {
+            for (Player player : Preview.previewing.keySet()) {
                 Preview.stop(this, player);
             }
         }
@@ -177,36 +162,8 @@ public class ArtMap extends JavaPlugin {
         return mapResolutionFactor;
     }
 
-    public boolean isPreviewing(Player player) {
-        return previewing.containsKey(player);
-    }
-
     public ArtistHandler getArtistHandler() {
         return artistHandler;
-    }
-
-    public void setArtistHandler(ArtistHandler artistHandler) {
-        this.artistHandler = artistHandler;
-    }
-
-    public boolean hasOpenMenu(Player player) {
-        return openMenus.containsKey(player);
-    }
-
-    public InventoryMenu getMenu(Player player) {
-        return openMenus.get(player);
-    }
-
-    public void addMenu(Player player, InventoryMenu menu) {
-        openMenus.put(player, menu);
-    }
-
-    public void removeMenu(Player player) {
-        openMenus.remove(player);
-    }
-
-    public ConcurrentHashMap<Location, Easel> getEasels() {
-        return easels;
     }
 
     public List<String> getTitleFilter() {
@@ -219,10 +176,6 @@ public class ArtMap extends JavaPlugin {
 
     public NMSInterface getNmsInterface() {
         return nmsInterface;
-    }
-
-    public ConcurrentHashMap<Player, Preview> getPreviewing() {
-        return previewing;
     }
 
     public enum Lang {

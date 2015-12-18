@@ -18,14 +18,14 @@ public class ChunkUnloadListener implements Listener {
     @EventHandler
     public void onChunkUnload(final ChunkUnloadEvent event) {
 
-        if (plugin.getEasels().size() > 0) {
+        if (EaselInteractListener.easels.size() > 0) {
             Bukkit.getScheduler().runTask(plugin, new Runnable() {
 
                 @Override
                 public void run() {
                     Location location = null;
 
-                    for (Location l : plugin.getEasels().keySet()) {
+                    for (Location l : EaselInteractListener.easels.keySet()) {
 
                         if (l.getChunk().equals(event.getChunk())) {
                             location = l;
@@ -33,7 +33,7 @@ public class ChunkUnloadListener implements Listener {
                     }
 
                     if (location != null) {
-                        plugin.getEasels().remove(location);
+                        EaselInteractListener.easels.remove(location);
                     }
                 }
             });

@@ -13,8 +13,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class MenuListener implements Listener {
 
+    public static final ConcurrentHashMap<Player, InventoryMenu> openMenus = new ConcurrentHashMap<>();
     private ArtMap plugin;
 
     public MenuListener(ArtMap plugin) {
@@ -60,10 +63,10 @@ public class MenuListener implements Listener {
             return;
         }
 
-        if (!plugin.hasOpenMenu(((Player) event.getWhoClicked()))) {
+        if (!openMenus.containsKey(((Player) event.getWhoClicked()))) {
             return;
         }
-        InventoryMenu menu = plugin.getMenu(((Player) event.getWhoClicked()));
+        InventoryMenu menu = openMenus.get(((Player) event.getWhoClicked()));
 
         final MenuButton button = menu.getButton(event.getSlot());
 
@@ -94,8 +97,8 @@ public class MenuListener implements Listener {
     void onMenuClose(InventoryCloseEvent event) {
         Player player = ((Player) event.getPlayer());
 
-        if (player != null && plugin.hasOpenMenu(player)) {
-            plugin.getMenu(player).close(plugin, player);
+        if (player != null && openMenus.containsKey(player)) {
+            openMenus.get(player).close(plugin, player);
         }
     }
 }

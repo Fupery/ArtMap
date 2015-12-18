@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
+import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -40,8 +41,7 @@ public class CommandSave extends ArtMapCommand {
             return false;
         }
 
-        if (plugin.getArtistHandler() == null
-                || !plugin.getArtistHandler().containsPlayer(player)) {
+        if (!plugin.getArtistHandler().containsPlayer(player)) {
             player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
             return false;
         }
@@ -60,7 +60,7 @@ public class CommandSave extends ArtMapCommand {
                         String tag = seat.getMetadata("easel").get(0).asString();
                         Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-                        easel = plugin.getEasels().get(location);
+                        easel = EaselInteractListener.easels.get(location);
                     }
                 }
 

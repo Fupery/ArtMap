@@ -8,7 +8,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public abstract class Preview extends BukkitRunnable {
+    public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
     final ArtMap plugin;
     final Player player;
 
@@ -23,7 +26,7 @@ public abstract class Preview extends BukkitRunnable {
         Preview preview = new ItemPreview(plugin, player, item);
         preview.runTaskLaterAsynchronously(plugin, 300);
         player.setItemInHand(item);
-        plugin.getPreviewing().put(player, preview);
+        Preview.previewing.put(player, preview);
     }
 
     public static void inventory(ArtMap plugin, Player player, Inventory previewInventory) {
@@ -31,26 +34,26 @@ public abstract class Preview extends BukkitRunnable {
         Preview preview = new RecipePreview(plugin, player, previewInventory);
         preview.runTaskLaterAsynchronously(plugin, 300);
         player.openInventory(previewInventory);
-        plugin.getPreviewing().put(player, preview);
+        Preview.previewing.put(player, preview);
     }
 
     public static void stop(ArtMap plugin, Player player) {
 
-        if (plugin.getPreviewing().containsKey(player)) {
-            plugin.getPreviewing().get(player).stopPreviewing();
+        if (Preview.previewing.containsKey(player)) {
+            Preview.previewing.get(player).stopPreviewing();
         }
     }
 
     private static void checkCurrentPreviews(ArtMap plugin, Player player) {
-        if (plugin.getPreviewing().containsKey(player)) {
-            plugin.getPreviewing().get(player).stopPreviewing();
+        if (Preview.previewing.containsKey(player)) {
+            Preview.previewing.get(player).stopPreviewing();
         }
     }
 
     public void stopPreviewing() {
         cancel();
         run();
-        plugin.getPreviewing().remove(player);
+        Preview.previewing.remove(player);
     }
 }
 
@@ -67,7 +70,7 @@ class ItemPreview extends Preview {
     public void run() {
         player.playSound(player.getLocation(), Sound.CLICK, (float) 0.5, -2);
         player.getInventory().removeItem(preview);
-        plugin.getPreviewing().remove(player);
+        Preview.previewing.remove(player);
     }
 }
 

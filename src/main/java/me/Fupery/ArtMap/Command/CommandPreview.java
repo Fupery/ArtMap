@@ -37,8 +37,8 @@ public class CommandPreview extends ArtMapCommand {
 
         } else {
 
-            if (plugin.isPreviewing(player)) {
-                plugin.getPreviewing().get(player).stopPreviewing();
+            if (Preview.previewing.containsKey(player)) {
+                Preview.previewing.get(player).stopPreviewing();
             }
 
             if (player.getItemInHand().getType() != Material.AIR) {
