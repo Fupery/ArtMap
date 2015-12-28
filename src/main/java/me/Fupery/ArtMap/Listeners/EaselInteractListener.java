@@ -8,6 +8,7 @@ import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,8 +53,12 @@ public class EaselInteractListener implements Listener {
             case RIGHT_CLICK:
 
                 //If the easel has a canvas, player rides the easel
-                if (easel.getFrame().getItem().getType() != Material.AIR) {
+                if (easel.getFrame().getItem().getType() == Material.MAP) {
                     easel.rideEasel(player);
+                    return;
+
+                } else if (easel.getItem().getType() != Material.AIR) {
+                    easel.removeItem();
                     return;
                 }
 
@@ -67,46 +72,25 @@ public class EaselInteractListener implements Listener {
 
                 ItemMeta itemInHandMeta = itemInHand.getItemMeta();
 
-                //Check if canvas has correct metadata
-                if (!itemInHandMeta.hasDisplayName()) {
+                //Check if canvas has valid metadata
+                if (!itemInHandMeta.hasLore()) {
                     player.sendMessage(ArtMap.Lang.NOT_A_CANVAS.message());
                     return;
                 }
 
-                MapView mapView = null;
+                MapView mapView;
                 ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 //Check if carbon paper links to a valid artwork
                 if (material == ArtMaterial.CARBON_PAPER_FILLED) {
-
-                    if (itemInHandMeta.hasLore()) {
-                        String loreID = itemInHandMeta.getLore().get(0);
-                        int a = loreID.indexOf("[") + 1, b = loreID.lastIndexOf("]");
-
-                        if (a < 0 || b < 0) {
-                            return;
-                        }
-                        String title = loreID.substring(a, b);
-                        MapArt art = MapArt.getArtwork(plugin, title);
-
-                        if (art != null) {
-                            mapView = MapArt.cloneArtwork(plugin,
-                                    player.getWorld(), art.getMapID());
-                        }
-                    }
+                    mapView = getMapView(itemInHandMeta.getLore().get(0), player.getWorld());
 
                     if (mapView != null) {
-                        easel.mountCanvas(mapView);
+                        mountMap(easel, mapView, player);
 
-                        if (easel.getItem() != null) {
-                            ItemStack removed = itemInHand.clone();
-                            removed.setAmount(1);
-                            player.getInventory().removeItem(removed);
-                        }
-                        return;
+                    } else {
+                        player.sendMessage(ArtMap.Lang.NEED_TO_COPY.message());
                     }
-                    player.sendMessage(ArtMap.Lang.NEED_TO_COPY.message());
-                    return;
 
                     //Mount the canvas
                 } else if (material == ArtMaterial.CARBON_PAPER) {
@@ -116,52 +100,49 @@ public class EaselInteractListener implements Listener {
                 } else if (material == ArtMaterial.CANVAS) {
                     mapView = MapArt.generateMapID(plugin, player.getWorld());
                     plugin.getNmsInterface().setWorldMap(mapView, MapArt.blankMap);
-                    easel.mountCanvas(mapView);
-
-                    if (easel.getItem() != null) {
-                        ItemStack removed = itemInHand.clone();
-                        removed.setAmount(1);
-                        player.getInventory().removeItem(removed);
-                    }
-                    return;
+                    mountMap(easel, mapView, player);
                 }
                 break;
 
             case SHIFT_RIGHT_CLICK:
 
-                MapArt art = null;
-
                 if (easel.hasItem()) {
-                    ItemStack easelItem = easel.getItem();
+                    final short id = easel.getItem().getDurability();
 
-                    if (ArtMaterial.MAP_ART.isValidMaterial(easelItem)) {
-                        art = MapArt.getArtwork(plugin, easelItem.getItemMeta().getDisplayName());
-                    }
-
-                    if (art != null) {
-
-                        if (!art.getPlayer().getUniqueId().equals(player.getUniqueId())
-                                && !player.hasPermission("artmap.admin")) {
-
-                            player.sendMessage(String.format(ArtMap.Lang.NOT_YOUR_EASEL.message(),
-                                    art.getPlayer().getName()));
-                            return;
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            MapArt.recycleID(plugin, id);
                         }
-
-                    } else {
-                        final short id = easelItem.getDurability();
-
-                        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                MapArt.recycleID(plugin, id);
-                            }
-                        });
-                    }
+                    });
                     easel.removeItem();
                 }
                 easel.breakEasel();
-                break;
+        }
+    }
+
+    private MapView getMapView(String id, World world) {
+        int a = id.indexOf("[") + 1, b = id.lastIndexOf("]");
+
+        if (a < 0 || b < 0) {
+            return null;
+        }
+        String title = id.substring(a, b);
+        MapArt art = MapArt.getArtwork(plugin, title);
+
+        if (art != null) {
+            return MapArt.cloneArtwork(plugin, world, art.getMapID());
+        }
+        return null;
+    }
+
+    private void mountMap(Easel easel, MapView mapView, Player player) {
+        easel.mountCanvas(mapView);
+
+        if (easel.getItem() != null) {
+            ItemStack removed = player.getItemInHand().clone();
+            removed.setAmount(1);
+            player.getInventory().removeItem(removed);
         }
     }
 }

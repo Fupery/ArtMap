@@ -161,8 +161,13 @@ public class Easel {
     }
 
     public void removeItem() {
-        frame.setItem(new ItemStack(Material.AIR));
-        location.getWorld().dropItemNaturally(location, ArtMaterial.CANVAS.getItem());
+        ItemStack item = (frame.getItem().getType() == Material.MAP)
+                ? ArtMaterial.CANVAS.getItem() : frame.getItem().clone();
+
+        if (item.getType() != Material.AIR) {
+            frame.setItem(new ItemStack(Material.AIR));
+            location.getWorld().dropItemNaturally(location, item);
+        }
     }
 
     public void breakEasel() {
@@ -180,7 +185,7 @@ public class Easel {
                 }
 
                 if (frame != null) {
-                    frame.setItem(new ItemStack(Material.AIR));
+                    removeItem();
                     frame.remove();
                 }
                 location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
