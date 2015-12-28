@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -186,7 +185,7 @@ class ItemCarbonPaperFilled extends ArtItem {
 
 class ItemMapArt extends ArtItem {
 
-    ItemMapArt(short id, String title, OfflinePlayer player) {
+    ItemMapArt(short id, String title, OfflinePlayer player, String date) {
         super(Material.MAP, 1, id);
         Date d = new Date();
         String name = player != null ? player.getName() : "Player";
@@ -198,7 +197,7 @@ class ItemMapArt extends ArtItem {
         meta.setLore(Arrays.asList(
                 getLoreID(),
                 ChatColor.GOLD + "by " + ChatColor.YELLOW + name,
-                ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + MapArt.dateFormat.format(d)));
+                ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + date));
         setItemMeta(meta);
     }
 

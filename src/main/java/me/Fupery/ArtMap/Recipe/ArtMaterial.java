@@ -13,7 +13,7 @@ import java.util.List;
 
 public enum ArtMaterial {
 
-    MAP_ART(new ItemMapArt((short) 0, "Artwork", null)),
+    MAP_ART(new ItemMapArt((short) 0, "Artwork", null, null)),
     CANVAS(new ItemCanvas()),
     CARBON_PAPER(new ItemCarbonPaper()),
     CARBON_PAPER_FILLED(new ItemCarbonPaperFilled()),
@@ -76,8 +76,8 @@ public enum ArtMaterial {
         return recipes.toArray(new ArtMaterial[recipes.size()]);
     }
 
-    public static ItemMapArt getMapArt(short id, String title, OfflinePlayer player) {
-        return new ItemMapArt(id, title, player);
+    public static ItemMapArt getMapArt(short id, String title, OfflinePlayer player, String date) {
+        return new ItemMapArt(id, title, player, date);
     }
 
     public Recipe getRecipe() {

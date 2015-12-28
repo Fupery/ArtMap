@@ -233,7 +233,7 @@ public class MapArt {
     }
 
     public ItemStack getMapItem() {
-        return ArtMaterial.getMapArt(mapIDValue, title, player);
+        return ArtMaterial.getMapArt(mapIDValue, title, player, date);
     }
 
     public MapArt saveArtwork(ArtMap plugin) {
