@@ -37,7 +37,7 @@ public class InventoryInteractListener implements Listener {
 
         if (Preview.previewing.containsKey(event.getPlayer())) {
             event.getItemDrop().remove();
-            Preview.stop(plugin, event.getPlayer());
+            Preview.stop(event.getPlayer());
         }
     }
 
@@ -46,7 +46,7 @@ public class InventoryInteractListener implements Listener {
         if (Preview.previewing.containsKey(player)) {
             event.setCancelled(true);
             player.setItemOnCursor(new ItemStack(Material.AIR));
-            Preview.stop(plugin, player);
+            Preview.stop(player);
         }
     }
 }

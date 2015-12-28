@@ -93,7 +93,7 @@ public class ArtMap extends JavaPlugin {
         if (Preview.previewing.size() > 0) {
 
             for (Player player : Preview.previewing.keySet()) {
-                Preview.stop(this, player);
+                Preview.stop(player);
             }
         }
     }

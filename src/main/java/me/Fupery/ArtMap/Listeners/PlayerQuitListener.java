@@ -31,7 +31,7 @@ public class PlayerQuitListener implements Listener {
 
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
 
-                Preview.stop(plugin, player);
+                Preview.stop(player);
             }
         }
 
@@ -49,7 +49,7 @@ public class PlayerQuitListener implements Listener {
 
         if (Preview.previewing.containsKey(event.getEntity())) {
 
-            Preview.stop(plugin, event.getEntity());
+            Preview.stop(event.getEntity());
         }
     }
 

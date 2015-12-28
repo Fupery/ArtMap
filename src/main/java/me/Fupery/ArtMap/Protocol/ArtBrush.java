@@ -26,29 +26,24 @@ public class ArtBrush {
         if (!renderer.isOffCanvas()) {
 
             //paint bucket tool
-            if (item.getType() == Material.BUCKET) {
+            if (item.getType() == Material.BUCKET && leftClick && item.hasItemMeta()) {
 
-                if (leftClick) {
+                ItemMeta meta = item.getItemMeta();
 
-                    if (item.hasItemMeta()) {
-                        ItemMeta meta = item.getItemMeta();
+                if (meta.hasLore()) {
+                    ArtDye colour = null;
+                    String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
-                        if (meta.hasLore()) {
-                            ArtDye colour = null;
-                            String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
+                    for (ArtDye dye : ArtDye.values()) {
 
-                            for (ArtDye dye : ArtDye.values()) {
-
-                                if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
-                                    colour = dye;
-                                    break;
-                                }
-                            }
-
-                            if (colour != null) {
-                                fillPixel(colour.getData());
-                            }
+                        if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
+                            colour = dye;
+                            break;
                         }
+                    }
+
+                    if (colour != null) {
+                        fillPixel(colour.getData());
                     }
                 }
                 //shade tool

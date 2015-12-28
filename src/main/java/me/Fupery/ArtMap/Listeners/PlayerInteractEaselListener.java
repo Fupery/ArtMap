@@ -146,7 +146,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (player.getItemInHand().getType() == Material.MAP) {
 
-                Preview.stop(plugin, player);
+                Preview.stop(player);
                 event.setCancelled(true);
             }
         }
