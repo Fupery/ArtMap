@@ -92,7 +92,6 @@ public class ArtistHandler {
     }
 
     public synchronized void removePlayer(final Player player) {
-        Bukkit.getLogger().info("remove " + player.getName());
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
 
