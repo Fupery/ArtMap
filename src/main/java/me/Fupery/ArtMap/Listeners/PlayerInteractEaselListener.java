@@ -35,32 +35,17 @@ public class PlayerInteractEaselListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
         Player player = event.getPlayer();
 
         callEaselEvent(player, event.getRightClicked(), event,
                 isSneaking(player));
-
-        ItemStack item = event.getPlayer().getItemInHand();
-
-        if (item != null
-                && item.getType() == Material.EMPTY_MAP) {
-
-            if (item.hasItemMeta()) {
-                ItemMeta meta = item.getItemMeta();
-
-                if (meta.hasDisplayName()
-                        && meta.getDisplayName().equals(ArtItem.carbonPaperKey)) {
-                    player.setItemInHand(ArtMaterial.CARBON_PAPER.getItem());
-                }
-            }
-        }
         checkPreviewing(player, event);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
         Player player = event.getPlayer();
@@ -70,14 +55,14 @@ public class PlayerInteractEaselListener implements Listener {
         checkPreviewing(player, event);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         callEaselEvent(event.getDamager(), event.getEntity(), event,
                 EaselEvent.ClickType.LEFT_CLICK);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 
         if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY) {
@@ -87,7 +72,7 @@ public class PlayerInteractEaselListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
         if (checkSignBreak(event.getBlock(), event)) {
