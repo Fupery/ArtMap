@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MapArt {
-
     public static final String artworks = "artworks";
     public static final byte[] blankMap = getBlankMap();
     public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -39,7 +38,7 @@ public class MapArt {
         this.date = dateFormat.format(new Date());
     }
 
-    private MapArt(short mapIDValue, String title, OfflinePlayer player, String date) {
+    MapArt(short mapIDValue, String title, OfflinePlayer player, String date) {
         this.mapIDValue = mapIDValue;
         this.title = title;
         this.player = player;
@@ -123,11 +122,9 @@ public class MapArt {
 
                 if (art != null) {
 
-                    if (!artist.equals("all")) {
-
-                        if (!art.getPlayer().getName().equalsIgnoreCase(artist)) {
-                            continue;
-                        }
+                    if (!artist.equals("all")
+                            && !art.getPlayer().getName().equalsIgnoreCase(artist)) {
+                        continue;
                     }
                     returnList.add(art);
                     i++;
@@ -249,6 +246,10 @@ public class MapArt {
             return new MapArt(mapIDValue, title, player, dateID);
         }
         return null;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public short getMapID() {

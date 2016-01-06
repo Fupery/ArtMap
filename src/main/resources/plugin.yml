@@ -14,6 +14,12 @@ commands:
         <command> list <playername|all> <pg> : Lists artworks
         <command> help : Displays help
         <command> recipe <item> : displays recipe for players, give item to admin
+  artBackup:
+    usage: <command>
+    description: Creates a backup of all current artworks
+  artRestore:
+    usage: <command> <backupName> <-r>
+    description: Restores the backup given, -r flag replaces current artworks
 permissions:
   artmap.artist:
     description: Allows creation of artworks

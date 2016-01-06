@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
+import me.Fupery.ArtMap.Command.ConsoleCommandExecutor;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -28,8 +29,8 @@ public class ArtMap extends JavaPlugin {
 
     public static final NMSInterface nmsInterface = new VersionHandler().getNMSInterface();
     public static final ArtistHandler artistHandler = new ArtistHandler();
+    private static FileConfiguration maps;
     private File mapList;
-    private FileConfiguration maps;
     private List<String> titleFilter;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
@@ -71,7 +72,9 @@ public class ArtMap extends JavaPlugin {
 
         ArtMaterial.setupRecipes();
 
-        this.getCommand("artmap").setExecutor(new ArtMapCommandExecutor(this));
+        getCommand("artmap").setExecutor(new ArtMapCommandExecutor(this));
+        getCommand("artbackup").setExecutor(new ConsoleCommandExecutor.BackupExecutor(this));
+        getCommand("artrestore").setExecutor(new ConsoleCommandExecutor.RestoreExecutor(this));
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new ArtCraftListener(this), this);
@@ -183,9 +186,10 @@ public class ArtMap extends JavaPlugin {
         SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false),
         NEED_CANVAS(true), NOT_A_CANVAS(true), NOT_YOUR_EASEL(true), NEED_TO_COPY(true),
         BREAK_CANVAS(false), PAINTING(false), DELETED(false), MAP_NOT_FOUND(true),
-        NO_CRAFT_PERM(true), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false),
-        UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), INVALID_VERSION(true),
-        INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false);
+        NO_CRAFT_PERM(true), NO_ARTWORKS(true), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false),
+        UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), BACKUP_SUCCESS(false), BACKUP_ERROR(true), RESTORE_ERROR(true),
+        RESTORE_SUCCESS(false), INVALID_VERSION(true), INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true),
+        RECIPE_HEADER(false);
 
         public static final String prefix = "§b[ArtMap] ";
         boolean isErrorMessage;
