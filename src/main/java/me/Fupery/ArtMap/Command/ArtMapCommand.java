@@ -52,8 +52,8 @@ public abstract class ArtMapCommand implements AbstractCommand {
                 } else if (args.length < minArgs || args.length > maxArgs) {
                     returnMsg.message = ArtMap.Lang.prefix + ChatColor.RED + ", " + usage;
 
-                } else if (ArtMapCommand.runCommand(sender, args, returnMsg)) {
-                    return;
+                } else {
+                    ArtMapCommand.runCommand(sender, args, returnMsg);
                 }
 
                 if (returnMsg.message != null) {
