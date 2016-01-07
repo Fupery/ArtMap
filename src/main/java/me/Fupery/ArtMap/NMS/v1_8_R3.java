@@ -5,6 +5,7 @@ import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
 import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
+import net.minecraft.server.v1_8_R3.WorldMap;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.map.CraftMapView;
 import org.bukkit.entity.Player;
@@ -54,12 +55,12 @@ public class v1_8_R3 implements NMSInterface {
 
     @Override
     public byte[] getMap(MapView mapView) {
-        net.minecraft.server.v1_8_R3.WorldMap worldMap;
+        WorldMap worldMap;
 
         try {
             Field wm = mapView.getClass().getDeclaredField("worldMap");
             wm.setAccessible(true);
-            worldMap = ((net.minecraft.server.v1_8_R3.WorldMap) wm.get(mapView));
+            worldMap = ((WorldMap) wm.get(mapView));
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
@@ -72,14 +73,32 @@ public class v1_8_R3 implements NMSInterface {
     }
 
     @Override
-    public void setWorldMap(MapView mapView, byte[] colors) {
-
-        net.minecraft.server.v1_8_R3.WorldMap worldMap;
+    public boolean isMapArt(MapView mapView) {
+        WorldMap worldMap;
 
         try {
             Field wm = mapView.getClass().getDeclaredField("worldMap");
             wm.setAccessible(true);
-            worldMap = ((net.minecraft.server.v1_8_R3.WorldMap) wm.get(mapView));
+            worldMap = ((WorldMap) wm.get(mapView));
+
+        } catch (NoSuchFieldException | SecurityException
+                | IllegalArgumentException | IllegalAccessException e) {
+            return false;
+        }
+        return (worldMap.centerX == -999999
+                && worldMap.centerZ == -999999
+                && worldMap.map == 5);
+    }
+
+    @Override
+    public void setWorldMap(MapView mapView, byte[] colors) {
+
+        WorldMap worldMap;
+
+        try {
+            Field wm = mapView.getClass().getDeclaredField("worldMap");
+            wm.setAccessible(true);
+            worldMap = ((WorldMap) wm.get(mapView));
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {

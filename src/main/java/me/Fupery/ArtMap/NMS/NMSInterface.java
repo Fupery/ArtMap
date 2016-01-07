@@ -13,5 +13,7 @@ public interface NMSInterface {
 
     byte[] getMap(MapView mapView);
 
+    boolean isMapArt(MapView mapView);
+
     void setWorldMap(MapView mapView, byte[] colors);
 }

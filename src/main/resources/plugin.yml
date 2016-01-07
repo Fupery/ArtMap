@@ -2,7 +2,7 @@ name: ${project.name}
 main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
-depends:
+depends: []
 author: Fupery
 
 commands:
@@ -17,9 +17,11 @@ commands:
   artBackup:
     usage: <command>
     description: Creates a backup of all current artworks
+    permission: op
   artRestore:
-    usage: <command> <backupName> <-r>
-    description: Restores the backup given, -r flag replaces current artworks
+    usage: <command> <backupName> <worldName> <-o>
+    description: Restores the backup given to the world given, -o flag to overwrite current artworks
+    permission: op
 permissions:
   artmap.artist:
     description: Allows creation of artworks

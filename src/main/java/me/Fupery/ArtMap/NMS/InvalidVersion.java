@@ -29,6 +29,11 @@ public class InvalidVersion implements NMSInterface {
     }
 
     @Override
+    public boolean isMapArt(MapView mapView) {
+        return false;
+    }
+
+    @Override
     public void setWorldMap(MapView mapView, byte[] colors) {
 
     }

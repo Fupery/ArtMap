@@ -1,7 +1,9 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.map.MapView;
 
 import java.io.*;
@@ -16,14 +18,14 @@ public class ArtBackup implements Serializable {
     private final String title;
     private final UUID player;
     private final String date;
-    byte[] colors;
+    byte[] map;
 
-    public ArtBackup(ArtMap plugin, MapArt art) {
+    public ArtBackup(MapArt art) {
         this.mapIDValue = art.getMapID();
         this.title = art.getTitle();
         this.player = art.getPlayer().getUniqueId();
         this.date = art.getDate();
-        this.colors = plugin.getNmsInterface().getMap(Bukkit.getMap(art.getMapID()));
+        this.map = ArtMap.nmsInterface.getMap(Bukkit.getMap(art.getMapID()));
     }
 
     public static ArtBackup read(File file) throws IOException, ClassNotFoundException {
@@ -33,11 +35,15 @@ public class ArtBackup implements Serializable {
         return backup;
     }
 
-    public void save(ArtMap plugin, boolean overwrite) {
-        MapView oldMapView = Bukkit.getMap(mapIDValue);
-        MapView mapView = overwrite ? oldMapView : Bukkit.createMap(oldMapView.getWorld());
-        plugin.getNmsInterface().setWorldMap(mapView, colors);
-        new MapArt(mapIDValue, title, Bukkit.getOfflinePlayer(player), date).saveArtwork(plugin);
+    public void save(World world, boolean overwrite) {
+        MapView mapView = Bukkit.getMap(mapIDValue);
+
+        if (mapView == null || overwrite) {
+            mapView = Bukkit.createMap(world);
+        }
+        mapView.addRenderer(new GenericMapRenderer(map));
+        ArtMap.nmsInterface.setWorldMap(mapView, map);
+        new MapArt(mapIDValue, title, Bukkit.getOfflinePlayer(player), date).saveArtwork();
     }
 
     public void write(File file) throws IOException {
@@ -48,5 +54,17 @@ public class ArtBackup implements Serializable {
         oos.writeObject(this);
         oos.flush();
         oos.close();
+    }
+
+    public MapArt getMapArt() {
+        return new MapArt(mapIDValue, title, Bukkit.getOfflinePlayer(player), date);
+    }
+
+    public byte[] getMap() {
+        return map;
+    }
+
+    public short getMapIDValue() {
+        return mapIDValue;
     }
 }
