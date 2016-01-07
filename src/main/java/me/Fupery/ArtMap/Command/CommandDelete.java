@@ -15,16 +15,16 @@ public class CommandDelete extends ArtMapCommand {
     @Override
     public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
-        MapArt art = MapArt.getArtwork(plugin, args[1]);
+        MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art != null && sender instanceof Player
-                && !art.getPlayer().getName().equalsIgnoreCase(sender.getName())
-                && !sender.hasPermission("artmap.admin")) {
+                && !(art.getPlayer().getName().equalsIgnoreCase(sender.getName())
+                || sender.hasPermission("artmap.admin"))) {
             msg.message = ArtMap.Lang.NO_PERM.message();
             return false;
         }
 
-        if (MapArt.deleteArtwork(plugin, args[1])) {
+        if (ArtMap.getArtDatabase().deleteArtwork(args[1])) {
             msg.message = String.format(ArtMap.Lang.DELETED.message(), args[1]);
             return true;
 

@@ -55,7 +55,7 @@ public class CommandPreview extends ArtMapCommand {
 
         Player player = (Player) sender;
 
-        MapArt art = MapArt.getArtwork(plugin, args[1]);
+        MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art == null) {
             msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);

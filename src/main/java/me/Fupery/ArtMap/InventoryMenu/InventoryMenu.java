@@ -65,7 +65,7 @@ public class InventoryMenu {
             public void run() {
 
                 if (MenuListener.openMenus.containsKey(player)) {
-                    MenuListener.openMenus.get(player).close(plugin, player);
+                    MenuListener.openMenus.get(player).close(player);
                 }
 
                 Inventory inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
@@ -83,7 +83,7 @@ public class InventoryMenu {
 
     }
 
-    public void close(ArtMap plugin, Player player) {
+    public void close(Player player) {
         MenuListener.openMenus.remove(player);
         player.closeInventory();
     }

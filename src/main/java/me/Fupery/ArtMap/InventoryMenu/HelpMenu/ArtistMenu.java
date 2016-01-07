@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.InventoryMenu.ListMenu;
 import me.Fupery.ArtMap.InventoryMenu.MenuButton;
@@ -20,8 +19,8 @@ public class ArtistMenu extends ListMenu {
         super(parent, "§1Click an Artist");
     }
 
-    private MenuButton[] generateButtons(ArtMap plugin, Player player) {
-        UUID[] artists = MapArt.listArtists(plugin, player.getUniqueId());
+    private MenuButton[] generateButtons(Player player) {
+        UUID[] artists = ArtMap.getArtDatabase().listArtists(player.getUniqueId());
         MenuButton[] buttons;
 
         if (artists != null && artists.length > 0) {
@@ -39,7 +38,7 @@ public class ArtistMenu extends ListMenu {
 
     @Override
     public void open(ArtMap plugin, Player player) {
-        listItems = generateButtons(plugin, player);
+        listItems = generateButtons(player);
         super.open(plugin, player);
     }
 

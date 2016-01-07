@@ -15,7 +15,6 @@ class CanvasRenderer extends MapRenderer {
     private final int resolutionFactor;
     private final int axisLength;
     private final MapView mapView;
-    private final ArtMap plugin;
     private byte[][] pixelBuffer;
     private ArrayList<byte[]> dirtyPixels;
     private ListIterator<byte[]> iterator;
@@ -24,7 +23,6 @@ class CanvasRenderer extends MapRenderer {
     private ArtBrush brush;
 
     public CanvasRenderer(ArtMap plugin, MapView mapView, int yawOffset) {
-        this.plugin = plugin;
         this.mapView = mapView;
         resolutionFactor = plugin.getMapResolutionFactor();
         axisLength = 128 / resolutionFactor;
@@ -123,13 +121,13 @@ class CanvasRenderer extends MapRenderer {
                 }
             }
         }
-        plugin.getNmsInterface().setWorldMap(mapView, colours);
+        ArtMap.nmsInterface.setWorldMap(mapView, colours);
         clearRenderers();
         active = false;
     }
 
     private void loadMap() {
-        byte[] colours = plugin.getNmsInterface().getMap(mapView);
+        byte[] colours = ArtMap.nmsInterface.getMap(mapView);
 
         pixelBuffer = new byte[axisLength][axisLength];
         dirtyPixels = new ArrayList<>();

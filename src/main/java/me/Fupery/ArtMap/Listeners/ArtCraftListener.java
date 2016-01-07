@@ -128,7 +128,7 @@ public class ArtCraftListener implements Listener {
         }
 
         if (resultMaterial == ArtMaterial.CARBON_PAPER_FILLED) {
-            MapArt artwork = MapArt.getArtwork(plugin, materials.get(ArtMaterial.MAP_ART).getDurability());
+            MapArt artwork = ArtMap.getArtDatabase().getArtwork(materials.get(ArtMaterial.MAP_ART).getDurability());
             return ArtMaterial.fillCarbonPaper(artwork);
 
         } else {

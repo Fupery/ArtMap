@@ -98,7 +98,7 @@ public class MenuListener implements Listener {
         Player player = ((Player) event.getPlayer());
 
         if (player != null && openMenus.containsKey(player)) {
-            openMenus.get(player).close(plugin, player);
+            openMenus.get(player).close(player);
         }
     }
 }

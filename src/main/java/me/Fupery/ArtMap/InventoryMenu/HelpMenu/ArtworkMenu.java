@@ -23,8 +23,8 @@ public class ArtworkMenu extends ListMenu {
         this.artist = artist;
     }
 
-    static MenuButton[] generateButtons(ArtMap plugin, UUID artist) {
-        MapArt[] artworks = MapArt.listMapArt(plugin, Bukkit.getOfflinePlayer(artist).getName());
+    static MenuButton[] generateButtons(UUID artist) {
+        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(Bukkit.getOfflinePlayer(artist).getName());
         MenuButton[] buttons;
 
         if (artworks != null && artworks.length > 0) {
@@ -59,7 +59,7 @@ public class ArtworkMenu extends ListMenu {
 
     @Override
     public void open(ArtMap plugin, Player player) {
-        listItems = generateButtons(plugin, artist);
+        listItems = generateButtons(artist);
         title = processTitle(artist);
         super.open(plugin, player);
     }

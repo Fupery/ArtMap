@@ -92,7 +92,6 @@ public class PlayerInteractListener implements Listener {
         if (event.getClick() == ClickType.CREATIVE && event.getClickedInventory() != null) {
 
             final ItemStack item = event.getCursor();
-            final Player player = (Player) event.getWhoClicked();
 
             if (item != null && item.getType() == Material.MAP) {
 
@@ -104,7 +103,7 @@ public class PlayerInteractListener implements Listener {
 
                         if (!meta.hasLore()) {
 
-                            MapArt art = MapArt.getArtwork(plugin, item.getDurability());
+                            MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
 
                             if (art != null) {
 

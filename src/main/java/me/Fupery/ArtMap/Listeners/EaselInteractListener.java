@@ -98,8 +98,8 @@ public class EaselInteractListener implements Listener {
                     return;
 
                 } else if (material == ArtMaterial.CANVAS) {
-                    mapView = MapArt.generateMapID(plugin, player.getWorld());
-                    plugin.getNmsInterface().setWorldMap(mapView, MapArt.blankMap);
+                    mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
+                    ArtMap.nmsInterface.setWorldMap(mapView, MapArt.blankMap);
                     mountMap(easel, mapView, player);
                 }
                 break;
@@ -112,7 +112,7 @@ public class EaselInteractListener implements Listener {
                     Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                         @Override
                         public void run() {
-                            MapArt.recycleID(plugin, id);
+                            ArtMap.getArtDatabase().recycleID(id);
                         }
                     });
                     easel.removeItem();
@@ -128,10 +128,10 @@ public class EaselInteractListener implements Listener {
             return null;
         }
         String title = id.substring(a, b);
-        MapArt art = MapArt.getArtwork(plugin, title);
+        MapArt art = ArtMap.getArtDatabase().getArtwork(title);
 
         if (art != null) {
-            return MapArt.cloneArtwork(plugin, world, art.getMapID());
+            return MapArt.cloneArtwork(world, art.getMapID());
         }
         return null;
     }

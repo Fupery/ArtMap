@@ -34,7 +34,7 @@ public class CommandSave extends ArtMapCommand {
             return false;
         }
 
-        MapArt art = MapArt.getArtwork(plugin, title);
+        MapArt art = ArtMap.getArtDatabase().getArtwork(title);
 
         if (art != null) {
             msg.message = ArtMap.Lang.TITLE_USED.message();
@@ -78,7 +78,7 @@ public class CommandSave extends ArtMapCommand {
                     easel.getFrame().setItem(new ItemStack(Material.AIR));
 
                     if (!easel.hasItem()) {
-                        art.saveArtwork(plugin);
+                        art.saveArtwork();
                         easel.getFrame().setItem(new ItemStack(Material.AIR));
                         plugin.getArtistHandler().removePlayer(player);
                         ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);

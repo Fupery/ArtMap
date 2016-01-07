@@ -70,7 +70,7 @@ public abstract class MenuButton extends ItemStack {
             Bukkit.getScheduler().runTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    menu.close(plugin, player);
+                    menu.close(player);
 
                     if (menu.parent != null) {
                         menu.parent.open(plugin, player);

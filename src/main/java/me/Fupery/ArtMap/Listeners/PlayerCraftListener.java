@@ -27,7 +27,7 @@ public class PlayerCraftListener implements Listener {
 
         if (result.getType() == Material.MAP && result.hasItemMeta()) {
 
-            MapArt art = MapArt.getArtwork(plugin, result.getDurability());
+            MapArt art = ArtMap.getArtDatabase().getArtwork(result.getDurability());
 
             if (art != null) {
 

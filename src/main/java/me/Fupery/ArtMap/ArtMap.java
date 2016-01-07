@@ -2,7 +2,7 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.Command.ConsoleCommandExecutor;
-import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
 import me.Fupery.ArtMap.NMS.NMSInterface;
@@ -21,19 +21,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class ArtMap extends JavaPlugin {
 
     public static final NMSInterface nmsInterface = new VersionHandler().getNMSInterface();
     public static final ArtistHandler artistHandler = new ArtistHandler();
-    private static FileConfiguration maps;
-    private File mapList;
+    private static ArtDatabase artDatabase;
     private List<String> titleFilter;
     private int mapResolutionFactor;
     private PixelTable pixelTable;
+
+    public static ArtDatabase getArtDatabase() {
+        return artDatabase;
+    }
 
     @Override
     public void onEnable() {
@@ -47,13 +48,14 @@ public class ArtMap extends JavaPlugin {
         }
 
         if (loadPluginData()) {
-            maps = YamlConfiguration.loadConfiguration(mapList);
-
-            if (maps.getConfigurationSection(MapArt.artworks) == null) {
-                maps.createSection(MapArt.artworks);
-                updateMaps();
-            }
         }
+        artDatabase = ArtDatabase.buildDatabase(this);
+
+        if (artDatabase == null) {
+            disablePlugin();
+            return;
+        }
+        //todo - if null error
         int factor = getConfig().getInt("mapResolutionFactor");
 
         if (factor % 16 == 0 && factor <= 128) {
@@ -101,36 +103,22 @@ public class ArtMap extends JavaPlugin {
         }
     }
 
+    private void disablePlugin() {
+
+    }
+
     private boolean loadPluginData() {
 
         saveDefaultConfig();
 
         mapResolutionFactor = getConfig().getInt("mapResolutionFactor");
 
-        mapList = new File(getDataFolder(), "mapList.yml");
-
         FileConfiguration filter =
                 YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
 
         titleFilter = filter.getStringList("blacklisted");
 
-        try {
-
-            if (!mapList.exists()) {
-
-                if (!mapList.createNewFile()) {
-                    return false;
-                }
-            }
-
-        } catch (IOException e) {
-            return false;
-        }
         return true;
-    }
-
-    public FileConfiguration getMaps() {
-        return maps;
     }
 
     private boolean loadTables() {
@@ -142,23 +130,6 @@ public class ArtMap extends JavaPlugin {
             e.printStackTrace();
         }
         return (pixelTable != null);
-    }
-
-    public void updateMaps() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-
-            @Override
-            public void run() {
-
-                try {
-                    maps.save(mapList);
-                    maps = YamlConfiguration.loadConfiguration(mapList);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public int getMapResolutionFactor() {
@@ -177,19 +148,15 @@ public class ArtMap extends JavaPlugin {
         return pixelTable;
     }
 
-    public NMSInterface getNmsInterface() {
-        return nmsInterface;
-    }
-
     public enum Lang {
         HELP(false), NO_CONSOLE(true), PLAYER_NOT_FOUND(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
-        SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false),
-        NEED_CANVAS(true), NOT_A_CANVAS(true), NOT_YOUR_EASEL(true), NEED_TO_COPY(true),
-        BREAK_CANVAS(false), PAINTING(false), DELETED(false), MAP_NOT_FOUND(true),
-        NO_CRAFT_PERM(true), NO_ARTWORKS(true), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false),
-        UNKNOWN_ERROR(true), EMPTY_HAND_PREVIEW(true), BACKUP_SUCCESS(false), BACKUP_ERROR(true), RESTORE_ERROR(true),
-        RESTORE_SUCCESS(false), INVALID_VERSION(true), INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true),
-        RECIPE_HEADER(false);
+        SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false), NEED_CANVAS(true),
+        NOT_A_CANVAS(true), NOT_YOUR_EASEL(true), NEED_TO_COPY(true), NO_WORLD(true), BREAK_CANVAS(false),
+        PAINTING(false), DELETED(false), MAP_NOT_FOUND(true), MAPDATA_ERROR(true), NO_CRAFT_PERM(true),
+        NO_ARTWORKS(true), BAD_TITLE(true), TITLE_USED(true), PREVIEWING(false), UNKNOWN_ERROR(true),
+        EMPTY_HAND_PREVIEW(true), BACKUP_SUCCESS(false), BACKUP_ERROR(true), RESTORE_ERROR(true),
+        RESTORE_ALREADY_FOUND(false), RESTORE_SUCCESS(false), INVALID_VERSION(true), INVALID_RESOLUTION(true),
+        INVALID_DATA_TABLES(true), RECIPE_HEADER(false);
 
         public static final String prefix = "§b[ArtMap] ";
         boolean isErrorMessage;
