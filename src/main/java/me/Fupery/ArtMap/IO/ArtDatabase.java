@@ -217,7 +217,7 @@ public class ArtDatabase {
     private synchronized void loadConfiguration() {
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(mapData);
         artworks = configuration.getConfigurationSection(artworksTag);
-        recycled_keys = configuration.getConfigurationSection(artworksTag);
+        recycled_keys = configuration.getConfigurationSection(recycled_keysTag);
 
         if (artworks == null) {
             artworks = configuration.createSection(artworksTag);

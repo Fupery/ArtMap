@@ -29,11 +29,21 @@ public class ArtMapCommandExecutor implements CommandExecutor {
 
         commands.put("preview", new CommandPreview(plugin));
 
+        commands.put("backup", new CommandBackup(plugin));
+
+        commands.put("restore", new CommandRestore(plugin));
+
         //convenience commands
-        commands.put("help", new ArtMapCommand(null, "/artmap [help]", false) {
+        commands.put("help", new ArtMapCommand(null, "/artmap [help]", true) {
             @Override
             public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                HelpMenu.helpMenu.open(plugin, (Player) sender);
+
+                if (sender instanceof Player) {
+                    HelpMenu.helpMenu.open(plugin, (Player) sender);
+
+                } else {
+                    sender.sendMessage(ArtMap.Lang.Array.CONSOLE_HELP.messages());
+                }
                 return true;
             }
         });

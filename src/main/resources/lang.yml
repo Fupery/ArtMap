@@ -37,6 +37,12 @@ english:
   INVALID_RESOLUTION: "Invalid mapResolutionFactor in config, default will be used"
   INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
   RECIPE_HEADER: "Recipe for §a[%s]"
+  CONSOLE_HELP:
+  - "---------------------------------[ArtMap] Console Commands:---------------------------------"
+  - "/artmap delete <title> : Delete an artwork"
+  - "/artmap backup : Create a backup of all current artworks at /plugins/ArtMap/backup/"
+  - "/artmap restore <backupname> <worldname> [-o] : Restore all artworks from the backup folder given*"
+  - "   * Optional [-o] flag enables artwork overwriting"
 
   #help menu
   HELP_GETTING_STARTED: ["                §6§l⊱§e§lGetting Started§6§l⊰",

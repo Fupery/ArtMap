@@ -14,14 +14,14 @@ import java.util.zip.GZIPOutputStream;
 public class ArtBackup implements Serializable {
     public static final long serialVersionUID = 41217749L;
 
-    private final short mapIDValue;
+    private short mapID;
     private final String title;
     private final UUID player;
     private final String date;
     byte[] map;
 
     public ArtBackup(MapArt art) {
-        this.mapIDValue = art.getMapID();
+        this.mapID = art.getMapID();
         this.title = art.getTitle();
         this.player = art.getPlayer().getUniqueId();
         this.date = art.getDate();
@@ -36,14 +36,14 @@ public class ArtBackup implements Serializable {
     }
 
     public void save(World world, boolean overwrite) {
-        MapView mapView = Bukkit.getMap(mapIDValue);
+        MapView mapView = Bukkit.getMap(mapID);
 
         if (mapView == null || overwrite) {
             mapView = Bukkit.createMap(world);
         }
         mapView.addRenderer(new GenericMapRenderer(map));
         ArtMap.nmsInterface.setWorldMap(mapView, map);
-        new MapArt(mapIDValue, title, Bukkit.getOfflinePlayer(player), date).saveArtwork();
+        new MapArt(mapID, title, Bukkit.getOfflinePlayer(player), date).saveArtwork();
     }
 
     public void write(File file) throws IOException {
@@ -56,15 +56,19 @@ public class ArtBackup implements Serializable {
         oos.close();
     }
 
+    public void setMapID(short mapID) {
+        this.mapID = mapID;
+    }
+
     public MapArt getMapArt() {
-        return new MapArt(mapIDValue, title, Bukkit.getOfflinePlayer(player), date);
+        return new MapArt(mapID, title, Bukkit.getOfflinePlayer(player), date);
     }
 
     public byte[] getMap() {
         return map;
     }
 
-    public short getMapIDValue() {
-        return mapIDValue;
+    public short getMapID() {
+        return mapID;
     }
 }
