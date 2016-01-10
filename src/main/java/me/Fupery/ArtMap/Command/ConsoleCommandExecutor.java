@@ -152,10 +152,9 @@ public abstract class ConsoleCommandExecutor implements CommandExecutor {
                 }
                 //MapID handling
                 MapView mapView = null;
-                MapArt art = backupFile.getMapArt();
-                short mapID = backupFile.getMapIDValue();
+                short mapID = backupFile.getMapID();
 
-                if (!ArtMap.getArtDatabase().containsArtwork(art, true)) {
+                if (!ArtMap.getArtDatabase().containsArtwork(backupFile.getMapArt(), true)) {
 
                     if (!ArtMap.getArtDatabase().containsMapID(mapID)) {
 
@@ -176,13 +175,14 @@ public abstract class ConsoleCommandExecutor implements CommandExecutor {
                 }
                 if (mapView == null) {
                     mapView = Bukkit.createMap(world);
+                    backupFile.setMapID(mapView.getId());
                 }
                 for (MapRenderer r : mapView.getRenderers()) {
                     mapView.removeRenderer(r);
                 }
                 mapView.addRenderer(new GenericMapRenderer(backupFile.getMap()));
                 ArtMap.nmsInterface.setWorldMap(mapView, backupFile.getMap());
-                artworks.add(art);
+                artworks.add(backupFile.getMapArt());
                 i++;
             }
             ArtMap.getArtDatabase().addArtworks(artworks.toArray(new MapArt[artworks.size()]));
