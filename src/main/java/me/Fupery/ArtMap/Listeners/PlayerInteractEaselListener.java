@@ -123,7 +123,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private void checkPreviewing(Player player, Cancellable event) {
 
-        if (Preview.previewing.containsKey(player)) {
+        if (ArtMap.previewing.containsKey(player)) {
 
             if (player.getItemInHand().getType() == Material.MAP) {
 

@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
-import me.Fupery.ArtMap.Command.ConsoleCommandExecutor;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.NMS.InvalidVersion;
@@ -22,11 +21,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
     public static final NMSInterface nmsInterface = new VersionHandler().getNMSInterface();
     public static final ArtistHandler artistHandler = new ArtistHandler();
+    public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
     private static ArtDatabase artDatabase;
     private List<String> titleFilter;
     private int mapResolutionFactor;
@@ -47,12 +48,14 @@ public class ArtMap extends JavaPlugin {
             return;
         }
 
-        if (loadPluginData()) {
+        if (!loadPluginData()) {
+            getPluginLoader().disablePlugin(this);
+            return;
         }
         artDatabase = ArtDatabase.buildDatabase(this);
 
         if (artDatabase == null) {
-            disablePlugin();
+            getPluginLoader().disablePlugin(this);
             return;
         }
         //todo - if null error
@@ -75,8 +78,6 @@ public class ArtMap extends JavaPlugin {
         ArtMaterial.setupRecipes();
 
         getCommand("artmap").setExecutor(new ArtMapCommandExecutor(this));
-        getCommand("artbackup").setExecutor(new ConsoleCommandExecutor.BackupExecutor(this));
-        getCommand("artrestore").setExecutor(new ConsoleCommandExecutor.RestoreExecutor(this));
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new ArtCraftListener(this), this);
@@ -95,16 +96,12 @@ public class ArtMap extends JavaPlugin {
         artistHandler.clearPlayers();
         artistHandler.getProtocol().close();
 
-        if (Preview.previewing.size() > 0) {
+        if (previewing.size() > 0) {
 
-            for (Player player : Preview.previewing.keySet()) {
+            for (Player player : previewing.keySet()) {
                 Preview.stop(player);
             }
         }
-    }
-
-    private void disablePlugin() {
-
     }
 
     private boolean loadPluginData() {
@@ -192,7 +189,7 @@ public class ArtMap extends JavaPlugin {
         }
 
         public enum Array {
-            HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS, HELP_LIST, HELP_CLOSE;
+            HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS, HELP_LIST, HELP_CLOSE, CONSOLE_HELP;
 
             String[] messages;
 

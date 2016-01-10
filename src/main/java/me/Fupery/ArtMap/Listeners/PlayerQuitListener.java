@@ -27,7 +27,7 @@ public class PlayerQuitListener implements Listener {
             plugin.getArtistHandler().removePlayer(player);
         }
 
-        if (Preview.previewing.containsKey(player)) {
+        if (ArtMap.previewing.containsKey(player)) {
 
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
 
@@ -47,7 +47,7 @@ public class PlayerQuitListener implements Listener {
             plugin.getArtistHandler().removePlayer(event.getEntity());
         }
 
-        if (Preview.previewing.containsKey(event.getEntity())) {
+        if (ArtMap.previewing.containsKey(event.getEntity())) {
 
             Preview.stop(event.getEntity());
         }

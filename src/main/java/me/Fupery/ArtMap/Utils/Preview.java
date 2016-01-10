@@ -8,10 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 public abstract class Preview extends BukkitRunnable {
-    public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
     final Player player;
 
     Preview(Player player) {
@@ -24,7 +21,7 @@ public abstract class Preview extends BukkitRunnable {
         Preview preview = new ItemPreview(player, item);
         preview.runTaskLaterAsynchronously(plugin, 300);
         player.setItemInHand(item);
-        Preview.previewing.put(player, preview);
+        ArtMap.previewing.put(player, preview);
     }
 
     public static void inventory(ArtMap plugin, Player player, Inventory previewInventory) {
@@ -32,26 +29,26 @@ public abstract class Preview extends BukkitRunnable {
         Preview preview = new RecipePreview(player, previewInventory);
         preview.runTaskLaterAsynchronously(plugin, 300);
         player.openInventory(previewInventory);
-        Preview.previewing.put(player, preview);
+        ArtMap.previewing.put(player, preview);
     }
 
     public static void stop(Player player) {
 
-        if (Preview.previewing.containsKey(player)) {
-            Preview.previewing.get(player).stopPreviewing();
+        if (ArtMap.previewing.containsKey(player)) {
+            ArtMap.previewing.get(player).stopPreviewing();
         }
     }
 
     private static void checkCurrentPreviews(Player player) {
-        if (Preview.previewing.containsKey(player)) {
-            Preview.previewing.get(player).stopPreviewing();
+        if (ArtMap.previewing.containsKey(player)) {
+            ArtMap.previewing.get(player).stopPreviewing();
         }
     }
 
     public void stopPreviewing() {
         cancel();
         run();
-        Preview.previewing.remove(player);
+        ArtMap.previewing.remove(player);
     }
 }
 
@@ -68,7 +65,7 @@ class ItemPreview extends Preview {
     public void run() {
         player.playSound(player.getLocation(), Sound.CLICK, (float) 0.5, -2);
         player.getInventory().removeItem(preview);
-        Preview.previewing.remove(player);
+        ArtMap.previewing.remove(player);
     }
 }
 
