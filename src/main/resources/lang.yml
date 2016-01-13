@@ -55,16 +55,20 @@ english:
                         "§2§oLeft-Click§r§7 to draw a point, §2§oRight-Click§r§7 for lines",
                         "",
                         "                                         §e﴾§6PaintBucket§e❂",
-                        "     §7Craft a §o§6PaintBucket§7 with dye to fill an area",
+                        "     §7Craft a §o§6PaintBucket§7 with §2dye §7to fill an area",
                         "",
                         "§b❂§3Coal&Feather§b﴿",
                         "§7Click with §3Coal§7 or §bFeather§7 to §3darken§7 or §blighten"]
 
-  HELP_RECIPES: ["   §6§l⊱§e§lRecipes§6§l⊰",
-                "§3✸§b§oClick to View§3✸"]
+  HELP_RECIPES: ["             §6§l⊱§e§lRecipes§6§l⊰",
+                "§7View the crafting recipes for all",
+                "§7the items you will need to paint.",
+                "          §3✸§b§oClick to View§3✸"]
 
-  HELP_DYES:     ["     §6§l⊱§e§lDyes§6§l⊰",
-                  "§3✸§b§oClick to View§3✸"]
+  HELP_DYES:     ["            §6§l⊱§e§lDyes§6§l⊰",
+                  "§7View the dyes you can use",
+                  "§7to paint on your canvas.",
+                  "       §3✸§b§oClick to View§3✸"]
 
   HELP_COMMANDS: ["                     §6§l⊱§e§lCommands§6§l⊰",
                   "                §3❀§b§o/artmap§3 for help§3❀",
