@@ -38,11 +38,11 @@ english:
   INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
   RECIPE_HEADER: "Recipe for §a[%s]"
   CONSOLE_HELP:
-  - "---------------------------------[ArtMap] Console Commands:---------------------------------"
-  - "/artmap delete <title> : Delete an artwork"
-  - "/artmap backup : Create a backup of all current artworks at /plugins/ArtMap/backup/"
-  - "/artmap restore <backupname> <worldname> [-o] : Restore all artworks from the backup folder given*"
-  - "   * Optional [-o] flag enables artwork overwriting"
+  - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+  - "§3/artmap delete <title> §b: §eDelete an artwork"
+  - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
+  - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
+  - "  §e * Optional [-o] flag enables artwork overwriting"
 
   #help menu
   HELP_GETTING_STARTED: ["                §6§l⊱§e§lGetting Started§6§l⊰",
@@ -65,10 +65,10 @@ english:
                 "§7the items you will need to paint.",
                 "          §3✸§b§oClick to View§3✸"]
 
-  HELP_DYES:     ["            §6§l⊱§e§lDyes§6§l⊰",
-                  "§7View the dyes you can use",
-                  "§7to paint on your canvas.",
-                  "       §3✸§b§oClick to View§3✸"]
+  HELP_DYES: ["            §6§l⊱§e§lDyes§6§l⊰",
+              "§7View the dyes you can use",
+              "§7to paint on your canvas.",
+              "       §3✸§b§oClick to View§3✸"]
 
   HELP_COMMANDS: ["                     §6§l⊱§e§lCommands§6§l⊰",
                   "                §3❀§b§o/artmap§3 for help§3❀",
@@ -88,9 +88,9 @@ english:
               "§4﴾§cClose Menu§4﴿"]
 
   INFO_DYES: ["            §6§l⊱§e§lDyes§6§l⊰",
-                  "§7Click your canvas with any",
-                  "§7of these dyes to paint. All",
-                  "§7dyes can be crafted with a",
-                  "§7bucket to make a §6PaintBucket",
-                  "§7to fill areas of the canvas.",
-                  "  §b§oHover to view dye colour"]
+              "§7Click your canvas with any",
+              "§7of these dyes to paint. All",
+              "§7dyes can be crafted with a",
+              "§7bucket to make a §6PaintBucket",
+              "§7to fill areas of the canvas.",
+              "  §b§oHover to view dye colour"]
