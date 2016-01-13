@@ -158,6 +158,10 @@ public enum EaselPart {
                 break;
             case SOUTH:
                 z = modifier;
+
+                if (this == SEAT) {
+                    z += .031;
+                }
                 yaw = 0;
                 break;
             case WEST:
@@ -167,6 +171,10 @@ public enum EaselPart {
             case EAST:
                 x = modifier;
                 yaw = 270;
+
+                if (this == SEAT) {
+                    x += .031;
+                }
                 break;
         }
 
@@ -174,15 +182,15 @@ public enum EaselPart {
             x += 0.5;
             z += 0.5;
         }
+        if (this == SEAT) {
+            yaw += 180;
+        }
         return new Location(world, x, heightOffset, z, yaw, 0);
     }
 
     private Location getPartPos(Location easelLocation, BlockFace facing) {
         Location offset = getOffset(easelLocation.getWorld(), facing);
-        float yaw = (this == SEAT) ? 180 + offset.getYaw() : offset.getYaw();
-        Location partLocation = easelLocation.clone().add(offset);
-        partLocation.setYaw(yaw);
-        return partLocation;
+        return easelLocation.clone().add(offset);
     }
 
     public Location getEaselPos(Location partLocation, BlockFace facing) {
