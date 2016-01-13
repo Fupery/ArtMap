@@ -189,7 +189,8 @@ public class ArtMap extends JavaPlugin {
         }
 
         public enum Array {
-            HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS, HELP_LIST, HELP_CLOSE, CONSOLE_HELP;
+            HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS,
+            HELP_LIST, HELP_CLOSE, HELP_DYES, CONSOLE_HELP, INFO_DYES;
 
             String[] messages;
 

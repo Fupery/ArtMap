@@ -13,12 +13,11 @@ import java.util.zip.GZIPOutputStream;
 
 public class ArtBackup implements Serializable {
     public static final long serialVersionUID = 41217749L;
-
-    private short mapID;
     private final String title;
     private final UUID player;
     private final String date;
     byte[] map;
+    private short mapID;
 
     public ArtBackup(MapArt art) {
         this.mapID = art.getMapID();
@@ -56,10 +55,6 @@ public class ArtBackup implements Serializable {
         oos.close();
     }
 
-    public void setMapID(short mapID) {
-        this.mapID = mapID;
-    }
-
     public MapArt getMapArt() {
         return new MapArt(mapID, title, Bukkit.getOfflinePlayer(player), date);
     }
@@ -70,5 +65,9 @@ public class ArtBackup implements Serializable {
 
     public short getMapID() {
         return mapID;
+    }
+
+    public void setMapID(short mapID) {
+        this.mapID = mapID;
     }
 }

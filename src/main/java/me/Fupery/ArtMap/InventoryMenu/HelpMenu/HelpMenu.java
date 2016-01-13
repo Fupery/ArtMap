@@ -21,9 +21,10 @@ public class HelpMenu extends InventoryMenu {
         MenuButton[] buttons = new MenuButton[5];
         buttons[0] = new MenuButton.StaticButton(Material.SIGN, HELP_GETTING_STARTED.messages());
         buttons[1] = new MenuButton.LinkedButton(new RecipeMenu(menu), Material.WORKBENCH, HELP_RECIPES.messages());
-        buttons[2] = new MenuButton.StaticButton(Material.BOOK_AND_QUILL, HELP_COMMANDS.messages());
-        buttons[3] = new MenuButton.LinkedButton(new ArtistMenu(menu), Material.PAINTING, HELP_LIST.messages());
-        buttons[4] = new MenuButton.CloseButton(menu);
+        buttons[2] = new MenuButton.LinkedButton(new DyeMenu(menu), Material.INK_SACK, HELP_DYES.messages());
+        buttons[2].setDurability((short) 1);
+        buttons[3] = new MenuButton.StaticButton(Material.BOOK_AND_QUILL, HELP_COMMANDS.messages());
+        buttons[4] = new MenuButton.LinkedButton(new ArtistMenu(menu), Material.PAINTING, HELP_LIST.messages());
         return buttons;
     }
 

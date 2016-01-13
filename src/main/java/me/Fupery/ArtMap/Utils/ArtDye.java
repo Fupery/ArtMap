@@ -26,15 +26,15 @@ public enum ArtDye {
     //skin tones
     CREAM(10, Material.PUMPKIN_SEEDS, ChatColor.GOLD),
     COFFEE(41, Material.MELON_SEEDS, ChatColor.DARK_RED),
-    //transparent colour
-    VOID(0, Material.EYE_OF_ENDER, ChatColor.DARK_GREEN),
     //extra colours
     GRAPHITE(87, Material.FLINT, ChatColor.DARK_GRAY),
     GUNPOWDER(89, Material.SULPHUR, ChatColor.GRAY),
     MAROON(142, Material.NETHER_STALK, ChatColor.DARK_RED),
     AQUA(125, Material.PRISMARINE_CRYSTALS, ChatColor.AQUA),
     GRASS(5, Material.SEEDS, ChatColor.DARK_GREEN),
-    GOLD(121, Material.GOLD_NUGGET, ChatColor.GOLD);
+    GOLD(121, Material.GOLD_NUGGET, ChatColor.GOLD),
+    //transparent colour
+    VOID(0, Material.EYE_OF_ENDER, ChatColor.DARK_GREEN);
 
     //Instance fields
     private final byte data;
