@@ -21,8 +21,6 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import static me.Fupery.ArtMap.Easel.Easel.getEasel;
-
 public class PlayerInteractEaselListener implements Listener {
 
     private final ArtMap plugin;
@@ -89,7 +87,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (part != null && part != EaselPart.SEAT) {
 
-            Easel easel = getEasel(plugin, clicked.getLocation(), part);
+            Easel easel = Easel.getEasel(clicked.getLocation(), part);
 
             if (easel != null) {
                 boolean wasCancelled = event.isCancelled();
@@ -141,7 +139,7 @@ public class PlayerInteractEaselListener implements Listener {
             if (sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
 
                 if (EaselInteractListener.easels.containsKey(block.getLocation())
-                        || Easel.checkForEasel(plugin, block.getLocation())) {
+                        || Easel.checkForEasel(block.getLocation())) {
                     event.setCancelled(true);
                     return true;
                 }

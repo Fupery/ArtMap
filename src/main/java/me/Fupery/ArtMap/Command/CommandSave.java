@@ -2,9 +2,9 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -60,7 +60,7 @@ public class CommandSave extends ArtMapCommand {
                         String tag = seat.getMetadata("easel").get(0).asString();
                         Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-                        easel = EaselInteractListener.easels.get(location);
+                        easel = Easel.getEasel(location, EaselPart.SIGN);
                     }
                 }
 
@@ -68,30 +68,19 @@ public class CommandSave extends ArtMapCommand {
                     player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
                     return;
                 }
+                plugin.getArtistHandler().removePlayer(player);
 
-                MapArt art = new MapArt(easel.getItem().getDurability(),
-                        title, player);
+                MapArt art = new MapArt(easel.getItem().getDurability(), title, player);
+                art.saveArtwork();
 
-                //Makes sure that frame is empty before saving
-                for (int i = 0; i < 3; i++) {
+                easel.getFrame().setItem(new ItemStack(Material.AIR));
+                ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
 
-                    easel.getFrame().setItem(new ItemStack(Material.AIR));
-
-                    if (!easel.hasItem()) {
-                        art.saveArtwork();
-                        easel.getFrame().setItem(new ItemStack(Material.AIR));
-                        plugin.getArtistHandler().removePlayer(player);
-                        ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
-                        player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
-
-                        if (leftOver != null) {
-                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-                        }
-                        player.sendMessage(String.format(ArtMap.Lang.SAVE_SUCCESS.message(), title));
-                        return;
-                    }
+                if (leftOver != null) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                 }
-                player.sendMessage(ArtMap.Lang.UNKNOWN_ERROR.message());
+                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
+                player.sendMessage(String.format(ArtMap.Lang.SAVE_SUCCESS.message(), title));
             }
         });
         return true;

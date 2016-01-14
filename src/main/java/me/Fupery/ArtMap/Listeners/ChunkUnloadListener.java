@@ -23,17 +23,12 @@ public class ChunkUnloadListener implements Listener {
 
                 @Override
                 public void run() {
-                    Location location = null;
 
-                    for (Location l : EaselInteractListener.easels.keySet()) {
+                    for (Location location : EaselInteractListener.easels.keySet()) {
 
-                        if (l.getChunk().equals(event.getChunk())) {
-                            location = l;
+                        if (location.getChunk().equals(event.getChunk())) {
+                            EaselInteractListener.easels.remove(location);
                         }
-                    }
-
-                    if (location != null) {
-                        EaselInteractListener.easels.remove(location);
                     }
                 }
             });

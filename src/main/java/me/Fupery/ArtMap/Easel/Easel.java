@@ -15,19 +15,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 
 public class Easel {
 
-    private final ArtMap plugin;
     private final Location location;
     private boolean isPainting;
-    private ArmorStand stand;
-    private ItemFrame frame;
+    private WeakReference<ArmorStand> stand;
+    private WeakReference<ItemFrame> frame;
 
-    private Easel(ArtMap plugin, Location location) {
-        this.plugin = plugin;
+    private Easel(Location location) {
         this.location = location;
+        stand = new WeakReference<>(null);
+        frame = new WeakReference<>(null);
     }
 
     //Spawns an easel at the location provided, facing the direction provided
@@ -37,20 +38,22 @@ public class Easel {
         ItemFrame frame = (ItemFrame) EaselPart.FRAME.spawn(location, facing);
         location.getWorld().playSound(location, Sound.DIG_WOOD, 1, 0);
 
-        Easel easel = new Easel(plugin, location).setEasel(stand, frame);
+        Easel easel = new Easel(location);
         EaselInteractListener.easels.put(location, easel);
 
         if (stand == null || frame == null) {
-            easel.breakEasel();
+            easel.breakEasel(plugin);
             return null;
 
         } else {
+            easel.stand = new WeakReference<>(stand);
+            easel.frame = new WeakReference<>(frame);
             return easel;
         }
     }
 
     //Attempts to get an easel at the location provided
-    public static Easel getEasel(ArtMap plugin, Location partLocation, EaselPart part) {
+    public static Easel getEasel(Location partLocation, EaselPart part) {
         Location easelLocation =
                 part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
@@ -60,9 +63,16 @@ public class Easel {
 
         } else {
 
-            Easel easel = new Easel(plugin, easelLocation);
+            Easel easel = new Easel(easelLocation);
+            Collection<Entity> entities =
+                    easelLocation.getWorld().getNearbyEntities(easelLocation, 2, 2, 2);
+            ArmorStand stand = easel.getStand(entities);
+            ItemFrame frame = easel.getFrame(entities);
 
-            if (easel.getParts()) {
+            if (easel.hasSign() && stand != null && frame != null) {
+
+                easel.stand = new WeakReference<>(stand);
+                easel.frame = new WeakReference<>(frame);
 
                 EaselInteractListener.easels.put(easel.location, easel);
                 return easel;
@@ -71,57 +81,12 @@ public class Easel {
         return null;
     }
 
-    public static boolean checkForEasel(ArtMap plugin, Location location) {
-        Easel easel = new Easel(plugin, location);
-        return easel.getParts();
-    }
+    public static boolean checkForEasel(Location location) {
+        Easel easel = new Easel(location);
+        Collection<Entity> entities = easel.getNearbyEntities();
+        ArmorStand stand = easel.getStand(entities);
+        ItemFrame frame = easel.getFrame(entities);
 
-    private Easel setEasel(ArmorStand stand, ItemFrame frame) {
-        this.stand = stand;
-        this.frame = frame;
-        return this;
-    }
-
-    //Checks the immediate area for easel parts
-    private boolean getParts() {
-
-        if (location.getBlock().getType() == Material.WALL_SIGN) {
-
-            if (location.getBlock().getState() instanceof Sign) {
-                Sign sign = ((Sign) location.getBlock().getState());
-
-                if (!sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
-                    return false;
-                }
-            }
-        }
-
-        Collection<Entity> entities =
-                location.getWorld().getNearbyEntities(location, 2, 2, 2);
-
-        for (Entity e : entities) {
-
-            BlockFace facing = EaselPart.getFacing(e.getLocation().getYaw());
-
-            if (e.getType() == EntityType.ARMOR_STAND) {
-                ArmorStand s = (ArmorStand) e;
-
-                //Check if entity is a stand
-                if (s.isCustomNameVisible() && s.getCustomName().equals(EaselPart.easelID)) {
-                    if (EaselPart.STAND.getEaselPos(s.getLocation(), facing).equals(location)) {
-                        stand = s;
-                    }
-                }
-
-            } else if (e.getType() == EntityType.ITEM_FRAME) {
-                ItemFrame f = (ItemFrame) e;
-
-                //check if entity is a frame
-                if (EaselPart.FRAME.getEaselPos(f.getLocation(), facing).equals(location)) {
-                    frame = f;
-                }
-            }
-        }
         if (frame != null && stand != null) {
             return true;
 
@@ -134,45 +99,115 @@ public class Easel {
         }
     }
 
-    public void mountCanvas(MapView mapView) {
-        location.getWorld().playSound(location, Sound.STEP_WOOL, 1, 0);
-        frame.setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
+    private boolean hasSign() {
+
+        if (location.getBlock().getType() == Material.WALL_SIGN) {
+
+            if (location.getBlock().getState() instanceof Sign) {
+                Sign sign = ((Sign) location.getBlock().getState());
+
+                if (!sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
-    public void rideEasel(Player player) {
+    private ArmorStand getStand(Collection<Entity> entities) {
 
-        ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, frame.getFacing()));
+        if (stand.get() != null && stand.get().isValid()) {
+            return stand.get();
+        }
+        if (entities == null) {
+            entities = getNearbyEntities();
+        }
+
+        for (Entity entity : entities) {
+
+            BlockFace facing = EaselPart.getFacing(entity.getLocation().getYaw());
+
+            if (entity.getType() == EntityType.ARMOR_STAND) {
+                ArmorStand stand = (ArmorStand) entity;
+
+                //Check if entity is a stand
+                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
+                    if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
+                        return stand;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private ItemFrame getFrame(Collection<Entity> entities) {
+
+        if (frame.get() != null && frame.get().isValid()) {
+            return frame.get();
+        }
+        if (entities == null) {
+            entities = getNearbyEntities();
+        }
+
+        for (Entity entity : entities) {
+
+            BlockFace facing = EaselPart.getFacing(entity.getLocation().getYaw());
+
+            if (entity.getType() == EntityType.ITEM_FRAME) {
+                ItemFrame frame = (ItemFrame) entity;
+
+                //check if entity is a frame
+                if (EaselPart.FRAME.getEaselPos(frame.getLocation(), facing).equals(location)) {
+                    return frame;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void mountCanvas(MapView mapView) {
+        location.getWorld().playSound(location, Sound.STEP_WOOL, 1, 0);
+        getFrame().setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
+    }
+
+    public void rideEasel(Player player, ArtMap plugin) {
+
+        ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, getFrame().getFacing()));
 
         if (seat == null) {
             return;
         }
         player.sendMessage(ArtMap.Lang.PAINTING.message());
 
-        location.getWorld().playSound(location, Sound.ITEM_PICKUP, (float) 0.5, -3);
+        player.playSound(location, Sound.ITEM_PICKUP, (float) 0.5, -3);
         seat.setPassenger(player);
         seat.setMetadata("easel",
                 new FixedMetadataValue(plugin, LocationTag.createTag(location)));
 
         setIsPainting(true);
-        MapView mapView = Bukkit.getMap(frame.getItem().getDurability());
+        MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
 
         plugin.getArtistHandler().addPlayer(plugin, player, mapView,
-                EaselPart.getYawOffset(frame.getFacing()));
+                EaselPart.getYawOffset(getFrame().getFacing()));
     }
 
     public void removeItem() {
-        ItemStack item = (frame.getItem().getType() == Material.MAP)
-                ? ArtMaterial.CANVAS.getItem() : frame.getItem().clone();
+        ItemStack item = (getFrame().getItem().getType() == Material.MAP)
+                ? ArtMaterial.CANVAS.getItem() : getFrame().getItem().clone();
 
         if (item.getType() != Material.AIR) {
-            frame.setItem(new ItemStack(Material.AIR));
+            getFrame().setItem(new ItemStack(Material.AIR));
             location.getWorld().dropItemNaturally(location, item);
         }
     }
 
-    public void breakEasel() {
+    public void breakEasel(ArtMap plugin) {
 
         EaselInteractListener.easels.remove(location);
+        final Collection<Entity> entities = getNearbyEntities();
+        final ArmorStand stand = getStand(entities);
+        final ItemFrame frame = getFrame(entities);
 
         Bukkit.getScheduler().runTask(plugin, new Runnable() {
             @Override
@@ -180,12 +215,13 @@ public class Easel {
                 location.getBlock().setType(Material.AIR);
                 location.getWorld().playSound(location, Sound.DIG_WOOD, 1, -1);
 
-                if (stand != null) {
+                if (stand != null && stand.isValid()) {
                     stand.remove();
                 }
 
-                if (frame != null) {
-                    removeItem();
+                removeItem();
+
+                if (frame != null && frame.isValid()) {
                     frame.remove();
                 }
                 location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
@@ -202,15 +238,23 @@ public class Easel {
         this.isPainting = isPainting;
     }
 
+    private Collection<Entity> getNearbyEntities() {
+        return location.getWorld().getNearbyEntities(location, 2, 2, 2);
+    }
+
+    public ArmorStand getStand() {
+        return getStand(null);
+    }
+
     public ItemFrame getFrame() {
-        return frame;
+        return getFrame(null);
     }
 
     public ItemStack getItem() {
-        return (frame != null) ? frame.getItem() : null;
+        return (getFrame() != null) ? getFrame().getItem() : null;
     }
 
     public boolean hasItem() {
-        return frame != null && frame.getItem().getType() != Material.AIR;
+        return getFrame() != null && getFrame().getItem().getType() != Material.AIR;
     }
 }

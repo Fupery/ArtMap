@@ -53,8 +53,8 @@ public class EaselInteractListener implements Listener {
             case RIGHT_CLICK:
 
                 //If the easel has a canvas, player rides the easel
-                if (easel.getFrame().getItem().getType() == Material.MAP) {
-                    easel.rideEasel(player);
+                if (easel.getItem().getType() == Material.MAP) {
+                    easel.rideEasel(player, plugin);
                     return;
 
                 } else if (easel.getItem().getType() != Material.AIR) {
@@ -117,7 +117,7 @@ public class EaselInteractListener implements Listener {
                     });
                     easel.removeItem();
                 }
-                easel.breakEasel();
+                easel.breakEasel(plugin);
         }
     }
 

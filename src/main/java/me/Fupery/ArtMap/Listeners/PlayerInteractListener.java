@@ -58,15 +58,13 @@ public class PlayerInteractListener implements Listener {
 
                 if (event.getBlockFace().equals(BlockFace.UP)) {
 
-                    event.setCancelled(true);
-
                     Location easelLocation
                             = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
                     BlockFace facing = getFacing(event.getPlayer());
 
                     if (easelLocation.getBlock().getType() == Material.AIR) {
 
-                        if (!Easel.checkForEasel(plugin, easelLocation)) {
+                        if (!Easel.checkForEasel(easelLocation)) {
 
                             Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
                             Player player = event.getPlayer();
