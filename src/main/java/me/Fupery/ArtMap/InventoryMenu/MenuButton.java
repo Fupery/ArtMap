@@ -43,6 +43,9 @@ public abstract class MenuButton extends ItemStack {
             linkedMenu.open(plugin, player);
         }
 
+        public InventoryMenu getLinkedMenu() {
+            return linkedMenu;
+        }
     }
 
     public static class StaticButton extends MenuButton {

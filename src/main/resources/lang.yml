@@ -1,5 +1,5 @@
 english:
-  #Return Messages
+  #Player Messages
   HELP: "/artmap help for a list of commands."
   NO_CONSOLE: "This command can only be used by players."
   PLAYER_NOT_FOUND: "Player '%s' could not be found."
@@ -10,8 +10,7 @@ english:
   NOT_RIDING_EASEL: "You must be sitting at your easel to save."
   SAVE_SUCCESS: "Successfully saved '%s'!"
   EASEL_HELP: "Right-Click to start painting, Shift + Right-Click to break."
-  NEED_CANVAS: "You need to place a canvas on the easel to paint."
-  NOT_A_CANVAS: "You can only place ArtMap canvases on the easel."
+  NEED_CANVAS: "You need to place a canvas on the easel to paint. Type /artmap for more info."
   NOT_YOUR_EASEL: "You cannot destroy %s's artwork!"
   NEED_TO_COPY: "You must craft this carbon paper with an artwork to edit."
   BREAK_CANVAS: "Shift + Right-Click the easel to break it."
@@ -43,54 +42,98 @@ english:
   - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
   - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
   - "  §e * Optional [-o] flag enables artwork overwriting"
+#help menu
+  HELP_GETTING_STARTED:
+    - "                 §6§l⊱§e§lGetting Started§6§l⊰"
+    - "                §3❉§b§oWelcome to ArtMap!§3❉"
+    - ""
+    - "   §a1§2. §7Craft yourself an §6Easel §7and §6Canvas§7."
+    - "   §a2§2. §7Place the Easel and use your Canvas §7on it."
+    - "   §a3§2. §7Click the Canvas with §2Dyes §7& §3Tools §7to paint."
+    - "   §a4§2. §7When you're finished, use §e/artmap save."
+    - ""
+    - "§7§oLook at the other tabs in this menu to see more"
+    - "§7§oinformation on Recipes, Tools, and Dye Colours."
+    - ""
+    - "    §8░░░░§e❃§lCommands §r§e⤸§8░░░░░░░░░░░░░"
+    - "§6•§f/artmap save <title>    §6➯   §7save your artwork"
+    - "§6•§f/artmap delete <title>  §6➯ §7delete your artwork"
+    - "§6•§f/artmap preview <title> §6➯  §7preview an artwork"
 
-  #help menu
-  HELP_GETTING_STARTED: ["                §6§l⊱§e§lGetting Started§6§l⊰",
-                        "               §3❉§b§oWelcome to ArtMap!§3❉",
-                        "§7To get started painting, you will need to craft",
-                        "§7yourself an §6Easel §7and §6Canvas§7. Once you place",
-                        "§7your easel, click the canvas with §etools§7 to paint.",
-                        "   §8░░░░§e❃§lTools §r§e⤸§8░░░░░░░░░░░░░░░░",
-                        "§a❂§2Dye§a﴿",
-                        "§2§oLeft-Click§r§7 to draw a point, §2§oRight-Click§r§7 for lines",
-                        "",
-                        "                                         §e﴾§6PaintBucket§e❂",
-                        "     §7Craft a §o§6PaintBucket§7 with §2dye §7to fill an area",
-                        "",
-                        "§b❂§3Coal&Feather§b﴿",
-                        "§7Click with §3Coal§7 or §bFeather§7 to §3darken§7 or §blighten"]
+  HELP_RECIPES:
+    - "             §6§l⊱§e§lRecipes§6§l⊰"
+    - "§7View the crafting recipes for all"
+    - "§7the items you will need to paint."
+    - "          §a✸§2§oClick to View§a✸"
 
-  HELP_RECIPES: ["             §6§l⊱§e§lRecipes§6§l⊰",
-                "§7View the crafting recipes for all",
-                "§7the items you will need to paint.",
-                "          §3✸§b§oClick to View§3✸"]
+  HELP_TOOLS:
+    - "            §6§l⊱§e§lTools§6§l⊰"
+    - "§7View all the tools that you"
+    - "§7can use to help you paint."
+    - "       §a✸§2§oClick to View§a✸"
 
-  HELP_DYES: ["            §6§l⊱§e§lDyes§6§l⊰",
-              "§7View the dyes you can use",
-              "§7to paint on your canvas.",
-              "       §3✸§b§oClick to View§3✸"]
+  HELP_DYES:
+    - "           §6§l⊱§e§lDyes§6§l⊰"
+    - "§7View all the dye colours"
+    - "§7that you can paint with."
+    - "      §a✸§2§oClick to View§a✸"
 
-  HELP_COMMANDS: ["                     §6§l⊱§e§lCommands§6§l⊰",
-                  "                §3❀§b§o/artmap§3 for help§3❀",
-                  "  §8░░░░░░░░░░░░░░░░░░░░░░░░░░░ ",
-                  "§6•§f/artmap save <title>    §6➯   §7save your artwork",
-                  "§6•§f/artmap delete <title>  §6➯ §7delete your artwork",
-                  "§6•§f/artmap preview <title> §6➯  §7preview an artwork",
-                  "§2You can also preview art in the list menu§e§l➚"]
+  HELP_LIST:
+    - "             §6§l⊱§e§lArtworks§6§l⊰"
+    - "      §3✺§b§oView Player Artworks§3✺"
+    - "§7View your artwork or view other"
+    - "§7players' work grouped by artist."
+    - "          §a✸§2§oClick to browse§a✸"
 
-  HELP_LIST: ["             §6§l⊱§e§lArtworks§6§l⊰",
-             "      §3✺§b§oView Player Artworks§3✺",
-             "§7View your artwork or view other",
-             "§7players' work grouped by artist.",
-             "           §2Click to browse"]
+  HELP_CLOSE:
+    - "    §6§l⊱§e§lBack§6§l⊰"
+    - "§4﴾§cClose Menu§4﴿"
 
-  HELP_CLOSE: ["    §6§l⊱§e§lBack§6§l⊰",
-              "§4﴾§cClose Menu§4﴿"]
+  INFO_DYES:
+    - "              §6§l⊱§e§lDye Colours§6§l⊰"
+    - "§7Click your canvas with any of these"
+    - "§7dyes to paint."
+    - ""
+    - "   §a• §7§oLeft-Click to draw pixels"
+    - "   §a• §7§oRight-Click to draw lines."
+    - ""
+    - "§7Any dye can be crafted with a bucket"
+    - "§7to make a §6PaintBucket."
+    - "           §b§oHover to view colour"
 
-  INFO_DYES: ["            §6§l⊱§e§lDyes§6§l⊰",
-              "§7Click your canvas with any",
-              "§7of these dyes to paint. All",
-              "§7dyes can be crafted with a",
-              "§7bucket to make a §6PaintBucket",
-              "§7to fill areas of the canvas.",
-              "  §b§oHover to view dye colour"]
+  INFO_RECIPES:
+    - "              §6§l⊱§e§lRecipe Help§6§l⊰"
+    - "§7Craft any artwork with a §6blank map"
+    - "§7to create a copy. Only the original"
+    - "§7author of an artwork will be able to"
+    - "§7make copies."
+    - "        §b§oHover to view usage info"
+
+  INFO_TOOLS:
+    - "              §6§l⊱§e§lTool Help§6§l⊰"
+    - "§7You can use these items along with"
+    - "§2dyes §7to help you paint."
+    - "       §b§oHover to view usage info"
+
+  TOOL_DYE:
+    - "              §6§l⊱§e§lDyes§6§l⊰"
+    - " §7Left-Click to draw pixels"
+    - " §7Right-Click to draw lines"
+    - "§a✸§2§oClick to view all colours§a✸"
+
+  TOOL_PAINTBUCKET:
+    - "         §6§l⊱§e§lPaintBucket§6§l⊰"
+    - "§7Left-Click to fill an area of"
+    - "§7the canvas. Craft with dye to"
+    - "§7change the bucket's colour."
+
+  TOOL_COAL:
+    - "              §6§l⊱§e§lCoal§6§l⊰"
+    - "§7Left-Click to darken a pixel."
+    - "§7Right-Click to darken an area."
+
+  TOOL_FEATHER:
+    - "            §6§l⊱§e§lFeather§6§l⊰"
+    - "§7Left-Click to lighten a pixel."
+    - "§7Right-Click to lighten an area."
+

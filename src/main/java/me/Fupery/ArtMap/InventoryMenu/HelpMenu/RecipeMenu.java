@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -23,9 +24,10 @@ public class RecipeMenu extends InventoryMenu {
 
     private static MenuButton[] generateButtons(InventoryMenu menu) {
         MenuButton[] buttons = new MenuButton[5];
-        buttons[0] = new RecipeButton(ArtMaterial.EASEL);
-        buttons[1] = new RecipeButton(ArtMaterial.CANVAS);
-        buttons[2] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, ArtMap.Lang.Array.INFO_RECIPES.messages());
+        buttons[1] = new RecipeButton(ArtMaterial.EASEL);
+        buttons[2] = new RecipeButton(ArtMaterial.CANVAS);
+        buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
         buttons[4] = new MenuButton.CloseButton(menu);
         return buttons;
     }

@@ -80,7 +80,6 @@ public class ArtMap extends JavaPlugin {
         getCommand("artmap").setExecutor(new ArtMapCommandExecutor(this));
 
         PluginManager manager = getServer().getPluginManager();
-        manager.registerEvents(new ArtCraftListener(this), this);
         manager.registerEvents(new PlayerInteractListener(this), this);
         manager.registerEvents(new PlayerInteractEaselListener(this), this);
         manager.registerEvents(new PlayerQuitListener(this), this);
@@ -189,8 +188,9 @@ public class ArtMap extends JavaPlugin {
         }
 
         public enum Array {
-            HELP_GETTING_STARTED, HELP_RECIPES, HELP_COMMANDS,
-            HELP_LIST, HELP_CLOSE, HELP_DYES, CONSOLE_HELP, INFO_DYES;
+            HELP_GETTING_STARTED, HELP_RECIPES, HELP_TOOLS, HELP_LIST,
+            HELP_CLOSE, HELP_DYES, CONSOLE_HELP, INFO_DYES, INFO_RECIPES, INFO_TOOLS,
+            TOOL_DYE, TOOL_PAINTBUCKET, TOOL_COAL, TOOL_FEATHER;
 
             String[] messages;
 
