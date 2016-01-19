@@ -15,8 +15,6 @@ public enum ArtMaterial {
 
     MAP_ART(new ItemMapArt((short) 0, "Artwork", null, null)),
     CANVAS(new ItemCanvas()),
-    CARBON_PAPER(new ItemCarbonPaper()),
-    CARBON_PAPER_FILLED(new ItemCarbonPaperFilled()),
     EASEL(new ItemEasel()),
     PAINT_BUCKET(new PaintBucket(ArtDye.BLACK));
 
@@ -44,36 +42,6 @@ public enum ArtMaterial {
             }
         }
         return null;
-    }
-
-    public static ItemStack fillCarbonPaper(MapArt artwork) {
-        ItemCarbonPaperFilled carbonPaper = (ItemCarbonPaperFilled) CARBON_PAPER_FILLED.getItem().clone();
-        ItemMeta meta = carbonPaper.getItemMeta();
-        List<String> lore = meta.getLore();
-        lore.set(0, lore.get(0).replace("Filled", artwork.getTitle()));
-        meta.setLore(lore);
-        carbonPaper.setItemMeta(meta);
-        return carbonPaper;
-    }
-
-    public static ArtMaterial[] values(boolean vanillaRecipesOnly) {
-        ArrayList<ArtMaterial> recipes = new ArrayList<>();
-
-        for (ArtMaterial material : values()) {
-
-            if (material.getRecipe() == null) {
-                continue;
-            }
-            boolean isArtRecipe = material.getRecipe() instanceof ShapelessArtRecipe;
-
-            if (vanillaRecipesOnly) {
-                isArtRecipe = !isArtRecipe;
-            }
-            if (isArtRecipe) {
-                recipes.add(material);
-            }
-        }
-        return recipes.toArray(new ArtMaterial[recipes.size()]);
     }
 
     public static ItemMapArt getMapArt(short id, String title, OfflinePlayer player, String date) {

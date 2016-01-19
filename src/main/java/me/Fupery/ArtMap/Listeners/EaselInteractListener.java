@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
+import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import org.bukkit.Bukkit;
@@ -62,47 +63,26 @@ public class EaselInteractListener implements Listener {
                     return;
                 }
 
-                ItemStack itemInHand = player.getItemInHand();
-
-                //Player must use a canvas on the easel
-                if (itemInHand.getType() != Material.PAPER) {
-                    player.sendMessage(ArtMap.Lang.NEED_CANVAS.message());
-                    return;
-                }
-
-                ItemMeta itemInHandMeta = itemInHand.getItemMeta();
-
-                //Check if canvas has valid metadata
-                if (!itemInHandMeta.hasLore()) {
-                    player.sendMessage(ArtMap.Lang.NOT_A_CANVAS.message());
-                    return;
-                }
-
                 MapView mapView;
-                ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
+                ArtMaterial material = ArtMaterial.getCraftItemType(player.getItemInHand());
 
-                //Check if carbon paper links to a valid artwork
-                if (material == ArtMaterial.CARBON_PAPER_FILLED) {
-                    mapView = getMapView(itemInHandMeta.getLore().get(0), player.getWorld());
-
-                    if (mapView != null) {
-                        mountMap(easel, mapView, player);
-
-                    } else {
-                        player.sendMessage(ArtMap.Lang.NEED_TO_COPY.message());
-                    }
-
-                    //Mount the canvas
-                } else if (material == ArtMaterial.CARBON_PAPER) {
-                    player.sendMessage(ArtMap.Lang.NEED_TO_COPY.message());
-                    return;
-
-                } else if (material == ArtMaterial.CANVAS) {
+                if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
                     ArtMap.nmsInterface.setWorldMap(mapView, MapArt.blankMap);
                     mountMap(easel, mapView, player);
+                    return;
+
+                } else if (material == ArtMaterial.MAP_ART) {
+                    MapArt art = ArtMap.getArtDatabase().getArtwork(player.getItemInHand().getDurability());
+
+                    if (art != null) {
+                        mapView = MapArt.cloneArtwork(player.getWorld(), art.getMapID());
+                        mountMap(easel, mapView, player);
+                        return;
+                    }
                 }
-                break;
+                player.sendMessage(ArtMap.Lang.NEED_CANVAS.message());
+                return;
 
             case SHIFT_RIGHT_CLICK:
 
@@ -119,21 +99,6 @@ public class EaselInteractListener implements Listener {
                 }
                 easel.breakEasel(plugin);
         }
-    }
-
-    private MapView getMapView(String id, World world) {
-        int a = id.indexOf("[") + 1, b = id.lastIndexOf("]");
-
-        if (a < 0 || b < 0) {
-            return null;
-        }
-        String title = id.substring(a, b);
-        MapArt art = ArtMap.getArtDatabase().getArtwork(title);
-
-        if (art != null) {
-            return MapArt.cloneArtwork(world, art.getMapID());
-        }
-        return null;
     }
 
     private void mountMap(Easel easel, MapView mapView, Player player) {

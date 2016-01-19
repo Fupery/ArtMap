@@ -25,8 +25,7 @@ public class RecipeMenu extends InventoryMenu {
         MenuButton[] buttons = new MenuButton[5];
         buttons[0] = new RecipeButton(ArtMaterial.EASEL);
         buttons[1] = new RecipeButton(ArtMaterial.CANVAS);
-        buttons[2] = new RecipeButton(ArtMaterial.CARBON_PAPER);
-        buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
+        buttons[2] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
         buttons[4] = new MenuButton.CloseButton(menu);
         return buttons;
     }

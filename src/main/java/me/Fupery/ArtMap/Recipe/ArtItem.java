@@ -18,8 +18,6 @@ abstract public class ArtItem extends ItemStack {
 
     public static final String artworkTag = "§b§oPlayer Artwork";
     public static final String canvasKey = "§b§oArtMap Canvas";
-    public static final String carbonPaperKey = "§b§oCarbon Paper";
-    public static final String carbonPaperFilled = "§b§oCarbon Paper";
     public static final String easelKey = "§b§oArtMap Easel";
     public static final String paintBucketKey = "§b§oPaint Bucket";
     public static final String help = "§a/artmap §2for help";
@@ -124,62 +122,6 @@ class ItemCanvas extends ArtItem {
     @Override
     String getLoreID() {
         return canvasKey;
-    }
-}
-
-class ItemCarbonPaper extends ArtItem {
-
-    ItemCarbonPaper() {
-        super(Material.PAPER);
-        ItemMeta meta = getItemMeta();
-        meta.setDisplayName("§e•§6§lCarbon Paper§e•");
-        String[] lore = new String[]{getLoreID(),
-                "§7Craft with an §aartwork", "§7to create editable copy", help};
-        meta.setLore(Arrays.asList(lore));
-        setItemMeta(meta);
-    }
-
-    @Override
-    org.bukkit.inventory.Recipe getRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(this);
-        recipe.shape("lel", "epe", "lel");
-        recipe.setIngredient('l', Material.COAL);
-        recipe.setIngredient('p', Material.PAPER);
-        recipe.setIngredient('e', Material.DIAMOND);
-        return recipe;
-    }
-
-    @Override
-    String getLoreID() {
-        return carbonPaperKey + " §7[Blank]";
-    }
-}
-
-class ItemCarbonPaperFilled extends ArtItem {
-
-    ItemCarbonPaperFilled() {
-        super(Material.PAPER);
-        ItemMeta meta = getItemMeta();
-        meta.setDisplayName("§e•§e§lCarbon Paper§e•");
-        String[] lore = new String[]{getLoreID() + " §7[Filled]",
-                "§7Place on an easel", "§7to edit your artwork", help};
-        meta.setLore(Arrays.asList(lore));
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        addUnsafeEnchantment(Enchantment.LUCK, 1);
-        setItemMeta(meta);
-    }
-
-    @Override
-    Recipe getRecipe() {
-        ShapelessArtRecipe recipe = new ShapelessArtRecipe(this);
-        recipe.addIngredient(ArtMaterial.CARBON_PAPER);
-        recipe.addIngredient(ArtMaterial.MAP_ART);
-        return recipe;
-    }
-
-    @Override
-    String getLoreID() {
-        return carbonPaperFilled;
     }
 }
 
