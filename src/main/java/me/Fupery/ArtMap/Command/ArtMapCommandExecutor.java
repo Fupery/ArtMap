@@ -73,7 +73,7 @@ public class ArtMapCommandExecutor implements CommandExecutor {
                     menu.open(plugin, (Player) sender);
 
                 } else {
-                    HelpMenu.helpMenu.getButton(3).onClick(plugin, (Player) sender);
+                    HelpMenu.helpMenu.getButton(4).onClick(plugin, (Player) sender);
                 }
                 return true;
             }
