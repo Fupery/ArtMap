@@ -12,7 +12,6 @@ english:
   EASEL_HELP: "Right-Click to start painting, Shift + Right-Click to break."
   NEED_CANVAS: "You need to place a canvas on the easel to paint. Type /artmap for more info."
   NOT_YOUR_EASEL: "You cannot destroy %s's artwork!"
-  NEED_TO_COPY: "You must craft this carbon paper with an artwork to edit."
   BREAK_CANVAS: "Shift + Right-Click the easel to break it."
   PAINTING: "Use dyes or a paint bucket to paint. Left-Click to draw pixels, Right-Click and drag to draw lines."
   DELETED: "Sucessfully deleted '%s'."
@@ -22,7 +21,6 @@ english:
   BAD_TITLE: "Invalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
   TITLE_USED: "Sorry, this title is already being used."
   PREVIEWING: "Previewing artwork '%s'."
-  UNKNOWN_ERROR: "Oops! Something strange has happened. Check that your canvas isn't missing parts, and try again."
   EMPTY_HAND_PREVIEW: "You need to have an empty hand to preview."
   MAPDATA_ERROR: "Error reading mapdata.yml at %s: %s"
   #Console Messages
