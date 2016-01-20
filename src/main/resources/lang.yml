@@ -48,7 +48,7 @@ english:
     - "   §a1§2. §7Craft yourself an §6Easel §7and §6Canvas§7."
     - "   §a2§2. §7Place the Easel and use your Canvas §7on it."
     - "   §a3§2. §7Click the Canvas with §2Dyes §7& §3Tools §7to paint."
-    - "   §a4§2. §7When you're finished, use §e/artmap save."
+    - "   §a4§2. §7When you're finished, use §e/artmap save§7."
     - ""
     - "§7§oLook at the other tabs in this menu to see more"
     - "§7§oinformation on Recipes, Tools, and Dye Colours."
@@ -93,10 +93,10 @@ english:
     - "§7dyes to paint."
     - ""
     - "   §a• §7§oLeft-Click to draw pixels"
-    - "   §a• §7§oRight-Click to draw lines."
+    - "   §a• §7§oRight-Click to draw lines"
     - ""
     - "§7Any dye can be crafted with a bucket"
-    - "§7to make a §6PaintBucket."
+    - "§7to make a §6PaintBucket§7."
     - "           §b§oHover to view colour"
 
   INFO_RECIPES:

@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -76,6 +77,16 @@ public class EaselInteractListener implements Listener {
                     MapArt art = ArtMap.getArtDatabase().getArtwork(player.getItemInHand().getDurability());
 
                     if (art != null) {
+
+                        if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
+                            player.sendMessage(ArtMap.Lang.NO_CRAFT_PERM.message());
+                            return;
+                        }
+
+                        if (ArtMap.previewing.containsKey(player)) {
+                            ArtMap.previewing.get(player).stopPreviewing();
+                            return;
+                        }
                         mapView = MapArt.cloneArtwork(player.getWorld(), art.getMapID());
                         mountMap(easel, mapView, player);
                         return;
