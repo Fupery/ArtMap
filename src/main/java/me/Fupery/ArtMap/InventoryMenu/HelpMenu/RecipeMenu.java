@@ -1,9 +1,9 @@
 package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ public class RecipeMenu extends InventoryMenu {
 
     private static MenuButton[] generateButtons(InventoryMenu menu) {
         MenuButton[] buttons = new MenuButton[5];
-        buttons[0] = new MenuButton.StaticButton(Material.SIGN, ArtMap.Lang.Array.INFO_RECIPES.messages());
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, Lang.Array.INFO_RECIPES.messages());
         buttons[1] = new RecipeButton(ArtMaterial.EASEL);
         buttons[2] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
@@ -36,7 +36,7 @@ public class RecipeMenu extends InventoryMenu {
         ItemStack[] ingredients = recipe.getPreview();
 
         Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
-                String.format(ArtMap.Lang.RECIPE_HEADER.rawMessage(),
+                String.format(Lang.RECIPE_HEADER.rawMessage(),
                         recipe.name().toLowerCase()));
 
         for (int i = 0; i < ingredients.length; i++) {
@@ -48,7 +48,7 @@ public class RecipeMenu extends InventoryMenu {
 
     private static class RecipeButton extends MenuButton {
 
-        ArtMaterial recipe;
+        final ArtMaterial recipe;
 
         public RecipeButton(ArtMaterial recipe) {
             super(recipe.getItem().getType());
@@ -61,7 +61,7 @@ public class RecipeMenu extends InventoryMenu {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) {
+        public void onClick(Player player) {
 
             if (player.hasPermission("artmap.admin")) {
                 ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);
@@ -72,8 +72,7 @@ public class RecipeMenu extends InventoryMenu {
 
             } else {
                 player.closeInventory();
-                Preview.inventory(plugin, player,
-                        recipePreview(player, recipe));
+                Preview.inventory(player, recipePreview(player, recipe));
                 player.updateInventory();
             }
         }

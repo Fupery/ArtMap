@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,12 +14,6 @@ import org.bukkit.inventory.ItemStack;
 
 // Disallows players from copying ArtMap maps in the crafting table
 public class PlayerCraftListener implements Listener {
-
-    private final ArtMap plugin;
-
-    public PlayerCraftListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
@@ -45,7 +40,7 @@ public class PlayerCraftListener implements Listener {
                     }
 
                 } else {
-                    event.getWhoClicked().sendMessage(ArtMap.Lang.NO_CRAFT_PERM.message());
+                    event.getWhoClicked().sendMessage(Lang.NO_CRAFT_PERM.message());
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
                 }

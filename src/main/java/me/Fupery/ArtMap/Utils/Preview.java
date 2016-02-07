@@ -15,19 +15,19 @@ public abstract class Preview extends BukkitRunnable {
         this.player = player;
     }
 
-    public static void artwork(ArtMap plugin, Player player, MapArt art) {
+    public static void artwork(Player player, MapArt art) {
         checkCurrentPreviews(player);
         ItemStack item = art.getMapItem();
         Preview preview = new ItemPreview(player, item);
-        preview.runTaskLaterAsynchronously(plugin, 300);
+        preview.runTaskLaterAsynchronously(ArtMap.plugin(), 300);
         player.setItemInHand(item);
         ArtMap.previewing.put(player, preview);
     }
 
-    public static void inventory(ArtMap plugin, Player player, Inventory previewInventory) {
+    public static void inventory(Player player, Inventory previewInventory) {
         checkCurrentPreviews(player);
         Preview preview = new RecipePreview(player, previewInventory);
-        preview.runTaskLaterAsynchronously(plugin, 300);
+        preview.runTaskLaterAsynchronously(ArtMap.plugin(), 300);
         player.openInventory(previewInventory);
         ArtMap.previewing.put(player, preview);
     }

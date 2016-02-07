@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
-import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -48,25 +47,25 @@ public abstract class ListMenu extends InventoryMenu {
     }
 
     @Override
-    public void open(ArtMap plugin, Player player) {
+    public void open(Player player) {
         MenuButton[] buttons = paginateButtons(0, listItems);
         clearButtons();
         addButtons(buttons);
-        super.open(plugin, player);
+        super.open(player);
     }
 
-    protected void changePage(ArtMap plugin, Player player, int page, boolean forward) {
+    protected void changePage(Player player, int page, boolean forward) {
         page += forward ? 1 : -1;
         MenuButton[] buttons = paginateButtons(page, listItems);
         clearButtons();
         addButtons(buttons);
-        updateInventory(plugin, player);
+        updateInventory(player);
     }
 
     static class PageButton extends MenuButton {
 
-        boolean forward;
-        ListMenu menu;
+        final boolean forward;
+        final ListMenu menu;
 
         public PageButton(ListMenu menu, boolean forward) {
             super(forward ? Material.EMERALD : Material.BARRIER,
@@ -76,10 +75,10 @@ public abstract class ListMenu extends InventoryMenu {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) {
+        public void onClick(Player player) {
             int page = getAmount();
             page += forward ? -1 : 1;
-            menu.changePage(plugin, player, page, forward);
+            menu.changePage(player, page, forward);
         }
     }
 

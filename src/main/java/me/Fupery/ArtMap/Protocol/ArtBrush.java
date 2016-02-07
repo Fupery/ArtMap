@@ -3,22 +3,19 @@ package me.Fupery.ArtMap.Protocol;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ArtBrush {
 
-    private final ArtMap plugin;
     private final CanvasRenderer renderer;
     private final int axisLength;
     private byte[] lastFlowPixel;
 
-    public ArtBrush(ArtMap plugin, CanvasRenderer renderer, int axisLength) {
+    public ArtBrush(CanvasRenderer renderer, int axisLength) {
         this.renderer = renderer;
         this.axisLength = axisLength;
-        this.plugin = plugin;
     }
 
     public synchronized void paint(ItemStack item, boolean leftClick) {
@@ -95,7 +92,7 @@ public class ArtBrush {
             final byte clickedColour = renderer.getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour;
 
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            ArtMap.runTaskAsync(new Runnable() {
                 @Override
                 public void run() {
                     fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);

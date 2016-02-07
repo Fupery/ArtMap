@@ -5,7 +5,7 @@ import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
-import static me.Fupery.ArtMap.ArtMap.Lang.Array.*;
+import static me.Fupery.ArtMap.Utils.Lang.Array.*;
 
 public class HelpMenu extends InventoryMenu {
 

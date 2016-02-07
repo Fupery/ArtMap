@@ -1,11 +1,10 @@
 package me.Fupery.ArtMap.Command;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtworkMenu;
 import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,48 +14,44 @@ import java.util.UUID;
 
 public class ArtMapCommandExecutor implements CommandExecutor {
 
-    private final ArtMap plugin;
-    private HashMap<String, ArtMapCommand> commands;
+    private final HashMap<String, Command> commands;
 
-    public ArtMapCommandExecutor(final ArtMap plugin) {
-        this.plugin = plugin;
+    public ArtMapCommandExecutor() {
         commands = new HashMap<>();
         //Commands go here - note that they are run on an async thread
 
-        commands.put("save", new CommandSave(plugin));
+        commands.put("save", new CommandSave());
 
-        commands.put("delete", new CommandDelete(plugin));
+        commands.put("delete", new CommandDelete());
 
-        commands.put("preview", new CommandPreview(plugin));
+        commands.put("preview", new CommandPreview());
 
-        commands.put("backup", new CommandBackup(plugin));
+        commands.put("backup", new CommandBackup());
 
-        commands.put("restore", new CommandRestore(plugin));
+        commands.put("restore", new CommandRestore());
 
         //convenience commands
-        commands.put("help", new ArtMapCommand(null, "/artmap [help]", true) {
+        commands.put("help", new Command(null, "/artmap [help]", true) {
             @Override
-            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (sender instanceof Player) {
-                    HelpMenu.helpMenu.open(plugin, (Player) sender);
+                    HelpMenu.helpMenu.open((Player) sender);
 
                 } else {
-                    sender.sendMessage(ArtMap.Lang.Array.CONSOLE_HELP.messages());
+                    sender.sendMessage(Lang.Array.CONSOLE_HELP.messages());
                 }
-                return true;
             }
         });
-        commands.put("recipe", new ArtMapCommand(null, "/artmap recipe", false) {
+        commands.put("recipe", new Command(null, "/artmap recipe", false) {
             @Override
-            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                HelpMenu.helpMenu.getButton(1).onClick(plugin, (Player) sender);
-                return true;
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                HelpMenu.helpMenu.getButton(1).onClick((Player) sender);
             }
         });
-        commands.put("list", new ArtMapCommand(null, "/artmap list [player]", false) {
+        commands.put("list", new Command(null, "/artmap list [player]", false) {
             @Override
-            public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (args.length > 1) {
 
@@ -64,28 +59,23 @@ public class ArtMapCommandExecutor implements CommandExecutor {
                     artist = Bukkit.getOfflinePlayer(args[1]);
 
                     if (artist == null || !artist.hasPlayedBefore()) {
-                        msg.message = String.format(ArtMap.Lang.PLAYER_NOT_FOUND.message(), args[1]);
-                        return false;
+                        msg.message = String.format(Lang.PLAYER_NOT_FOUND.message(), args[1]);
+                        return;
                     }
                     UUID uuid = artist.getUniqueId();
 
                     ArtworkMenu menu = new ArtworkMenu(null, uuid);
-                    menu.open(plugin, (Player) sender);
+                    menu.open((Player) sender);
 
                 } else {
-                    HelpMenu.helpMenu.getButton(4).onClick(plugin, (Player) sender);
+                    HelpMenu.helpMenu.getButton(4).onClick((Player) sender);
                 }
-                return true;
             }
         });
-
-        commands.get("help").plugin = plugin;
-        commands.get("recipe").plugin = plugin;
-        commands.get("list").plugin = plugin;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 
         if (args.length > 0) {
 
@@ -93,7 +83,7 @@ public class ArtMapCommandExecutor implements CommandExecutor {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
 
             } else {
-                sender.sendMessage(ArtMap.Lang.HELP.message());
+                sender.sendMessage(Lang.HELP.message());
             }
 
         } else {
@@ -102,7 +92,4 @@ public class ArtMapCommandExecutor implements CommandExecutor {
         return true;
     }
 
-    public ArtMap getPlugin() {
-        return plugin;
-    }
 }

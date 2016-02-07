@@ -5,8 +5,8 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,39 +15,38 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandSave extends ArtMapCommand {
+public class CommandSave extends Command {
 
-    CommandSave(ArtMap plugin) {
+    CommandSave() {
         super("artmap.artist", "/artmap save <title>", false);
-        this.plugin = plugin;
     }
 
     @Override
-    public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+    public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
         final String title = args[1];
 
         final Player player = (Player) sender;
 
-        if (!new TitleFilter(plugin, title).check()) {
-            msg.message = ArtMap.Lang.BAD_TITLE.message();
-            return false;
+        if (!new TitleFilter(title).check()) {
+            msg.message = Lang.BAD_TITLE.message();
+            return;
         }
 
         MapArt art = ArtMap.getArtDatabase().getArtwork(title);
 
         if (art != null) {
-            msg.message = ArtMap.Lang.TITLE_USED.message();
-            return false;
+            msg.message = Lang.TITLE_USED.message();
+            return;
         }
 
-        if (!plugin.getArtistHandler().containsPlayer(player)) {
-            player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
-            return false;
+        if (!ArtMap.artistHandler.containsPlayer(player)) {
+            player.sendMessage(Lang.NOT_RIDING_EASEL.message());
+            return;
         }
 
 
-        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+        ArtMap.runTask(new Runnable() {
             @Override
             public void run() {
                 Easel easel = null;
@@ -65,10 +64,10 @@ public class CommandSave extends ArtMapCommand {
                 }
 
                 if (easel == null) {
-                    player.sendMessage(ArtMap.Lang.NOT_RIDING_EASEL.message());
+                    player.sendMessage(Lang.NOT_RIDING_EASEL.message());
                     return;
                 }
-                plugin.getArtistHandler().removePlayer(player);
+                ArtMap.artistHandler.removePlayer(player);
 
                 MapArt art = new MapArt(easel.getItem().getDurability(), title, player);
                 art.saveArtwork();
@@ -80,9 +79,8 @@ public class CommandSave extends ArtMapCommand {
                     player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                 }
                 player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
-                player.sendMessage(String.format(ArtMap.Lang.SAVE_SUCCESS.message(), title));
+                player.sendMessage(String.format(Lang.SAVE_SUCCESS.message(), title));
             }
         });
-        return true;
     }
 }

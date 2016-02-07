@@ -3,19 +3,15 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
-import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Preview;
-import org.bukkit.Bukkit;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,11 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EaselInteractListener implements Listener {
 
     public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();
-    private final ArtMap plugin;
-
-    public EaselInteractListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onEaselInteract(EaselEvent event) {
@@ -36,12 +27,12 @@ public class EaselInteractListener implements Listener {
         final Easel easel = event.getEasel();
 
         if (!player.hasPermission("artmap.artist")) {
-            player.sendRawMessage(ArtMap.Lang.NO_PERM.message());
+            player.sendRawMessage(Lang.NO_PERM.message());
             return;
         }
 
         if (easel.isPainting()) {
-            player.sendMessage(ArtMap.Lang.ELSE_USING.message());
+            player.sendMessage(Lang.ELSE_USING.message());
             return;
         }
 
@@ -49,14 +40,14 @@ public class EaselInteractListener implements Listener {
 
             case LEFT_CLICK:
 
-                player.sendMessage(ArtMap.Lang.EASEL_HELP.message());
+                player.sendMessage(Lang.EASEL_HELP.message());
                 return;
 
             case RIGHT_CLICK:
 
                 //If the easel has a canvas, player rides the easel
                 if (easel.getItem().getType() == Material.MAP) {
-                    easel.rideEasel(player, plugin);
+                    easel.rideEasel(player);
                     return;
 
                 } else if (easel.getItem().getType() != Material.AIR) {
@@ -79,7 +70,7 @@ public class EaselInteractListener implements Listener {
                     if (art != null) {
 
                         if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
-                            player.sendMessage(ArtMap.Lang.NO_CRAFT_PERM.message());
+                            player.sendMessage(Lang.NO_CRAFT_PERM.message());
                             return;
                         }
 
@@ -92,7 +83,7 @@ public class EaselInteractListener implements Listener {
                         return;
                     }
                 }
-                player.sendMessage(ArtMap.Lang.NEED_CANVAS.message());
+                player.sendMessage(Lang.NEED_CANVAS.message());
                 return;
 
             case SHIFT_RIGHT_CLICK:
@@ -100,7 +91,7 @@ public class EaselInteractListener implements Listener {
                 if (easel.hasItem()) {
                     final short id = easel.getItem().getDurability();
 
-                    Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                    ArtMap.runTaskAsync(new Runnable() {
                         @Override
                         public void run() {
                             ArtMap.getArtDatabase().recycleID(id);
@@ -108,7 +99,7 @@ public class EaselInteractListener implements Listener {
                     });
                     easel.removeItem();
                 }
-                easel.breakEasel(plugin);
+                easel.breakEasel();
         }
     }
 

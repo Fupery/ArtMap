@@ -1,14 +1,10 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public enum ArtMaterial {

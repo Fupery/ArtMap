@@ -4,7 +4,9 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselPart;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -22,12 +24,6 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public class PlayerInteractEaselListener implements Listener {
-
-    private final ArtMap plugin;
-
-    public PlayerInteractEaselListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
@@ -70,7 +66,7 @@ public class PlayerInteractEaselListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
 
         if (checkSignBreak(event.getBlock(), event)) {
-            event.getPlayer().sendMessage(ArtMap.Lang.BREAK_CANVAS.message());
+            event.getPlayer().sendMessage(Lang.BREAK_CANVAS.message());
         }
         checkIsPainting(event.getPlayer(), event);
     }
@@ -97,7 +93,7 @@ public class PlayerInteractEaselListener implements Listener {
                     Player player = (Player) clicker;
 
                     if (!checkIsPainting(player, event) && !wasCancelled) {
-                        plugin.getServer().getPluginManager().callEvent(
+                        Bukkit.getServer().getPluginManager().callEvent(
                                 new EaselEvent(easel, click, player));
                     }
                 }
@@ -112,7 +108,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private boolean checkIsPainting(Player player, Cancellable event) {
 
-        if (player.isInsideVehicle() && plugin.getArtistHandler().containsPlayer(player)) {
+        if (player.isInsideVehicle() && ArtMap.artistHandler.containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }

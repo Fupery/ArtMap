@@ -5,6 +5,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ArtBackup;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -15,44 +16,43 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CommandRestore extends ArtMapCommand {
+public class CommandRestore extends Command {
 
-    CommandRestore(ArtMap plugin) {
+    CommandRestore() {
         super("op", "/artmap restore <backupname>", true);
-        this.plugin = plugin;
     }
 
     @Override
-    public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+    public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
         //Check world is valid
         World world = Bukkit.getWorld(args[1]);
 
         if (world == null) {
-            sender.sendMessage(String.format(ArtMap.Lang.NO_WORLD.message(), args[1]));
+            sender.sendMessage(String.format(Lang.NO_WORLD.message(), args[1]));
         }
         //Check if overwrite flag is provided
         boolean overwrite = (args.length > 2 && args[2].equals("-o"));
 
         //Check if backups folder is valid
-        File backupsFolder = new File(plugin.getDataFolder(), "backups");
+        File backupsFolder = new File(ArtMap.plugin().getDataFolder(), "backups");
 
         if (!backupsFolder.exists() && !backupsFolder.mkdir()) {
-            msg.message = String.format(ArtMap.Lang.RESTORE_ERROR.message(), backupsFolder.getName());
-            return false;
+            msg.message = String.format(Lang.RESTORE_ERROR.message(), backupsFolder.getName());
+            return;
         }
 
         File backup = new File(backupsFolder, args[0]);
 
         if (!backup.exists()) {
-            msg.message = String.format(ArtMap.Lang.RESTORE_ERROR.message(), backup.getAbsolutePath());
-            return false;
+            msg.message = String.format(Lang.RESTORE_ERROR.message(), backup.getAbsolutePath());
+            return;
         }
 
         File[] files = backup.listFiles();
 
         if (files == null) {
-            msg.message = String.format(ArtMap.Lang.RESTORE_ERROR.message(), backup.getAbsolutePath());
-            return false;
+            msg.message = String.format(Lang.RESTORE_ERROR.message(), backup.getAbsolutePath());
+            return;
         }
         ArrayList<MapArt> artworks = new ArrayList<>();
         int i = 0; //Number of succesfully restored artworks
@@ -107,11 +107,10 @@ public class CommandRestore extends ArtMapCommand {
             i++;
         }
         ArtMap.getArtDatabase().addArtworks(artworks.toArray(new MapArt[artworks.size()]));
-        sender.sendMessage(String.format(ArtMap.Lang.RESTORE_SUCCESS.message(), i, backup.getAbsoluteFile()));
+        sender.sendMessage(String.format(Lang.RESTORE_SUCCESS.message(), i, backup.getAbsoluteFile()));
 
         if (!overwrite) {
-            sender.sendMessage(String.format(ArtMap.Lang.RESTORE_ALREADY_FOUND.message(), k));
+            sender.sendMessage(String.format(Lang.RESTORE_ALREADY_FOUND.message(), k));
         }
-        return true;
     }
 }

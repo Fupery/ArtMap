@@ -4,7 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import org.bukkit.Bukkit;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -19,12 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerInteractListener implements Listener {
-
-    private final ArtMap plugin;
-
-    public PlayerInteractListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
 
     private static BlockFace getFacing(Player player) {
         int yaw = ((int) player.getLocation().getYaw()) % 360;
@@ -66,7 +60,7 @@ public class PlayerInteractListener implements Listener {
 
                         if (!Easel.checkForEasel(easelLocation)) {
 
-                            Easel easel = Easel.spawnEasel(plugin, easelLocation, facing);
+                            Easel easel = Easel.spawnEasel(easelLocation, facing);
                             Player player = event.getPlayer();
                             ItemStack item = player.getItemInHand().clone();
                             item.setAmount(1);
@@ -78,7 +72,7 @@ public class PlayerInteractListener implements Listener {
                             }
                         }
                     }
-                    event.getPlayer().sendMessage(ArtMap.Lang.INVALID_POS.message());
+                    event.getPlayer().sendMessage(Lang.INVALID_POS.message());
                 }
             }
         }
@@ -93,7 +87,7 @@ public class PlayerInteractListener implements Listener {
 
             if (item != null && item.getType() == Material.MAP) {
 
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                ArtMap.runTaskAsync(new Runnable() {
                     @Override
                     public void run() {
 

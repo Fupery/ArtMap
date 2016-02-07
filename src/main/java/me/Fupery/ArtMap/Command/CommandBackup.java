@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ArtBackup;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -11,35 +12,34 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CommandBackup extends ArtMapCommand {
+public class CommandBackup extends Command {
 
     private static final DateFormat backupFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
-    CommandBackup(ArtMap plugin) {
+    CommandBackup() {
         super("op", "/artmap backup", true);
-        this.plugin = plugin;
     }
 
     @Override
-    public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-        File backupsFolder = new File(plugin.getDataFolder(), "backups");
+    public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+        File backupsFolder = new File(ArtMap.plugin().getDataFolder(), "backups");
 
         if (!backupsFolder.exists() && !backupsFolder.mkdir()) {
-            msg.message = ArtMap.Lang.BACKUP_ERROR.message();
-            return false;
+            msg.message = Lang.BACKUP_ERROR.message();
+            return;
         }
         File backup = new File(backupsFolder, backupFormat.format(new Date()));
 
         if (!backup.exists() && !backup.mkdir()) {
-            msg.message = ArtMap.Lang.BACKUP_ERROR.message();
-            return false;
+            msg.message = Lang.BACKUP_ERROR.message();
+            return;
         }
 
         MapArt[] artworks = ArtMap.getArtDatabase().listMapArt("all");
 
         if (artworks == null) {
-            msg.message = ArtMap.Lang.NO_ARTWORKS.message();
-            return false;
+            msg.message = Lang.NO_ARTWORKS.message();
+            return;
         }
 
         for (MapArt art : artworks) {
@@ -50,10 +50,9 @@ public class CommandBackup extends ArtMapCommand {
                 artBackup.write(mapBackup);
             } catch (IOException e) {
                 msg.message = String.format("Error writing %s: %s", art.getTitle(), e.getMessage());
-                return false;
+                return;
             }
         }
-        sender.sendMessage(String.format(ArtMap.Lang.BACKUP_SUCCESS.message(), backup.getAbsoluteFile()));
-        return true;
+        sender.sendMessage(String.format(Lang.BACKUP_SUCCESS.message(), backup.getAbsoluteFile()));
     }
 }

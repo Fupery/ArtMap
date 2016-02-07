@@ -37,15 +37,15 @@ public class ArtistMenu extends ListMenu {
     }
 
     @Override
-    public void open(ArtMap plugin, Player player) {
+    public void open(Player player) {
         listItems = generateButtons(player);
-        super.open(plugin, player);
+        super.open(player);
     }
 
     private class ArtworkListButton extends MenuButton {
 
         final UUID artist;
-        InventoryMenu menu;
+        final InventoryMenu menu;
 
         public ArtworkListButton(InventoryMenu menu, UUID artist) {
             super(Material.SKULL_ITEM);
@@ -63,9 +63,9 @@ public class ArtistMenu extends ListMenu {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) {
+        public void onClick(Player player) {
             ArtworkMenu menu = new ArtworkMenu(this.menu, artist);
-            menu.open(plugin, player);
+            menu.open(player);
         }
     }
 }

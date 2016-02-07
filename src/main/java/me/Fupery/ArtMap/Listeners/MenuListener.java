@@ -3,7 +3,7 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
 import me.Fupery.ArtMap.InventoryMenu.MenuButton;
-import org.bukkit.Bukkit;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -18,11 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MenuListener implements Listener {
 
     public static final ConcurrentHashMap<Player, InventoryMenu> openMenus = new ConcurrentHashMap<>();
-    private ArtMap plugin;
-
-    public MenuListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
 
     private static void handleClick(InventoryClickEvent event) {
         Inventory top = event.getWhoClicked().getOpenInventory().getTopInventory();
@@ -53,7 +48,7 @@ public class MenuListener implements Listener {
         Inventory inventory = event.getWhoClicked().getOpenInventory().getTopInventory();
 
         if (inventory == null || inventory.getTitle() == null
-                || !inventory.getTitle().contains(ArtMap.Lang.prefix)) {
+                || !inventory.getTitle().contains(Lang.prefix)) {
             return;
         }
 
@@ -63,19 +58,19 @@ public class MenuListener implements Listener {
             return;
         }
 
-        if (!openMenus.containsKey(((Player) event.getWhoClicked()))) {
+        if (!openMenus.containsKey(event.getWhoClicked())) {
             return;
         }
-        InventoryMenu menu = openMenus.get(((Player) event.getWhoClicked()));
+        InventoryMenu menu = openMenus.get(event.getWhoClicked());
 
         final MenuButton button = menu.getButton(event.getSlot());
 
         if (button != null) {
 
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            ArtMap.runTaskAsync(new Runnable() {
                 @Override
                 public void run() {
-                    button.onClick(plugin, ((Player) event.getWhoClicked()));
+                    button.onClick(((Player) event.getWhoClicked()));
                 }
             });
         }
@@ -86,7 +81,7 @@ public class MenuListener implements Listener {
         Inventory inventory = event.getWhoClicked().getOpenInventory().getTopInventory();
 
         if (inventory == null || inventory.getTitle() == null
-                || !inventory.getTitle().contains(ArtMap.Lang.prefix)) {
+                || !inventory.getTitle().contains(Lang.prefix)) {
             return;
         }
         event.setResult(Event.Result.DENY);

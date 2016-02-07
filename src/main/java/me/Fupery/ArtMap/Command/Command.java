@@ -1,27 +1,21 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-interface AbstractCommand {
-    boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg);
-}
+public abstract class Command {
 
-public abstract class ArtMapCommand implements AbstractCommand {
-
+    private final String permission;
+    private final boolean consoleAllowed;
     String usage;
-    ArtMap plugin;
-    private AbstractCommand ArtMapCommand = this;
-    private String permission;
     private int minArgs;
     private int maxArgs;
-    private boolean consoleAllowed;
 
-    ArtMapCommand(String permission, String usage, boolean consoleAllowed) {
+    Command(String permission, String usage, boolean consoleAllowed) {
         this.permission = permission;
         this.consoleAllowed = consoleAllowed;
 
@@ -36,31 +30,31 @@ public abstract class ArtMapCommand implements AbstractCommand {
 
     void runPlayerCommand(final CommandSender sender, final String args[]) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
+        ArtMap.runTaskAsync(new Runnable() {
             @Override
             public void run() {
-
                 ReturnMessage returnMsg = new ReturnMessage(sender, null);
 
                 if (permission != null && !sender.hasPermission(permission)) {
-                    returnMsg.message = ArtMap.Lang.NO_PERM.message();
+                    returnMsg.message = Lang.NO_PERM.message();
 
                 } else if (!consoleAllowed && !(sender instanceof Player)) {
-                    returnMsg.message = ArtMap.Lang.NO_CONSOLE.message();
+                    returnMsg.message = Lang.NO_CONSOLE.message();
 
                 } else if (args.length < minArgs || args.length > maxArgs) {
-                    returnMsg.message = ArtMap.Lang.prefix + ChatColor.RED + ", " + usage;
+                    returnMsg.message = Lang.prefix + ChatColor.RED + ", " + usage;
 
                 } else {
-                    ArtMapCommand.runCommand(sender, args, returnMsg);
+                    runCommand(sender, args, returnMsg);
                 }
 
                 if (returnMsg.message != null) {
-                    Bukkit.getScheduler().runTask(plugin, returnMsg);
+                    ArtMap.runTask(returnMsg);
                 }
             }
         });
     }
+
+    public abstract void runCommand(CommandSender sender, String[] args, ReturnMessage msg);
 }
 

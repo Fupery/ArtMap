@@ -14,13 +14,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryInteractListener implements Listener {
 
-    private final ArtMap plugin;
-
-    public InventoryInteractListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
-
-
     @EventHandler
     public void onPlayerItemHeld(PlayerItemHeldEvent event) {
         checkPreviewing(event.getPlayer(), event);

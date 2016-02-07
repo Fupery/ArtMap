@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -94,7 +95,7 @@ public abstract class ArtistProtocol {
                 msg = onPacketInAsync(player, channel, msg);
 
             } catch (Exception e) {
-                Bukkit.getLogger().log(Level.SEVERE, ArtMap.Lang.prefix + "Error in onPacketInAsync().", e);
+                Bukkit.getLogger().log(Level.SEVERE, Lang.prefix + "Error in onPacketInAsync().", e);
             }
 
             if (msg != null) {

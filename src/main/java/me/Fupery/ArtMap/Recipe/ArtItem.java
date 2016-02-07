@@ -156,7 +156,7 @@ class ItemMapArt extends ArtItem {
 
 class PaintBucket extends ArtItem {
 
-    ArtDye colour;
+    final ArtDye colour;
 
     PaintBucket(ArtDye colour) {
         super(Material.BUCKET);

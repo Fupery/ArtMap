@@ -4,19 +4,19 @@ import me.Fupery.ArtMap.ArtMap;
 
 public class TitleFilter {
 
-    private final ArtMap plugin;
     private final String title;
     private final char[] chars;
     private final String adjTitle;
 
-    public TitleFilter(ArtMap plugin, String title) {
-        this.plugin = plugin;
+    public TitleFilter(String title) {
         this.title = title;
         chars = title.toCharArray();
         adjTitle = replaceCharacters();
     }
 
     public boolean check() {
+
+        ArtMap plugin = ArtMap.plugin();
 
         if (title.matches("[\\w]{3,16}")) {
 

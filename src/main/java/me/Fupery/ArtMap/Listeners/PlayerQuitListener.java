@@ -12,19 +12,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerQuitListener implements Listener {
 
-    private final ArtMap plugin;
-
-    public PlayerQuitListener(ArtMap plugin) {
-        this.plugin = plugin;
-    }
-
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         Player player = event.getPlayer();
 
-        if (plugin.getArtistHandler().containsPlayer(player)) {
-            plugin.getArtistHandler().removePlayer(player);
+        if (ArtMap.artistHandler.containsPlayer(player)) {
+            ArtMap.artistHandler.removePlayer(player);
         }
 
         if (ArtMap.previewing.containsKey(player)) {
@@ -43,8 +37,8 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
 
-        if (plugin.getArtistHandler().containsPlayer(event.getEntity())) {
-            plugin.getArtistHandler().removePlayer(event.getEntity());
+        if (ArtMap.artistHandler.containsPlayer(event.getEntity())) {
+            ArtMap.artistHandler.removePlayer(event.getEntity());
         }
 
         if (ArtMap.previewing.containsKey(event.getEntity())) {
@@ -56,10 +50,10 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent event) {
 
-        if (plugin.getArtistHandler().containsPlayer(event.getPlayer())) {
+        if (ArtMap.artistHandler.containsPlayer(event.getPlayer())) {
 
             if (event.getPlayer().isInsideVehicle()) {
-                plugin.getArtistHandler().removePlayer(event.getPlayer());
+                ArtMap.artistHandler.removePlayer(event.getPlayer());
             }
         }
     }

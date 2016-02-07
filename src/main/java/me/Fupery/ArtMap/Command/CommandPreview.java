@@ -2,24 +2,23 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandPreview extends ArtMapCommand {
+public class CommandPreview extends Command {
 
-    CommandPreview(ArtMap plugin) {
+    CommandPreview() {
         super(null, "/artmap preview <title>", false);
-        this.plugin = plugin;
     }
 
-    public static boolean previewArtwork(ArtMap plugin, final Player player, final MapArt art) {
+    public static boolean previewArtwork(final Player player, final MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            ArtMap.runTask(new Runnable() {
                 @Override
                 public void run() {
                     ItemStack currentItem = player.getItemInHand();
@@ -45,28 +44,27 @@ public class CommandPreview extends ArtMapCommand {
                 return false;
             }
 
-            Preview.artwork(plugin, player, art);
+            Preview.artwork(player, art);
         }
         return true;
     }
 
     @Override
-    public boolean runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+    public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
         Player player = (Player) sender;
 
         MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art == null) {
-            msg.message = String.format(ArtMap.Lang.MAP_NOT_FOUND.message(), args[1]);
-            return false;
+            msg.message = String.format(Lang.MAP_NOT_FOUND.message(), args[1]);
+            return;
         }
 
-        if (!previewArtwork(plugin, player, art)) {
-            msg.message = ArtMap.Lang.EMPTY_HAND_PREVIEW.message();
-            return false;
+        if (!previewArtwork(player, art)) {
+            msg.message = Lang.EMPTY_HAND_PREVIEW.message();
+            return;
         }
-        msg.message = String.format(ArtMap.Lang.PREVIEWING.message(), args[1]);
-        return true;
+        msg.message = String.format(Lang.PREVIEWING.message(), args[1]);
     }
 }

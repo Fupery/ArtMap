@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Easel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,7 +33,7 @@ public class Easel {
     }
 
     //Spawns an easel at the location provided, facing the direction provided
-    public static Easel spawnEasel(ArtMap plugin, Location location, BlockFace facing) {
+    public static Easel spawnEasel(Location location, BlockFace facing) {
         EaselPart.SIGN.spawn(location, facing);
         ArmorStand stand = ((ArmorStand) EaselPart.STAND.spawn(location, facing));
         ItemFrame frame = (ItemFrame) EaselPart.FRAME.spawn(location, facing);
@@ -42,7 +43,7 @@ public class Easel {
         EaselInteractListener.easels.put(location, easel);
 
         if (stand == null || frame == null) {
-            easel.breakEasel(plugin);
+            easel.breakEasel();
             return null;
 
         } else {
@@ -171,14 +172,16 @@ public class Easel {
         getFrame().setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
     }
 
-    public void rideEasel(Player player, ArtMap plugin) {
+    public void rideEasel(Player player) {
+
+        ArtMap plugin = ArtMap.plugin();
 
         ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, getFrame().getFacing()));
 
         if (seat == null) {
             return;
         }
-        player.sendMessage(ArtMap.Lang.PAINTING.message());
+        player.sendMessage(Lang.PAINTING.message());
 
         player.playSound(location, Sound.ITEM_PICKUP, (float) 0.5, -3);
         seat.setPassenger(player);
@@ -188,7 +191,7 @@ public class Easel {
         setIsPainting(true);
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
 
-        plugin.getArtistHandler().addPlayer(plugin, player, mapView,
+        ArtMap.artistHandler.addPlayer(player, mapView,
                 EaselPart.getYawOffset(getFrame().getFacing()));
     }
 
@@ -202,14 +205,14 @@ public class Easel {
         }
     }
 
-    public void breakEasel(ArtMap plugin) {
+    public void breakEasel() {
 
         EaselInteractListener.easels.remove(location);
         final Collection<Entity> entities = getNearbyEntities();
         final ArmorStand stand = getStand(entities);
         final ItemFrame frame = getFrame(entities);
 
-        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+        ArtMap.runTask(new Runnable() {
             @Override
             public void run() {
                 location.getBlock().setType(Material.AIR);

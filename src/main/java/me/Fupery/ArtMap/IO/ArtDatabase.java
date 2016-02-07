@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -27,17 +28,15 @@ public class ArtDatabase {
     private static UUID[] artistList = null;
     private static boolean artistsUpToDate = false;
     private static File mapData;
-    private ArtMap plugin;
     private ConfigurationSection artworks;
     private ConfigurationSection recycled_keys;
 
-    private ArtDatabase(ArtMap plugin) {
-        this.plugin = plugin;
+    private ArtDatabase() {
         loadConfiguration();
     }
 
-    public static ArtDatabase buildDatabase(ArtMap plugin) {
-        mapData = new File(plugin.getDataFolder(), "mapList.yml");
+    public static ArtDatabase buildDatabase() {
+        mapData = new File(ArtMap.plugin().getDataFolder(), "mapList.yml");
 
         if (!mapData.exists()) {
 
@@ -51,7 +50,7 @@ public class ArtDatabase {
                 return null;
             }
         }
-        return new ArtDatabase(plugin);
+        return new ArtDatabase();
     }
 
     public MapArt getArtwork(String title) {
@@ -228,7 +227,7 @@ public class ArtDatabase {
     }
 
     private synchronized void updateMaps() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+        ArtMap.runTaskAsync(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -239,7 +238,7 @@ public class ArtDatabase {
                     loadConfiguration();
 
                 } catch (IOException e) {
-                    plugin.getLogger().info(String.format(ArtMap.Lang.MAPDATA_ERROR.message(),
+                    ArtMap.plugin().getLogger().info(String.format(Lang.MAPDATA_ERROR.message(),
                             mapData.getAbsolutePath(), e));
                 }
             }

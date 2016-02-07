@@ -22,9 +22,9 @@ class CanvasRenderer extends MapRenderer {
     private Cursor cursor;
     private ArtBrush brush;
 
-    public CanvasRenderer(ArtMap plugin, MapView mapView, int yawOffset) {
+    public CanvasRenderer(MapView mapView, int yawOffset) {
         this.mapView = mapView;
-        resolutionFactor = plugin.getMapResolutionFactor();
+        resolutionFactor = ArtMap.plugin().getMapResolutionFactor();
         axisLength = 128 / resolutionFactor;
         clearRenderers();
         mapView.addRenderer(this);
@@ -32,14 +32,14 @@ class CanvasRenderer extends MapRenderer {
         active = true;
         loadMap();
 
-        PixelTable pixelTable = plugin.getPixelTable();
+        PixelTable pixelTable = ArtMap.plugin().getPixelTable();
 
         if (pixelTable == null) {
             mapView.removeRenderer(this);
             return;
         }
-        cursor = new Cursor(plugin, yawOffset);
-        brush = new ArtBrush(plugin, this, axisLength);
+        cursor = new Cursor(yawOffset);
+        brush = new ArtBrush(this, axisLength);
     }
 
     @Override

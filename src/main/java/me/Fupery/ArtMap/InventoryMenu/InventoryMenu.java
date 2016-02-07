@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Listeners.MenuListener;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryMenu {
 
-    protected InventoryType type;
-    protected InventoryMenu parent;
+    protected final InventoryType type;
+    protected final InventoryMenu parent;
     protected String title;
     protected MenuButton[] buttons;
 
@@ -34,8 +35,8 @@ public class InventoryMenu {
         buttons = new MenuButton[type.getDefaultSize()];
     }
 
-    protected void updateInventory(ArtMap plugin, final Player player) {
-        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+    protected void updateInventory(final Player player) {
+        ArtMap.runTask(new Runnable() {
             @Override
             public void run() {
                 Inventory inventory = player.getOpenInventory().getTopInventory();
@@ -58,9 +59,9 @@ public class InventoryMenu {
         return buttons[slot];
     }
 
-    public void open(final ArtMap plugin, final Player player) {
+    public void open(final Player player) {
         final InventoryMenu menu = this;
-        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+        ArtMap.runTask(new Runnable() {
             @Override
             public void run() {
 
@@ -68,7 +69,7 @@ public class InventoryMenu {
                     MenuListener.openMenus.get(player).close(player);
                 }
 
-                Inventory inventory = Bukkit.createInventory(player, type, ArtMap.Lang.prefix + title);
+                Inventory inventory = Bukkit.createInventory(player, type, Lang.prefix + title);
 
                 for (int slot = 0; slot < inventory.getSize(); slot++) {
 

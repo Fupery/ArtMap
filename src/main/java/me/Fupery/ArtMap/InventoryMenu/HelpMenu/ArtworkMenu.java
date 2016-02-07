@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class ArtworkMenu extends ListMenu {
 
-    private UUID artist;
+    private final UUID artist;
 
     public ArtworkMenu(InventoryMenu parent, UUID artist) {
         super(parent, "Player Artworks");
@@ -58,10 +58,10 @@ public class ArtworkMenu extends ListMenu {
     }
 
     @Override
-    public void open(ArtMap plugin, Player player) {
+    public void open(Player player) {
         listItems = generateButtons(artist);
         title = processTitle(artist);
-        super.open(plugin, player);
+        super.open(player);
     }
 
     private static class PreviewButton extends MenuButton {
@@ -79,9 +79,9 @@ public class ArtworkMenu extends ListMenu {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) {
+        public void onClick(Player player) {
             player.closeInventory();
-            CommandPreview.previewArtwork(plugin, player, artwork);
+            CommandPreview.previewArtwork(player, artwork);
         }
     }
 }

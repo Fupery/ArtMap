@@ -5,6 +5,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
@@ -82,8 +83,8 @@ public class ArtistHandler {
         return pixelTable;
     }
 
-    public synchronized void addPlayer(ArtMap plugin, Player player, MapView mapView, int yawOffset) {
-        artists.put(player, new CanvasRenderer(plugin, mapView, yawOffset));
+    public synchronized void addPlayer(Player player, MapView mapView, int yawOffset) {
+        artists.put(player, new CanvasRenderer(mapView, yawOffset));
         protocol.injectPlayer(player);
     }
 
@@ -125,7 +126,7 @@ public class ArtistHandler {
             renderer.saveMap();
 
         } else {
-            Bukkit.getLogger().warning(ArtMap.Lang.prefix + ChatColor.RED + String.format(
+            Bukkit.getLogger().warning(Lang.prefix + ChatColor.RED + String.format(
                     "Renderer not found for player: %s, mapID: %s", player.getName(), mapID));
         }
     }

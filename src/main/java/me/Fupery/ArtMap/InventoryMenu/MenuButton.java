@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.InventoryMenu;
 
 import me.Fupery.ArtMap.ArtMap;
-import org.bukkit.Bukkit;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +27,7 @@ public abstract class MenuButton extends ItemStack {
         setItemMeta(meta);
     }
 
-    public abstract void onClick(ArtMap plugin, Player player);
+    public abstract void onClick(Player player);
 
     public static class LinkedButton extends MenuButton {
 
@@ -39,8 +39,8 @@ public abstract class MenuButton extends ItemStack {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) {
-            linkedMenu.open(plugin, player);
+        public void onClick(Player player) {
+            linkedMenu.open(player);
         }
 
         public InventoryMenu getLinkedMenu() {
@@ -55,28 +55,28 @@ public abstract class MenuButton extends ItemStack {
         }
 
         @Override
-        public void onClick(ArtMap plugin, Player player) {
+        public void onClick(Player player) {
         }
     }
 
     public static class CloseButton extends MenuButton {
 
-        InventoryMenu menu;
+        final InventoryMenu menu;
 
         public CloseButton(InventoryMenu menu) {
-            super(Material.BARRIER, ArtMap.Lang.Array.HELP_CLOSE.messages());
+            super(Material.BARRIER, Lang.Array.HELP_CLOSE.messages());
             this.menu = menu;
         }
 
         @Override
-        public void onClick(final ArtMap plugin, final Player player) {
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+        public void onClick(final Player player) {
+            ArtMap.runTask(new Runnable() {
                 @Override
                 public void run() {
                     menu.close(player);
 
                     if (menu.parent != null) {
-                        menu.parent.open(plugin, player);
+                        menu.parent.open(player);
                     }
                 }
             });

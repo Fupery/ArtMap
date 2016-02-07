@@ -16,7 +16,7 @@ public class ArtBackup implements Serializable {
     private final String title;
     private final UUID player;
     private final String date;
-    byte[] map;
+    private final byte[] map;
     private short mapID;
 
     public ArtBackup(MapArt art) {
