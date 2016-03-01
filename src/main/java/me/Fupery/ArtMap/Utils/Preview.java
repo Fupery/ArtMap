@@ -63,7 +63,7 @@ class ItemPreview extends Preview {
 
     @Override
     public void run() {
-        player.playSound(player.getLocation(), Sound.CLICK, (float) 0.5, -2);
+        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, (float) 0.5, -2);
         player.getInventory().removeItem(preview);
         ArtMap.previewing.remove(player);
     }

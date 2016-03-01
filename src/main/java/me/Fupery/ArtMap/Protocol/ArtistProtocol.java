@@ -41,7 +41,9 @@ public abstract class ArtistProtocol {
 
                     @Override
                     public void run() {
-                        channel.pipeline().remove(handlerName);
+                        if (channel.pipeline().get(handlerName) != null) {
+                            channel.pipeline().remove(handlerName);
+                        }
                     }
                 });
             }

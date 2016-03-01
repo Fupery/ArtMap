@@ -44,68 +44,70 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
+        Location easelLocation;
+        BlockFace facing;
 
-        if (ArtMaterial.EASEL.isValidMaterial(event.getItem())) {
+        if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())) {
+            return;
+        }
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            return;
+        }
+        event.setCancelled(true);
 
-            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                event.setCancelled(true);
+        if (!event.getBlockFace().equals(BlockFace.UP)) {
+            return;
+        }
+        easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
 
-                if (event.getBlockFace().equals(BlockFace.UP)) {
+        if (easelLocation.getBlock().getType() != Material.AIR) {
+            return;
+        }
 
-                    Location easelLocation
-                            = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
-                    BlockFace facing = getFacing(event.getPlayer());
+        if (!Easel.checkForEasel(easelLocation)) {
 
-                    if (easelLocation.getBlock().getType() == Material.AIR) {
+            Easel easel = Easel.spawnEasel(easelLocation, getFacing(event.getPlayer()));
+            Player player = event.getPlayer();
+            ItemStack item = player.getItemInHand().clone();
+            item.setAmount(1);
 
-                        if (!Easel.checkForEasel(easelLocation)) {
+            player.getInventory().removeItem(item);
 
-                            Easel easel = Easel.spawnEasel(easelLocation, facing);
-                            Player player = event.getPlayer();
-                            ItemStack item = player.getItemInHand().clone();
-                            item.setAmount(1);
-
-                            player.getInventory().removeItem(item);
-
-                            if (easel != null) {
-                                return;
-                            }
-                        }
-                    }
-                    event.getPlayer().sendMessage(Lang.INVALID_POS.message());
-                }
+            if (easel != null) {
+                return;
             }
         }
+        event.getPlayer().sendMessage(Lang.INVALID_POS.message());
     }
 
     @EventHandler
     public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
 
-        if (event.getClick() == ClickType.CREATIVE && event.getClickedInventory() != null) {
+        final ItemStack item = event.getCursor();
 
-            final ItemStack item = event.getCursor();
+        if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null) {
+            return;
+        }
+        if (item != null && item.getType() == Material.MAP) {
 
-            if (item != null && item.getType() == Material.MAP) {
+            ArtMap.runTaskAsync(new Runnable() {
+                @Override
+                public void run() {
 
-                ArtMap.runTaskAsync(new Runnable() {
-                    @Override
-                    public void run() {
+                    ItemMeta meta = item.getItemMeta();
 
-                        ItemMeta meta = item.getItemMeta();
+                    if (!meta.hasLore()) {
 
-                        if (!meta.hasLore()) {
+                        MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
 
-                            MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
+                        if (art != null) {
 
-                            if (art != null) {
-
-                                ItemStack correctLore = art.getMapItem();
-                                event.getClickedInventory().setItem(event.getSlot(), correctLore);
-                            }
+                            ItemStack correctLore = art.getMapItem();
+                            event.getClickedInventory().setItem(event.getSlot(), correctLore);
                         }
                     }
-                });
-            }
+                }
+            });
         }
     }
 }

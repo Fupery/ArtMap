@@ -5,13 +5,16 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Lang;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +28,7 @@ public class EaselInteractListener implements Listener {
 
         Player player = event.getPlayer();
         final Easel easel = event.getEasel();
+        MapView mapView;
 
         if (!player.hasPermission("artmap.artist")) {
             player.sendRawMessage(Lang.NO_PERM.message());
@@ -55,7 +59,6 @@ public class EaselInteractListener implements Listener {
                     return;
                 }
 
-                MapView mapView;
                 ArtMaterial material = ArtMaterial.getCraftItemType(player.getItemInHand());
 
                 if (material == ArtMaterial.CANVAS) {
@@ -90,7 +93,14 @@ public class EaselInteractListener implements Listener {
 
                 if (easel.hasItem()) {
                     final short id = easel.getItem().getDurability();
+                    ArtMap.nmsInterface.setWorldMap(Bukkit.getMap(id), MapArt.blankMap);
 
+                    mapView = Bukkit.getMap(id);
+                    for (MapRenderer renderer : mapView.getRenderers()) {
+                        mapView.removeRenderer(renderer);
+                    }
+
+                    mapView.addRenderer(new GenericMapRenderer(MapArt.blankMap));
                     ArtMap.runTaskAsync(new Runnable() {
                         @Override
                         public void run() {

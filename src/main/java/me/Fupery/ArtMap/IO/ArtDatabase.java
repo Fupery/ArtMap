@@ -210,6 +210,7 @@ public class ArtDatabase {
         if (mapView == null) {
             mapView = Bukkit.createMap(world);
         }
+
         return mapView;
     }
 

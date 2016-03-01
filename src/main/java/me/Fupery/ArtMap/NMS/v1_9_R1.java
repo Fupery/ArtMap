@@ -3,17 +3,17 @@ package me.Fupery.ArtMap.NMS;
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
-import net.minecraft.server.v1_8_R3.PacketPlayInFlying;
-import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
-import net.minecraft.server.v1_8_R3.WorldMap;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.map.CraftMapView;
+import net.minecraft.server.v1_9_R1.PacketPlayInFlying;
+import net.minecraft.server.v1_9_R1.PacketPlayInUseEntity;
+import net.minecraft.server.v1_9_R1.WorldMap;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.map.CraftMapView;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 
-public class v1_8_R3 implements NMSInterface {
+public class v1_9_R1 implements NMSInterface {
     @Override
     public Channel getPlayerChannel(Player player) {
         CraftPlayer craftPlayer = ((CraftPlayer) player);
@@ -30,10 +30,10 @@ public class v1_8_R3 implements NMSInterface {
                 case LOOK:
                     PacketPlayInFlying.PacketPlayInLook packetLook
                             = (PacketPlayInFlying.PacketPlayInLook) packet;
-                    return new ArtistPacket.PacketLook(packet, type, packetLook.d(), packetLook.e());
+                    return new ArtistPacket.PacketLook(packetLook.a((float) 0), packetLook.b((float) 0));
 
                 case ARM_ANIMATION:
-                    return new ArtistPacket.PacketArmSwing(packet, type);
+                    return new ArtistPacket.PacketArmSwing();
 
                 case INTERACT:
                     PacketPlayInUseEntity packetInteract =
@@ -44,7 +44,7 @@ public class v1_8_R3 implements NMSInterface {
                                     ArtistPacket.PacketInteract.InteractType.ATTACK :
                                     ArtistPacket.PacketInteract.InteractType.INTERACT;
 
-                    return new ArtistPacket.PacketInteract(packet, type, interactType);
+                    return new ArtistPacket.PacketInteract(interactType);
 
                 default:
                     break;
@@ -58,9 +58,9 @@ public class v1_8_R3 implements NMSInterface {
         WorldMap worldMap;
 
         try {
-            Field wm = mapView.getClass().getDeclaredField("worldMap");
-            wm.setAccessible(true);
-            worldMap = ((WorldMap) wm.get(mapView));
+            Field worldMapField = mapView.getClass().getDeclaredField("worldMap");
+            worldMapField.setAccessible(true);
+            worldMap = ((WorldMap) worldMapField.get(mapView));
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
@@ -77,9 +77,9 @@ public class v1_8_R3 implements NMSInterface {
         WorldMap worldMap;
 
         try {
-            Field wm = mapView.getClass().getDeclaredField("worldMap");
-            wm.setAccessible(true);
-            worldMap = ((WorldMap) wm.get(mapView));
+            Field worldMapField = mapView.getClass().getDeclaredField("worldMap");
+            worldMapField.setAccessible(true);
+            worldMap = ((WorldMap) worldMapField.get(mapView));
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
@@ -92,13 +92,12 @@ public class v1_8_R3 implements NMSInterface {
 
     @Override
     public void setWorldMap(MapView mapView, byte[] colors) {
-
         WorldMap worldMap;
 
         try {
-            Field wm = mapView.getClass().getDeclaredField("worldMap");
-            wm.setAccessible(true);
-            worldMap = ((WorldMap) wm.get(mapView));
+            Field worldMapField = mapView.getClass().getDeclaredField("worldMap");
+            worldMapField.setAccessible(true);
+            worldMap = ((WorldMap) worldMapField.get(mapView));
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {

@@ -12,7 +12,7 @@ import org.bukkit.entity.ItemFrame;
 
 public enum EaselPart {
 
-    STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false), SEAT(1.2, -2.22, true);
+    STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false), SEAT(1.219, -2.24979, true);
 
     public static final String arbitrarySignID = "*{=}*";
     public static final String easelID = "Easel";
@@ -160,7 +160,7 @@ public enum EaselPart {
                 z = modifier;
 
                 if (this == SEAT) {
-                    z += .031;
+//                    z += .031;
                 }
                 yaw = 0;
                 break;
@@ -173,7 +173,7 @@ public enum EaselPart {
                 yaw = 270;
 
                 if (this == SEAT) {
-                    x += .031;
+//                    x += .031;
                 }
                 break;
         }

@@ -78,7 +78,7 @@ public class CommandSave extends Command {
                 if (leftOver != null) {
                     player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                 }
-                player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_TOUCH, 1, 0);
                 player.sendMessage(String.format(Lang.SAVE_SUCCESS.message(), title));
             }
         });
