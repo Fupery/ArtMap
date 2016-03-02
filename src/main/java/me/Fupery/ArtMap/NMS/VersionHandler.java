@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap.NMS;
 
-import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 
 public class VersionHandler {
@@ -12,15 +12,16 @@ public class VersionHandler {
     }
 
     public NMSInterface getNMSInterface() {
-        String classPath = this.getClass().getPackage().getName() + "." + version;
-        Bukkit.getLogger().fine(Lang.prefix + "Searching for interfaces supporting " + version);
-
-        try {
-            Class<?> clazz = Class.forName(classPath);
-            return (NMSInterface) clazz.newInstance();
-
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            return new InvalidVersion(version);
-        }
+//        String classPath = this.getClass().getPackage().getName() + "." + version;
+//        Bukkit.getLogger().fine(Lang.prefix + "Searching for interfaces supporting " + version);
+//
+//        try {
+//            Class<?> clazz = Class.forName(classPath);
+//            return (NMSInterface) clazz.newInstance();
+//
+//        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+//            return new InvalidVersion(version);
+//        }
+        return new Reflection();
     }
 }
