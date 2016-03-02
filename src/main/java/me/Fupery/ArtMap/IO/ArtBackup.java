@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.map.MapView;
@@ -24,7 +24,7 @@ public class ArtBackup implements Serializable {
         this.title = art.getTitle();
         this.player = art.getPlayer().getUniqueId();
         this.date = art.getDate();
-        this.map = ArtMap.nmsInterface.getMap(Bukkit.getMap(art.getMapID()));
+        this.map = Reflection.getMap(Bukkit.getMap(art.getMapID()));
     }
 
     public static ArtBackup read(File file) throws IOException, ClassNotFoundException {
@@ -41,7 +41,7 @@ public class ArtBackup implements Serializable {
             mapView = Bukkit.createMap(world);
         }
         mapView.addRenderer(new GenericMapRenderer(map));
-        ArtMap.nmsInterface.setWorldMap(mapView, map);
+        Reflection.setWorldMap(mapView, map);
         new MapArt(mapID, title, Bukkit.getOfflinePlayer(player), date).saveArtwork();
     }
 

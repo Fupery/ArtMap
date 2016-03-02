@@ -16,8 +16,8 @@ public enum Lang {
     NOT_YOUR_EASEL(true), NO_WORLD(true), BREAK_CANVAS(false), PAINTING(false), DELETED(false),
     MAP_NOT_FOUND(true), MAPDATA_ERROR(true), NO_CRAFT_PERM(true), NO_ARTWORKS(true), BAD_TITLE(true),
     TITLE_USED(true), PREVIEWING(false), EMPTY_HAND_PREVIEW(true), BACKUP_SUCCESS(false), BACKUP_ERROR(true),
-    RESTORE_ERROR(true), RESTORE_ALREADY_FOUND(false), RESTORE_SUCCESS(false), INVALID_VERSION(true),
-    INVALID_RESOLUTION(true), INVALID_DATA_TABLES(true), RECIPE_HEADER(false);
+    RESTORE_ERROR(true), RESTORE_ALREADY_FOUND(false), RESTORE_SUCCESS(false), INVALID_RESOLUTION(true),
+    INVALID_DATA_TABLES(true), CANNOT_BUILD_DATABASE(true), RECIPE_HEADER(false);
 
     public static final String prefix = "§b[ArtMap] ";
     final boolean isErrorMessage;

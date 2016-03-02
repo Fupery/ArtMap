@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.IO.ArtBackup;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -81,7 +82,7 @@ public class CommandRestore extends Command {
 
                     MapView oldMapView = Bukkit.getMap(mapID);
 
-                    if (oldMapView != null && ArtMap.nmsInterface.isMapArt(oldMapView)) {
+                    if (oldMapView != null && Reflection.isMapArt(oldMapView)) {
                         mapView = oldMapView;
                     }
                 }
@@ -102,7 +103,7 @@ public class CommandRestore extends Command {
                 mapView.removeRenderer(r);
             }
             mapView.addRenderer(new GenericMapRenderer(backupFile.getMap()));
-            ArtMap.nmsInterface.setWorldMap(mapView, backupFile.getMap());
+            Reflection.setWorldMap(mapView, backupFile.getMap());
             artworks.add(backupFile.getMapArt());
             i++;
         }
