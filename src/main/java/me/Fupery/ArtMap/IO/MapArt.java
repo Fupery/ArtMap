@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.IO;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ArtDye;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -38,8 +39,8 @@ public class MapArt {
     public static MapView cloneArtwork(World world, short mapID) {
         MapView oldMapView = Bukkit.getServer().getMap(mapID);
         MapView newMapView = Bukkit.getServer().createMap(world);
-        byte[] oldMap = ArtMap.nmsInterface.getMap(oldMapView);
-        ArtMap.nmsInterface.setWorldMap(newMapView, oldMap);
+        byte[] oldMap = Reflection.getMap(oldMapView);
+        Reflection.setWorldMap(newMapView, oldMap);
         return newMapView;
     }
 

@@ -3,9 +3,6 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
-import me.Fupery.ArtMap.NMS.InvalidVersion;
-import me.Fupery.ArtMap.NMS.NMSInterface;
-import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Lang;
@@ -25,12 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    public static final NMSInterface nmsInterface = new VersionHandler().getNMSInterface();
     public static final ArtistHandler artistHandler = new ArtistHandler();
     public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
     private static ArtDatabase artDatabase;
+    private final int mapResolutionFactor = 4;
     private List<String> titleFilter;
-    private int mapResolutionFactor;
     private PixelTable pixelTable;
 
     public static ArtDatabase getArtDatabase() {
@@ -42,48 +38,24 @@ public class ArtMap extends JavaPlugin {
     }
 
     public static void runTask(Runnable runnable) {
-        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("ArtMap");
-        Bukkit.getScheduler().runTask(plugin, runnable);
+        Bukkit.getScheduler().runTask(plugin(), runnable);
     }
 
     public static void runTaskAsync(Runnable runnable) {
-        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("ArtMap");
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin(), runnable);
     }
 
     @Override
     public void onEnable() {
 
-        if (nmsInterface instanceof InvalidVersion) {
-            String version = ((InvalidVersion) nmsInterface).getVersion();
-            getLogger().warning(String.format(
-                    Lang.INVALID_VERSION.rawMessage(), version));
-            getPluginLoader().disablePlugin(this);
-            return;
-        }
         saveDefaultConfig();
-
-        mapResolutionFactor = getConfig().getInt("mapResolutionFactor");
-
-        FileConfiguration filter =
-                YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
-
-        titleFilter = filter.getStringList("blacklisted");
 
         artDatabase = ArtDatabase.buildDatabase();
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
+            getLogger().warning(Lang.CANNOT_BUILD_DATABASE.rawMessage());
             return;
-        }
-        int factor = getConfig().getInt("mapResolutionFactor");
-
-        if (factor % 16 == 0 && factor <= 128) {
-            mapResolutionFactor = 128 / factor;
-
-        } else {
-            mapResolutionFactor = 4;
-            getLogger().warning(Lang.INVALID_RESOLUTION.rawMessage());
         }
 
         if (!loadTables()) {
@@ -91,6 +63,9 @@ public class ArtMap extends JavaPlugin {
             getPluginLoader().disablePlugin(this);
             return;
         }
+
+        FileConfiguration filter = YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
+        titleFilter = filter.getStringList("blacklisted");
 
         ArtMaterial.setupRecipes();
 

@@ -29,10 +29,10 @@ english:
   NO_WORLD: "No world called '%s' could be found"
   RESTORE_ERROR: "Backup folder '%s' could not be found!"
   RESTORE_SUCCESS: "Succesfully restored %s artworks from %s"
-  RESTORE_ALREADY_FOUND: "%s artworks were excluded, use -o to enable overwriting"
-  INVALID_VERSION: "Version %s of craftbukkit is not supported - disabling ArtMap"
-  INVALID_RESOLUTION: "Invalid mapResolutionFactor in config, default will be used"
+  RESTORE_ALREADY_FOUND: "%s artworks were excluded, use -o to enable overwriting."
+  INVALID_RESOLUTION: "Invalid mapResolutionFactor in config, default will be used."
   INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
+  CANNOT_BUILD_DATABASE: "Error building MapArt database - plugin will be disabled."
   RECIPE_HEADER: "Recipe for §a[%s]"
   CONSOLE_HELP:
   - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"

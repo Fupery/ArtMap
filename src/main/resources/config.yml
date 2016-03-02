@@ -1,11 +1,7 @@
 #ArtMap Config
 
-# The resolution for artmap maps. Acceptable values: 128, 64, 32, 16
-# 64 or 32 are recommended.
-mapResolutionFactor: 32
-
-#Currently supported languages: english
+#Currently supported languages: english only at the moment. Sorry!
 language: english
 
-#If true, prevents players from using obvious english swear words in artwork titles
+#If true, prevents players from using obvious english swear words in artwork titles.
 swearFilter: true
