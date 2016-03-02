@@ -68,10 +68,10 @@ public class Reflection {
                     e.printStackTrace();
                     return null;
                 }
-                return new ArtistPacket.PacketLook(packet, type, yaw, pitch);
+                return new ArtistPacket.PacketLook(yaw, pitch);
 
             case ARM_ANIMATION:
-                return new ArtistPacket.PacketArmSwing(packet, type);
+                return new ArtistPacket.PacketArmSwing();
 
             case INTERACT:
 
@@ -98,7 +98,7 @@ public class Reflection {
                         ArtistPacket.PacketInteract.InteractType.ATTACK :
                         ArtistPacket.PacketInteract.InteractType.INTERACT;
 
-                return new ArtistPacket.PacketInteract(packet, type, interactType);
+                return new ArtistPacket.PacketInteract(interactType);
 
             default:
                 break;
