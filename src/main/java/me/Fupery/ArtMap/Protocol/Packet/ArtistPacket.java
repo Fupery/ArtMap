@@ -22,7 +22,8 @@ public class ArtistPacket {
 
     public static class PacketArmSwing extends ArtistPacket {
 
-        public PacketArmSwing() {}
+        public PacketArmSwing() {
+        }
     }
 
     public static class PacketInteract extends ArtistPacket {
