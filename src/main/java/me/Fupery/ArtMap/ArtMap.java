@@ -3,9 +3,6 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
-import me.Fupery.ArtMap.NMS.InvalidVersion;
-import me.Fupery.ArtMap.NMS.NMSInterface;
-import me.Fupery.ArtMap.NMS.VersionHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Lang;
@@ -25,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    public static final NMSInterface nmsInterface = new VersionHandler().getNMSInterface();
     public static final ArtistHandler artistHandler = new ArtistHandler();
     public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
     private static ArtDatabase artDatabase;
@@ -54,13 +50,6 @@ public class ArtMap extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        if (nmsInterface instanceof InvalidVersion) {
-            String version = ((InvalidVersion) nmsInterface).getVersion();
-            getLogger().warning(String.format(
-                    Lang.INVALID_VERSION.rawMessage(), version));
-            getPluginLoader().disablePlugin(this);
-            return;
-        }
         saveDefaultConfig();
 
         mapResolutionFactor = getConfig().getInt("mapResolutionFactor");

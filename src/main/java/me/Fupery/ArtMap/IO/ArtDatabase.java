@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -99,7 +100,7 @@ public class ArtDatabase {
             int mapIDValue = map.getInt(mapTag);
             //clear map data
             MapView mapView = Bukkit.getMap((short) mapIDValue);
-            ArtMap.nmsInterface.setWorldMap(mapView, new byte[128 * 128]);
+            Reflection.setWorldMap(mapView, new byte[128 * 128]);
 
             for (MapRenderer renderer : mapView.getRenderers()) {
                 mapView.removeRenderer(renderer);

@@ -2,17 +2,11 @@ package me.Fupery.ArtMap.Protocol.Packet;
 
 public class ArtistPacket {
 
-    ArtistPacket(Object packet, PacketType type) {
-        Object packet1 = packet;
-        PacketType type1 = type;
-    }
-
     public static class PacketLook extends ArtistPacket {
         private final float pitch;
         private final float yaw;
 
-        public PacketLook(Object packet, PacketType type, float yaw, float pitch) {
-            super(packet, type);
+        public PacketLook(float yaw, float pitch) {
             this.yaw = yaw;
             this.pitch = pitch;
         }
@@ -28,16 +22,13 @@ public class ArtistPacket {
 
     public static class PacketArmSwing extends ArtistPacket {
 
-        public PacketArmSwing(Object packet, PacketType type) {
-            super(packet, type);
-        }
+        public PacketArmSwing() {}
     }
 
     public static class PacketInteract extends ArtistPacket {
         private final InteractType interaction;
 
-        public PacketInteract(Object packet, PacketType type, InteractType interaction) {
-            super(packet, type);
+        public PacketInteract(InteractType interaction) {
             this.interaction = interaction;
         }
 

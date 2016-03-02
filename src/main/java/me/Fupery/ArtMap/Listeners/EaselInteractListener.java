@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,7 +61,7 @@ public class EaselInteractListener implements Listener {
 
                 if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
-                    ArtMap.nmsInterface.setWorldMap(mapView, MapArt.blankMap);
+                    Reflection.setWorldMap(mapView, MapArt.blankMap);
                     mountMap(easel, mapView, player);
                     return;
 

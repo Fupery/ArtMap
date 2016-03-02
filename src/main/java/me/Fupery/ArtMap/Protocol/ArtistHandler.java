@@ -1,12 +1,12 @@
 package me.Fupery.ArtMap.Protocol;
 
 import io.netty.channel.Channel;
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
+import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import net.md_5.bungee.api.ChatColor;
@@ -34,7 +34,7 @@ public class ArtistHandler {
 
                 if (artists.containsKey(sender)) {
 
-                    ArtistPacket artMapPacket = ArtMap.nmsInterface.getArtistPacket(packet);
+                    ArtistPacket artMapPacket = Reflection.getArtistPacket(packet);
 
                     if (artMapPacket == null) {
                         return packet;

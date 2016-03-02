@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
-import me.Fupery.ArtMap.NMS.NMSInterface;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import org.bukkit.entity.Player;
@@ -11,10 +10,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Reflection implements NMSInterface {
+public class Reflection {
 
-    @Override
-    public Channel getPlayerChannel(Player player) {
+    public static Channel getPlayerChannel(Player player) {
         Object nmsPlayer, playerConnection, networkManager;
         Channel channel;
 
@@ -32,28 +30,27 @@ public class Reflection implements NMSInterface {
         return channel;
     }
 
-    public Object getField(Object obj, String fieldName)
+    public static Object getField(Object obj, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
         Field field = obj.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         return field.get(obj);
     }
 
-    public void setField(Object obj, String fieldName, Object value)
+    public static void setField(Object obj, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
         Field field = obj.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(obj, value);
     }
 
-    public Object invokeMethod(Object obj, String methodName, Object... params)
+    public static Object invokeMethod(Object obj, String methodName, Object... params)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = obj.getClass().getMethod(methodName);
         return method.invoke(obj, params);
     }
 
-    @Override
-    public ArtistPacket getArtistPacket(Object packet) {
+    public static ArtistPacket getArtistPacket(Object packet) {
         PacketType type = PacketType.getPacketType(packet);
 
         if (type == null) {
@@ -109,7 +106,7 @@ public class Reflection implements NMSInterface {
         return null;
     }
 
-    public byte[] getMap(MapView mapView) {
+    public static byte[] getMap(MapView mapView) {
         byte colors[];
 
         try {
@@ -126,7 +123,7 @@ public class Reflection implements NMSInterface {
         return colors;
     }
 
-    public boolean isMapArt(MapView mapView) {
+    public static boolean isMapArt(MapView mapView) {
         int centerX, centerZ, map;
 
         try {
@@ -144,7 +141,7 @@ public class Reflection implements NMSInterface {
                 && map == 5);
     }
 
-    public void setWorldMap(MapView mapView, byte[] colors) {
+    public static void setWorldMap(MapView mapView, byte[] colors) {
         try {
             Object worldMap = getField(mapView, "worldMap");
             setField(worldMap, "centerX", -999999);
