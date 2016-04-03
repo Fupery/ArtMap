@@ -11,7 +11,7 @@ public abstract class Command {
 
     private final String permission;
     private final boolean consoleAllowed;
-    String usage;
+    private String usage;
     private int minArgs;
     private int maxArgs;
 
