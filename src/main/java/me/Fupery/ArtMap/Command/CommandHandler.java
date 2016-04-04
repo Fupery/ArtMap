@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ArtMapCommandExecutor implements CommandExecutor {
+public class CommandHandler implements CommandExecutor {
 
     private final HashMap<String, Command> commands;
 
-    public ArtMapCommandExecutor() {
+    public CommandHandler() {
         commands = new HashMap<>();
         //Commands go here - note that they are run on an async thread
 
@@ -68,6 +68,7 @@ public class ArtMapCommandExecutor implements CommandExecutor {
                     menu.open((Player) sender);
 
                 } else {
+
                     HelpMenu.helpMenu.getButton(4).onClick((Player) sender);
                 }
             }

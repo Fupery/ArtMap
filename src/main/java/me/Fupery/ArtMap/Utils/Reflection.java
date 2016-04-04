@@ -61,8 +61,8 @@ public class Reflection {
 
                 float yaw, pitch;
                 try {
-                    yaw = (float) invokeMethod(packet, "d");
-                    pitch = (float) invokeMethod(packet, "e");
+                    yaw = (float) invokeMethod(packet, "a", (float) 0);
+                    pitch = (float) invokeMethod(packet, "b", (float) 0);
 
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();

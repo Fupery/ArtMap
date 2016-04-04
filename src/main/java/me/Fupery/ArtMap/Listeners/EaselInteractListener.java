@@ -7,11 +7,8 @@ import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Lang;
-<<<<<<< HEAD
 import org.bukkit.Bukkit;
-=======
 import me.Fupery.ArtMap.Utils.Reflection;
->>>>>>> master
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +29,7 @@ public class EaselInteractListener implements Listener {
 
         Player player = event.getPlayer();
         final Easel easel = event.getEasel();
-        MapView mapView;
+        final MapView mapView;
 
         if (!player.hasPermission("artmap.artist")) {
             player.sendRawMessage(Lang.NO_PERM.message());
@@ -97,9 +94,8 @@ public class EaselInteractListener implements Listener {
 
                 if (easel.hasItem()) {
                     final short id = easel.getItem().getDurability();
-                    ArtMap.nmsInterface.setWorldMap(Bukkit.getMap(id), MapArt.blankMap);
-
                     mapView = Bukkit.getMap(id);
+
                     for (MapRenderer renderer : mapView.getRenderers()) {
                         mapView.removeRenderer(renderer);
                     }
@@ -108,6 +104,7 @@ public class EaselInteractListener implements Listener {
                     ArtMap.runTaskAsync(new Runnable() {
                         @Override
                         public void run() {
+                            Reflection.setWorldMap(mapView, MapArt.blankMap);
                             ArtMap.getArtDatabase().recycleID(id);
                         }
                     });

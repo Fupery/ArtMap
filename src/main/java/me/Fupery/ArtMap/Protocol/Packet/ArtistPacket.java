@@ -21,12 +21,6 @@ public class ArtistPacket {
     }
 
     public static class PacketArmSwing extends ArtistPacket {
-<<<<<<< HEAD
-=======
-
-        public PacketArmSwing() {
-        }
->>>>>>> master
     }
 
     public static class PacketInteract extends ArtistPacket {

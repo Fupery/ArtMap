@@ -11,7 +11,7 @@ public abstract class Command {
 
     private final String permission;
     private final boolean consoleAllowed;
-    String usage;
+    private final String usage;
     private int minArgs;
     private int maxArgs;
 
@@ -42,7 +42,7 @@ public abstract class Command {
                     returnMsg.message = Lang.NO_CONSOLE.message();
 
                 } else if (args.length < minArgs || args.length > maxArgs) {
-                    returnMsg.message = Lang.prefix + ChatColor.RED + ", " + usage;
+                    returnMsg.message = Lang.prefix + ChatColor.RED + " " + usage;
 
                 } else {
                     runCommand(sender, args, returnMsg);

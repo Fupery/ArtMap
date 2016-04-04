@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap;
 
-import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
+import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
@@ -69,7 +69,7 @@ public class ArtMap extends JavaPlugin {
 
         ArtMaterial.setupRecipes();
 
-        getCommand("artmap").setExecutor(new ArtMapCommandExecutor());
+        getCommand("artmap").setExecutor(new CommandHandler());
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new PlayerInteractListener(), this);
