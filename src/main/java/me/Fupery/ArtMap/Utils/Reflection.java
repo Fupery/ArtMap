@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import org.bukkit.entity.Player;
@@ -44,10 +45,11 @@ public class Reflection {
         field.set(obj, value);
     }
 
-    public static Object invokeMethod(Object obj, String methodName, Object... params)
+    public static Object invokeMethod(Object obj, String methodName)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = obj.getClass().getMethod(methodName);
-        return method.invoke(obj, params);
+        method.setAccessible(true);
+        return method.invoke(obj);
     }
 
     public static ArtistPacket getArtistPacket(Object packet) {
@@ -61,8 +63,8 @@ public class Reflection {
 
                 float yaw, pitch;
                 try {
-                    yaw = (float) invokeMethod(packet, "d");
-                    pitch = (float) invokeMethod(packet, "e");
+                    yaw = ArtMap.bukkitVersion.getYaw(packet);
+                    pitch = ArtMap.bukkitVersion.getPitch(packet);
 
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();
