@@ -1,10 +1,10 @@
-package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
+package me.Fupery.ArtMap.HelpMenu;
 
-import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
-import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.InventoryMenu.API.InventoryMenu;
+import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
@@ -59,9 +60,8 @@ public class RecipeMenu extends InventoryMenu {
             meta.setLore(lore);
             setItemMeta(meta);
         }
-
         @Override
-        public void onClick(Player player) {
+        public void onClick(JavaPlugin javaPlugin, Player player) {
 
             if (player.hasPermission("artmap.admin")) {
                 ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);

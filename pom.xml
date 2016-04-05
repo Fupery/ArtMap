@@ -51,7 +51,8 @@
                             </relocations>
                             <artifactSet>
                                 <includes>
-                                    <include>me.Fupery:*</include>
+                                    <include>me.Fupery:InventoryMenu:*</include>
+                                    <include>me.Fupery:DataTables:*</include>
                                 </includes>
                                 <excludes>
                                     <exclude>org.spigotmc:*</exclude>
@@ -72,15 +73,22 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>me.Fupery</groupId>
+            <artifactId>InventoryMenu</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>me.Fupery</groupId>
             <artifactId>DataTables</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.9-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

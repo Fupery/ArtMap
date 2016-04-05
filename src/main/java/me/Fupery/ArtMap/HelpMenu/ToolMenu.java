@@ -1,8 +1,8 @@
-package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
+package me.Fupery.ArtMap.HelpMenu;
 
-import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
-import me.Fupery.ArtMap.InventoryMenu.MenuButton;
 import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.InventoryMenu.API.InventoryMenu;
+import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
