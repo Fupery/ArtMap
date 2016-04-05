@@ -73,17 +73,10 @@
     </repositories>
     <dependencies>
         <dependency>
-<<<<<<< HEAD
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.9-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-=======
             <groupId>me.Fupery</groupId>
             <artifactId>InventoryMenu</artifactId>
             <version>1.1-SNAPSHOT</version>
             <scope>compile</scope>
->>>>>>> master
         </dependency>
         <dependency>
             <groupId>me.Fupery</groupId>

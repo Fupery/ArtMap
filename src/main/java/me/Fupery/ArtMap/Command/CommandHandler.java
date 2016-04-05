@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.HelpMenu.ArtworkMenu;
-import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -69,12 +68,7 @@ public class CommandHandler implements CommandExecutor {
                     menu.open(ArtMap.plugin(), (Player) sender);
 
                 } else {
-<<<<<<< HEAD:src/main/java/me/Fupery/ArtMap/Command/CommandHandler.java
-
-                    HelpMenu.helpMenu.getButton(4).onClick((Player) sender);
-=======
                     ArtMap.getHelpMenu().getButton(4).onClick(ArtMap.plugin(), (Player) sender);
->>>>>>> master:src/main/java/me/Fupery/ArtMap/Command/ArtMapCommandExecutor.java
                 }
             }
         });

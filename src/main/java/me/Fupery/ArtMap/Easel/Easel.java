@@ -37,11 +37,7 @@ public class Easel {
         EaselPart.SIGN.spawn(location, facing);
         ArmorStand stand = ((ArmorStand) EaselPart.STAND.spawn(location, facing));
         ItemFrame frame = (ItemFrame) EaselPart.FRAME.spawn(location, facing);
-<<<<<<< HEAD
-        location.getWorld().playSound(location, Sound.BLOCK_WOOD_HIT, 1, 0);
-=======
         SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
->>>>>>> master
 
         Easel easel = new Easel(location);
         EaselInteractListener.easels.put(location, easel);
@@ -172,11 +168,7 @@ public class Easel {
     }
 
     public void mountCanvas(MapView mapView) {
-<<<<<<< HEAD
-        location.getWorld().playSound(location, Sound.BLOCK_CLOTH_STEP, 1, 0);
-=======
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
->>>>>>> master
         getFrame().setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
     }
 
@@ -190,12 +182,7 @@ public class Easel {
             return;
         }
         player.sendMessage(Lang.PAINTING.message());
-<<<<<<< HEAD
-
-        player.playSound(location, Sound.ENTITY_ITEM_PICKUP, (float) 0.5, -3);
-=======
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
->>>>>>> master
         seat.setPassenger(player);
         seat.setMetadata("easel",
                 new FixedMetadataValue(plugin, LocationTag.createTag(location)));
@@ -228,11 +215,7 @@ public class Easel {
             @Override
             public void run() {
                 location.getBlock().setType(Material.AIR);
-<<<<<<< HEAD
-                location.getWorld().playSound(location, Sound.BLOCK_WOOD_HIT, 1, -1);
-=======
                 SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
->>>>>>> master
 
                 if (stand != null && stand.isValid()) {
                     stand.remove();
