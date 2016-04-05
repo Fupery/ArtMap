@@ -1,7 +1,8 @@
 package me.Fupery.ArtMap.Command;
 
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.ArtworkMenu;
-import me.Fupery.ArtMap.InventoryMenu.HelpMenu.HelpMenu;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.HelpMenu.ArtworkMenu;
+import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -36,7 +37,7 @@ public class CommandHandler implements CommandExecutor {
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (sender instanceof Player) {
-                    HelpMenu.helpMenu.open((Player) sender);
+                    ArtMap.getHelpMenu().open(ArtMap.plugin(), (Player) sender);
 
                 } else {
                     sender.sendMessage(Lang.Array.CONSOLE_HELP.messages());
@@ -46,7 +47,7 @@ public class CommandHandler implements CommandExecutor {
         commands.put("recipe", new Command(null, "/artmap recipe", false) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                HelpMenu.helpMenu.getButton(1).onClick((Player) sender);
+                ArtMap.getHelpMenu().getButton(1).onClick(ArtMap.plugin(), (Player) sender);
             }
         });
         commands.put("list", new Command(null, "/artmap list [player]", false) {
@@ -65,11 +66,15 @@ public class CommandHandler implements CommandExecutor {
                     UUID uuid = artist.getUniqueId();
 
                     ArtworkMenu menu = new ArtworkMenu(null, uuid);
-                    menu.open((Player) sender);
+                    menu.open(ArtMap.plugin(), (Player) sender);
 
                 } else {
+<<<<<<< HEAD:src/main/java/me/Fupery/ArtMap/Command/CommandHandler.java
 
                     HelpMenu.helpMenu.getButton(4).onClick((Player) sender);
+=======
+                    ArtMap.getHelpMenu().getButton(4).onClick(ArtMap.plugin(), (Player) sender);
+>>>>>>> master:src/main/java/me/Fupery/ArtMap/Command/ArtMapCommandExecutor.java
                 }
             }
         });

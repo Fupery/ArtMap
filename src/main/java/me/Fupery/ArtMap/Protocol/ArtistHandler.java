@@ -9,6 +9,7 @@ import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -101,7 +102,13 @@ public class ArtistHandler {
         artists.remove(player);
         protocol.uninjectPlayer(player);
 
+<<<<<<< HEAD
         player.playSound(player.getLocation(), Sound.BLOCK_LADDER_STEP, (float) 0.5, -3);
+=======
+        Entity seat = player.getVehicle();
+        String mapID = "[Not Found]";
+        SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
+>>>>>>> master
         player.leaveVehicle();
         removeSeat(seat);
 

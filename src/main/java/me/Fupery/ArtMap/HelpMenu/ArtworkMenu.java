@@ -1,15 +1,16 @@
-package me.Fupery.ArtMap.InventoryMenu.HelpMenu;
+package me.Fupery.ArtMap.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Command.CommandPreview;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.InventoryMenu.InventoryMenu;
-import me.Fupery.ArtMap.InventoryMenu.ListMenu;
-import me.Fupery.ArtMap.InventoryMenu.MenuButton;
+import me.Fupery.InventoryMenu.API.InventoryMenu;
+import me.Fupery.InventoryMenu.API.ListMenu;
+import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.UUID;
@@ -58,10 +59,15 @@ public class ArtworkMenu extends ListMenu {
     }
 
     @Override
-    public void open(Player player) {
+    public void open(JavaPlugin plugin, Player player) {
         listItems = generateButtons(artist);
         title = processTitle(artist);
-        super.open(player);
+        super.open(plugin, player);
+    }
+
+    @Override
+    public MenuButton[] generateListButtons() {
+        return listItems;
     }
 
     private static class PreviewButton extends MenuButton {
@@ -79,7 +85,7 @@ public class ArtworkMenu extends ListMenu {
         }
 
         @Override
-        public void onClick(Player player) {
+        public void onClick(JavaPlugin javaPlugin, Player player) {
             player.closeInventory();
             CommandPreview.previewArtwork(player, artwork);
         }

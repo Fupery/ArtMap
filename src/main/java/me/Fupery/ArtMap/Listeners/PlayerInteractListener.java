@@ -47,6 +47,7 @@ public class PlayerInteractListener implements Listener {
         Location easelLocation;
         BlockFace facing;
 
+<<<<<<< HEAD
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())) {
             return;
         }
@@ -76,13 +77,42 @@ public class PlayerInteractListener implements Listener {
             if (easel != null) {
                 return;
             }
+=======
+        if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
+                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            return;
+        }
+        event.setCancelled(true);
+
+        if (!event.getBlockFace().equals(BlockFace.UP)) {
+            return;
+        }
+        Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
+        BlockFace facing = getFacing(event.getPlayer());
+
+        if (easelLocation.getBlock().getType() != Material.AIR || Easel.checkForEasel(easelLocation)) {
+            event.getPlayer().sendMessage(Lang.INVALID_POS.message());
+            return;
+        }
+        Easel easel = Easel.spawnEasel(easelLocation, facing);
+        Player player = event.getPlayer();
+        ItemStack item = player.getItemInHand().clone();
+        item.setAmount(1);
+
+        player.getInventory().removeItem(item);
+
+        if (easel == null) {
+            event.getPlayer().sendMessage(Lang.INVALID_POS.message());
+>>>>>>> master
         }
         event.getPlayer().sendMessage(Lang.INVALID_POS.message());
     }
 
     @EventHandler
     public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
+        final ItemStack item = event.getCursor();
 
+<<<<<<< HEAD
         final ItemStack item = event.getCursor();
 
         if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null) {
@@ -109,5 +139,30 @@ public class PlayerInteractListener implements Listener {
                 }
             });
         }
+=======
+        if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null
+                || item == null || item.getType() != Material.MAP) {
+            return;
+        }
+
+        ArtMap.runTaskAsync(new Runnable() {
+            @Override
+            public void run() {
+
+                ItemMeta meta = item.getItemMeta();
+
+                if (!meta.hasLore()) {
+
+                    MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
+
+                    if (art != null) {
+
+                        ItemStack correctLore = art.getMapItem();
+                        event.getClickedInventory().setItem(event.getSlot(), correctLore);
+                    }
+                }
+            }
+        });
+>>>>>>> master
     }
 }

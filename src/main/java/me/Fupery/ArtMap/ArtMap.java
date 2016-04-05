@@ -1,14 +1,21 @@
 package me.Fupery.ArtMap;
 
+<<<<<<< HEAD
 import me.Fupery.ArtMap.Command.CommandHandler;
+=======
+import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
+import me.Fupery.ArtMap.HelpMenu.HelpMenu;
+>>>>>>> master
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,6 +24,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.Reader;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +36,8 @@ public class ArtMap extends JavaPlugin {
     private final int mapResolutionFactor = 4;
     private List<String> titleFilter;
     private PixelTable pixelTable;
+    private WeakReference<HelpMenu> helpMenu;
+    public static final VersionHandler bukkitVersion = VersionHandler.getVersion();
 
     public static ArtDatabase getArtDatabase() {
         return artDatabase;
@@ -79,7 +89,7 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(), this);
         manager.registerEvents(new InventoryInteractListener(), this);
         manager.registerEvents(new EaselInteractListener(), this);
-        manager.registerEvents(new MenuListener(), this);
+        helpMenu = new WeakReference<>(null);
     }
 
     @Override
@@ -122,4 +132,11 @@ public class ArtMap extends JavaPlugin {
         return getTextResource(fileName);
     }
 
+    public static HelpMenu getHelpMenu() {
+        ArtMap plugin = plugin();
+        if (plugin.helpMenu.get() == null) {
+            plugin.helpMenu = new WeakReference<>(new HelpMenu());
+        }
+        return plugin.helpMenu.get();
+    }
 }

@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -63,7 +64,11 @@ class ItemPreview extends Preview {
 
     @Override
     public void run() {
+<<<<<<< HEAD
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, (float) 0.5, -2);
+=======
+        SoundCompat.UI_BUTTON_CLICK.play(player, 1, -2);
+>>>>>>> master
         player.getInventory().removeItem(preview);
         ArtMap.previewing.remove(player);
     }

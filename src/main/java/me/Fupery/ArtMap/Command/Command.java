@@ -11,7 +11,11 @@ public abstract class Command {
 
     private final String permission;
     private final boolean consoleAllowed;
+<<<<<<< HEAD
     private final String usage;
+=======
+    private String usage;
+>>>>>>> master
     private int minArgs;
     private int maxArgs;
 
