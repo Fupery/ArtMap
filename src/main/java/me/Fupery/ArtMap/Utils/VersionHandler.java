@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public enum  VersionHandler {
+public enum VersionHandler {
     UNKNOWN(0, 0), v1_8(1.2, -2.22), v1_9(1.219, -2.24979);
 
     final double seatXOffset;
@@ -35,6 +35,7 @@ public enum  VersionHandler {
         VersionHandler[] handlers = values();
         return handlers[values().length - 1];
     }
+
     public float getEulerValue(Object packet, String methodName) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
         Method method = packet.getClass().getMethod(methodName, float.class);

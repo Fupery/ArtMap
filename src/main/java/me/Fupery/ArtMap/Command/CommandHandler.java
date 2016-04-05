@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.HelpMenu.ArtworkMenu;
-import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -13,11 +12,11 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ArtMapCommandExecutor implements CommandExecutor {
+public class CommandHandler implements CommandExecutor {
 
     private final HashMap<String, Command> commands;
 
-    public ArtMapCommandExecutor() {
+    public CommandHandler() {
         commands = new HashMap<>();
         //Commands go here - note that they are run on an async thread
 

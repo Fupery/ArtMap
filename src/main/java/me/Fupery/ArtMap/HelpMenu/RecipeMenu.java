@@ -60,6 +60,7 @@ public class RecipeMenu extends InventoryMenu {
             meta.setLore(lore);
             setItemMeta(meta);
         }
+
         @Override
         public void onClick(JavaPlugin javaPlugin, Player player) {
 

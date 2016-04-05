@@ -8,14 +8,14 @@ author: Fupery
 commands:
   artmap:
       usage:  |
-        <command> save <title> : Saves your artwork
-        <command> delete <title> : Removes your artwork
-        <command> preview <title> : Previews an artwork
+        <command> save <title> : Save your artwork
+        <command> delete <title> : Remove your artwork
+        <command> preview <title> : Preview an artwork
         <command> list <playername|all> <pg> : Lists artworks
-        <command> help : Displays help
-        <command> recipe <item> : displays recipe for players, give item to admin
-        <command> backup : Creates a backup of all current artworks
-        <command> restore : <backupname> <worldname> <-o>
+        <command> help : Display help
+        <command> recipe <item> : Display recipe for artists/give recipe item to admin
+        <command> backup : Create a backup of all current artworks
+        <command> restore <backupname> <worldname> <-o> : Restore a backup folder from plugins/ArtMap/backups
 permissions:
   artmap.artist:
     description: Allows creation of artworks

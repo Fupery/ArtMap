@@ -13,7 +13,6 @@ import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -94,33 +93,16 @@ public class ArtistHandler {
     }
 
     public synchronized void removePlayer(final Player player) {
+        removePlayer(player, player.getVehicle());
+    }
+
+    public synchronized void removePlayer(final Player player, Entity seat) {
         CanvasRenderer renderer = artists.get(player);
         artists.remove(player);
-
         protocol.uninjectPlayer(player);
-
-        Entity seat = player.getVehicle();
-        String mapID = "[Not Found]";
         SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         player.leaveVehicle();
-
-        if (seat != null) {
-
-            if (seat.hasMetadata("easel")) {
-                String tag = seat.getMetadata("easel").get(0).asString();
-                Location location = LocationTag.getLocation(seat.getWorld(), tag);
-
-                if (EaselInteractListener.easels.containsKey(location)) {
-                    Easel easel = EaselInteractListener.easels.get(location);
-                    easel.setIsPainting(false);
-
-                    if (easel.hasItem()) {
-                        mapID = "" + easel.getItem().getDurability();
-                    }
-                }
-            }
-            seat.remove();
-        }
+        removeSeat(seat);
 
         if (renderer != null) {
             renderer.stop();
@@ -128,8 +110,26 @@ public class ArtistHandler {
 
         } else {
             Bukkit.getLogger().warning(Lang.prefix + ChatColor.RED + String.format(
-                    "Renderer not found for player: %s, mapID: %s", player.getName(), mapID));
+                    "Renderer not found for player: %s", player.getName()));
         }
+    }
+
+    private void removeSeat(Entity seat) {
+        if (seat == null) {
+            return;
+        }
+
+        if (!seat.hasMetadata("easel")) {
+            return;
+        }
+        String tag = seat.getMetadata("easel").get(0).asString();
+        Location location = LocationTag.getLocation(seat.getWorld(), tag);
+
+        if (EaselInteractListener.easels.containsKey(location)) {
+            Easel easel = EaselInteractListener.easels.get(location);
+            easel.setIsPainting(false);
+        }
+        seat.remove();
     }
 
     public synchronized void clearPlayers() {

@@ -13,7 +13,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 
 public enum EaselPart {
-
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false),
     SEAT(ArtMap.bukkitVersion.getSeatXOffset(), ArtMap.bukkitVersion.getSeatZOffset(), true);
 

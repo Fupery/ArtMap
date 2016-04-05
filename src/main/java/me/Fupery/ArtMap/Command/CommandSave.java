@@ -10,7 +10,6 @@ import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

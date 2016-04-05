@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.Utils;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

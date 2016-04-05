@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap;
 
-import me.Fupery.ArtMap.Command.ArtMapCommandExecutor;
+import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
@@ -11,7 +11,6 @@ import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,12 +27,12 @@ public class ArtMap extends JavaPlugin {
 
     public static final ArtistHandler artistHandler = new ArtistHandler();
     public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
+    public static final VersionHandler bukkitVersion = VersionHandler.getVersion();
     private static ArtDatabase artDatabase;
     private final int mapResolutionFactor = 4;
     private List<String> titleFilter;
     private PixelTable pixelTable;
     private WeakReference<HelpMenu> helpMenu;
-    public static final VersionHandler bukkitVersion = VersionHandler.getVersion();
 
     public static ArtDatabase getArtDatabase() {
         return artDatabase;
@@ -49,6 +48,14 @@ public class ArtMap extends JavaPlugin {
 
     public static void runTaskAsync(Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin(), runnable);
+    }
+
+    public static HelpMenu getHelpMenu() {
+        ArtMap plugin = plugin();
+        if (plugin.helpMenu.get() == null) {
+            plugin.helpMenu = new WeakReference<>(new HelpMenu());
+        }
+        return plugin.helpMenu.get();
     }
 
     @Override
@@ -75,7 +82,7 @@ public class ArtMap extends JavaPlugin {
 
         ArtMaterial.setupRecipes();
 
-        getCommand("artmap").setExecutor(new ArtMapCommandExecutor());
+        getCommand("artmap").setExecutor(new CommandHandler());
 
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(new PlayerInteractListener(), this);
@@ -126,13 +133,5 @@ public class ArtMap extends JavaPlugin {
 
     public Reader getTextResourceFile(String fileName) {
         return getTextResource(fileName);
-    }
-
-    public static HelpMenu getHelpMenu() {
-        ArtMap plugin = plugin();
-        if (plugin.helpMenu.get() == null) {
-            plugin.helpMenu = new WeakReference<>(new HelpMenu());
-        }
-        return plugin.helpMenu.get();
     }
 }

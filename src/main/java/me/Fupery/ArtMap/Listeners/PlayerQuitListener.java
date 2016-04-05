@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.InventoryMenu.API.MenuListener;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -44,6 +43,9 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.getEntity().getType() != EntityType.PLAYER) {
+            return;
+        }
         if (ArtMap.artistHandler.containsPlayer(event.getEntity())) {
             ArtMap.artistHandler.removePlayer(event.getEntity());
         }
@@ -57,6 +59,7 @@ public class PlayerQuitListener implements Listener {
         if (ArtMap.artistHandler.containsPlayer(event.getPlayer())) {
             if (event.getPlayer().isInsideVehicle()) {
                 ArtMap.artistHandler.removePlayer(event.getPlayer());
+
             }
         }
     }
