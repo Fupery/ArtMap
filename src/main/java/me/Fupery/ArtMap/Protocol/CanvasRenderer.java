@@ -11,7 +11,7 @@ import org.bukkit.map.MapView;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-class CanvasRenderer extends MapRenderer {
+public class CanvasRenderer extends MapRenderer {
 
     private final int resolutionFactor;
     private final int axisLength;
@@ -23,7 +23,7 @@ class CanvasRenderer extends MapRenderer {
     private Cursor cursor;
     private ArtBrush brush;
 
-    public CanvasRenderer(MapView mapView, int yawOffset) {
+    CanvasRenderer(MapView mapView, int yawOffset) {
         this.mapView = mapView;
         resolutionFactor = ArtMap.plugin().getMapResolutionFactor();
         axisLength = 128 / resolutionFactor;
@@ -46,22 +46,23 @@ class CanvasRenderer extends MapRenderer {
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
-        if (active && dirtyPixels != null && iterator != null
-                && pixelBuffer != null && dirtyPixels.size() > 0) {
-            while (iterator.hasPrevious()) {
+        if (!active || dirtyPixels == null || iterator == null
+                || pixelBuffer == null || dirtyPixels.size() == 0) {
+            return;
+        }
+        while (iterator.hasPrevious()) {
 
-                byte[] pixel = iterator.previous();
-                int px = pixel[0] * resolutionFactor;
-                int py = pixel[1] * resolutionFactor;
+            byte[] pixel = iterator.previous();
+            int px = pixel[0] * resolutionFactor;
+            int py = pixel[1] * resolutionFactor;
 
-                for (int x = 0; x < resolutionFactor; x++) {
+            for (int x = 0; x < resolutionFactor; x++) {
 
-                    for (int y = 0; y < resolutionFactor; y++) {
-                        canvas.setPixel(px + x, py + y, pixelBuffer[pixel[0]][pixel[1]]);
-                    }
+                for (int y = 0; y < resolutionFactor; y++) {
+                    canvas.setPixel(px + x, py + y, pixelBuffer[pixel[0]][pixel[1]]);
                 }
-                iterator.remove();
             }
+            iterator.remove();
         }
     }
 
@@ -170,5 +171,9 @@ class CanvasRenderer extends MapRenderer {
 
     public void setPitch(float pitch) {
         cursor.setPitch(pitch);
+    }
+
+    public int getAxisLength() {
+        return axisLength;
     }
 }

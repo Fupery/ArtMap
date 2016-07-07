@@ -80,16 +80,13 @@ public abstract class ArtistProtocol {
         }
     }
 
-    public Object onPacketInAsync(Player player, Channel channel, Object packet) {
-        return packet;
-    }
+    public abstract Object onPacketInAsync(Player player, Channel channel, Object packet);
 
     private final class PacketHandler extends ChannelDuplexHandler {
         private Player player;
 
         @Override
-        public void channelRead(ChannelHandlerContext context,
-                                Object msg) throws Exception {
+        public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 
             final Channel channel = context.channel();
 
@@ -99,7 +96,6 @@ public abstract class ArtistProtocol {
             } catch (Exception e) {
                 Bukkit.getLogger().log(Level.SEVERE, Lang.prefix + "Error in onPacketInAsync().", e);
             }
-
             if (msg != null) {
                 super.channelRead(context, msg);
             }

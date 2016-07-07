@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 

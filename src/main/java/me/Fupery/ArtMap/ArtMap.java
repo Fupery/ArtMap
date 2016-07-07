@@ -97,8 +97,7 @@ public class ArtMap extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        artistHandler.clearPlayers();
-        artistHandler.getProtocol().close();
+        artistHandler.stop();
 
         if (previewing.size() > 0) {
 
