@@ -22,7 +22,7 @@ public class ToolMenu extends InventoryMenu {
         buttons[1] = new MenuButton.StaticButton(Material.BUCKET, TOOL_PAINTBUCKET.messages());
         buttons[2] = new MenuButton.StaticButton(Material.COAL, TOOL_COAL.messages());
         buttons[3] = new MenuButton.StaticButton(Material.FEATHER, TOOL_FEATHER.messages());
-        buttons[4] = new MenuButton.CloseButton(this);
+        buttons[4] = new MenuButton.StaticButton(Material.COMPASS, TOOL_COMPASS.messages());
         return buttons;
     }
 }

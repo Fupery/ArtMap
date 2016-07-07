@@ -134,3 +134,8 @@ english:
     - "§7Left-Click to lighten a pixel."
     - "§7Right-Click to lighten an area."
 
+  TOOL_COMPASS:
+    - "            §6§l⊱§e§lCompass§6§l⊰"
+    - "§7Left-Click to flip horizontally."
+    - "§7Right-Click to flip vertically."
+

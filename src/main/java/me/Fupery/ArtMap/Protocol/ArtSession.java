@@ -14,7 +14,7 @@ class ArtSession {
     private final Brush DYE;
     private final Brush FILL;
     private final Brush SHADE;
-    private final Brush ROTATE;
+    private final Brush FLIP;
     private Brush currentBrush;
     private long lastStroke;
     private Entity marker;
@@ -32,7 +32,7 @@ class ArtSession {
         DYE = new Dye(canvas);
         FILL = new Fill(canvas);
         SHADE = new Shade(canvas);
-        ROTATE = new Rotate(canvas);
+        FLIP = new Flip(canvas);
     }
 
     void paint(ItemStack brush, Brush.BrushAction action) {
@@ -51,7 +51,7 @@ class ArtSession {
     }
 
     private Brush getBrushType(ItemStack item) {
-        for (Brush brush : new Brush[]{DYE, FILL, SHADE, ROTATE}) {
+        for (Brush brush : new Brush[]{DYE, FILL, SHADE, FLIP}) {
             if (brush.checkMaterial(item)) {
                 return brush;
             }
