@@ -184,14 +184,12 @@ public class Easel {
         player.sendMessage(Lang.PAINTING.message());
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
         seat.setPassenger(player);
-        seat.setMetadata("easel",
-                new FixedMetadataValue(plugin, LocationTag.createTag(location)));
+        seat.setMetadata("easel", new FixedMetadataValue(plugin, LocationTag.createTag(location)));
 
         setIsPainting(true);
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
 
-        ArtMap.artistHandler.addPlayer(player, mapView,
-                EaselPart.getYawOffset(getFrame().getFacing()));
+        ArtMap.artistHandler.addPlayer(player, mapView, EaselPart.getYawOffset(getFrame().getFacing()));
     }
 
     public void removeItem() {

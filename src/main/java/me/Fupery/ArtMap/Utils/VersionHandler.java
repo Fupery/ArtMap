@@ -61,9 +61,10 @@ public enum VersionHandler {
     static class Version implements Comparable<Version> {
         final int[] numbers;
 
-        Version(int ... numbers) {
+        Version(int... numbers) {
             this.numbers = numbers;
         }
+
         @Override
         public int compareTo(Version ver) {
             int len = (ver.numbers.length > numbers.length) ? ver.numbers.length : numbers.length;
@@ -76,10 +77,12 @@ public enum VersionHandler {
             }
             return 0;
         }
-        boolean isGreaterThan(int ... numbers) {
+
+        boolean isGreaterThan(int... numbers) {
             return compareTo(new Version(numbers)) == 1;
         }
-        boolean isLessThan(int ... numbers) {
+
+        boolean isLessThan(int... numbers) {
             return compareTo(new Version(numbers)) == -11;
         }
     }

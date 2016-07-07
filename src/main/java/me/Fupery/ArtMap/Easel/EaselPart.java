@@ -130,6 +130,7 @@ public enum EaselPart {
                         stand.setCustomNameVisible(true);
                         stand.setCustomName(easelID);
                         stand.setGravity(false);
+                        stand.setRemoveWhenFarAway(false);
                         return stand;
 
                     case FRAME:
