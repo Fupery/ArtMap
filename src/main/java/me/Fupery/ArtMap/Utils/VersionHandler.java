@@ -18,17 +18,14 @@ public enum VersionHandler {
 
     public static VersionHandler getVersion() {
         String bukkit = Bukkit.getBukkitVersion();
-        String version = bukkit.substring(0, bukkit.indexOf('-'));
-        String superversion = version.substring(0, bukkit.indexOf('.'));
-        String subversion = version.substring(bukkit.indexOf('.'), version.length());
-        String result = superversion + "." + subversion.replace(".", "");
-        Double verID = Double.parseDouble(result);
-        if (verID > 1.79 && verID < 1.9) {
-            return v1_8;
-        } else if (verID < 2.0) {
-            return v1_9;
+        String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
+        int[] verNumbers = new int[ver.length];
+        for (int i = 0; i < ver.length; i++) {
+            verNumbers[i] = Integer.parseInt(ver[i]);
         }
-        return UNKNOWN;
+        Version version = new Version(verNumbers);
+        if (version.isLessThan(1, 9)) return v1_8;
+        else return v1_9;
     }
 
     public static VersionHandler getLatest() {
@@ -59,5 +56,31 @@ public enum VersionHandler {
 
     public double getSeatZOffset() {
         return seatZOffset;
+    }
+
+    static class Version implements Comparable<Version> {
+        final int[] numbers;
+
+        Version(int ... numbers) {
+            this.numbers = numbers;
+        }
+        @Override
+        public int compareTo(Version ver) {
+            int len = (ver.numbers.length > numbers.length) ? ver.numbers.length : numbers.length;
+            for (int i = 0; i < len; i++) {
+                int a = i < numbers.length ? numbers[i] : 0;
+                int b = i < ver.numbers.length ? ver.numbers[i] : 0;
+                if (a != b) {
+                    return (a > b) ? 1 : -1;
+                }
+            }
+            return 0;
+        }
+        boolean isGreaterThan(int ... numbers) {
+            return compareTo(new Version(numbers)) == 1;
+        }
+        boolean isLessThan(int ... numbers) {
+            return compareTo(new Version(numbers)) == -11;
+        }
     }
 }
