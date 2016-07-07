@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
@@ -89,9 +90,10 @@ public class Reflection {
                 Class enumEntityUseActionType = packetInteractType.getClass();
                 Object[] enumValues = enumEntityUseActionType.getEnumConstants();
                 int i;
+
                 for (i = 0; i < enumValues.length; i++) {
 
-                    if (enumEntityUseActionType == enumValues[i]) {
+                    if (packetInteractType == enumValues[i]) {
                         break;
                     }
                 }
