@@ -66,7 +66,9 @@ public class PlayerInteractEaselListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
 
         if (checkSignBreak(event.getBlock(), event)) {
-            event.getPlayer().sendMessage(Lang.BREAK_CANVAS.message());
+            if (!checkIsPainting(event.getPlayer(), event)) {
+                event.getPlayer().sendMessage(Lang.BREAK_CANVAS.message());
+            }
         }
         checkIsPainting(event.getPlayer(), event);
     }
