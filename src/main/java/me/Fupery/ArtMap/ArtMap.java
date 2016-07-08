@@ -46,6 +46,10 @@ public class ArtMap extends JavaPlugin {
         Bukkit.getScheduler().runTask(plugin(), runnable);
     }
 
+    public static void runTaskLater(Runnable runnable, int ticks) {
+        Bukkit.getScheduler().runTaskLater(plugin(), runnable, ticks);
+    }
+
     public static void runTaskAsync(Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin(), runnable);
     }

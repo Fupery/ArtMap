@@ -28,7 +28,7 @@ class ArtSession {
         stand.setVisible(false);
         stand.setInvulnerable(true);
         stand.setGravity(false);
-        ArtMap.runTask(() -> stand.teleport(player.getLocation()));
+        ArtMap.runTaskLater(() -> stand.teleport(player.getLocation()), 2);
         DYE = new Dye(canvas);
         FILL = new Fill(canvas);
         SHADE = new Shade(canvas);
