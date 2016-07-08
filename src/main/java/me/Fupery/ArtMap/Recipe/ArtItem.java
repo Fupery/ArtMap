@@ -156,7 +156,7 @@ class ItemMapArt extends ArtItem {
 
 class PaintBucket extends ArtItem {
 
-    final ArtDye colour;
+    private final ArtDye colour;
 
     PaintBucket(ArtDye colour) {
         super(Material.BUCKET);
@@ -164,7 +164,7 @@ class PaintBucket extends ArtItem {
         ItemMeta meta = getItemMeta();
         meta.setDisplayName("§e•" + colour.getDisplay() + "§lPaintBucket§e•");
         meta.setLore(Arrays.asList(getLoreID(),
-                "§7Use with an §aEasel §7and", "§aCanvas §7to fill colours", help));
+                "§7Use with an §aEasel §7and", "§aCanvas §7to fill colours", "§7Right-Click to undo", help));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);

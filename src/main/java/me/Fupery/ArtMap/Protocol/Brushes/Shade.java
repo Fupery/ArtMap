@@ -160,7 +160,7 @@ public class Shade extends Brush {
         return (byte) (colour + shift);
     }
 
-    private class Pixel {
+    private static class Pixel {
         final int x, y;
         final boolean darken;
 

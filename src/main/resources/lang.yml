@@ -123,6 +123,7 @@ english:
     - "§7Left-Click to fill an area of"
     - "§7the canvas. Craft with dye to"
     - "§7change the bucket's colour."
+    - "§7Right-Click to undo last fill."
 
   TOOL_COAL:
     - "              §6§l⊱§e§lCoal§6§l⊰"
