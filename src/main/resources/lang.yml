@@ -127,13 +127,13 @@ english:
 
   TOOL_COAL:
     - "              §6§l⊱§e§lCoal§6§l⊰"
-    - "§7Left-Click to darken a pixel."
-    - "§7Right-Click to darken an area."
+    - "§7Left-Click to darken pixels."
+    - "§7Right-Click to darken lines."
 
   TOOL_FEATHER:
     - "            §6§l⊱§e§lFeather§6§l⊰"
-    - "§7Left-Click to lighten a pixel."
-    - "§7Right-Click to lighten an area."
+    - "§7Left-Click to lighten pixels."
+    - "§7Right-Click to lighten lines."
 
   TOOL_COMPASS:
     - "            §6§l⊱§e§lCompass§6§l⊰"
