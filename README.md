@@ -9,8 +9,7 @@ User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
 * List & preview system to view artworks
 
 ### Supported Versions:
-* Spigot 1.8.8
-* - More to come
+* Spigot 1.8.8 - 1.10.2
 
 ### Permissions Nodes
 * artmap.artist - allows players to use artmap
@@ -19,7 +18,6 @@ User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
 ### Config
 The following values are configurable
 * Canvas resolution
-* Base canvas image
- 
+
 ### NOTE
 Use a plugin manager to reload your server whenever you update ArtMap - the Spigot reload command will freak out and throw a bunch of exceptions.
