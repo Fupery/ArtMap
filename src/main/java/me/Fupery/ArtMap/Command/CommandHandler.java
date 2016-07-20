@@ -53,6 +53,8 @@ public class CommandHandler implements CommandExecutor {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
+                // FIXME: 8/07/2016 exception when specifying artist name
+
                 if (args.length > 1) {
 
                     OfflinePlayer artist;

@@ -8,6 +8,7 @@ import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.ArtMap.Utils.Stats;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
@@ -29,7 +30,7 @@ public class ArtMap extends JavaPlugin {
     public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
     public static final VersionHandler bukkitVersion = VersionHandler.getVersion();
     private static ArtDatabase artDatabase;
-    private final int mapResolutionFactor = 4;
+    private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
     private PixelTable pixelTable;
     private WeakReference<HelpMenu> helpMenu;
@@ -97,6 +98,7 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new InventoryInteractListener(), this);
         manager.registerEvents(new EaselInteractListener(), this);
         helpMenu = new WeakReference<>(null);
+        Stats.init(this);
     }
 
     @Override
@@ -112,7 +114,6 @@ public class ArtMap extends JavaPlugin {
     }
 
     private boolean loadTables() {
-
         try {
             pixelTable = DataTables.loadTable(mapResolutionFactor);
         } catch (DataTables.InvalidResolutionFactorException e) {
