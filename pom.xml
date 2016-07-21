@@ -62,51 +62,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>com.github.wvengen</groupId>-->
-            <!--<artifactId>proguard-maven-plugin</artifactId>-->
-            <!--<version>2.0.13</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>package</phase>-->
-            <!--<goals>-->
-            <!--<goal>proguard</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--<configuration>-->
-            <!--<obfuscate>true</obfuscate>-->
-            <!--<injar>${project.build.finalName}.jar</injar>-->
-            <!--<outjar>${project.build.finalName}-min.jar</outjar>-->
-            <!--<includeDependency>true</includeDependency>-->
-            <!--<options>-->
-            <!--<option>-keep class-->
-            <!--!me.Fupery.ArtMap.Utils.Stats.class-->
-            <!--&lt;!&ndash;,!me.Fupery.ArtMap.Protocol.**&ndash;&gt;-->
-            <!--&lt;!&ndash;,!me.Fupery.DataTables.**&ndash;&gt;-->
-            <!--{ *; }-->
-            <!--</option>-->
-            <!--</options>-->
-            <!--<libs>-->
-            <!--<lib>${java.home}/lib/rt.jar</lib>-->
-            <!--<lib>${java.home}/lib/jce.jar</lib>-->
-            <!--</libs>-->
-            <!--&lt;!&ndash;<archive>&ndash;&gt;-->
-            <!--&lt;!&ndash;<manifest>&ndash;&gt;-->
-            <!--&lt;!&ndash;<mainClass>ArtMap</mainClass>&ndash;&gt;-->
-            <!--&lt;!&ndash;<packageName>me.Fupery.ArtMap</packageName>&ndash;&gt;-->
-            <!--&lt;!&ndash;</manifest>&ndash;&gt;-->
-            <!--&lt;!&ndash;</archive>&ndash;&gt;-->
-            <!--</configuration>-->
-            <!--<dependencies>-->
-            <!--<dependency>-->
-            <!--<groupId>net.sf.proguard</groupId>-->
-            <!--<artifactId>proguard-base</artifactId>-->
-            <!--<version>5.2.1</version>-->
-            <!--<scope>runtime</scope>-->
-            <!--</dependency>-->
-            <!--</dependencies>-->
-            <!--</plugin>-->
         </plugins>
     </build>
     <repositories>
@@ -135,7 +90,19 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.9-R0.1-SNAPSHOT</version>
+            <version>1.10.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.10.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.10.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
