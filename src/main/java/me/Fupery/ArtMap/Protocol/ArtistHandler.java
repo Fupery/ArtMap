@@ -18,6 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.Fupery.ArtMap.Protocol.Brushes.Brush.BrushAction;
@@ -25,7 +26,7 @@ import static me.Fupery.ArtMap.Protocol.Packet.ArtistPacket.PacketInteract.Inter
 
 public class ArtistHandler {
 
-    private final ConcurrentHashMap<Player, ArtSession> artists;
+    private final ConcurrentHashMap<UUID, ArtSession> artists;
     private final ArtistProtocol protocol;
 
     public ArtistHandler() {
@@ -36,12 +37,12 @@ public class ArtistHandler {
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
 
-                if (artists.containsKey(sender)) {
+                if (artists.containsKey(sender.getUniqueId())) {
                     ArtistPacket artistPacket = Reflection.getArtistPacket(packet);
                     if (artistPacket == null) {
                         return packet;
                     }
-                    ArtSession session = artists.get(sender);
+                    ArtSession session = artists.get(sender.getUniqueId());
                     PacketType type = artistPacket.getType();
 
                     if (type == PacketType.LOOK) {
@@ -75,12 +76,12 @@ public class ArtistHandler {
     }
 
     public void addPlayer(final Player player, MapView mapView, int yawOffset) {
-        artists.put(player, new ArtSession(player, mapView, yawOffset));
+        artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
         protocol.injectPlayer(player);
     }
 
     public boolean containsPlayer(Player player) {
-        return (artists.containsKey(player));
+        return (artists.containsKey(player.getUniqueId()));
     }
 
     public void removePlayer(final Player player) {
@@ -88,8 +89,8 @@ public class ArtistHandler {
     }
 
     public void removePlayer(final Player player, Entity seat) {
-        ArtSession session = artists.get(player);
-        artists.remove(player);
+        ArtSession session = artists.get(player.getUniqueId());
+        artists.remove(player.getUniqueId());
         protocol.uninjectPlayer(player);
         SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         player.leaveVehicle();
@@ -122,8 +123,8 @@ public class ArtistHandler {
     }
 
     private synchronized void clearPlayers() {
-        for (Player player : artists.keySet()) {
-            removePlayer(player);
+        for (UUID uuid : artists.keySet()) {
+            removePlayer(Bukkit.getPlayer(uuid));
         }
     }
 
