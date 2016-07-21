@@ -10,11 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class ArtistProtocol {
 
-    private final Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
+    private final Map<UUID, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
     private final String handlerName = "ArtMapHandler";
 
@@ -51,11 +52,11 @@ public abstract class ArtistProtocol {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        channelLookup.remove(player.getName());
+        channelLookup.remove(player.getUniqueId());
     }
 
     private Channel getChannel(Player player) {
-        Channel channel = channelLookup.get(player.getName());
+        Channel channel = channelLookup.get(player.getUniqueId());
 
         if (channel == null) {
             channel = Reflection.getPlayerChannel(player);
@@ -63,7 +64,7 @@ public abstract class ArtistProtocol {
             if (channel == null) {
                 uninjectPlayer(player);
             }
-            channelLookup.put(player.getName(), channel);
+            channelLookup.put(player.getUniqueId(), channel);
         }
 
         return channel;
@@ -73,8 +74,8 @@ public abstract class ArtistProtocol {
 
         if (channelLookup != null && channelLookup.size() > 0) {
 
-            for (String name : channelLookup.keySet()) {
-                uninjectPlayer(Bukkit.getPlayer(name));
+            for (UUID player : channelLookup.keySet()) {
+                uninjectPlayer(Bukkit.getPlayer(player));
             }
             channelLookup.clear();
         }
