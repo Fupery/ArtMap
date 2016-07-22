@@ -8,7 +8,6 @@ import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.*;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import org.bukkit.Bukkit;

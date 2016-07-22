@@ -34,6 +34,7 @@ public class ChannelCacheManager {
         CleanupThread() {
             ArtMap.getTaskManager().getTaskHandler(this).runTimer(true, 300, 300); //15 seconds
         }
+
         @Override
         public void run() {
             if (cacheMap.isEmpty()) {

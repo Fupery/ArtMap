@@ -1,4 +1,5 @@
 package me.Fupery.ArtMap.Utils;
+
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -10,9 +11,8 @@ import java.util.List;
 
 public class Lang {
     public static final String prefix = "§b[ArtMap] ";
-
-    private final ConfigurationSection lang;
     public final ActionBarHandler ACTION_BAR_MESSAGES;
+    private final ConfigurationSection lang;
 
     public Lang(String language, FileConfiguration langFile) {
         if (!langFile.contains(language)) language = "english";
@@ -25,12 +25,17 @@ public class Lang {
         this.ACTION_BAR_MESSAGES = new ActionBarHandler();
     }
 
+    private static WrappedActionBarPacket buildPacket(Reflection.ChatPacketBuilder builder, String message) {
+        return new WrappedActionBarPacket(builder.buildActionBarPacket(message));
+    }
+
     public String getMsg(String key) {
         String msg = lang.getString(key);
         if (msg != null) return msg;
         Bukkit.getLogger().warning("Error loading key from lang.yml: " + key);
         return null;
     }
+
     public void sendMsg(String key, CommandSender player) {
         player.sendMessage(prefix + getMsg(key));
     }
@@ -41,8 +46,21 @@ public class Lang {
         Bukkit.getLogger().warning("Error loading key from lang.yml: " + key);
         return null;
     }
+
     public void sendArray(String key, CommandSender player) {
         player.sendMessage(getArray(key));
+    }
+
+    public static class WrappedActionBarPacket {
+        private final Object packet;
+
+        private WrappedActionBarPacket(Object packet) {
+            this.packet = packet;
+        }
+
+        public void send(Player player) {
+            ArtMap.getCacheManager().getChannel(player.getUniqueId()).writeAndFlush(packet);
+        }
     }
 
     public final class ActionBarHandler {
@@ -63,17 +81,5 @@ public class Lang {
             EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM"));
         }
 
-    }
-    private static WrappedActionBarPacket buildPacket(Reflection.ChatPacketBuilder builder, String message) {
-        return new WrappedActionBarPacket(builder.buildActionBarPacket(message));
-    }
-    public static class WrappedActionBarPacket {
-        private final Object packet;
-        private WrappedActionBarPacket(Object packet) {
-            this.packet = packet;
-        }
-        public void send(Player player) {
-            ArtMap.getCacheManager().getChannel(player.getUniqueId()).writeAndFlush(packet);
-        }
     }
 }

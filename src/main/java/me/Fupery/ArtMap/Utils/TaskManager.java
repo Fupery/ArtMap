@@ -38,8 +38,21 @@ public class TaskManager {
             Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, period);
         }
     };
+
+    public TaskManager(ArtMap plugin) {
+        this.plugin = plugin;
+    }
+
     public TaskHandler getTaskHandler(BukkitRunnable runnable) {
         return new TaskHandler(runnable);
+    }
+
+    public interface TaskScheduler {
+        void run(Runnable runnable);
+
+        void runLater(Runnable runnable, int delay);
+
+        void runTimer(Runnable runnable, int startDelay, int period);
     }
 
     public class TaskHandler {
@@ -63,17 +76,5 @@ public class TaskManager {
             if (async) runnable.runTaskTimerAsynchronously(plugin, startDelay, period);
             else runnable.runTaskTimer(plugin, startDelay, period);
         }
-    }
-
-    public TaskManager(ArtMap plugin) {
-        this.plugin = plugin;
-    }
-
-    public interface TaskScheduler {
-        void run(Runnable runnable);
-
-        void runLater(Runnable runnable, int delay);
-
-        void runTimer(Runnable runnable, int startDelay, int period);
     }
 }
