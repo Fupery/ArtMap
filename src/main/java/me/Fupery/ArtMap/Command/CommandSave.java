@@ -40,47 +40,44 @@ public class CommandSave extends Command {
             return;
         }
 
-        if (!ArtMap.artistHandler.containsPlayer(player)) {
+        if (!ArtMap.getArtistHandler().containsPlayer(player)) {
             player.sendMessage(Lang.NOT_RIDING_EASEL.message());
             return;
         }
 
 
-        ArtMap.runTask(new Runnable() {
-            @Override
-            public void run() {
-                Easel easel = null;
+        ArtMap.getTaskManager().SYNC.run(() -> {
+            Easel easel = null;
 
-                Entity seat = player.getVehicle();
+            Entity seat = player.getVehicle();
 
-                if (seat != null) {
+            if (seat != null) {
 
-                    if (seat.hasMetadata("easel")) {
-                        String tag = seat.getMetadata("easel").get(0).asString();
-                        Location location = LocationTag.getLocation(seat.getWorld(), tag);
+                if (seat.hasMetadata("easel")) {
+                    String tag = seat.getMetadata("easel").get(0).asString();
+                    Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-                        easel = Easel.getEasel(location, EaselPart.SIGN);
-                    }
+                    easel = Easel.getEasel(location, EaselPart.SIGN);
                 }
-
-                if (easel == null) {
-                    player.sendMessage(Lang.NOT_RIDING_EASEL.message());
-                    return;
-                }
-                ArtMap.artistHandler.removePlayer(player);
-
-                MapArt art = new MapArt(easel.getItem().getDurability(), title, player);
-                art.saveArtwork();
-
-                easel.getFrame().setItem(new ItemStack(Material.AIR));
-                ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
-
-                if (leftOver != null) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-                }
-                SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
-                player.sendMessage(String.format(Lang.SAVE_SUCCESS.message(), title));
             }
+
+            if (easel == null) {
+                player.sendMessage(Lang.NOT_RIDING_EASEL.message());
+                return;
+            }
+            ArtMap.getArtistHandler().removePlayer(player);
+
+            MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
+            art1.saveArtwork();
+
+            easel.getFrame().setItem(new ItemStack(Material.AIR));
+            ItemStack leftOver = player.getInventory().addItem(art1.getMapItem()).get(0);
+
+            if (leftOver != null) {
+                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+            }
+            SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
+            player.sendMessage(String.format(Lang.SAVE_SUCCESS.message(), title));
         });
     }
 }

@@ -14,11 +14,11 @@ import org.bukkit.entity.ItemFrame;
 
 public enum EaselPart {
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false),
-    SEAT(ArtMap.bukkitVersion.getSeatXOffset(), ArtMap.bukkitVersion.getSeatZOffset(), true);
+    SEAT(ArtMap.getBukkitVersion().getSeatXOffset(), ArtMap.getBukkitVersion().getSeatZOffset(), true);
 
     public static final String arbitrarySignID = "*{=}*";
     public static final String easelID = "Easel";
-    private static final boolean requiresSeatCompensation = (ArtMap.bukkitVersion == VersionHandler.v1_8);
+    private static final boolean requiresSeatCompensation = (ArtMap.getBukkitVersion() == VersionHandler.v1_8);
     final double modifier;
     final double heightOffset;
     final boolean centred;

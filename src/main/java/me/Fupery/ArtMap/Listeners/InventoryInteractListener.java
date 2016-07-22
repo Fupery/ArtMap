@@ -28,7 +28,7 @@ public class InventoryInteractListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
 
-        if (ArtMap.previewing.containsKey(event.getPlayer())) {
+        if (ArtMap.getPreviewing().containsKey(event.getPlayer())) {
             event.getItemDrop().remove();
             Preview.stop(event.getPlayer());
         }
@@ -36,7 +36,7 @@ public class InventoryInteractListener implements Listener {
 
     private void checkPreviewing(Player player, Cancellable event) {
 
-        if (ArtMap.previewing.containsKey(player)) {
+        if (ArtMap.getPreviewing().containsKey(player)) {
             event.setCancelled(true);
             player.setItemOnCursor(new ItemStack(Material.AIR));
             Preview.stop(player);

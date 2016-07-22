@@ -18,10 +18,10 @@ public class PlayerQuitListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        if (ArtMap.artistHandler.containsPlayer(player)) {
-            ArtMap.artistHandler.removePlayer(player);
+        if (ArtMap.getArtistHandler().containsPlayer(player)) {
+            ArtMap.getArtistHandler().removePlayer(player);
         }
-        if (ArtMap.previewing.containsKey(player)) {
+        if (ArtMap.getPreviewing().containsKey(player)) {
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
                 Preview.stop(player);
             }
@@ -35,8 +35,8 @@ public class PlayerQuitListener implements Listener {
             return;
         }
 
-        if (ArtMap.artistHandler.containsPlayer(((Player) event.getEntity()))) {
-            ArtMap.artistHandler.removePlayer(((Player) event.getEntity()), event.getDismounted());
+        if (ArtMap.getArtistHandler().containsPlayer(((Player) event.getEntity()))) {
+            ArtMap.getArtistHandler().removePlayer(((Player) event.getEntity()), event.getDismounted());
 
         }
     }
@@ -46,19 +46,19 @@ public class PlayerQuitListener implements Listener {
         if (event.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
-        if (ArtMap.artistHandler.containsPlayer(event.getEntity())) {
-            ArtMap.artistHandler.removePlayer(event.getEntity());
+        if (ArtMap.getArtistHandler().containsPlayer(event.getEntity())) {
+            ArtMap.getArtistHandler().removePlayer(event.getEntity());
         }
-        if (ArtMap.previewing.containsKey(event.getEntity())) {
+        if (ArtMap.getPreviewing().containsKey(event.getEntity())) {
             Preview.stop(event.getEntity());
         }
     }
 
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent event) {
-        if (ArtMap.artistHandler.containsPlayer(event.getPlayer())) {
+        if (ArtMap.getArtistHandler().containsPlayer(event.getPlayer())) {
             if (event.getPlayer().isInsideVehicle()) {
-                ArtMap.artistHandler.removePlayer(event.getPlayer());
+                ArtMap.getArtistHandler().removePlayer(event.getPlayer());
 
             }
         }

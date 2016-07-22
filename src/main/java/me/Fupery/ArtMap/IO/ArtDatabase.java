@@ -229,20 +229,17 @@ public class ArtDatabase {
     }
 
     private synchronized void updateMaps() {
-        ArtMap.runTaskAsync(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FileConfiguration configuration = new YamlConfiguration();
-                    configuration.set(artworksTag, artworks);
-                    configuration.set(recycled_keysTag, recycled_keys);
-                    configuration.save(mapData);
-                    loadConfiguration();
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            try {
+                FileConfiguration configuration = new YamlConfiguration();
+                configuration.set(artworksTag, artworks);
+                configuration.set(recycled_keysTag, recycled_keys);
+                configuration.save(mapData);
+                loadConfiguration();
 
-                } catch (IOException e) {
-                    ArtMap.plugin().getLogger().info(String.format(Lang.MAPDATA_ERROR.message(),
-                            mapData.getAbsolutePath(), e));
-                }
+            } catch (IOException e) {
+                ArtMap.plugin().getLogger().info(String.format(Lang.MAPDATA_ERROR.message(),
+                        mapData.getAbsolutePath(), e));
             }
         });
     }

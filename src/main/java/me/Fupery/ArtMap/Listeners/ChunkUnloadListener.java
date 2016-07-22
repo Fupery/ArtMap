@@ -12,16 +12,12 @@ public class ChunkUnloadListener implements Listener {
     public void onChunkUnload(final ChunkUnloadEvent event) {
 
         if (EaselInteractListener.easels.size() > 0) {
-            ArtMap.runTask(new Runnable() {
+            ArtMap.getTaskManager().SYNC.run(() -> {
 
-                @Override
-                public void run() {
+                for (Location location : EaselInteractListener.easels.keySet()) {
 
-                    for (Location location : EaselInteractListener.easels.keySet()) {
-
-                        if (location.getChunk().equals(event.getChunk())) {
-                            EaselInteractListener.easels.remove(location);
-                        }
+                    if (location.getChunk().equals(event.getChunk())) {
+                        EaselInteractListener.easels.remove(location);
                     }
                 }
             });

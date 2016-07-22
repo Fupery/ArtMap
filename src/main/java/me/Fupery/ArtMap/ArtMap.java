@@ -6,10 +6,7 @@ import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.ArtMap.Utils.Stats;
-import me.Fupery.ArtMap.Utils.VersionHandler;
+import me.Fupery.ArtMap.Utils.*;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import org.bukkit.Bukkit;
@@ -26,9 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    public static final ArtistHandler artistHandler = new ArtistHandler();
-    public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
-    public static final VersionHandler bukkitVersion = VersionHandler.getVersion();
+    private static ArtistHandler artistHandler;
+    private static ConcurrentHashMap<Player, Preview> previewing;
+    private static VersionHandler bukkitVersion;
+    private static TaskManager taskManager;
     private static ArtDatabase artDatabase;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
@@ -43,18 +41,6 @@ public class ArtMap extends JavaPlugin {
         return (ArtMap) Bukkit.getPluginManager().getPlugin("ArtMap");
     }
 
-    public static void runTask(Runnable runnable) {
-        Bukkit.getScheduler().runTask(plugin(), runnable);
-    }
-
-    public static void runTaskLater(Runnable runnable, int ticks) {
-        Bukkit.getScheduler().runTaskLater(plugin(), runnable, ticks);
-    }
-
-    public static void runTaskAsync(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin(), runnable);
-    }
-
     public static HelpMenu getHelpMenu() {
         ArtMap plugin = plugin();
         if (plugin.helpMenu.get() == null) {
@@ -63,11 +49,31 @@ public class ArtMap extends JavaPlugin {
         return plugin.helpMenu.get();
     }
 
+    public static TaskManager getTaskManager() {
+        return taskManager;
+    }
+
+    public static ArtistHandler getArtistHandler() {
+        return artistHandler;
+    }
+
+    public static ConcurrentHashMap<Player, Preview> getPreviewing() {
+        return previewing;
+    }
+
+    public static VersionHandler getBukkitVersion() {
+        return bukkitVersion;
+    }
+
     @Override
     public void onEnable() {
 
         saveDefaultConfig();
 
+        taskManager = new TaskManager(this);
+        previewing = new ConcurrentHashMap<>();
+        artistHandler = new ArtistHandler();
+        bukkitVersion = VersionHandler.getVersion();
         artDatabase = ArtDatabase.buildDatabase();
 
         if (artDatabase == null) {
@@ -111,6 +117,11 @@ public class ArtMap extends JavaPlugin {
                 Preview.stop(player);
             }
         }
+        taskManager = null;
+        previewing = null;
+        artistHandler = null;
+        bukkitVersion = null;
+        artDatabase = null;
     }
 
     private boolean loadTables() {

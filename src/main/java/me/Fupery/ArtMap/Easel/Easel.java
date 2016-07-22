@@ -189,7 +189,7 @@ public class Easel {
         setIsPainting(true);
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
 
-        ArtMap.artistHandler.addPlayer(player, mapView, EaselPart.getYawOffset(getFrame().getFacing()));
+        ArtMap.getArtistHandler().addPlayer(player, mapView, EaselPart.getYawOffset(getFrame().getFacing()));
     }
 
     public void removeItem() {
@@ -209,23 +209,20 @@ public class Easel {
         final ArmorStand stand = getStand(entities);
         final ItemFrame frame = getFrame(entities);
 
-        ArtMap.runTask(new Runnable() {
-            @Override
-            public void run() {
-                location.getBlock().setType(Material.AIR);
-                SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
+        ArtMap.getTaskManager().SYNC.run(() -> {
+            location.getBlock().setType(Material.AIR);
+            SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
 
-                if (stand != null && stand.isValid()) {
-                    stand.remove();
-                }
-
-                removeItem();
-
-                if (frame != null && frame.isValid()) {
-                    frame.remove();
-                }
-                location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
+            if (stand != null && stand.isValid()) {
+                stand.remove();
             }
+
+            removeItem();
+
+            if (frame != null && frame.isValid()) {
+                frame.remove();
+            }
+            location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
         });
 
     }

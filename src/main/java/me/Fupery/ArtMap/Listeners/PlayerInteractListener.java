@@ -82,21 +82,18 @@ public class PlayerInteractListener implements Listener {
             return;
         }
 
-        ArtMap.runTaskAsync(new Runnable() {
-            @Override
-            public void run() {
+        ArtMap.getTaskManager().ASYNC.run(() -> {
 
-                ItemMeta meta = item.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
 
-                if (!meta.hasLore()) {
+            if (!meta.hasLore()) {
 
-                    MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
+                MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
 
-                    if (art != null) {
+                if (art != null) {
 
-                        ItemStack correctLore = art.getMapItem();
-                        event.getClickedInventory().setItem(event.getSlot(), correctLore);
-                    }
+                    ItemStack correctLore = art.getMapItem();
+                    event.getClickedInventory().setItem(event.getSlot(), correctLore);
                 }
             }
         });

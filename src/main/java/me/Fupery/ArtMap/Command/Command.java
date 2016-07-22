@@ -30,27 +30,24 @@ public abstract class Command {
 
     void runPlayerCommand(final CommandSender sender, final String args[]) {
 
-        ArtMap.runTaskAsync(new Runnable() {
-            @Override
-            public void run() {
-                ReturnMessage returnMsg = new ReturnMessage(sender, null);
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            ReturnMessage returnMsg = new ReturnMessage(sender, null);
 
-                if (permission != null && !sender.hasPermission(permission)) {
-                    returnMsg.message = Lang.NO_PERM.message();
+            if (permission != null && !sender.hasPermission(permission)) {
+                returnMsg.message = Lang.NO_PERM.message();
 
-                } else if (!consoleAllowed && !(sender instanceof Player)) {
-                    returnMsg.message = Lang.NO_CONSOLE.message();
+            } else if (!consoleAllowed && !(sender instanceof Player)) {
+                returnMsg.message = Lang.NO_CONSOLE.message();
 
-                } else if (args.length < minArgs || args.length > maxArgs) {
-                    returnMsg.message = Lang.prefix + ChatColor.RED + " " + usage;
+            } else if (args.length < minArgs || args.length > maxArgs) {
+                returnMsg.message = Lang.prefix + ChatColor.RED + " " + usage;
 
-                } else {
-                    runCommand(sender, args, returnMsg);
-                }
+            } else {
+                runCommand(sender, args, returnMsg);
+            }
 
-                if (returnMsg.message != null) {
-                    ArtMap.runTask(returnMsg);
-                }
+            if (returnMsg.message != null) {
+                ArtMap.getTaskManager().SYNC.run(returnMsg);
             }
         });
     }

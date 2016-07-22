@@ -92,12 +92,7 @@ public class ArtBrush {
             final byte clickedColour = renderer.getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour;
 
-            ArtMap.runTaskAsync(new Runnable() {
-                @Override
-                public void run() {
-                    fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
-                }
-            });
+            ArtMap.getTaskManager().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
     }
 

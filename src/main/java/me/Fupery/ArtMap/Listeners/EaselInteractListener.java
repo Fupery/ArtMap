@@ -78,8 +78,8 @@ public class EaselInteractListener implements Listener {
                             return;
                         }
 
-                        if (ArtMap.previewing.containsKey(player)) {
-                            ArtMap.previewing.get(player).stopPreviewing();
+                        if (ArtMap.getPreviewing().containsKey(player)) {
+                            ArtMap.getPreviewing().get(player).stopPreviewing();
                             return;
                         }
                         mapView = MapArt.cloneArtwork(player.getWorld(), art.getMapID());
@@ -101,12 +101,9 @@ public class EaselInteractListener implements Listener {
                     }
 
                     mapView.addRenderer(new GenericMapRenderer(MapArt.blankMap));
-                    ArtMap.runTaskAsync(new Runnable() {
-                        @Override
-                        public void run() {
-                            Reflection.setWorldMap(mapView, MapArt.blankMap);
-                            ArtMap.getArtDatabase().recycleID(id);
-                        }
+                    ArtMap.getTaskManager().ASYNC.run(() -> {
+                        Reflection.setWorldMap(mapView, MapArt.blankMap);
+                        ArtMap.getArtDatabase().recycleID(id);
                     });
                     easel.removeItem();
                 }
