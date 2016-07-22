@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.HelpMenu;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
@@ -25,7 +25,7 @@ public class RecipeMenu extends InventoryMenu {
 
     private static MenuButton[] generateButtons(InventoryMenu menu) {
         MenuButton[] buttons = new MenuButton[5];
-        buttons[0] = new MenuButton.StaticButton(Material.SIGN, Lang.Array.INFO_RECIPES.messages());
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, ArtMap.getLang().getArray("INFO_RECIPES"));
         buttons[1] = new RecipeButton(ArtMaterial.EASEL);
         buttons[2] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
@@ -37,7 +37,7 @@ public class RecipeMenu extends InventoryMenu {
         ItemStack[] ingredients = recipe.getPreview();
 
         Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
-                String.format(Lang.RECIPE_HEADER.rawMessage(),
+                String.format(ArtMap.getLang().getMsg("RECIPE_HEADER"),
                         recipe.name().toLowerCase()));
 
         for (int i = 0; i < ingredients.length; i++) {

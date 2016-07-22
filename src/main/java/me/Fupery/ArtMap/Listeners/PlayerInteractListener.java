@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -58,7 +57,7 @@ public class PlayerInteractListener implements Listener {
         BlockFace facing = getFacing(event.getPlayer());
 
         if (easelLocation.getBlock().getType() != Material.AIR || Easel.checkForEasel(easelLocation)) {
-            event.getPlayer().sendMessage(Lang.INVALID_POS.message());
+            ArtMap.getLang().sendMsg("INVALID_POS", event.getPlayer());
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
@@ -69,7 +68,7 @@ public class PlayerInteractListener implements Listener {
         player.getInventory().removeItem(item);
 
         if (easel == null) {
-            event.getPlayer().sendMessage(Lang.INVALID_POS.message());
+            ArtMap.getLang().sendMsg("INVALID_POS", event.getPlayer());
         }
     }
 

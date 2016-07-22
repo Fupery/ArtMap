@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.HelpMenu.ArtworkMenu;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
@@ -39,7 +38,7 @@ public class CommandHandler implements CommandExecutor {
                     ArtMap.getHelpMenu().open(ArtMap.plugin(), (Player) sender);
 
                 } else {
-                    sender.sendMessage(Lang.Array.CONSOLE_HELP.messages());
+                    ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                 }
             }
         });
@@ -61,7 +60,7 @@ public class CommandHandler implements CommandExecutor {
                     artist = Bukkit.getOfflinePlayer(args[1]);
 
                     if (artist == null || !artist.hasPlayedBefore()) {
-                        msg.message = String.format(Lang.PLAYER_NOT_FOUND.message(), args[1]);
+                        msg.message = String.format(ArtMap.getLang().getMsg("PLAYER_NOT_FOUND"), args[1]);
                         return;
                     }
                     UUID uuid = artist.getUniqueId();
@@ -85,7 +84,7 @@ public class CommandHandler implements CommandExecutor {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
 
             } else {
-                sender.sendMessage(Lang.HELP.message());
+                sender.sendMessage(ArtMap.getLang().getMsg("HELP"));
             }
 
         } else {

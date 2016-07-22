@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -238,7 +237,7 @@ public class ArtDatabase {
                 loadConfiguration();
 
             } catch (IOException e) {
-                ArtMap.plugin().getLogger().info(String.format(Lang.MAPDATA_ERROR.message(),
+                ArtMap.plugin().getLogger().info(String.format(ArtMap.getLang().getMsg("MAPDATA_ERROR"),
                         mapData.getAbsolutePath(), e));
             }
         });

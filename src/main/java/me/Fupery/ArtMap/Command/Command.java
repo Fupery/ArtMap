@@ -34,10 +34,10 @@ public abstract class Command {
             ReturnMessage returnMsg = new ReturnMessage(sender, null);
 
             if (permission != null && !sender.hasPermission(permission)) {
-                returnMsg.message = Lang.NO_PERM.message();
+                returnMsg.message = ArtMap.getLang().getMsg("NO_PERM");
 
             } else if (!consoleAllowed && !(sender instanceof Player)) {
-                returnMsg.message = Lang.NO_CONSOLE.message();
+                returnMsg.message = ArtMap.getLang().getMsg("NO_CONSOLE");
 
             } else if (args.length < minArgs || args.length > maxArgs) {
                 returnMsg.message = Lang.prefix + ChatColor.RED + " " + usage;

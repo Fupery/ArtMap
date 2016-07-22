@@ -5,7 +5,6 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Location;
@@ -29,19 +28,19 @@ public class CommandSave extends Command {
         final Player player = (Player) sender;
 
         if (!new TitleFilter(title).check()) {
-            msg.message = Lang.BAD_TITLE.message();
+            msg.message = ArtMap.getLang().getMsg("BAD_TITLE");
             return;
         }
 
         MapArt art = ArtMap.getArtDatabase().getArtwork(title);
 
         if (art != null) {
-            msg.message = Lang.TITLE_USED.message();
+            msg.message = ArtMap.getLang().getMsg("TITLE_USED");
             return;
         }
 
         if (!ArtMap.getArtistHandler().containsPlayer(player)) {
-            player.sendMessage(Lang.NOT_RIDING_EASEL.message());
+            player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));
             return;
         }
 
@@ -62,7 +61,7 @@ public class CommandSave extends Command {
             }
 
             if (easel == null) {
-                player.sendMessage(Lang.NOT_RIDING_EASEL.message());
+                player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));
                 return;
             }
             ArtMap.getArtistHandler().removePlayer(player);
@@ -77,7 +76,7 @@ public class CommandSave extends Command {
                 player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
             }
             SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
-            player.sendMessage(String.format(Lang.SAVE_SUCCESS.message(), title));
+            player.sendMessage(String.format(ArtMap.getLang().getMsg("SAVE_SUCCESS"), title));
         });
     }
 }

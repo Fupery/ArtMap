@@ -6,7 +6,6 @@ import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,12 +31,12 @@ public class EaselInteractListener implements Listener {
         final MapView mapView;
 
         if (!player.hasPermission("artmap.artist")) {
-            player.sendRawMessage(Lang.NO_PERM.message());
+            ArtMap.getLang().sendMsg("NO_PERM", player);
             return;
         }
 
         if (easel.isPainting()) {
-            player.sendMessage(Lang.ELSE_USING.message());
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_USED.send(player);
             return;
         }
 
@@ -45,7 +44,7 @@ public class EaselInteractListener implements Listener {
 
             case LEFT_CLICK:
 
-                player.sendMessage(Lang.EASEL_HELP.message());
+                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PUNCH.send(player);
                 return;
 
             case RIGHT_CLICK:
@@ -74,7 +73,7 @@ public class EaselInteractListener implements Listener {
                     if (art != null) {
 
                         if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
-                            player.sendMessage(Lang.NO_CRAFT_PERM.message());
+                            ArtMap.getLang().sendMsg("NO_CRAFTING_PERM", player);
                             return;
                         }
 
@@ -87,7 +86,7 @@ public class EaselInteractListener implements Listener {
                         return;
                     }
                 }
-                player.sendMessage(Lang.NEED_CANVAS.message());
+                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
                 return;
 
             case SHIFT_RIGHT_CLICK:

@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.HelpMenu;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ public class DyeMenu extends InventoryMenu {
     private MenuButton[] generateButtons() {
         MenuButton[] buttons = new MenuButton[27];
         ArtDye[] dyes = ArtDye.values();
-        buttons[0] = new MenuButton.StaticButton(Material.SIGN, Lang.Array.INFO_DYES.messages());
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, ArtMap.getLang().getArray("INFO_DYES"));
         buttons[26] = new MenuButton.CloseButton(this);
 
         for (int i = 1; i < 26; i++) {

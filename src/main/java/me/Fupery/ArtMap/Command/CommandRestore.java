@@ -5,7 +5,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ArtBackup;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -29,7 +28,7 @@ public class CommandRestore extends Command {
         World world = Bukkit.getWorld(args[1]);
 
         if (world == null) {
-            sender.sendMessage(String.format(Lang.NO_WORLD.message(), args[1]));
+            sender.sendMessage(String.format(ArtMap.getLang().getMsg("NO_WORLD"), args[1]));
         }
         //Check if overwrite flag is provided
         boolean overwrite = (args.length > 2 && args[2].equals("-o"));
@@ -38,21 +37,21 @@ public class CommandRestore extends Command {
         File backupsFolder = new File(ArtMap.plugin().getDataFolder(), "backups");
 
         if (!backupsFolder.exists() && !backupsFolder.mkdir()) {
-            msg.message = String.format(Lang.RESTORE_ERROR.message(), backupsFolder.getName());
+            msg.message = String.format(ArtMap.getLang().getMsg("RESTORE_ERROR"), backupsFolder.getName());
             return;
         }
 
         File backup = new File(backupsFolder, args[0]);
 
         if (!backup.exists()) {
-            msg.message = String.format(Lang.RESTORE_ERROR.message(), backup.getAbsolutePath());
+            msg.message = String.format(ArtMap.getLang().getMsg("RESTORE_ERROR"), backup.getAbsolutePath());
             return;
         }
 
         File[] files = backup.listFiles();
 
         if (files == null) {
-            msg.message = String.format(Lang.RESTORE_ERROR.message(), backup.getAbsolutePath());
+            msg.message = String.format(ArtMap.getLang().getMsg("RESTORE_ERROR"), backup.getAbsolutePath());
             return;
         }
         ArrayList<MapArt> artworks = new ArrayList<>();
@@ -108,10 +107,10 @@ public class CommandRestore extends Command {
             i++;
         }
         ArtMap.getArtDatabase().addArtworks(artworks.toArray(new MapArt[artworks.size()]));
-        sender.sendMessage(String.format(Lang.RESTORE_SUCCESS.message(), i, backup.getAbsoluteFile()));
+        sender.sendMessage(String.format(ArtMap.getLang().getMsg("RESTORE_SUCCESS"), i, backup.getAbsoluteFile()));
 
         if (!overwrite) {
-            sender.sendMessage(String.format(Lang.RESTORE_ALREADY_FOUND.message(), k));
+            sender.sendMessage(String.format(ArtMap.getLang().getMsg("RESTORE_ALREADY_FOUND"), k));
         }
     }
 }

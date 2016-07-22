@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.Easel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -181,7 +180,6 @@ public class Easel {
         if (seat == null) {
             return;
         }
-        player.sendMessage(Lang.PAINTING.message());
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
         seat.setPassenger(player);
         seat.setMetadata("easel", new FixedMetadataValue(plugin, LocationTag.createTag(location)));
@@ -190,6 +188,9 @@ public class Easel {
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
 
         ArtMap.getArtistHandler().addPlayer(player, mapView, EaselPart.getYawOffset(getFrame().getFacing()));
+        ArtMap.getTaskManager().SYNC.runLater(() -> {
+            if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
+        }, 30);
     }
 
     public void removeItem() {

@@ -2,8 +2,8 @@ package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Protocol.Packet.In.ArtistPacket;
-import me.Fupery.ArtMap.Protocol.Packet.In.PacketType;
+import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
+import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import net.minecraft.server.v1_10_R1.IChatBaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

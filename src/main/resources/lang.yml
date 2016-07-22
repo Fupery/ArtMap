@@ -1,143 +1,142 @@
 english:
-  #Player Messages
-  HELP: "/artmap help for a list of commands."
-  NO_CONSOLE: "This command can only be used by players."
-  PLAYER_NOT_FOUND: "Player '%s' could not be found."
-  INVALID_POS: "You can't place an easel here"
-  NO_PERM: "You don't have permission to do this."
-  ELSE_USING: "Someone else is using this canvas!"
-  SAVE_USAGE: "Use §e/artmap save <title> §6to save your artwork."
-  NOT_RIDING_EASEL: "You must be sitting at your easel to save."
-  SAVE_SUCCESS: "Successfully saved '%s'!"
-  EASEL_HELP: "Right-Click to start painting, Sneak + Right-Click to break."
-  NEED_CANVAS: "You need to place a canvas on the easel to paint. Type /artmap for more info."
-  NOT_YOUR_EASEL: "You cannot destroy %s's artwork!"
-  BREAK_CANVAS: "Sneak + Right-Click the easel to break it."
-  PAINTING: "Use dyes or a paint bucket to paint. Left-Click to draw pixels, Right-Click and drag to draw lines."
-  DELETED: "Sucessfully deleted '%s'."
-  MAP_NOT_FOUND: "Artwork '%s' could not be found."
-  NO_ARTWORKS: "There are currently no artworks saved!"
-  NO_CRAFT_PERM: "You can't copy other players' artworks"
-  BAD_TITLE: "Invalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
-  TITLE_USED: "Sorry, this title is already being used."
-  PREVIEWING: "Previewing artwork '%s'."
-  EMPTY_HAND_PREVIEW: "You need to have an empty hand to preview."
-  MAPDATA_ERROR: "Error reading mapdata.yml at %s: %s"
-  #Console Messages
+  HELP: "§6/artmap help for a list of commands."
+  SAVE_USAGE: "§6Use §e/artmap save <title> §6to save your artwork."
+  SAVE_SUCCESS: "§6Successfully saved '%s'!"
+  EASEL_HELP: "§6Right-Click to start painting, §eSneak + Right-Click to break."
+  PAINTING: "§6Use dyes or a paint bucket to paint. §eLeft-Click to draw pixels, Right-Click & drag to draw lines."
+  DELETED: "§6Sucessfully deleted '%s'."
+  PREVIEWING: "§6Previewing artwork '%s'."
   BACKUP_SUCCESS: "Succesfully created backup at %s"
-  BACKUP_ERROR: "Backup folder could not be created!"
-  NO_WORLD: "No world called '%s' could be found"
-  RESTORE_ERROR: "Backup folder '%s' could not be found!"
   RESTORE_SUCCESS: "Succesfully restored %s artworks from %s"
   RESTORE_ALREADY_FOUND: "%s artworks were excluded, use -o to enable overwriting."
-  INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
-  CANNOT_BUILD_DATABASE: "Error building MapArt database - plugin will be disabled."
   RECIPE_HEADER: "Recipe for §a[%s]"
-  CONSOLE_HELP:
-  - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
-  - "§3/artmap delete <title> §b: §eDelete an artwork"
-  - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
-  - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
-  - "  §e * Optional [-o] flag enables artwork overwriting"
-#help menu
-  HELP_GETTING_STARTED:
-    - "                 §6§l⊱§e§lGetting Started§6§l⊰"
-    - "                §3❉§b§oWelcome to ArtMap!§3❉"
-    - ""
-    - "   §a1§2. §7Craft yourself an §6Easel §7and §6Canvas§7."
-    - "   §a2§2. §7Place the Easel and use your Canvas §7on it."
-    - "   §a3§2. §7Click the Canvas with §2Dyes §7& §3Tools §7to paint."
-    - "   §a4§2. §7When you're finished, use §e/artmap save§7."
-    - ""
-    - "§7§oLook at the other tabs in this menu to see more"
-    - "§7§oinformation on Recipes, Tools, and Dye Colours."
-    - ""
-    - "    §8░░░░§e❃§lCommands §r§e⤸§8░░░░░░░░░░░░░"
-    - "§6•§f/artmap save <title>    §6➯   §7save your artwork"
-    - "§6•§f/artmap delete <title>  §6➯ §7delete your artwork"
-    - "§6•§f/artmap preview <title> §6➯  §7preview an artwork"
+  #ERRORS
+  NO_CONSOLE: "§cThis command can only be used by players."
+  PLAYER_NOT_FOUND: "§cPlayer '%s' could not be found."
+  INVALID_POS: "§cYou can't place an easel here"
+  NO_PERM: "§cYou don't have permission to do this."
+  ELSE_USING: "§cSomeone else is using this canvas!"
+  NOT_RIDING_EASEL: "§cYou must be sitting at your easel to save."
+  NEED_CANVAS: "§cYou need to place a canvas on the easel to paint. Type /artmap for more info."
+  NOT_YOUR_EASEL: "§cYou cannot destroy %s's artwork!"
+  MAP_NOT_FOUND: "§cArtwork '%s' could not be found."
+  NO_ARTWORKS: "§cThere are currently no artworks saved!"
+  NO_CRAFT_PERM: "§cYou can't copy other players' artworks"
+  BAD_TITLE: "§cInvalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
+  TITLE_USED: "§cSorry, this title is already being used."
+  EMPTY_HAND_PREVIEW: "§cYou need to have an empty hand to preview."
+  MAPDATA_ERROR: "§cError reading mapdata.yml at %s: %s"
+  BACKUP_ERROR: "§cBackup folder could not be created!"
+  NO_WORLD: "§cNo world called '%s' could be found"
+  RESTORE_ERROR: "§cBackup folder '%s' could not be found!"
+  INVALID_DATA_TABLES: "§cInvalid data tables, plugin cannot be initialized."
+  CANNOT_BUILD_DATABASE: "§cError building MapArt database - plugin will be disabled."
+  ARRAY:
+    CONSOLE_HELP:
+    - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+    - "§3/artmap delete <title> §b: §eDelete an artwork"
+    - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
+    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
+    - "  §e * Optional [-o] flag enables artwork overwriting"
+  #help menu
+    HELP_GETTING_STARTED:
+      - "                 §6§l⊱§e§lGetting Started§6§l⊰"
+      - "                §3❉§b§oWelcome to ArtMap!§3❉"
+      - ""
+      - "   §a1§2. §7Craft yourself an §6Easel §7and §6Canvas§7."
+      - "   §a2§2. §7Place the Easel and use your Canvas §7on it."
+      - "   §a3§2. §7Click the Canvas with §2Dyes §7& §3Tools §7to paint."
+      - "   §a4§2. §7When you're finished, use §e/artmap save§7."
+      - ""
+      - "§7§oLook at the other tabs in this menu to see more"
+      - "§7§oinformation on Recipes, Tools, and Dye Colours."
+      - ""
+      - "    §8░░░░§e❃§lCommands §r§e⤸§8░░░░░░░░░░░░░"
+      - "§6•§f/artmap save <title>    §6➯   §7save your artwork"
+      - "§6•§f/artmap delete <title>  §6➯ §7delete your artwork"
+      - "§6•§f/artmap preview <title> §6➯  §7preview an artwork"
 
-  HELP_RECIPES:
-    - "             §6§l⊱§e§lRecipes§6§l⊰"
-    - "§7View the crafting recipes for all"
-    - "§7the items you will need to paint."
-    - "          §a✸§2§oClick to View§a✸"
+    HELP_RECIPES:
+      - "             §6§l⊱§e§lRecipes§6§l⊰"
+      - "§7View the crafting recipes for all"
+      - "§7the items you will need to paint."
+      - "          §a✸§2§oClick to View§a✸"
 
-  HELP_TOOLS:
-    - "            §6§l⊱§e§lTools§6§l⊰"
-    - "§7View all the tools that you"
-    - "§7can use to help you paint."
-    - "       §a✸§2§oClick to View§a✸"
+    HELP_TOOLS:
+      - "            §6§l⊱§e§lTools§6§l⊰"
+      - "§7View all the tools that you"
+      - "§7can use to help you paint."
+      - "       §a✸§2§oClick to View§a✸"
 
-  HELP_DYES:
-    - "           §6§l⊱§e§lDyes§6§l⊰"
-    - "§7View all the dye colours"
-    - "§7that you can paint with."
-    - "      §a✸§2§oClick to View§a✸"
+    HELP_DYES:
+      - "           §6§l⊱§e§lDyes§6§l⊰"
+      - "§7View all the dye colours"
+      - "§7that you can paint with."
+      - "      §a✸§2§oClick to View§a✸"
 
-  HELP_LIST:
-    - "             §6§l⊱§e§lArtworks§6§l⊰"
-    - "      §3✺§b§oView Player Artworks§3✺"
-    - "§7View your artwork or view other"
-    - "§7players' work grouped by artist."
-    - "          §a✸§2§oClick to browse§a✸"
+    HELP_LIST:
+      - "             §6§l⊱§e§lArtworks§6§l⊰"
+      - "      §3✺§b§oView Player Artworks§3✺"
+      - "§7View your artwork or view other"
+      - "§7players' work grouped by artist."
+      - "          §a✸§2§oClick to browse§a✸"
 
-  HELP_CLOSE:
-    - "    §6§l⊱§e§lBack§6§l⊰"
-    - "§4﴾§cClose Menu§4﴿"
+    HELP_CLOSE:
+      - "    §6§l⊱§e§lBack§6§l⊰"
+      - "§4﴾§cClose Menu§4﴿"
 
-  INFO_DYES:
-    - "              §6§l⊱§e§lDye Colours§6§l⊰"
-    - "§7Click your canvas with any of these"
-    - "§7dyes to paint."
-    - ""
-    - "   §a• §7§oLeft-Click to draw pixels"
-    - "   §a• §7§oRight-Click to draw lines"
-    - ""
-    - "§7Any dye can be crafted with a bucket"
-    - "§7to make a §6PaintBucket§7."
-    - "           §b§oHover to view colour"
+    INFO_DYES:
+      - "              §6§l⊱§e§lDye Colours§6§l⊰"
+      - "§7Click your canvas with any of these"
+      - "§7dyes to paint."
+      - ""
+      - "   §a• §7§oLeft-Click to draw pixels"
+      - "   §a• §7§oRight-Click to draw lines"
+      - ""
+      - "§7Any dye can be crafted with a bucket"
+      - "§7to make a §6PaintBucket§7."
+      - "           §b§oHover to view colour"
 
-  INFO_RECIPES:
-    - "              §6§l⊱§e§lRecipe Help§6§l⊰"
-    - "§7Craft any artwork with a §6blank map"
-    - "§7to create a copy. Only the original"
-    - "§7author of an artwork will be able to"
-    - "§7make copies."
-    - "        §b§oHover to view usage info"
+    INFO_RECIPES:
+      - "              §6§l⊱§e§lRecipe Help§6§l⊰"
+      - "§7Craft any artwork with a §6blank map"
+      - "§7to create a copy. Only the original"
+      - "§7author of an artwork will be able to"
+      - "§7make copies."
+      - "        §b§oHover to view usage info"
 
-  INFO_TOOLS:
-    - "              §6§l⊱§e§lTool Help§6§l⊰"
-    - "§7You can use these items along with"
-    - "§2dyes §7to help you paint."
-    - "       §b§oHover to view usage info"
+    INFO_TOOLS:
+      - "              §6§l⊱§e§lTool Help§6§l⊰"
+      - "§7You can use these items along with"
+      - "§2dyes §7to help you paint."
+      - "       §b§oHover to view usage info"
 
-  TOOL_DYE:
-    - "              §6§l⊱§e§lDyes§6§l⊰"
-    - " §7Left-Click to draw pixels"
-    - " §7Right-Click to draw lines"
-    - "§a✸§2§oClick to view all colours§a✸"
+    TOOL_DYE:
+      - "              §6§l⊱§e§lDyes§6§l⊰"
+      - " §7Left-Click to draw pixels"
+      - " §7Right-Click to draw lines"
+      - "§a✸§2§oClick to view all colours§a✸"
 
-  TOOL_PAINTBUCKET:
-    - "         §6§l⊱§e§lPaintBucket§6§l⊰"
-    - "§7Left-Click to fill an area of"
-    - "§7the canvas. Craft with dye to"
-    - "§7change the bucket's colour."
-    - "§7Right-Click to undo last fill."
+    TOOL_PAINTBUCKET:
+      - "         §6§l⊱§e§lPaintBucket§6§l⊰"
+      - "§7Left-Click to fill an area of"
+      - "§7the canvas. Craft with dye to"
+      - "§7change the bucket's colour."
+      - "§7Right-Click to undo last fill."
 
-  TOOL_COAL:
-    - "              §6§l⊱§e§lCoal§6§l⊰"
-    - "§7Left-Click to darken pixels."
-    - "§7Right-Click to darken lines."
+    TOOL_COAL:
+      - "              §6§l⊱§e§lCoal§6§l⊰"
+      - "§7Left-Click to darken pixels."
+      - "§7Right-Click to darken lines."
 
-  TOOL_FEATHER:
-    - "            §6§l⊱§e§lFeather§6§l⊰"
-    - "§7Left-Click to lighten pixels."
-    - "§7Right-Click to lighten lines."
+    TOOL_FEATHER:
+      - "            §6§l⊱§e§lFeather§6§l⊰"
+      - "§7Left-Click to lighten pixels."
+      - "§7Right-Click to lighten lines."
 
-  TOOL_COMPASS:
-    - "            §6§l⊱§e§lCompass§6§l⊰"
-    - "§7Left-Click to flip horizontally."
-    - "§7Right-Click to flip vertically."
+    TOOL_COMPASS:
+      - "            §6§l⊱§e§lCompass§6§l⊰"
+      - "§7Left-Click to flip horizontally."
+      - "§7Right-Click to flip vertically."
 
 

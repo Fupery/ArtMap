@@ -5,8 +5,10 @@ import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.*;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import org.bukkit.Bukkit;
@@ -28,6 +30,8 @@ public class ArtMap extends JavaPlugin {
     private static VersionHandler bukkitVersion;
     private static TaskManager taskManager;
     private static ArtDatabase artDatabase;
+    private static ChannelCacheManager cacheManager;
+    private static Lang lang;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
     private PixelTable pixelTable;
@@ -65,9 +69,16 @@ public class ArtMap extends JavaPlugin {
         return bukkitVersion;
     }
 
+    public static ChannelCacheManager getCacheManager() {
+        return cacheManager;
+    }
+
+    public static Lang getLang() {
+        return lang;
+    }
+
     @Override
     public void onEnable() {
-
         saveDefaultConfig();
 
         taskManager = new TaskManager(this);
@@ -75,23 +86,22 @@ public class ArtMap extends JavaPlugin {
         artistHandler = new ArtistHandler();
         bukkitVersion = VersionHandler.getVersion();
         artDatabase = ArtDatabase.buildDatabase();
+        cacheManager = new ChannelCacheManager();
+        FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
+        lang = new Lang(getConfig().getString("language"), langFile);
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
-            getLogger().warning(Lang.CANNOT_BUILD_DATABASE.rawMessage());
+            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
             return;
         }
-
         if (!loadTables()) {
-            getLogger().warning(Lang.INVALID_DATA_TABLES.rawMessage());
+            getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
             getPluginLoader().disablePlugin(this);
             return;
         }
-
         FileConfiguration filter = YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
         titleFilter = filter.getStringList("blacklisted");
-
-        ArtMaterial.setupRecipes();
 
         getCommand("artmap").setExecutor(new CommandHandler());
 
@@ -103,8 +113,11 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(), this);
         manager.registerEvents(new InventoryInteractListener(), this);
         manager.registerEvents(new EaselInteractListener(), this);
+
         helpMenu = new WeakReference<>(null);
+
         Stats.init(this);
+        ArtMaterial.setupRecipes();
     }
 
     @Override
@@ -122,6 +135,7 @@ public class ArtMap extends JavaPlugin {
         artistHandler = null;
         bukkitVersion = null;
         artDatabase = null;
+        cacheManager = null;
     }
 
     private boolean loadTables() {

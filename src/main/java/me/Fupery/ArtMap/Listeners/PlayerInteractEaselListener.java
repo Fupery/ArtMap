@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -67,7 +66,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (checkSignBreak(event.getBlock(), event)) {
             if (!checkIsPainting(event.getPlayer(), event)) {
-                event.getPlayer().sendMessage(Lang.BREAK_CANVAS.message());
+                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PUNCH.send(event.getPlayer());
             }
         }
         checkIsPainting(event.getPlayer(), event);
