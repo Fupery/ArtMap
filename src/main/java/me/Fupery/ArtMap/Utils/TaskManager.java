@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class TaskManager {
     private final ArtMap plugin;
@@ -17,8 +18,8 @@ public class TaskManager {
         }
 
         @Override
-        public void runTimer(Runnable runnable, int startDelay, int delay) {
-            Bukkit.getScheduler().runTaskTimer(plugin, runnable, startDelay, delay);
+        public void runTimer(Runnable runnable, int startDelay, int period) {
+            Bukkit.getScheduler().runTaskTimer(plugin, runnable, startDelay, period);
         }
     };
     public final TaskScheduler ASYNC = new TaskScheduler() {
@@ -33,10 +34,36 @@ public class TaskManager {
         }
 
         @Override
-        public void runTimer(Runnable runnable, int startDelay, int delay) {
-            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, delay);
+        public void runTimer(Runnable runnable, int startDelay, int period) {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, period);
         }
     };
+    public TaskHandler getTaskHandler(BukkitRunnable runnable) {
+        return new TaskHandler(runnable);
+    }
+
+    public class TaskHandler {
+        private BukkitRunnable runnable;
+
+        private TaskHandler(BukkitRunnable runnable) {
+            this.runnable = runnable;
+        }
+
+        public void run(boolean async) {
+            if (async) runnable.runTaskAsynchronously(plugin);
+            else runnable.runTask(plugin);
+        }
+
+        public void runLater(boolean async, int delay) {
+            if (async) runnable.runTaskLaterAsynchronously(plugin, delay);
+            else runnable.runTaskLater(plugin, delay);
+        }
+
+        public void runTimer(boolean async, int startDelay, int period) {
+            if (async) runnable.runTaskTimerAsynchronously(plugin, startDelay, period);
+            else runnable.runTaskTimer(plugin, startDelay, period);
+        }
+    }
 
     public TaskManager(ArtMap plugin) {
         this.plugin = plugin;
@@ -47,6 +74,6 @@ public class TaskManager {
 
         void runLater(Runnable runnable, int delay);
 
-        void runTimer(Runnable runnable, int startDelay, int delay);
+        void runTimer(Runnable runnable, int startDelay, int period);
     }
 }
