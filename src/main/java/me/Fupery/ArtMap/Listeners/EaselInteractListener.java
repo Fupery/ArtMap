@@ -7,6 +7,7 @@ import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -38,6 +39,7 @@ public class EaselInteractListener implements Listener {
 
         if (easel.isPainting()) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_USED.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
             return;
         }
@@ -76,8 +78,9 @@ public class EaselInteractListener implements Listener {
                     if (art != null) {
 
                         if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
-                            ArtMap.getLang().sendMsg("NO_CRAFTING_PERM", player);
+                            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_EDIT.send(player);
                             easel.playEffect(Effect.CRIT);
+                            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                             return;
                         }
 
@@ -92,6 +95,7 @@ public class EaselInteractListener implements Listener {
                     }
                 }
                 ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
+                SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                 easel.playEffect(Effect.CRIT);
                 return;
 

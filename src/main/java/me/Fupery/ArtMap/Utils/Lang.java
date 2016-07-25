@@ -69,7 +69,8 @@ public class Lang {
                 EASEL_MOUNT,
                 EASEL_DISMOUNT,
                 EASEL_USED,
-                EASEL_PERMISSION;
+                EASEL_PERMISSION,
+                EASEL_NO_EDIT;
 
         private ActionBarHandler() {
             Reflection.ChatPacketBuilder packetBuilder = new Reflection.ChatPacketBuilder();
@@ -79,6 +80,7 @@ public class Lang {
             EASEL_DISMOUNT = buildPacket(packetBuilder, getMsg("SAVE_USAGE"));
             EASEL_USED = buildPacket(packetBuilder, getMsg("ELSE_USING"));
             EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM"));
+            EASEL_NO_EDIT = buildPacket(packetBuilder, getMsg("NO_EDIT_PERM"));
         }
 
     }
