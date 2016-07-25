@@ -114,8 +114,6 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new EaselInteractListener(), this);
 
         helpMenu = new WeakReference<>(null);
-
-        Stats.init(this);
         ArtMaterial.setupRecipes();
     }
 
