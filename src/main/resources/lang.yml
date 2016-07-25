@@ -13,7 +13,7 @@ english:
   #ERRORS
   NO_CONSOLE: "§cThis command can only be used by players."
   PLAYER_NOT_FOUND: "§cPlayer '%s' could not be found."
-  INVALID_POS: "§cYou can't place an easel here"
+  INVALID_POS: "§4§lYou can't place an easel there!"
   NO_PERM: "§cYou don't have permission to do this."
   ELSE_USING: "§4§lSomeone else is using this canvas!"
   NOT_RIDING_EASEL: "§cYou must be sitting at your easel to save."

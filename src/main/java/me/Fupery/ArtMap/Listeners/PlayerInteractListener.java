@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -53,22 +54,25 @@ public class PlayerInteractListener implements Listener {
         if (!event.getBlockFace().equals(BlockFace.UP)) {
             return;
         }
+        Player player = event.getPlayer();
+
         Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
-        BlockFace facing = getFacing(event.getPlayer());
+        BlockFace facing = getFacing(player);
 
         if (easelLocation.getBlock().getType() != Material.AIR || Easel.checkForEasel(easelLocation)) {
-            ArtMap.getLang().sendMsg("INVALID_POS", event.getPlayer());
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
-        Player player = event.getPlayer();
         ItemStack item = player.getItemInHand().clone();
         item.setAmount(1);
 
         player.getInventory().removeItem(item);
 
         if (easel == null) {
-            ArtMap.getLang().sendMsg("INVALID_POS", event.getPlayer());
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
         }
     }
 
