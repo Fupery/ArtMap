@@ -16,12 +16,12 @@ public enum EaselPart {
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false),
     SEAT(ArtMap.getBukkitVersion().getSeatXOffset(), ArtMap.getBukkitVersion().getSeatZOffset(), true);
 
-    public static final String arbitrarySignID = "*{=}*";
-    public static final String easelID = "Easel";
-    private static final boolean requiresSeatCompensation = (ArtMap.getBukkitVersion() == VersionHandler.v1_8);
+    public static final String ARBITRARY_SIGN_ID = "*{=}*";
+    public static final String EASEL_ID = "Easel";
     final double modifier;
     final double heightOffset;
     final boolean centred;
+    private final boolean requiresSeatCompensation = (ArtMap.getBukkitVersion() == VersionHandler.v1_8);
 
     EaselPart(double modifier, double heightOffset, boolean centred) {
         this.modifier = modifier;
@@ -113,7 +113,7 @@ public enum EaselPart {
             easelLocation.getBlock().setType(Material.WALL_SIGN);
             Sign sign = ((Sign) easelLocation.getBlock().getState());
             sign.setData(signFace);
-            sign.setLine(3, arbitrarySignID);
+            sign.setLine(3, ARBITRARY_SIGN_ID);
             sign.update(true, false);
 
         } else {
@@ -128,7 +128,7 @@ public enum EaselPart {
                         ArmorStand stand = (ArmorStand) entity;
                         stand.setBasePlate(false);
                         stand.setCustomNameVisible(true);
-                        stand.setCustomName(easelID);
+                        stand.setCustomName(EASEL_ID);
                         stand.setGravity(false);
                         stand.setRemoveWhenFarAway(false);
                         return stand;

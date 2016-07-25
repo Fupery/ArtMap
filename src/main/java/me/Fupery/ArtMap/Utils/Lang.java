@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class Lang {
-    public static final String prefix = "§b[ArtMap] ";
+    public static final String PREFIX = "§b[ArtMap] ";
     public final ActionBarHandler ACTION_BAR_MESSAGES;
     private final ConfigurationSection lang;
 
@@ -37,7 +37,7 @@ public class Lang {
     }
 
     public void sendMsg(String key, CommandSender player) {
-        player.sendMessage(prefix + getMsg(key));
+        player.sendMessage(PREFIX + getMsg(key));
     }
 
     public String[] getArray(String key) {

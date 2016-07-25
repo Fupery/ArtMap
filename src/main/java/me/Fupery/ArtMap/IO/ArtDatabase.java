@@ -20,12 +20,12 @@ import java.util.UUID;
 
 public class ArtDatabase {
 
-    public static final String artworksTag = "artworks";
-    private static final String recycled_keysTag = "recycled_keys";
-    private static final String artistTag = "artist";
-    private static final String mapTag = "mapID";
-    private static final String dateTag = "date";
-    private static UUID[] artistList = null;
+    public static final String ARTWORKS_TAG = "artworks";
+    private static final String RECYCLED_KEYS_TAG = "recycled_keys";
+    private static final String ARTIST_TAG = "artist";
+    private static final String MAP_TAG = "mapID";
+    private static final String DATE_TAG = "date";
+    private static UUID[] artistList = null; // FIXME: 25/07/2016 cache artists better
     private static boolean artistsUpToDate = false;
     private static File mapData;
     private ConfigurationSection artworks;
@@ -57,9 +57,9 @@ public class ArtDatabase {
         ConfigurationSection map = artworks.getConfigurationSection(title);
 
         if (map != null) {
-            int mapIDValue = map.getInt(mapTag);
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistTag)));
-            String date = map.getString(dateTag);
+            int mapIDValue = map.getInt(MAP_TAG);
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG)));
+            String date = map.getString(DATE_TAG);
             return new MapArt(((short) mapIDValue), title, player, date);
         }
         return null;
@@ -72,11 +72,11 @@ public class ArtDatabase {
         for (String title : keys) {
 
             ConfigurationSection map = artworks.getConfigurationSection(title);
-            short data = (short) map.getInt(mapTag);
+            short data = (short) map.getInt(MAP_TAG);
 
             if (mapData == data) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(artistTag)));
-                String date = map.getString(dateTag);
+                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG)));
+                String date = map.getString(DATE_TAG);
                 return new MapArt(mapData, title, player, date);
             }
         }
@@ -96,7 +96,7 @@ public class ArtDatabase {
         ConfigurationSection map = artworks.getConfigurationSection(title);
 
         if (map != null) {
-            int mapIDValue = map.getInt(mapTag);
+            int mapIDValue = map.getInt(MAP_TAG);
             //clear map data
             MapView mapView = Bukkit.getMap((short) mapIDValue);
             Reflection.setWorldMap(mapView, new byte[128 * 128]);
@@ -161,9 +161,9 @@ public class ArtDatabase {
 
     public synchronized void addArtwork(MapArt art) {
         ConfigurationSection map = artworks.createSection(art.getTitle());
-        map.set(mapTag, art.getMapID());
-        map.set(artistTag, art.getPlayer().getUniqueId().toString());
-        map.set(dateTag, art.getDate());
+        map.set(MAP_TAG, art.getMapID());
+        map.set(ARTIST_TAG, art.getPlayer().getUniqueId().toString());
+        map.set(DATE_TAG, art.getDate());
         updateMaps();
         artistsUpToDate = false;
     }
@@ -171,9 +171,9 @@ public class ArtDatabase {
     public synchronized void addArtworks(MapArt... artworks) {
         for (MapArt art : artworks) {
             ConfigurationSection map = this.artworks.createSection(art.getTitle());
-            map.set(mapTag, art.getMapID());
-            map.set(artistTag, art.getPlayer().getUniqueId().toString());
-            map.set(dateTag, art.getDate());
+            map.set(MAP_TAG, art.getMapID());
+            map.set(ARTIST_TAG, art.getPlayer().getUniqueId().toString());
+            map.set(DATE_TAG, art.getDate());
         }
         updateMaps();
         artistsUpToDate = false;
@@ -216,14 +216,14 @@ public class ArtDatabase {
 
     private synchronized void loadConfiguration() {
         FileConfiguration configuration = YamlConfiguration.loadConfiguration(mapData);
-        artworks = configuration.getConfigurationSection(artworksTag);
-        recycled_keys = configuration.getConfigurationSection(recycled_keysTag);
+        artworks = configuration.getConfigurationSection(ARTWORKS_TAG);
+        recycled_keys = configuration.getConfigurationSection(RECYCLED_KEYS_TAG);
 
         if (artworks == null) {
-            artworks = configuration.createSection(artworksTag);
+            artworks = configuration.createSection(ARTWORKS_TAG);
         }
         if (recycled_keys == null) {
-            recycled_keys = configuration.createSection(recycled_keysTag);
+            recycled_keys = configuration.createSection(RECYCLED_KEYS_TAG);
         }
     }
 
@@ -231,8 +231,8 @@ public class ArtDatabase {
         ArtMap.getTaskManager().ASYNC.run(() -> {
             try {
                 FileConfiguration configuration = new YamlConfiguration();
-                configuration.set(artworksTag, artworks);
-                configuration.set(recycled_keysTag, recycled_keys);
+                configuration.set(ARTWORKS_TAG, artworks);
+                configuration.set(RECYCLED_KEYS_TAG, recycled_keys);
                 configuration.save(mapData);
                 loadConfiguration();
 

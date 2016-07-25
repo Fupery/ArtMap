@@ -8,6 +8,7 @@ import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EaselInteractListener implements Listener {
 
-    public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();// FIXME: 25/07/2016 why static?
 
     @EventHandler
     public void onEaselInteract(EaselEvent event) {
@@ -37,6 +38,8 @@ public class EaselInteractListener implements Listener {
 
         if (easel.isPainting()) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_USED.send(player);
+            player.spigot().playEffect(easel.getLocation().clone().add(0.5, 0.5, 0.5),
+                    Effect.CRIT, 8, 10, 0.3f, 0.4f, 0.3f, 0.02f, 5, 2); // fixme: 23/07/2016 fix location
             return;
         }
 
@@ -63,7 +66,7 @@ public class EaselInteractListener implements Listener {
 
                 if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
-                    Reflection.setWorldMap(mapView, MapArt.blankMap);
+                    Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
                     mountMap(easel, mapView, player);
                     return;
 
@@ -87,6 +90,8 @@ public class EaselInteractListener implements Listener {
                     }
                 }
                 ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
+                player.spigot().playEffect(easel.getLocation().clone().add(0.5, 0.5, 0.5),
+                        Effect.CRIT, 8, 10, 0.3f, 0.4f, 0.3f, 0.02f, 5, 2);// fixme: 23/07/2016 fix location
                 return;
 
             case SHIFT_RIGHT_CLICK:
@@ -99,9 +104,9 @@ public class EaselInteractListener implements Listener {
                         mapView.removeRenderer(renderer);
                     }
 
-                    mapView.addRenderer(new GenericMapRenderer(MapArt.blankMap));
+                    mapView.addRenderer(new GenericMapRenderer(MapArt.BLANK_MAP));
                     ArtMap.getTaskManager().ASYNC.run(() -> {
-                        Reflection.setWorldMap(mapView, MapArt.blankMap);
+                        Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
                         ArtMap.getArtDatabase().recycleID(id);
                     });
                     easel.removeItem();

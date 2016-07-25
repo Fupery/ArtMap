@@ -30,7 +30,7 @@ public class CommandHandler implements CommandExecutor {
         commands.put("restore", new CommandRestore());
 
         //convenience commands
-        commands.put("help", new Command(null, "/artmap [help]", true) {
+        commands.put("HELP", new Command(null, "/artmap [HELP]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -88,7 +88,7 @@ public class CommandHandler implements CommandExecutor {
             }
 
         } else {
-            commands.get("help").runPlayerCommand(sender, args);
+            commands.get("HELP").runPlayerCommand(sender, args);
         }
         return true;
     }

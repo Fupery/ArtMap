@@ -56,7 +56,7 @@ public class RecipeMenu extends InventoryMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(3, HelpMenu.click + " Recipe");
+            lore.set(3, HelpMenu.CLICK + " Recipe");
             meta.setLore(lore);
             setItemMeta(meta);
         }

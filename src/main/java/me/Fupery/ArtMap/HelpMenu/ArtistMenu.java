@@ -62,7 +62,7 @@ public class ArtistMenu extends ListMenu {
 
             meta.setOwner(offlinePlayer.getName());
             meta.setDisplayName(offlinePlayer.getName());
-            meta.setLore(Collections.singletonList(HelpMenu.click));
+            meta.setLore(Collections.singletonList(HelpMenu.CLICK));
             setItemMeta(meta);
             this.artist = artist;
             this.menu = menu;

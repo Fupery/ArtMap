@@ -106,7 +106,7 @@ public class Easel {
             if (location.getBlock().getState() instanceof Sign) {
                 Sign sign = ((Sign) location.getBlock().getState());
 
-                if (!sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
+                if (!sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
                     return false;
                 }
             }
@@ -115,9 +115,9 @@ public class Easel {
     }
 
     private ArmorStand getStand(Collection<Entity> entities) {
-
-        if (stand.get() != null && stand.get().isValid()) {
-            return stand.get();
+        ArmorStand stand = this.stand.get();
+        if (stand != null && stand.isValid()) {
+            return stand;
         }
         if (entities == null) {
             entities = getNearbyEntities();
@@ -128,10 +128,10 @@ public class Easel {
             BlockFace facing = EaselPart.getFacing(entity.getLocation().getYaw());
 
             if (entity.getType() == EntityType.ARMOR_STAND) {
-                ArmorStand stand = (ArmorStand) entity;
+                stand = (ArmorStand) entity;
 
                 //Check if entity is a stand
-                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
+                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.EASEL_ID)) {
                     if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
                         return stand;
                     }
@@ -142,9 +142,9 @@ public class Easel {
     }
 
     private ItemFrame getFrame(Collection<Entity> entities) {
-
-        if (frame.get() != null && frame.get().isValid()) {
-            return frame.get();
+        ItemFrame frame = this.frame.get();
+        if (frame != null && frame.isValid()) {
+            return frame;
         }
         if (entities == null) {
             entities = getNearbyEntities();
@@ -155,7 +155,7 @@ public class Easel {
             BlockFace facing = EaselPart.getFacing(entity.getLocation().getYaw());
 
             if (entity.getType() == EntityType.ITEM_FRAME) {
-                ItemFrame frame = (ItemFrame) entity;
+                frame = (ItemFrame) entity;
 
                 //check if entity is a frame
                 if (EaselPart.FRAME.getEaselPos(frame.getLocation(), facing).equals(location)) {
@@ -226,6 +226,10 @@ public class Easel {
             location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
         });
 
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public boolean isPainting() {

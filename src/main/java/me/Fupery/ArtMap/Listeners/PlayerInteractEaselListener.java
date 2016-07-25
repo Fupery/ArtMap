@@ -133,7 +133,7 @@ public class PlayerInteractEaselListener implements Listener {
         if (block.getType() == Material.WALL_SIGN) {
             Sign sign = ((Sign) block.getState());
 
-            if (sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
+            if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
 
                 if (EaselInteractListener.easels.containsKey(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {

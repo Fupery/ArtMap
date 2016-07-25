@@ -78,7 +78,7 @@ public class ArtworkMenu extends ListMenu {
             super(Material.MAP);
             ItemMeta meta = artwork.getMapItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.add(HelpMenu.click);
+            lore.add(HelpMenu.CLICK);
             meta.setLore(lore);
             setItemMeta(meta);
             this.artwork = artwork;

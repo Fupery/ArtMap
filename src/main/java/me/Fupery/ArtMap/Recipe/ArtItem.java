@@ -16,11 +16,11 @@ import java.util.Map;
 
 abstract public class ArtItem extends ItemStack {
 
-    public static final String artworkTag = "§b§oPlayer Artwork";
-    public static final String canvasKey = "§b§oArtMap Canvas";
-    public static final String easelKey = "§b§oArtMap Easel";
-    public static final String paintBucketKey = "§b§oPaint Bucket";
-    public static final String help = "§a/artmap §2for help";
+    public static final String ARTWORK_TAG = "§b§oPlayer Artwork";
+    public static final String CANVAS_KEY = "§b§oArtMap Canvas";
+    public static final String EASEL_KEY = "§b§oArtMap Easel";
+    public static final String PAINT_BUCKET_KEY = "§b§oPaint Bucket";
+    public static final String HELP = "§a/artmap §2for help";
 
     ArtItem(Material material) {
         super(material);
@@ -77,7 +77,7 @@ class ItemEasel extends ArtItem {
         super(Material.ARMOR_STAND);
         ItemMeta meta = getItemMeta();
         meta.setDisplayName("§e•§6§lEasel§e•");
-        meta.setLore(Arrays.asList(getLoreID(), "§7Use to edit artworks", "§7Right click to place", help));
+        meta.setLore(Arrays.asList(getLoreID(), "§7Use to edit artworks", "§7Right CLICK to place", HELP));
         setItemMeta(meta);
     }
 
@@ -95,7 +95,7 @@ class ItemEasel extends ArtItem {
 
     @Override
     String getLoreID() {
-        return easelKey;
+        return EASEL_KEY;
     }
 }
 
@@ -105,7 +105,7 @@ class ItemCanvas extends ArtItem {
         super(Material.PAPER);
         ItemMeta meta = getItemMeta();
         meta.setDisplayName("§e•§6§lCanvas§e•");
-        meta.setLore(Arrays.asList(getLoreID(), "§7Use on an §aEasel", "§7to start painting", help));
+        meta.setLore(Arrays.asList(getLoreID(), "§7Use on an §aEasel", "§7to start painting", HELP));
         setItemMeta(meta);
     }
 
@@ -121,7 +121,7 @@ class ItemCanvas extends ArtItem {
 
     @Override
     String getLoreID() {
-        return canvasKey;
+        return CANVAS_KEY;
     }
 }
 
@@ -150,7 +150,7 @@ class ItemMapArt extends ArtItem {
 
     @Override
     String getLoreID() {
-        return artworkTag;
+        return ARTWORK_TAG;
     }
 }
 
@@ -164,7 +164,7 @@ class PaintBucket extends ArtItem {
         ItemMeta meta = getItemMeta();
         meta.setDisplayName("§e•" + colour.getDisplay() + "§lPaintBucket§e•");
         meta.setLore(Arrays.asList(getLoreID(),
-                "§7Use with an §aEasel §7and", "§aCanvas §7to fill colours", "§7Right-Click to undo", help));
+                "§7Use with an §aEasel §7and", "§aCanvas §7to fill colours", "§7Right-Click to undo", HELP));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);
@@ -177,7 +177,7 @@ class PaintBucket extends ArtItem {
 
     @Override
     String getLoreID() {
-        return paintBucketKey + " §7[" + colour.name() + "]";
+        return PAINT_BUCKET_KEY + " §7[" + colour.name() + "]";
     }
 
     private org.bukkit.inventory.Recipe getRecipe(ArtDye d) {

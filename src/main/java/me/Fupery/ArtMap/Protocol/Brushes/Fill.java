@@ -34,7 +34,7 @@ public class Fill extends Brush {
             String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
             for (ArtDye dye : ArtDye.values()) {
-                if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
+                if (lore[0].equals(ArtItem.PAINT_BUCKET_KEY + " §7[" + dye.name() + "]")) {
                     colour = dye;
                     break;
                 }
@@ -63,7 +63,7 @@ public class Fill extends Brush {
 
                 for (ArtDye dye : ArtDye.values()) {
 
-                    if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
+                    if (lore[0].equals(ArtItem.PAINT_BUCKET_KEY + " §7[" + dye.name() + "]")) {
                         colour = dye;
                         break;
                     }

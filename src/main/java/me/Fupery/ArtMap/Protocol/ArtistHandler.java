@@ -99,7 +99,7 @@ public class ArtistHandler {
         if (session != null) {
             session.end();
         } else {
-            Bukkit.getLogger().warning(Lang.prefix + ChatColor.RED + String.format(
+            Bukkit.getLogger().warning(Lang.PREFIX + ChatColor.RED + String.format(
                     "Renderer not found for player: %s", player.getName()));
         }
     }

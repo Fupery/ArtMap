@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class HelpMenu extends Menu {
 
-    public static final String click = "§aClick to View";
+    public static final String CLICK = "§aClick to View";
 
     public HelpMenu() {
         super(ArtMap.plugin(), "§1Choose a help topic", InventoryType.HOPPER);

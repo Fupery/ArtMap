@@ -95,7 +95,7 @@ public abstract class ArtistProtocol {
                 msg = onPacketInAsync(player, channel, msg);
 
             } catch (Exception e) {
-                Bukkit.getLogger().log(Level.SEVERE, Lang.prefix + "Error in onPacketInAsync().", e);
+                Bukkit.getLogger().log(Level.SEVERE, Lang.PREFIX + "Error in onPacketInAsync().", e);
             }
             if (msg != null) {
                 super.channelRead(context, msg);
