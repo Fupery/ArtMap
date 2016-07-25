@@ -3,9 +3,11 @@ package me.Fupery.ArtMap.Easel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -175,7 +177,7 @@ public class Easel {
 
         ArtMap plugin = ArtMap.plugin();
 
-        ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, getFrame().getFacing()));
+        ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, getFacing()));
 
         if (seat == null) {
             return;
@@ -187,7 +189,7 @@ public class Easel {
         setIsPainting(true);
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
 
-        ArtMap.getArtistHandler().addPlayer(player, mapView, EaselPart.getYawOffset(getFrame().getFacing()));
+        ArtMap.getArtistHandler().addPlayer(player, mapView, EaselPart.getYawOffset(getFacing()));
         ArtMap.getTaskManager().SYNC.runLater(() -> {
             if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
         }, 30);
@@ -226,6 +228,16 @@ public class Easel {
             location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
         });
 
+    }
+
+    public BlockFace getFacing() {
+        ItemFrame frame = getFrame();
+        return (frame != null) ? frame.getFacing() : null;
+    }
+
+    public void playEffect(Effect effect) {
+        Location loc = new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
+        loc.getWorld().spigot().playEffect(loc, effect, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
     }
 
     public Location getLocation() {

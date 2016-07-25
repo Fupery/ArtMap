@@ -14,6 +14,8 @@ public abstract class Preview extends BukkitRunnable {
     Preview(Player player) {
         this.player = player;
     }
+    // TODO: 25/07/2016 maybe chill on the statics
+    // TODO: 25/07/2016 responsiveness
 
     public static void artwork(Player player, MapArt art) {
         checkCurrentPreviews(player);

@@ -7,6 +7,7 @@ import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -76,6 +77,7 @@ public class CommandSave extends Command {
                 player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
             }
             SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
+            easel.playEffect(Effect.HAPPY_VILLAGER);
             player.sendMessage(String.format(ArtMap.getLang().getMsg("SAVE_SUCCESS"), title));
         });
     }

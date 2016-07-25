@@ -38,8 +38,7 @@ public class EaselInteractListener implements Listener {
 
         if (easel.isPainting()) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_USED.send(player);
-            player.spigot().playEffect(easel.getLocation().clone().add(0.5, 0.5, 0.5),
-                    Effect.CRIT, 8, 10, 0.3f, 0.4f, 0.3f, 0.02f, 5, 2); // fixme: 23/07/2016 fix location
+            easel.playEffect(Effect.CRIT);
             return;
         }
 
@@ -56,7 +55,7 @@ public class EaselInteractListener implements Listener {
                 if (easel.getItem().getType() == Material.MAP) {
                     easel.rideEasel(player);
                     return;
-
+                    //remove items that were added while plugin is unloaded etc.
                 } else if (easel.getItem().getType() != Material.AIR) {
                     easel.removeItem();
                     return;
@@ -68,6 +67,7 @@ public class EaselInteractListener implements Listener {
                     mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
                     Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
                     mountMap(easel, mapView, player);
+                    easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
                     return;
 
                 } else if (material == ArtMaterial.MAP_ART) {
@@ -77,6 +77,7 @@ public class EaselInteractListener implements Listener {
 
                         if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
                             ArtMap.getLang().sendMsg("NO_CRAFTING_PERM", player);
+                            easel.playEffect(Effect.CRIT);
                             return;
                         }
 
@@ -86,12 +87,12 @@ public class EaselInteractListener implements Listener {
                         }
                         mapView = MapArt.cloneArtwork(player.getWorld(), art.getMapID());
                         mountMap(easel, mapView, player);
+                        easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
                         return;
                     }
                 }
                 ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
-                player.spigot().playEffect(easel.getLocation().clone().add(0.5, 0.5, 0.5),
-                        Effect.CRIT, 8, 10, 0.3f, 0.4f, 0.3f, 0.02f, 5, 2);// fixme: 23/07/2016 fix location
+                easel.playEffect(Effect.CRIT);
                 return;
 
             case SHIFT_RIGHT_CLICK:
@@ -112,6 +113,7 @@ public class EaselInteractListener implements Listener {
                     easel.removeItem();
                 }
                 easel.breakEasel();
+                easel.playEffect(Effect.CLOUD);
         }
     }
 
