@@ -20,15 +20,19 @@ public abstract class ArtistProtocol {
     private final String handlerName = "ArtMapHandler";
 
     public void injectPlayer(Player player) {
-
         Channel channel = getChannel(player);
-        PacketHandler interceptor = (PacketHandler) channel.pipeline().get(handlerName);
+        PacketHandler handler;
+        try {
+            handler = (PacketHandler) channel.pipeline().get(handlerName);
 
-        if (interceptor == null) {
-            interceptor = new PacketHandler();
-            channel.pipeline().addBefore("packet_handler", handlerName, interceptor);
+            if (handler == null) {
+                handler = new PacketHandler();
+                channel.pipeline().addBefore("packet_handler", handlerName, handler);
+            }
+        } catch (IllegalArgumentException e) {
+            handler = (PacketHandler) channel.pipeline().get(handlerName);
         }
-        interceptor.player = player;
+        handler.player = player;
     }
 
     public void uninjectPlayer(Player player) {
