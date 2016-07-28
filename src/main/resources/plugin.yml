@@ -11,9 +11,7 @@ commands:
         <command> save <title> : Save your artwork
         <command> delete <title> : Remove your artwork
         <command> preview <title> : Preview an artwork
-        <command> list <playername|all> <pg> : Lists artworks
         <command> help : Display help
-        <command> recipe <item> : Display recipe for artists/give recipe item to admin
         <command> backup : Create a backup of all current artworks
         <command> restore <backupname> <worldname> <-o> : Restore a backup folder from plugins/ArtMap/backups
 permissions:
