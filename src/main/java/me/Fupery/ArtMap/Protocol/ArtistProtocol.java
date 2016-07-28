@@ -19,8 +19,11 @@ public abstract class ArtistProtocol {
 
     private final String handlerName = "ArtMapHandler";
 
-    public void injectPlayer(Player player) {
+    public boolean injectPlayer(Player player) {
         Channel channel = getChannel(player);
+        if (channel == null) {
+            return false;
+        }
         PacketHandler handler;
         try {
             handler = (PacketHandler) channel.pipeline().get(handlerName);
@@ -33,6 +36,7 @@ public abstract class ArtistProtocol {
             handler = (PacketHandler) channel.pipeline().get(handlerName);
         }
         handler.player = player;
+        return true;
     }
 
     public void uninjectPlayer(Player player) {
@@ -54,6 +58,7 @@ public abstract class ArtistProtocol {
             }
 
         } catch (Exception e) {
+            Bukkit.getLogger().warning("[ArtMap] Error unbinding player channel:");
             e.printStackTrace();
         }
         channelLookup.remove(player.getUniqueId());
@@ -66,7 +71,8 @@ public abstract class ArtistProtocol {
             channel = Reflection.getPlayerChannel(player);
 
             if (channel == null) {
-                uninjectPlayer(player);
+                Bukkit.getLogger().warning("[ArtMap] Error binding player channel!");
+                return null;
             }
             channelLookup.put(player.getUniqueId(), channel);
         }

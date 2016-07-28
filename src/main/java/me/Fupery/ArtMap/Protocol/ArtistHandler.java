@@ -76,8 +76,13 @@ public class ArtistHandler {
     }
 
     public void addPlayer(final Player player, MapView mapView, int yawOffset) {
-        artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
-        protocol.injectPlayer(player);
+        if (protocol.injectPlayer(player)) {
+            artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
+        } else {
+            Entity seat = player.getVehicle();
+            player.leaveVehicle();
+            removeSeat(seat);
+        }
     }
 
     public boolean containsPlayer(Player player) {
