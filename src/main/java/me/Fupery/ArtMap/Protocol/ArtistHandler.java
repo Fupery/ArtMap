@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Protocol;
 
 import io.netty.channel.Channel;
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
@@ -104,8 +105,19 @@ public class ArtistHandler {
         if (session != null) {
             session.end();
         } else {
-            Bukkit.getLogger().warning(Lang.prefix + ChatColor.RED + String.format(
-                    "Renderer not found for player: %s", player.getName()));
+            ArtMap.runTaskLater(new Runnable() {
+                @Override
+                public void run() {
+                    ArtSession session = artists.get(player.getUniqueId());
+                    if (session != null) {
+                        session.end();
+                    } else {
+                        Bukkit.getLogger().warning(Lang.prefix + String.format(
+                                "§cRenderer not found for player: %s", player.getName()));
+                    }
+                }
+            }, 1);
+
         }
     }
 
