@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -39,37 +38,6 @@ public class CommandHandler implements CommandExecutor {
 
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
-                }
-            }
-        });
-        commands.put("recipe", new Command(null, "/artmap recipe", false) {
-            @Override
-            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ArtMap.getHelpMenu().getButton(1).onClick(ArtMap.plugin(), (Player) sender);
-            }
-        });
-        commands.put("list", new Command(null, "/artmap list [player]", false) {
-            @Override
-            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-
-                // FIXME: 8/07/2016 exception when specifying artist name
-
-                if (args.length > 1) {
-
-                    OfflinePlayer artist;
-                    artist = Bukkit.getOfflinePlayer(args[1]);
-
-                    if (artist == null || !artist.hasPlayedBefore()) {
-                        msg.message = String.format(ArtMap.getLang().getMsg("PLAYER_NOT_FOUND"), args[1]);
-                        return;
-                    }
-                    UUID uuid = artist.getUniqueId();
-
-                    ArtworkMenu menu = new ArtworkMenu(null, uuid);
-                    menu.open(ArtMap.plugin(), (Player) sender);
-
-                } else {
-                    ArtMap.getHelpMenu().getButton(4).onClick(ArtMap.plugin(), (Player) sender);
                 }
             }
         });

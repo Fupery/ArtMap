@@ -57,7 +57,7 @@ public class Reflection {
 
     public static Object invokeMethod(Object obj, String methodName)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = obj.getClass().getMethod(methodName);
+        Method method = obj.getClass().getDeclaredMethod(methodName);
         method.setAccessible(true);
         return method.invoke(obj);
     }
