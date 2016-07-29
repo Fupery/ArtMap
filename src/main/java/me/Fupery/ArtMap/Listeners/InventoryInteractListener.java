@@ -29,7 +29,7 @@ public class InventoryInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
-        if (ArtMap.previewing.containsKey(event.getPlayer())) {
+        if (ArtMap.getPreviewing().containsKey(event.getPlayer())) {
             event.setCancelled(true);
             if (ArtMaterial.MAP_ART.isValidMaterial(event.getMainHandItem())) {
                 event.setMainHandItem(new ItemStack(Material.AIR));
