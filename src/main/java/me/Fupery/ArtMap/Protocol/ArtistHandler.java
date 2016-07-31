@@ -12,7 +12,6 @@ import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -77,12 +76,14 @@ public class ArtistHandler {
     }
 
     public void addPlayer(final Player player, MapView mapView, int yawOffset) {
-        if (protocol.injectPlayer(player)) {
-            artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
-        } else {
+        artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
+        if (!protocol.injectPlayer(player)) {
+            artists.remove(player.getUniqueId());
             Entity seat = player.getVehicle();
-            player.leaveVehicle();
-            removeSeat(seat);
+            if (seat != null) {
+                player.leaveVehicle();
+                removeSeat(seat);
+            }
         }
     }
 
@@ -90,11 +91,12 @@ public class ArtistHandler {
         return (artists.containsKey(player.getUniqueId()));
     }
 
-    public void removePlayer(final Player player) {
+    public synchronized void removePlayer(final Player player) {
         removePlayer(player, player.getVehicle());
     }
 
-    public void removePlayer(final Player player, Entity seat) {
+    public synchronized void removePlayer(final Player player, Entity seat) {
+        if (!artists.containsKey(player.getUniqueId())) return;//just for safety :)
         ArtSession session = artists.get(player.getUniqueId());
         artists.remove(player.getUniqueId());
         protocol.uninjectPlayer(player);
@@ -122,21 +124,27 @@ public class ArtistHandler {
     }
 
     private void removeSeat(Entity seat) {
-        if (seat == null) {
-            return;
-        }
+        ArtMap.runTaskLater(new Runnable() {
+            @Override
+            public void run() {
+                if (seat == null) {
+                    return;
+                }
 
-        if (!seat.hasMetadata("easel")) {
-            return;
-        }
-        String tag = seat.getMetadata("easel").get(0).asString();
-        Location location = LocationTag.getLocation(seat.getWorld(), tag);
+                if (!seat.hasMetadata("easel")) {
+                    return;
+                }
+                String tag = seat.getMetadata("easel").get(0).asString();
+                Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-        if (EaselInteractListener.easels.containsKey(location)) {
-            Easel easel = EaselInteractListener.easels.get(location);
-            easel.setIsPainting(false);
-        }
-        seat.remove();
+                if (EaselInteractListener.easels.containsKey(location)) {
+                    Easel easel = EaselInteractListener.easels.get(location);
+                    easel.setIsPainting(false);
+                }
+                seat.remove();
+            }
+        }, 1);
+
     }
 
     private synchronized void clearPlayers() {
