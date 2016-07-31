@@ -46,7 +46,8 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
-                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
+                || event.isCancelled()) {
             return;
         }
         event.setCancelled(true);
@@ -54,15 +55,20 @@ public class PlayerInteractListener implements Listener {
         if (!event.getBlockFace().equals(BlockFace.UP)) {
             return;
         }
+        Player player = event.getPlayer();
+
+        if (!player.hasPermission("artmap.artist")) {
+            player.sendMessage(Lang.NO_PERM.message());
+            return;
+        }
         Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
         BlockFace facing = getFacing(event.getPlayer());
 
         if (easelLocation.getBlock().getType() != Material.AIR || Easel.checkForEasel(easelLocation)) {
-            event.getPlayer().sendMessage(Lang.INVALID_POS.message());
+            player.sendMessage(Lang.INVALID_POS.message());
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
-        Player player = event.getPlayer();
         ItemStack item = player.getItemInHand().clone();
         item.setAmount(1);
 
