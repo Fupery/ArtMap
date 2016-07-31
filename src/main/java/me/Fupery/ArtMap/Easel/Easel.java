@@ -219,9 +219,8 @@ public class Easel {
                     stand.remove();
                 }
 
-                removeItem();
-
                 if (frame != null && frame.isValid()) {
+                    removeItem();
                     frame.remove();
                 }
                 location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
