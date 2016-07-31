@@ -87,7 +87,7 @@ public class ArtMap extends JavaPlugin {
         taskManager = new TaskManager(this);
         previewing = new ConcurrentHashMap<>();
         artistHandler = new ArtistHandler();
-        bukkitVersion = VersionHandler.getVersion();
+        bukkitVersion = new VersionHandler();
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
@@ -116,9 +116,13 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(), this);
         manager.registerEvents(new InventoryInteractListener(), this);
         manager.registerEvents(new EaselInteractListener(), this);
-
+        if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
+            manager.registerEvents(new PlayerSwapHandListener(), this);
+            manager.registerEvents(new PlayerDismountListener(), this);
+        }
         helpMenu = new WeakReference<>(null);
         ArtMaterial.setupRecipes();
+        Stats.init(this);
     }
 
     @Override

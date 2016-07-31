@@ -73,9 +73,8 @@ public class Reflection {
 
                 float yaw, pitch;
                 try {
-                    yaw = ArtMap.getBukkitVersion().getYaw(packet);
-                    pitch = ArtMap.getBukkitVersion().getPitch(packet);
-
+                    yaw = ArtMap.getBukkitVersion().getVersion().getYaw(packet);
+                    pitch = ArtMap.getBukkitVersion().getVersion().getPitch(packet);
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();
                     return null;
