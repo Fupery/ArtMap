@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
@@ -42,7 +43,7 @@ public class PlayerInteractListener implements Listener {
         } else return BlockFace.NORTH;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
