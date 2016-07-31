@@ -28,7 +28,7 @@ public class ArtMap extends JavaPlugin {
 
     public static final ArtistHandler artistHandler = new ArtistHandler();
     public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
-    public static final VersionHandler bukkitVersion = VersionHandler.getVersion();
+    public static final VersionHandler bukkitVersion = new VersionHandler();
     private static ArtDatabase artDatabase;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
@@ -97,6 +97,10 @@ public class ArtMap extends JavaPlugin {
         manager.registerEvents(new PlayerCraftListener(), this);
         manager.registerEvents(new InventoryInteractListener(), this);
         manager.registerEvents(new EaselInteractListener(), this);
+        if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
+            manager.registerEvents(new PlayerSwapHandListener(), this);
+            manager.registerEvents(new PlayerDismountListener(), this);
+        }
         helpMenu = new WeakReference<>(null);
         Stats.init(this);
     }

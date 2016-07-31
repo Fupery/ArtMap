@@ -5,18 +5,15 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public enum VersionHandler {
-    UNKNOWN(0, 0), v1_8(1.2, -2.22), v1_9(1.219, -2.24979);
+public class VersionHandler {
 
-    final double seatXOffset;
-    final double seatZOffset;
+    private final BukkitVersion version;
 
-    VersionHandler(double seatXOffset, double seatZOffset) {
-        this.seatXOffset = seatXOffset;
-        this.seatZOffset = seatZOffset;
+    public VersionHandler() {
+        version = checkVersion();
     }
 
-    public static VersionHandler getVersion() {
+    private static BukkitVersion checkVersion() {
         String bukkit = Bukkit.getBukkitVersion();
         String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
         int[] verNumbers = new int[ver.length];
@@ -24,38 +21,55 @@ public enum VersionHandler {
             verNumbers[i] = Integer.parseInt(ver[i]);
         }
         Version version = new Version(verNumbers);
-        if (version.isLessThan(1, 9)) return v1_8;
-        else return v1_9;
+        if (version.isLessThan(1, 9)) return BukkitVersion.v1_8;
+        else if (version.isLessThan(1, 10)) return BukkitVersion.v1_9;
+        else return BukkitVersion.v1_10;
     }
 
-    public static VersionHandler getLatest() {
-        VersionHandler[] handlers = values();
-        return handlers[values().length - 1];
+    public static BukkitVersion getLatest() {
+        BukkitVersion[] handlers = BukkitVersion.values();
+        return handlers[handlers.length - 1];
     }
 
-    public float getEulerValue(Object packet, String methodName) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
-        Method method = packet.getClass().getMethod(methodName, float.class);
-        method.setAccessible(true);
-        return (float) method.invoke(packet, (float) 0);
+    public BukkitVersion getVersion() {
+        return version;
     }
 
-    public float getYaw(Object packet) throws NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
-        return (this == v1_8) ? (float) Reflection.invokeMethod(packet, "d") : getEulerValue(packet, "a");
-    }
+    public enum BukkitVersion {
+        UNKNOWN, v1_8, v1_9, v1_10;
 
-    public float getPitch(Object packet) throws NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException {
-        return (this == v1_8) ? (float) Reflection.invokeMethod(packet, "e") : getEulerValue(packet, "b");
-    }
+        public float getEulerValue(Object packet, String methodName) throws NoSuchMethodException,
+                InvocationTargetException, IllegalAccessException {
+            Method method = packet.getClass().getMethod(methodName, float.class);
+            method.setAccessible(true);
+            return (float) method.invoke(packet, (float) 0);
+        }
 
-    public double getSeatXOffset() {
-        return seatXOffset;
-    }
+        private float getOldEulerValue(Object packet, String methodName) throws NoSuchMethodException,
+                InvocationTargetException, IllegalAccessException {
+            Method method = packet.getClass().getMethod(methodName);
+            method.setAccessible(true);
+            return (float) method.invoke(packet);
+        }
 
-    public double getSeatZOffset() {
-        return seatZOffset;
+        public float getYaw(Object packet) throws NoSuchMethodException,
+                IllegalAccessException, InvocationTargetException {
+            return (this == v1_8) ? getOldEulerValue(packet, "d") : getEulerValue(packet, "a");
+        }
+
+        public float getPitch(Object packet) throws NoSuchMethodException,
+                IllegalAccessException, InvocationTargetException {
+            return (this == v1_8) ? getOldEulerValue(packet, "e") : getEulerValue(packet, "b");
+        }
+
+        public double getSeatXOffset() {
+            return this == v1_8 ? 1.2 : 1.219;
+        }
+
+        public double getSeatZOffset() {
+            return this == v1_8 ? -2.22 : -2.24979;
+        }
+
     }
 
     static class Version implements Comparable<Version> {
@@ -83,7 +97,7 @@ public enum VersionHandler {
         }
 
         boolean isLessThan(int... numbers) {
-            return compareTo(new Version(numbers)) == -11;
+            return compareTo(new Version(numbers)) == -1;
         }
     }
 }
