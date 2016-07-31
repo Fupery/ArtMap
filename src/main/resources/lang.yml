@@ -1,5 +1,10 @@
 english:
   #Player Messages
+  COMMAND_SAVE: "save"
+  COMMAND_DELETE: "delete"
+  COMMAND_PREVIEW: "preview"
+  COMMAND_RESTORE: "restore"
+  COMMAND_BACKUP: "backup"
   HELP: "/artmap help for a list of commands."
   NO_CONSOLE: "This command can only be used by players."
   PLAYER_NOT_FOUND: "Player '%s' could not be found."
