@@ -203,7 +203,7 @@ mandarin:
   NOT_RIDING_EASEL: "你必须坐在画架前面才能保存(右击画布即可)."
   NEED_CANVAS: "请先在画板上放置画布以进行创作. 使用命令 /artmap 获取更多帮助."
   NOT_YOUR_EASEL: "你不能破坏 %s 的画作!"
-  BREAK_CANVAS: "Sneak + Right-Click the easel to break it."
+  BREAK_CANVAS: "按住 Shift 并右击移除画架."
   MAP_NOT_FOUND: "无法找到画作 '%s'."
   NO_ARTWORKS: "当前没有保存的画作!"
   NO_EDIT_PERM: "你不能编辑别人的画作"
