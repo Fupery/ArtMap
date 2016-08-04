@@ -132,11 +132,11 @@ public class Easel {
                 ArmorStand stand = (ArmorStand) entity;
 
                 //Check if entity is a stand
-                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
+//                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
                     if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
                         return stand;
                     }
-                }
+//                }
             }
         }
         return null;
