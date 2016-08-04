@@ -11,14 +11,10 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class HelpMenu extends Menu {
 
-<<<<<<< HEAD
-    public static final String CLICK = "§aClick to View";
-=======
-    public static final String click = ChatColor.GREEN + Lang.BUTTON_CLICK.rawMessage();
->>>>>>> master
+    public static final String CLICK = ChatColor.GREEN + ArtMap.getLang().getMsg("BUTTON_CLICK");
 
     public HelpMenu() {
-        super(ArtMap.plugin(), ChatColor.DARK_BLUE + Lang.MENU_HELP.rawMessage(), InventoryType.HOPPER);
+        super(ArtMap.plugin(), ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_HELP"), InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 

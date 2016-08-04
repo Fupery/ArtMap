@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ArtistMenu extends ListMenu {
 
     public ArtistMenu(InventoryMenu parent) {
-        super(parent, ChatColor.BLUE + Lang.MENU_ARTIST.rawMessage(), Lang.BUTTON_CLOSE.rawMessage());
+        super(parent, ChatColor.BLUE + ArtMap.getLang().getMsg("MENU_ARTIST"), ArtMap.getLang().getMsg("BUTTON_CLOSE"));
     }
 
     private MenuButton[] generateButtons(Player player) {

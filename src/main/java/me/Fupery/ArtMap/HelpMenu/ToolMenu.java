@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class ToolMenu extends InventoryMenu {
     protected ToolMenu(InventoryMenu parent) {
-        super(parent, ChatColor.DARK_BLUE + Lang.MENU_TOOLS.rawMessage(), InventoryType.HOPPER);
+        super(parent, ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_TOOLS"), InventoryType.HOPPER);
         addButtons(generateButtons());
     }
 

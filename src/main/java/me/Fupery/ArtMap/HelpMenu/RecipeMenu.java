@@ -20,7 +20,7 @@ import java.util.List;
 public class RecipeMenu extends InventoryMenu {
 
     public RecipeMenu(InventoryMenu parent) {
-        super(parent, ChatColor.DARK_BLUE + Lang.MENU_RECIPE.rawMessage(), InventoryType.HOPPER);
+        super(parent, ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_RECIPE"), InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 
@@ -30,7 +30,7 @@ public class RecipeMenu extends InventoryMenu {
         buttons[1] = new RecipeButton(ArtMaterial.EASEL);
         buttons[2] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
-        buttons[4] = new MenuButton.CloseButton(menu, Lang.BUTTON_CLOSE.rawMessage());
+        buttons[4] = new MenuButton.CloseButton(menu, ArtMap.getLang().getMsg("BUTTON_CLOSE"));
         return buttons;
     }
 
@@ -57,11 +57,7 @@ public class RecipeMenu extends InventoryMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-<<<<<<< HEAD
-            lore.set(3, HelpMenu.CLICK + " Recipe");
-=======
-            lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.rawMessage());// TODO: 3/08/2016 ADMIN FUNCTION
->>>>>>> master
+            lore.set(lore.size() - 1, ChatColor.GREEN + ArtMap.getLang().getMsg("RECIPE_BUTTON"));// TODO: 3/08/2016 ADMIN FUNCTION
             meta.setLore(lore);
             setItemMeta(meta);
         }
