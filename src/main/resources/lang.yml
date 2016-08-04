@@ -203,7 +203,7 @@ mandarin:
   NOT_RIDING_EASEL: "你必须坐在画架前面才能保存(右击画布即可)."
   NEED_CANVAS: "请先在画板上放置画布以进行创作. 使用命令 /artmap 获取更多帮助."
   NOT_YOUR_EASEL: "你不能破坏 %s 的画作!"
-  BREAK_CANVAS: "按住 Shift 并右击移除画架."
+  BREAK_CANVAS: "按住Shift + 右击取下画布."
   MAP_NOT_FOUND: "无法找到画作 '%s'."
   NO_ARTWORKS: "当前没有保存的画作!"
   NO_EDIT_PERM: "你不能编辑别人的画作"
@@ -238,7 +238,7 @@ mandarin:
   #Menu Buttons
   HELP_GETTING_STARTED:
     - "                 §6§l⊱§e§l入门指南§6§l⊰"
-    - "                §3❉§b§o如何创造一幅你自己的画!§3❉"
+    - "            §3❉§b§o如何创造一幅你自己的画!§3❉"
     - ""
     - "   §a1§2. §7合成绘画所需的 §6画板 §7和 §6画布"
     - "   §a2§2. §7放置你的画板，然后将画布放上去"

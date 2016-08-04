@@ -13,7 +13,7 @@ import java.util.List;
 public enum Lang {
     HELP(false), NO_CONSOLE(true), PLAYER_NOT_FOUND(true), INVALID_POS(true), NO_PERM(true), ELSE_USING(true),
     SAVE_USAGE(false), NOT_RIDING_EASEL(true), SAVE_SUCCESS(false), EASEL_HELP(false), NEED_CANVAS(true),
-    NOT_YOUR_EASEL(true), NO_WORLD(true), BREAK_CANVAS(false), PAINTING(false), DELETED(false),
+    NOT_YOUR_EASEL(true), NO_WORLD(true), BREAK_CANVAS(true), PAINTING(false), DELETED(false),
     MAP_NOT_FOUND(true), MAPDATA_ERROR(true), NO_CRAFT_PERM(true), NO_ARTWORKS(true), BAD_TITLE(true),
     TITLE_USED(true), PREVIEWING(false), EMPTY_HAND_PREVIEW(true), BACKUP_SUCCESS(false), BACKUP_ERROR(true),
     RESTORE_ERROR(true), RESTORE_ALREADY_FOUND(false), RESTORE_SUCCESS(false), INVALID_DATA_TABLES(true),
