@@ -5,15 +5,20 @@ import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
 import me.Fupery.InventoryMenu.Menu;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
 public class HelpMenu extends Menu {
 
+<<<<<<< HEAD
     public static final String CLICK = "§aClick to View";
+=======
+    public static final String click = ChatColor.GREEN + Lang.BUTTON_CLICK.rawMessage();
+>>>>>>> master
 
     public HelpMenu() {
-        super(ArtMap.plugin(), "§1Choose a help topic", InventoryType.HOPPER);
+        super(ArtMap.plugin(), ChatColor.DARK_BLUE + Lang.MENU_HELP.rawMessage(), InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 

@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Recipe;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.ArtDye;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -9,10 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 abstract public class ArtItem extends ItemStack {
 
@@ -20,7 +19,7 @@ abstract public class ArtItem extends ItemStack {
     public static final String CANVAS_KEY = "§b§oArtMap Canvas";
     public static final String EASEL_KEY = "§b§oArtMap Easel";
     public static final String PAINT_BUCKET_KEY = "§b§oPaint Bucket";
-    public static final String HELP = "§a/artmap §2for help";
+    public static final String HELP = ArtMap.getLang().getMsg("RECIPE_HELP");
 
     ArtItem(Material material) {
         super(material);
@@ -28,6 +27,13 @@ abstract public class ArtItem extends ItemStack {
 
     ArtItem(Material material, int amount, short durability) {
         super(material, amount, durability);
+    }
+
+    static List<String> getToolTipLore(String ID, String[] toolTip) {
+        ArrayList<String> lore = new ArrayList<>(Arrays.asList(toolTip));
+        lore.add(0, ID);
+        lore.add(HELP);
+        return lore;
     }
 
     abstract org.bukkit.inventory.Recipe getRecipe();
@@ -76,8 +82,9 @@ class ItemEasel extends ArtItem {
     ItemEasel() {
         super(Material.ARMOR_STAND);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName("§e•§6§lEasel§e•");
-        meta.setLore(Arrays.asList(getLoreID(), "§7Use to edit artworks", "§7Right CLICK to place", HELP));
+        String itemName = "§e•§6§l" + ArtMap.getLang().getMsg("RECIPE_EASEL_NAME") + "§e•";
+        meta.setDisplayName(itemName);
+        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_EASEL")));
         setItemMeta(meta);
     }
 
@@ -104,8 +111,9 @@ class ItemCanvas extends ArtItem {
     ItemCanvas() {
         super(Material.PAPER);
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName("§e•§6§lCanvas§e•");
-        meta.setLore(Arrays.asList(getLoreID(), "§7Use on an §aEasel", "§7to start painting", HELP));
+        String itemName = "§e•§6§l" + ArtMap.getLang().getMsg("RECIPE_CANVAS_NAME") + "§e•";
+        meta.setDisplayName(itemName);
+        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_CANVAS")));
         setItemMeta(meta);
     }
 
@@ -162,9 +170,10 @@ class PaintBucket extends ArtItem {
         super(Material.BUCKET);
         this.colour = colour;
         ItemMeta meta = getItemMeta();
-        meta.setDisplayName("§e•" + colour.getDisplay() + "§lPaintBucket§e•");
-        meta.setLore(Arrays.asList(getLoreID(),
-                "§7Use with an §aEasel §7and", "§aCanvas §7to fill colours", "§7Right-Click to undo", HELP));
+        String itemName = "§e•" + colour.getDisplay() + "§l"
+                + ArtMap.getLang().getMsg("RECIPE_PAINTBUCKET_NAME") + "§e•";
+        meta.setDisplayName(itemName);
+        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_PAINTBUCKET")));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);

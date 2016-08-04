@@ -133,11 +133,12 @@ public class Easel {
                 stand = (ArmorStand) entity;
 
                 //Check if entity is a stand
-                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.EASEL_ID)) {
+
+//                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
                     if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
                         return stand;
                     }
-                }
+//               }
             }
         }
         return null;
@@ -220,9 +221,8 @@ public class Easel {
                 stand.remove();
             }
 
-            removeItem();
-
             if (frame != null && frame.isValid()) {
+                removeItem();
                 frame.remove();
             }
             location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());

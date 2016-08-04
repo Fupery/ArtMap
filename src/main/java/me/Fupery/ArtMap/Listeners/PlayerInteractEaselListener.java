@@ -13,6 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -24,7 +25,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public class PlayerInteractEaselListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
         Player player = event.getPlayer();
@@ -34,7 +35,7 @@ public class PlayerInteractEaselListener implements Listener {
         checkPreviewing(player, event);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
         Player player = event.getPlayer();
@@ -44,7 +45,7 @@ public class PlayerInteractEaselListener implements Listener {
         checkPreviewing(player, event);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         callEaselEvent(event.getDamager(), event.getEntity(), event,

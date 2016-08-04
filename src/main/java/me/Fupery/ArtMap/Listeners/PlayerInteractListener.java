@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
@@ -42,11 +43,12 @@ public class PlayerInteractListener implements Listener {
         } else return BlockFace.NORTH;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
-                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
+                || event.isCancelled()) {
             return;
         }
         event.setCancelled(true);
@@ -56,6 +58,10 @@ public class PlayerInteractListener implements Listener {
         }
         Player player = event.getPlayer();
 
+        if (!player.hasPermission("artmap.artist")) {
+            ArtMap.getLang().sendMsg("NO_PERM", player);
+            return;
+        }
         Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
         BlockFace facing = getFacing(player);
 

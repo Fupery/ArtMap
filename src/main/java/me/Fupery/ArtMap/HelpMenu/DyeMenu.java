@@ -17,8 +17,13 @@ public class DyeMenu extends InventoryMenu {
     private MenuButton[] generateButtons() {
         MenuButton[] buttons = new MenuButton[27];
         ArtDye[] dyes = ArtDye.values();
+<<<<<<< HEAD
         buttons[0] = new MenuButton.StaticButton(Material.SIGN, ArtMap.getLang().getArray("INFO_DYES"));
         buttons[26] = new MenuButton.CloseButton(this);
+=======
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, Lang.Array.INFO_DYES.messages());
+        buttons[26] = new MenuButton.CloseButton(this, Lang.BUTTON_CLOSE.rawMessage());
+>>>>>>> master
 
         for (int i = 1; i < 26; i++) {
             ArtDye dye = dyes[i - 1];
