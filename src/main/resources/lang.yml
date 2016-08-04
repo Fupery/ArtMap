@@ -1,5 +1,5 @@
 english:
-  #Player Messages
+#Player Messages
   COMMAND_SAVE: "save"
   COMMAND_DELETE: "delete"
   COMMAND_PREVIEW: "preview"
@@ -38,13 +38,25 @@ english:
   INVALID_DATA_TABLES: "Invalid data tables, plugin cannot be initialized."
   CANNOT_BUILD_DATABASE: "Error building MapArt database - plugin will be disabled."
   RECIPE_HEADER: "Recipe for §a[%s]"
-  CONSOLE_HELP:
-  - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
-  - "§3/artmap delete <title> §b: §eDelete an artwork"
-  - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
-  - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
-  - "  §e * Optional [-o] flag enables artwork overwriting"
 #help menu
+  #Menu titles
+  MENU_RECIPE: "Choose a Recipe"
+  MENU_ARTIST: "Click an Artist"
+  MENU_ARTWORKS: "Player Artworks"
+  MENU_DYES: "Dyes for painting"
+  MENU_HELP: "Choose a help topic"
+  MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
+  BUTTON_CLICK: "Click to View"
+  BUTTON_CLOSE: "Close" #close the menu
+  BUTTON_BACK: "Back" #go back to previous page
+  RECIPE_BUTTON: "Left-Click to view Recipe"
+  ADMIN_RECIPE: "Right-Click to get Item"
+  RECIPE_HELP: "§a/artmap §2for help"
+  RECIPE_EASEL_NAME: "Easel"
+  RECIPE_CANVAS_NAME: "Canvas"
+  RECIPE_PAINTBUCKET_NAME: "PaintBucket"
+
+  #Menu Buttons
   HELP_GETTING_STARTED:
     - "                 §6§l⊱§e§lGetting Started§6§l⊰"
     - "                §3❉§b§oWelcome to ArtMap!§3❉"
@@ -145,4 +157,379 @@ english:
     - "§7Left-Click to flip horizontally."
     - "§7Right-Click to flip vertically."
 
+  RECIPE_EASEL:
+    - "§7Use to edit artworks"
+    - "§7Right click to place"
 
+  RECIPE_CANVAS:
+    - "§7Use on an §aEasel"
+    - "§7to start painting"
+
+  RECIPE_PAINTBUCKET:
+    - "§7Use with an §aEasel §7and"
+    - "§aCanvas §7to fill colours"
+    - "§7Right-Click to undo"
+
+  CONSOLE_HELP:
+    - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+    - "§3/artmap delete <title> §b: §eDelete an artwork"
+    - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
+    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
+    - "  §e * Optional [-o] flag enables artwork overwriting"
+
+mandarin:
+#Player Messages
+  COMMAND_SAVE: "保存"
+  COMMAND_DELETE: "删除"
+  COMMAND_PREVIEW: "预览"
+  COMMAND_RESTORE: "恢复"
+  COMMAND_BACKUP: "备份"
+  HELP: "/artmap 查看帮助"
+  SAVE_USAGE: "使用命令 /artmap save <画作名称> 来保存你创作的绘画."
+  SAVE_SUCCESS: "成功保存画作 %s"
+  EASEL_HELP: "右击画布开始创作, 按住 Shift 并右击移除画架."
+  PAINTING: "使用颜料或颜料桶在画布上创作"
+  DELETED: "成功删除画作 '%s'."
+  PREVIEWING: "正在预览画作 '%s'."
+  BACKUP_SUCCESS: "备份创建成功，存储路径为 %s"
+  RESTORE_SUCCESS: "从备份中成功恢复了 %s 个画作，备份路径为 %s"
+  RESTORE_ALREADY_FOUND: "跳过了 %s 个画作, 使用命令 -o 强制覆盖这些画作."
+  RECIPE_HEADER: "%s 的合成表"
+  NO_CONSOLE: "这个命令只能由玩家使用."
+  PLAYER_NOT_FOUND: "无法找到玩家 '%s'."
+  INVALID_POS: "你不能在这里放置画架!"
+  NO_PERM: "你没有权限使用这个命令."
+  ELSE_USING: "其他人正在使用这块画布!"
+  NOT_RIDING_EASEL: "你必须坐在画架前面才能保存(右击画布即可)."
+  NEED_CANVAS: "请先在画板上放置画布以进行创作. 使用命令 /artmap 获取更多帮助."
+  NOT_YOUR_EASEL: "你不能破坏 %s 的画作!"
+  BREAK_CANVAS: "Sneak + Right-Click the easel to break it."
+  MAP_NOT_FOUND: "无法找到画作 '%s'."
+  NO_ARTWORKS: "当前没有保存的画作!"
+  NO_EDIT_PERM: "你不能编辑别人的画作"
+  NO_CRAFT_PERM: "你不能复制别人的画作"
+  BAD_TITLE: "无效的画作名称. 名称必须是英文或数字，且长度在 3 - 16 个字符之间."
+  TITLE_USED: "抱歉，这个名称已经有人使用啦."
+  EMPTY_HAND_PREVIEW: "必须空手才能预览画作."
+  MAPDATA_ERROR: "画作 '%s' 读取错误，位置 %s: %s"
+  BACKUP_ERROR: "无法创建备份文件夹!"
+  NO_WORLD: "无法找到名称为 '%s' 的世界"
+  RESTORE_ERROR: "无法找到备份文件夹 '%s' !"
+  INVALID_DATA_TABLES: "无效的数据表，插件无法初始化."
+  CANNOT_BUILD_DATABASE: "创建数据库 '%s' 失败，插件将自动禁用."
+#help menu
+  #Menu titles
+  MENU_RECIPE: "选择一个配方"
+  MENU_ARTIST: "点击一个画家"
+  MENU_ARTWORKS: "玩家的画作"
+  MENU_DYES: "用于绘画的染料"
+  MENU_HELP: "选择一个帮助主题"
+  MENU_TOOLS: "移到物品上方查看详细用法" #Hover over a tool to view how it is used
+  BUTTON_CLICK: "点击查看"
+  BUTTON_CLOSE: "关闭" #close the menu
+  BUTTON_BACK: "返回" #go back to previous page
+  RECIPE_BUTTON: "左击查看合成表"
+  ADMIN_RECIPE: "右击获得该物品"
+  RECIPE_HELP: "§a/artmap §2查看帮助"
+  RECIPE_EASEL_NAME: "画架"
+  RECIPE_CANVAS_NAME: "画布"
+  RECIPE_PAINTBUCKET_NAME: "颜料桶"
+
+  #Menu Buttons
+  HELP_GETTING_STARTED:
+    - "                 §6§l⊱§e§l入门指南§6§l⊰"
+    - "                §3❉§b§o如何创造一幅你自己的画!§3❉"
+    - ""
+    - "   §a1§2. §7合成绘画所需的 §6画板 §7和 §6画布"
+    - "   §a2§2. §7放置你的画板，然后将画布放上去"
+    - "   §a3§2. §7使用 绘画颜料 和 工具 在画布上创作"
+    - "   §a4§2. §7创作完成后，使用 /artmap save 保存你的大作"
+    - ""
+    - "§7§o继续查看菜单中的其他页面，获取有关"
+    - "§7§o合成表、绘画工具和绘画颜料的信息."
+    - ""
+    - "    §8░░░░§e❃§l相关命令 §r§e⤸§8░░░░░░░░░░░░░"
+    - "§6•§f/artmap save <画作标题>    §6➯   §7保存你的画作"
+    - "§6•§f/artmap delete <画作标题>  §6➯ §7删除你的画作"
+    - "§6•§f/artmap preview <画作标题> §6➯  §7预览一个画作"
+
+  HELP_RECIPES:
+    - "             §6§l⊱§e§l合成表§6§l⊰"
+    - "§7查看进行绘画所需物品的合成表"
+    - "§7画架、画布和颜料桶！"
+    - "          §a✸§2§o点击查看详情§a✸"
+
+  HELP_TOOLS:
+    - "            §6§l⊱§e§l艺术工具§6§l⊰"
+    - "§7查看所有可以帮助你绘画的工具"
+    - "§7及其使用说明."
+    - "       §a✸§2§o点击查看详情§a✸"
+
+  HELP_DYES:
+    - "           §6§l⊱§e§l颜料§6§l⊰"
+    - "§7查看所有可用的颜料物品"
+    - "§7及其对应的颜色."
+    - "      §a✸§2§o点击查看详情§a✸"
+
+  HELP_LIST:
+    - "             §6§l⊱§e§l画作§6§l⊰"
+    - "      §3✺§b§o预览画作§3✺"
+    - "§7查看你自己或别的玩家创造的画作"
+    - "§7每一个人都是艺术家."
+    - "          §a✸§2§o点击查看详情§a✸"
+
+  HELP_CLOSE:
+    - "    §6§l⊱§e§l返回§6§l⊰"
+    - "§4﴾§c关闭菜单§4﴿"
+
+  INFO_DYES:
+    - "              §6§l⊱§e§l颜料颜色§6§l⊰"
+    - "§7用任意颜料点击画布"
+    - "§7开始绘画."
+    - ""
+    - "   §a• §7§o左击画像素"
+    - "   §a• §7§o按住并右击画线"
+    - ""
+    - "§7任意颜料 + 空的铁桶"
+    - "§7可以合成这种颜色的颜料桶§7."
+    - "           §b§o鼠标移到染料上以查看颜色"
+
+  INFO_RECIPES:
+    - "              §6§l⊱§e§l合成表帮助§6§l⊰"
+    - "§7如果想要复制一份画作，只需要将原画作"
+    - "§7和一份空地图放入合成台，即可完成复制"
+    - "§7注意：必须是画作的创作者才可以复制画作"
+    - "        §b§o鼠标移到工具上以查看详细信息"
+
+  INFO_TOOLS:
+    - "              §6§l⊱§e§l艺术工具帮助§6§l⊰"
+    - "§7把这些艺术工具和颜料搭配使用，"
+    - "§7一定是你创作的一大利器"
+    - "       §b§o鼠标移到工具上以查看详细使用说明"
+
+  TOOL_DYE:
+    - "              §6§l⊱§e§l颜料§6§l⊰"
+    - " §7左击画像素"
+    - " §7按住并右击画线"
+    - "§a✸§2§o点击查看全部颜色§a✸"
+
+  TOOL_PAINTBUCKET:
+    - "         §6§l⊱§e§l颜料桶§6§l⊰"
+    - "§7左击填充一块区域内的颜色"
+    - "§7空铁桶和颜料一起可以合成该种"
+    - "§7颜料的颜料桶"
+    - "§7右击以撤销上次填充操作."
+
+  TOOL_COAL:
+    - "              §6§l⊱§e§l煤炭§6§l⊰"
+    - "§7左击加深像素颜色."
+    - "§7右击加深该行颜色."
+
+  TOOL_FEATHER:
+    - "            §6§l⊱§e§l羽毛§6§l⊰"
+    - "§7左击减淡像素颜色."
+    - "§7右击减淡该行颜色."
+
+  TOOL_COMPASS:
+    - "            §6§l⊱§e§l指南针§6§l⊰"
+    - "§7左击水平翻转."
+    - "§7右击垂直翻转."
+
+  RECIPE_EASEL:
+    - "§7进行绘画必不可少的物品"
+    - "§7右击放置画架"
+
+  RECIPE_CANVAS:
+    - "§7放置在§a画架"
+    - "§7上以开始绘画"
+
+  RECIPE_PAINTBUCKET:
+    - "§7在§a画架 §7和 §a画布上"
+    - "§7使用以填充颜色"
+    - "§7右击撤销上次操作"
+
+  CONSOLE_HELP:
+    - "§3---------------------------------§b[ArtMap] §6控制台命令:§3---------------------------------"
+    - "§3/artmap delete <画作名称> §b: §e删除一个画作"
+    - "§3/artmap backup §b: §e对当前所有画作创建一个备份，备份目录 /plugins/ArtMap/backup/"
+    - "§3/artmap restore <备份名称> <世界名称> [-o] §b: §e从指定的备份文件夹中恢复全部画作*"
+    - "  §e * 使用选项 [-o] 启用覆盖同名文件功能"
+
+dutch:
+  #Player Messages
+  COMMAND_SAVE: "save"
+  COMMAND_DELETE: "delete"
+  COMMAND_PREVIEW: "preview"
+  COMMAND_RESTORE: "restore"
+  COMMAND_BACKUP: "backup"
+  HELP: "Gebruik /artmap help voor een lijst van commandos."
+  NO_CONSOLE: "Dit commando kan alleen voor spelers gebruikt worden."
+  PLAYER_NOT_FOUND: "Speler '%s' kon niet gevonden worden."
+  INVALID_POS: "Je kunt hier geen schildersezel plaatsen."
+  NO_PERM: "Je hebt hier geen toestemming voor."
+  ELSE_USING: "Iemand anders gebruikt deze canvas!"
+  SAVE_USAGE: "Gebruik §e/artmap save <title> §6om je schilderij op te slaan."
+  NOT_RIDING_EASEL: "Je moet op je schildersezel zitten om het op te slaan."
+  SAVE_SUCCESS: "'%s' is succesvol opgeslagen!"
+  EASEL_HELP: "Klik rechts om te beginnen met schilderen, klik rechts terwijl je bukt om het te breken."
+  NEED_CANVAS: "Je moet een canvas op de schildersezel plaatsen om te beginnen. Typ /artmap voor meer info."
+  NOT_YOUR_EASEL: "Je kunt %s's schilderij niet slopen!"
+  BREAK_CANVAS: "Klik rechts terwijl je bukt om de schildersezel te verwijderen."
+  PAINTING: "Gebruik kleurstoffen of een verf emmer om te schilderen. Klik links om pixels te tekenen, klik rechts en slepen om lijnen te tekenen."
+  DELETED: "'%s' is succesvol verwijderd."
+  MAP_NOT_FOUND: "Schilderij '%s' kon niet gevonden worden."
+  NO_ARTWORKS: "Er zijn momenteel geen opgeslagen schilderijen!"
+  NO_CRAFT_PERM: "Je kunt andere spelers hun schilderijen niet kopieren."
+  BAD_TITLE: "Ongeldige titel. Titels moeten tussen de 3 en 16 tekens bevatten en mogen alleen letters of cijfers bevatten."
+  TITLE_USED: "Sorry, deze titel word al gebruikt."
+  PREVIEWING: "Schilderij voorbeeld van '%s'."
+  EMPTY_HAND_PREVIEW: "Je moet een lege hand hebben om een voorbeeld te kunnen zien."
+  MAPDATA_ERROR: "Fout met het lezen van mapdata.yml om %s: %s"
+  #Console Messages
+  BACKUP_SUCCESS: "Backup succesvol aangemaakt om %s"
+  BACKUP_ERROR: "Backup folder kon niet worden aangemaakt!"
+  NO_WORLD: "Geen wereld met de naam '%s' kon gevonden worden"
+  RESTORE_ERROR: "Backup folder '%s' kon niet gevonden worden!"
+  RESTORE_SUCCESS: "%s schilderijen zijn succesvol hersteld van %s"
+  RESTORE_ALREADY_FOUND: "%s schilderijen zijn uitgesloten, gebruik -o om overschrijven te activeren."
+  INVALID_DATA_TABLES: "Ongeldige data tabellen, plugin kan niet starten."
+  CANNOT_BUILD_DATABASE: "Fout bij het aanmaken van een MapArt database - plugin word uitgeschakeld."
+  RECIPE_HEADER: "Recept voor §a[%s]"
+#help menu
+  #Menu titles
+  MENU_RECIPE: "Kies een Recept"
+  MENU_ARTIST: "Kies een Artiest"
+  MENU_ARTWORKS: "Spelers schilderijen"
+  MENU_DYES: "Kleurstoffen voor schilderen"
+  MENU_HELP: "Kies een helpmenu"
+  MENU_TOOLS: "Lees voor gebruiksinfo" #Hover over a tool to view how it is used
+  BUTTON_CLICK: "Klik om te bekijken"
+  BUTTON_CLOSE: "Sluiten" #close the menu
+  BUTTON_BACK: "Terug" #go back to previous page
+  RECIPE_BUTTON: "Klik links om het Recept te bekijken"
+  ADMIN_RECIPE: "Klik rechts om het Item te krijgen"
+  RECIPE_HELP: "§a/artmap §2voor hulp"
+  RECIPE_EASEL_NAME: "Schildersezel"
+  RECIPE_CANVAS_NAME: "Canvas"
+  RECIPE_PAINTBUCKET_NAME: "Verf emmer"
+
+#help menu
+  HELP_GETTING_STARTED:
+    - "                 §6§l⊱§e§lOm te beginnen§6§l⊰"
+    - "                §3❉§b§oWelkom bij ArtMap!§3❉"
+    - ""
+    - "   §a1§2. §7Craft jezelf een §6Schildersezel §7en §6Canvas§7."
+    - "   §a2§2. §7Plaats de Schildersezel en plaats je Canvas."
+    - "   §a3§2. §7Klik op het Canvas met §2Kleurstoffen §7& §3Tools"
+    - "   §7om te schilderen."
+    - "   §a4§2. §7Zodra je klaar bent, gebruik §e/artmap save§7."
+    - ""
+    - "§7§oBekijk de andere tabs in dit menu voor meer"
+    - "§7§oinformatie over Recepten, Tools, en Kleurstoffen."
+    - ""
+    - "    §8░░░░§e❃§lCommandos §r§e⤸§8░░░░░░░░░░░░░"
+    - "§6•§f/artmap save <titel>    §6➯ §7sla je schilderij op"
+    - "§6•§f/artmap delete <titel>  §6➯ §7verwijder je schilderij"
+    - "§6•§f/artmap preview <titel> §6➯ §7schilderijvoorbeeld"
+
+  HELP_RECIPES:
+    - "             §6§l⊱§e§lRecepten§6§l⊰"
+    - "§7Bekijk de crafting recepten voor alle"
+    - "§7items die je nodig hebt om te schilderen."
+    - "          §a✸§2§oKlik om het te bekijken§a✸"
+
+  HELP_TOOLS:
+    - "            §6§l⊱§e§lTools§6§l⊰"
+    - "§7Bekijk alle tools die je kunt"
+    - "§7gebruiken bij het schilderen."
+    - "       §a✸§2§oKlik om het te bekijken§a✸"
+
+  HELP_DYES:
+    - "           §6§l⊱§e§lKleurstoffen§6§l⊰"
+    - "§7Bekijk alle kleurstoffen waarmee"
+    - "§7je kunt schilderen."
+    - "      §a✸§2§oKlik om het te bekijken§a✸"
+
+  HELP_LIST:
+    - "             §6§l⊱§e§lSchilderijen§6§l⊰"
+    - "      §3✺§b§oBekijk spelers hun schilderijen§3✺"
+    - "§7Bekijk je schilderijen of die van andere"
+    - "§7spelers gegroepeerd op de artiest."
+    - "          §a✸§2§oKlik om te verkennen§a✸"
+
+  HELP_CLOSE:
+    - "    §6§l⊱§e§lTerug§6§l⊰"
+    - "§4﴾§cMenu Sluiten§4﴿"
+
+  INFO_DYES:
+    - "              §6§l⊱§e§lKleurstoffen§6§l⊰"
+    - "§7Klik op je Canvas met één van deze"
+    - "§7kleurstoffen om te schilderen."
+    - ""
+    - "   §a• §7§oKlik links om een pixel te tekenen"
+    - "   §a• §7§oKlik rechts en sleep om een lijn te tekenen"
+    - ""
+    - "§7Elke kleurstof kan worden gecraft met een emmer"
+    - "§7om een §6Verf emmer§7 te maken met die kleur."
+    - "           §b§oZweef over de items om de kleur te zien"
+
+  INFO_RECIPES:
+    - "              §6§l⊱§e§lRecepten Hulp§6§l⊰"
+    - "§7Craft een schilderij met een §6blanco map"
+    - "§7om een kopie te maken. Alleen de originele"
+    - "§7auteur van een schilderij kan een kopie maken."
+    - "        §b§oZweef over de opties voor gebruiksinfo"
+
+  INFO_TOOLS:
+    - "              §6§l⊱§e§lTool Hulp§6§l⊰"
+    - "§7Je kunt deze items gebruiken samen met"
+    - "§2kleurstoffen §7om mee te schilderen."
+    - "       §b§oZweef over de opties voor gebruiksinfo"
+
+  TOOL_DYE:
+    - "              §6§l⊱§e§lKleurstoffen§6§l⊰"
+    - " §7Klik links om pixels te tekenen"
+    - " §7Klik rechts en schuif om lijnen te tekenen"
+    - "§a✸§2§oKlik om alle kleuren te bekijken§a✸"
+
+  TOOL_PAINTBUCKET:
+    - "         §6§l⊱§e§lVerf emmer§6§l⊰"
+    - "§7Klik links om een gebied van de canvas"
+    - "§7te vullen. Craft een emmer met een kleurstof"
+    - "§7om de verf emmer's kleur te veranderen."
+    - "§7Klik rechts om het terug te draaien."
+
+  TOOL_COAL:
+    - "              §6§l⊱§e§lKool§6§l⊰"
+    - "§7Klik links om de pixels donkerder te maken."
+    - "§7Klik rechts om de lijnen donkerder te maken."
+
+  TOOL_FEATHER:
+    - "            §6§l⊱§e§lVeer§6§l⊰"
+    - "§7Klik links om pixels lichter te maken."
+    - "§7Klik rechts om lijnen lichter te maken."
+
+  TOOL_COMPASS:
+    - "            §6§l⊱§e§lKompas§6§l⊰"
+    - "§7Klik links om hem horizontaal te draaien."
+    - "§7Klik rechts om hem verticaal te draaien."
+
+  RECIPE_EASEL:
+    - "§7Gebruik om te schilderen"
+    - "§7Klik rechts om te plaatsen"
+
+  RECIPE_CANVAS:
+    - "§7Gebruik op een §aSchildersezel"
+    - "§7om te beginnen met schilderen"
+
+  RECIPE_PAINTBUCKET:
+    - "§7Gebruik met §aSchildersezel §7en"
+    - "§aCanvas §7om kleuren te vullen"
+    - "§7Klik rechts om ongedaan te maken"
+
+  CONSOLE_HELP:
+  - "§3---------------------------------§b[ArtMap] §6Console Commandos:§3---------------------------------"
+  - "§3/artmap delete <title> §b: §eVerwijder een schilderij"
+  - "§3/artmap backup §b: §eMaak een backup van alle huidige schilderijen in /plugins/ArtMap/backup/"
+  - "§3/artmap restore <backupname> <worldname> [-o] §b: §eHerstel alle schilderijen van de backup folder*"
+  - "  §e * Optioneel [-o] flag activeert overschrijvingen."
