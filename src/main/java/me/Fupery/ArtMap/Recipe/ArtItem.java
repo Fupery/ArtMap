@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Recipe;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
@@ -14,11 +15,11 @@ import java.util.*;
 
 abstract public class ArtItem extends ItemStack {
 
-    public static final String artworkTag = "§b§oPlayer Artwork";
-    public static final String canvasKey = "§b§oArtMap Canvas";
-    public static final String easelKey = "§b§oArtMap Easel";
-    public static final String paintBucketKey = "§b§oPaint Bucket";
-    public static final String help = Lang.RECIPE_HELP.rawMessage();
+    public static final String ARTWORK_TAG = "§b§oPlayer Artwork";
+    public static final String CANVAS_KEY = "§b§oArtMap Canvas";
+    public static final String EASEL_KEY = "§b§oArtMap Easel";
+    public static final String PAINT_BUCKET_KEY = "§b§oPaint Bucket";
+    public static final String HELP = ArtMap.getLang().getMsg("RECIPE_HELP");
 
     ArtItem(Material material) {
         super(material);
@@ -31,7 +32,7 @@ abstract public class ArtItem extends ItemStack {
     static List<String> getToolTipLore(String ID, String[] toolTip) {
         ArrayList<String> lore = new ArrayList<>(Arrays.asList(toolTip));
         lore.add(0, ID);
-        lore.add(help);
+        lore.add(HELP);
         return lore;
     }
 
@@ -81,9 +82,9 @@ class ItemEasel extends ArtItem {
     ItemEasel() {
         super(Material.ARMOR_STAND);
         ItemMeta meta = getItemMeta();
-        String itemName = "§e•§6§l" + Lang.RECIPE_EASEL_NAME.rawMessage() + "§e•";
+        String itemName = "§e•§6§l" + ArtMap.getLang().getMsg("RECIPE_EASEL_NAME") + "§e•";
         meta.setDisplayName(itemName);
-        meta.setLore(getToolTipLore(getLoreID(), Lang.Array.RECIPE_EASEL.messages()));
+        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_EASEL")));
         setItemMeta(meta);
     }
 
@@ -101,7 +102,7 @@ class ItemEasel extends ArtItem {
 
     @Override
     String getLoreID() {
-        return easelKey;
+        return EASEL_KEY;
     }
 }
 
@@ -110,9 +111,9 @@ class ItemCanvas extends ArtItem {
     ItemCanvas() {
         super(Material.PAPER);
         ItemMeta meta = getItemMeta();
-        String itemName = "§e•§6§l" + Lang.RECIPE_CANVAS_NAME.rawMessage() + "§e•";
+        String itemName = "§e•§6§l" + ArtMap.getLang().getMsg("RECIPE_CANVAS_NAME") + "§e•";
         meta.setDisplayName(itemName);
-        meta.setLore(getToolTipLore(getLoreID(), Lang.Array.RECIPE_CANVAS.messages()));
+        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_CANVAS")));
         setItemMeta(meta);
     }
 
@@ -128,7 +129,7 @@ class ItemCanvas extends ArtItem {
 
     @Override
     String getLoreID() {
-        return canvasKey;
+        return CANVAS_KEY;
     }
 }
 
@@ -157,7 +158,7 @@ class ItemMapArt extends ArtItem {
 
     @Override
     String getLoreID() {
-        return artworkTag;
+        return ARTWORK_TAG;
     }
 }
 
@@ -169,9 +170,10 @@ class PaintBucket extends ArtItem {
         super(Material.BUCKET);
         this.colour = colour;
         ItemMeta meta = getItemMeta();
-        String itemName = "§e•" + colour.getDisplay() + "§l" + Lang.RECIPE_PAINTBUCKET_NAME.rawMessage() + "§e•";
+        String itemName = "§e•" + colour.getDisplay() + "§l"
+                + ArtMap.getLang().getMsg("RECIPE_PAINTBUCKET_NAME") + "§e•";
         meta.setDisplayName(itemName);
-        meta.setLore(getToolTipLore(getLoreID(), Lang.Array.RECIPE_PAINTBUCKET.messages()));
+        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_PAINTBUCKET")));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);
@@ -184,7 +186,7 @@ class PaintBucket extends ArtItem {
 
     @Override
     String getLoreID() {
-        return paintBucketKey + " §7[" + colour.name() + "]";
+        return PAINT_BUCKET_KEY + " §7[" + colour.name() + "]";
     }
 
     private org.bukkit.inventory.Recipe getRecipe(ArtDye d) {

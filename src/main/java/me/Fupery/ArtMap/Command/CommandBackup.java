@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ArtBackup;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -25,20 +24,20 @@ public class CommandBackup extends Command {
         File backupsFolder = new File(ArtMap.plugin().getDataFolder(), "backups");
 
         if (!backupsFolder.exists() && !backupsFolder.mkdir()) {
-            msg.message = Lang.BACKUP_ERROR.message();
+            msg.message = ArtMap.getLang().getMsg("BACKUP_ERROR");
             return;
         }
         File backup = new File(backupsFolder, backupFormat.format(new Date()));
 
         if (!backup.exists() && !backup.mkdir()) {
-            msg.message = Lang.BACKUP_ERROR.message();
+            msg.message = ArtMap.getLang().getMsg("BACKUP_ERROR");
             return;
         }
 
         MapArt[] artworks = ArtMap.getArtDatabase().listMapArt("all");
 
         if (artworks == null) {
-            msg.message = Lang.NO_ARTWORKS.message();
+            msg.message = ArtMap.getLang().getMsg("NO_ARTWORKS");
             return;
         }
 
@@ -53,6 +52,6 @@ public class CommandBackup extends Command {
                 return;
             }
         }
-        sender.sendMessage(String.format(Lang.BACKUP_SUCCESS.message(), backup.getAbsoluteFile()));
+        sender.sendMessage(String.format(ArtMap.getLang().getMsg("BACKUP_SUCCESS"), backup.getAbsoluteFile()));
     }
 }

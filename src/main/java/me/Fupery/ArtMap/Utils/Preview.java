@@ -14,6 +14,8 @@ public abstract class Preview extends BukkitRunnable {
     Preview(Player player) {
         this.player = player;
     }
+    // TODO: 25/07/2016 maybe chill on the statics
+    // TODO: 25/07/2016 responsiveness
 
     public static void artwork(Player player, MapArt art) {
         checkCurrentPreviews(player);
@@ -21,7 +23,7 @@ public abstract class Preview extends BukkitRunnable {
         Preview preview = new ItemPreview(player, item);
         preview.runTaskLaterAsynchronously(ArtMap.plugin(), 300);
         player.setItemInHand(item);
-        ArtMap.previewing.put(player, preview);
+        ArtMap.getPreviewing().put(player, preview);
     }
 
     public static void inventory(Player player, Inventory previewInventory) {
@@ -29,26 +31,26 @@ public abstract class Preview extends BukkitRunnable {
         Preview preview = new RecipePreview(player, previewInventory);
         preview.runTaskLaterAsynchronously(ArtMap.plugin(), 300);
         player.openInventory(previewInventory);
-        ArtMap.previewing.put(player, preview);
+        ArtMap.getPreviewing().put(player, preview);
     }
 
     public static void stop(Player player) {
 
-        if (ArtMap.previewing.containsKey(player)) {
-            ArtMap.previewing.get(player).stopPreviewing();
+        if (ArtMap.getPreviewing().containsKey(player)) {
+            ArtMap.getPreviewing().get(player).stopPreviewing();
         }
     }
 
     private static void checkCurrentPreviews(Player player) {
-        if (ArtMap.previewing.containsKey(player)) {
-            ArtMap.previewing.get(player).stopPreviewing();
+        if (ArtMap.getPreviewing().containsKey(player)) {
+            ArtMap.getPreviewing().get(player).stopPreviewing();
         }
     }
 
     public void stopPreviewing() {
         cancel();
         run();
-        ArtMap.previewing.remove(player);
+        ArtMap.getPreviewing().remove(player);
     }
 }
 
@@ -65,7 +67,7 @@ class ItemPreview extends Preview {
     public void run() {
         SoundCompat.UI_BUTTON_CLICK.play(player, 1, -2);
         player.getInventory().removeItem(preview);
-        ArtMap.previewing.remove(player);
+        ArtMap.getPreviewing().remove(player);
     }
 }
 

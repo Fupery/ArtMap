@@ -34,7 +34,7 @@ public class Fill extends Brush {
             String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
 
             for (ArtDye dye : ArtDye.values()) {
-                if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
+                if (lore[0].equals(ArtItem.PAINT_BUCKET_KEY + " §7[" + dye.name() + "]")) {
                     colour = dye;
                     break;
                 }
@@ -63,7 +63,7 @@ public class Fill extends Brush {
 
                 for (ArtDye dye : ArtDye.values()) {
 
-                    if (lore[0].equals(ArtItem.paintBucketKey + " §7[" + dye.name() + "]")) {
+                    if (lore[0].equals(ArtItem.PAINT_BUCKET_KEY + " §7[" + dye.name() + "]")) {
                         colour = dye;
                         break;
                     }
@@ -89,12 +89,7 @@ public class Fill extends Brush {
             final byte clickedColour = canvas.getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour;
 
-            ArtMap.runTaskAsync(new Runnable() {
-                @Override
-                public void run() {
-                    fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour);
-                }
-            });
+            ArtMap.getTaskManager().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
     }
 

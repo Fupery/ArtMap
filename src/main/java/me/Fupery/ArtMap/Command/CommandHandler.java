@@ -27,7 +27,7 @@ public class CommandHandler implements CommandExecutor {
         commands.put("restore", new CommandRestore());
 
         //convenience commands
-        commands.put("help", new Command(null, "/artmap [help]", true) {
+        commands.put("HELP", new Command(null, "/artmap [HELP]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -35,7 +35,7 @@ public class CommandHandler implements CommandExecutor {
                     ArtMap.getHelpMenu().open(ArtMap.plugin(), (Player) sender);
 
                 } else {
-                    sender.sendMessage(Lang.Array.CONSOLE_HELP.messages());
+                    ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                 }
             }
         });
@@ -50,11 +50,11 @@ public class CommandHandler implements CommandExecutor {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
 
             } else {
-                sender.sendMessage(Lang.HELP.message());
+                sender.sendMessage(ArtMap.getLang().getMsg("HELP"));
             }
 
         } else {
-            commands.get("help").runPlayerCommand(sender, args);
+            commands.get("HELP").runPlayerCommand(sender, args);
         }
         return true;
     }

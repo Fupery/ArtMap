@@ -107,14 +107,14 @@ public class ArtistHandler {
         if (session != null) {
             session.end();
         } else {
-            ArtMap.runTaskLater(new Runnable() {
+            ArtMap.getTaskManager().SYNC.runLater(new Runnable() {
                 @Override
                 public void run() {
                     ArtSession session = artists.get(player.getUniqueId());
                     if (session != null) {
                         session.end();
                     } else {
-                        Bukkit.getLogger().warning(Lang.prefix + String.format(
+                        Bukkit.getLogger().warning(Lang.PREFIX + String.format(
                                 "§cRenderer not found for player: %s", player.getName()));
                     }
                 }
@@ -124,25 +124,22 @@ public class ArtistHandler {
     }
 
     private void removeSeat(Entity seat) {
-        ArtMap.runTaskLater(new Runnable() {
-            @Override
-            public void run() {
-                if (seat == null) {
-                    return;
-                }
-
-                if (!seat.hasMetadata("easel")) {
-                    return;
-                }
-                String tag = seat.getMetadata("easel").get(0).asString();
-                Location location = LocationTag.getLocation(seat.getWorld(), tag);
-
-                if (EaselInteractListener.easels.containsKey(location)) {
-                    Easel easel = EaselInteractListener.easels.get(location);
-                    easel.setIsPainting(false);
-                }
-                seat.remove();
+        ArtMap.getTaskManager().SYNC.runLater(() -> {
+            if (seat == null) {
+                return;
             }
+
+            if (!seat.hasMetadata("easel")) {
+                return;
+            }
+            String tag = seat.getMetadata("easel").get(0).asString();
+            Location location = LocationTag.getLocation(seat.getWorld(), tag);
+
+            if (EaselInteractListener.easels.containsKey(location)) {
+                Easel easel = EaselInteractListener.easels.get(location);
+                easel.setIsPainting(false);
+            }
+            seat.remove();
         }, 1);
 
     }

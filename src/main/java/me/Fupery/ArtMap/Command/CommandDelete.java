@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,16 +19,16 @@ public class CommandDelete extends Command {
         if (art != null && sender instanceof Player
                 && !(art.getPlayer().getName().equalsIgnoreCase(sender.getName())
                 || sender.hasPermission("artmap.admin"))) {
-            msg.message = Lang.NO_PERM.message();
+            msg.message = ArtMap.getLang().getMsg("NO_PERM");
             return;
         }
 
         if (ArtMap.getArtDatabase().deleteArtwork(args[1])) {
-            msg.message = String.format(Lang.DELETED.message(), args[1]);
+            msg.message = String.format(ArtMap.getLang().getMsg("DELETED"), args[1]);
             return;
 
         } else {
-            msg.message = String.format(Lang.MAP_NOT_FOUND.message(), args[1]);
+            msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
             return;
         }
     }

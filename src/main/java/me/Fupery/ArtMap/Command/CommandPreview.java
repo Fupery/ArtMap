@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -18,26 +17,23 @@ public class CommandPreview extends Command {
     public static boolean previewArtwork(final Player player, final MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
-            ArtMap.runTask(new Runnable() {
-                @Override
-                public void run() {
-                    ItemStack currentItem = player.getItemInHand();
-                    player.setItemInHand(art.getMapItem());
+            ArtMap.getTaskManager().SYNC.run(() -> {
+                ItemStack currentItem = player.getItemInHand();
+                player.setItemInHand(art.getMapItem());
 
-                    if (currentItem != null) {
-                        ItemStack leftOver = player.getInventory().addItem(currentItem).get(0);
+                if (currentItem != null) {
+                    ItemStack leftOver = player.getInventory().addItem(currentItem).get(0);
 
-                        if (leftOver != null) {
-                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-                        }
+                    if (leftOver != null) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
                     }
                 }
             });
 
         } else {
 
-            if (ArtMap.previewing.containsKey(player)) {
-                ArtMap.previewing.get(player).stopPreviewing();
+            if (ArtMap.getPreviewing().containsKey(player)) {
+                ArtMap.getPreviewing().get(player).stopPreviewing();
             }
 
             if (player.getItemInHand().getType() != Material.AIR) {
@@ -57,14 +53,14 @@ public class CommandPreview extends Command {
         MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art == null) {
-            msg.message = String.format(Lang.MAP_NOT_FOUND.message(), args[1]);
+            msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
             return;
         }
 
         if (!previewArtwork(player, art)) {
-            msg.message = Lang.EMPTY_HAND_PREVIEW.message();
+            msg.message = ArtMap.getLang().getMsg("EMPTY_HAND_PREVIEW");
             return;
         }
-        msg.message = String.format(Lang.PREVIEWING.message(), args[1]);
+        msg.message = String.format(ArtMap.getLang().getMsg("PREVIEWING"), args[1]);
     }
 }

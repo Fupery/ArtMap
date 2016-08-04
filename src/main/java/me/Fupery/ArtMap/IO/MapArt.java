@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MapArt {
-    public static final byte[] blankMap = getBlankMap();
-    public static final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    public static final byte[] BLANK_MAP = getBlankMap();
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private final short mapIDValue;
     private final String title;
     private final OfflinePlayer player;
@@ -26,7 +26,7 @@ public class MapArt {
         this.mapIDValue = mapIDValue;
         this.title = title;
         this.player = player;
-        this.date = dateFormat.format(new Date());
+        this.date = DATE_FORMAT.format(new Date());
     }
 
     public MapArt(short mapIDValue, String title, OfflinePlayer player, String date) {

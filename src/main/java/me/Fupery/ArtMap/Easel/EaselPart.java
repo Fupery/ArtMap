@@ -12,15 +12,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 
+import static me.Fupery.ArtMap.ArtMap.getBukkitVersion;
 import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_8;
 
 public enum EaselPart {
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false),
-    SEAT(ArtMap.bukkitVersion.getVersion().getSeatXOffset(), ArtMap.bukkitVersion.getVersion().getSeatZOffset(), true);
+    SEAT(getBukkitVersion().getVersion().getSeatXOffset(), getBukkitVersion().getVersion().getSeatZOffset(), true);
 
-    public static final String arbitrarySignID = "*{=}*";
-    public static final String easelID = Lang.RECIPE_EASEL_NAME.rawMessage();
-    private static final boolean requiresSeatCompensation = (ArtMap.bukkitVersion.getVersion() == v1_8);
+    public static final String ARBITRARY_SIGN_ID = "*{=}*";
+    public static final String EASEL_ID = ArtMap.getLang().getMsg("RECIPE_EASEL_NAME");
+    private static final boolean requiresSeatCompensation = (ArtMap.getBukkitVersion().getVersion() == v1_8);
+
     final double modifier;
     final double heightOffset;
     final boolean centred;
@@ -115,7 +117,7 @@ public enum EaselPart {
             easelLocation.getBlock().setType(Material.WALL_SIGN);
             Sign sign = ((Sign) easelLocation.getBlock().getState());
             sign.setData(signFace);
-            sign.setLine(3, arbitrarySignID);
+            sign.setLine(3, ARBITRARY_SIGN_ID);
             sign.update(true, false);
 
         } else {
@@ -130,7 +132,7 @@ public enum EaselPart {
                         ArmorStand stand = (ArmorStand) entity;
                         stand.setBasePlate(false);
                         stand.setCustomNameVisible(true);
-                        stand.setCustomName(easelID);
+                        stand.setCustomName(EASEL_ID);
                         stand.setGravity(false);
                         stand.setRemoveWhenFarAway(false);
                         return stand;

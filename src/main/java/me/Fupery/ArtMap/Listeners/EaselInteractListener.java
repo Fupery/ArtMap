@@ -6,9 +6,10 @@ import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EaselInteractListener implements Listener {
 
-    public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();// FIXME: 25/07/2016 why static?
 
     @EventHandler
     public void onEaselInteract(EaselEvent event) {
@@ -32,12 +33,14 @@ public class EaselInteractListener implements Listener {
         final MapView mapView;
 
         if (!player.hasPermission("artmap.artist")) {
-            player.sendRawMessage(Lang.NO_PERM.message());
+            ArtMap.getLang().sendMsg("NO_PERM", player);
             return;
         }
 
         if (easel.isPainting()) {
-            player.sendMessage(Lang.ELSE_USING.message());
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_USED.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+            easel.playEffect(Effect.CRIT);
             return;
         }
 
@@ -45,7 +48,7 @@ public class EaselInteractListener implements Listener {
 
             case LEFT_CLICK:
 
-                player.sendMessage(Lang.EASEL_HELP.message());
+                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PUNCH.send(player);
                 return;
 
             case RIGHT_CLICK:
@@ -54,7 +57,7 @@ public class EaselInteractListener implements Listener {
                 if (easel.getItem().getType() == Material.MAP) {
                     easel.rideEasel(player);
                     return;
-
+                    //remove items that were added while plugin is unloaded etc.
                 } else if (easel.getItem().getType() != Material.AIR) {
                     easel.removeItem();
                     return;
@@ -64,8 +67,9 @@ public class EaselInteractListener implements Listener {
 
                 if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
-                    Reflection.setWorldMap(mapView, MapArt.blankMap);
+                    Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
                     mountMap(easel, mapView, player);
+                    easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
                     return;
 
                 } else if (material == ArtMaterial.MAP_ART) {
@@ -74,20 +78,25 @@ public class EaselInteractListener implements Listener {
                     if (art != null) {
 
                         if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
-                            player.sendMessage(Lang.NO_CRAFT_PERM.message());
+                            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_EDIT.send(player);
+                            easel.playEffect(Effect.CRIT);
+                            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                             return;
                         }
 
-                        if (ArtMap.previewing.containsKey(player)) {
-                            ArtMap.previewing.get(player).stopPreviewing();
+                        if (ArtMap.getPreviewing().containsKey(player)) {
+                            ArtMap.getPreviewing().get(player).stopPreviewing();
                             return;
                         }
                         mapView = MapArt.cloneArtwork(player.getWorld(), art.getMapID());
                         mountMap(easel, mapView, player);
+                        easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
                         return;
                     }
                 }
-                player.sendMessage(Lang.NEED_CANVAS.message());
+                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
+                SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+                easel.playEffect(Effect.CRIT);
                 return;
 
             case SHIFT_RIGHT_CLICK:
@@ -100,17 +109,15 @@ public class EaselInteractListener implements Listener {
                         mapView.removeRenderer(renderer);
                     }
 
-                    mapView.addRenderer(new GenericMapRenderer(MapArt.blankMap));
-                    ArtMap.runTaskAsync(new Runnable() {
-                        @Override
-                        public void run() {
-                            Reflection.setWorldMap(mapView, MapArt.blankMap);
-                            ArtMap.getArtDatabase().recycleID(id);
-                        }
+                    mapView.addRenderer(new GenericMapRenderer(MapArt.BLANK_MAP));
+                    ArtMap.getTaskManager().ASYNC.run(() -> {
+                        Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
+                        ArtMap.getArtDatabase().recycleID(id);
                     });
                     easel.removeItem();
                 }
                 easel.breakEasel();
+                easel.playEffect(Effect.CLOUD);
         }
     }
 

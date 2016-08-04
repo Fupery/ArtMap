@@ -4,14 +4,24 @@ import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Reflection {
+
+    private static final String NMS;
+
+    static {
+        String version = Bukkit.getServer().getClass().getPackage().getName();
+        NMS = version.replace("org.bukkit.craftbukkit", "net.minecraft.server");
+    }
 
     public static Channel getPlayerChannel(Player player) {
         Object nmsPlayer, playerConnection, networkManager;
@@ -63,9 +73,8 @@ public class Reflection {
 
                 float yaw, pitch;
                 try {
-                    yaw = ArtMap.bukkitVersion.getVersion().getYaw(packet);
-                    pitch = ArtMap.bukkitVersion.getVersion().getPitch(packet);
-
+                    yaw = ArtMap.getBukkitVersion().getVersion().getYaw(packet);
+                    pitch = ArtMap.getBukkitVersion().getVersion().getPitch(packet);
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();
                     return null;
@@ -158,5 +167,55 @@ public class Reflection {
             return;
         }
         mapView.setScale(MapView.Scale.FARTHEST);
+    }
+
+    public static class ChatPacketBuilder {
+        private Constructor packetCons;
+        private Method chatSerializer;
+        private Class chatSerializerClass;
+
+        public ChatPacketBuilder() {
+            this(NMS);
+        }
+
+        public ChatPacketBuilder(String NMS_Prefix) {
+            String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
+            String chatComponentName = NMS_Prefix + ".IChatBaseComponent";
+            String chatSerializerName = "ChatSerializer";
+
+            Class[] chatComponentSubclasses = IChatBaseComponent.class.getDeclaredClasses();
+            chatSerializerClass = null;
+            for (Class chatComponentSubclass : chatComponentSubclasses) {
+                if (chatComponentSubclass.getSimpleName().equals(chatSerializerName)) {
+                    chatSerializerClass = chatComponentSubclass;
+                    break;
+                }
+            }
+            try {
+                Class chatPacketClass = Class.forName(packetClassName);
+                Class chatComponentClass = Class.forName(chatComponentName);
+
+                packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, byte.class);
+                chatSerializer = chatSerializerClass.getDeclaredMethod("a", String.class);
+
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                logFailure(e);
+            }
+        }
+
+        public Object buildActionBarPacket(String message) {
+            try {
+                Object chatComponent = chatSerializer.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}");
+                return packetCons.newInstance(chatComponent, (byte) 2);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                logFailure(e);
+                return null;
+            }
+        }
+
+        private void logFailure(Exception e) {
+            Bukkit.getLogger().warning("[ArtMap] failed to instantiate protocol! Is this version supported?");
+            e.printStackTrace();
+        }
     }
 }

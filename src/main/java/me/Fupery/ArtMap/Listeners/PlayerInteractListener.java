@@ -4,7 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -59,14 +59,15 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
 
         if (!player.hasPermission("artmap.artist")) {
-            player.sendMessage(Lang.NO_PERM.message());
+            ArtMap.getLang().sendMsg("NO_PERM", player);
             return;
         }
         Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
-        BlockFace facing = getFacing(event.getPlayer());
+        BlockFace facing = getFacing(player);
 
         if (easelLocation.getBlock().getType() != Material.AIR || Easel.checkForEasel(easelLocation)) {
-            player.sendMessage(Lang.INVALID_POS.message());
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
@@ -76,7 +77,8 @@ public class PlayerInteractListener implements Listener {
         player.getInventory().removeItem(item);
 
         if (easel == null) {
-            event.getPlayer().sendMessage(Lang.INVALID_POS.message());
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
         }
     }
 
@@ -89,21 +91,18 @@ public class PlayerInteractListener implements Listener {
             return;
         }
 
-        ArtMap.runTaskAsync(new Runnable() {
-            @Override
-            public void run() {
+        ArtMap.getTaskManager().ASYNC.run(() -> {
 
-                ItemMeta meta = item.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
 
-                if (!meta.hasLore()) {
+            if (!meta.hasLore()) {
 
-                    MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
+                MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
 
-                    if (art != null) {
+                if (art != null) {
 
-                        ItemStack correctLore = art.getMapItem();
-                        event.getClickedInventory().setItem(event.getSlot(), correctLore);
-                    }
+                    ItemStack correctLore = art.getMapItem();
+                    event.getClickedInventory().setItem(event.getSlot(), correctLore);
                 }
             }
         });

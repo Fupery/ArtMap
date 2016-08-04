@@ -5,3 +5,6 @@ language: english
 
 #If true, prevents players from using obvious english swear words in artwork titles.
 swearFilter: true
+
+#If true, action bar messages (messages displayed above a player's toolbar) are disabled
+disableActionBar: false

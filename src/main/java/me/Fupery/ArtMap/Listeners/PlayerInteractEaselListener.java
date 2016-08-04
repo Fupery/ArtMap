@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -68,7 +67,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (checkSignBreak(event.getBlock(), event)) {
             if (!checkIsPainting(event.getPlayer(), event)) {
-                event.getPlayer().sendMessage(Lang.BREAK_CANVAS.message());
+                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PUNCH.send(event.getPlayer());
             }
         }
         checkIsPainting(event.getPlayer(), event);
@@ -111,7 +110,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private boolean checkIsPainting(Player player, Cancellable event) {
 
-        if (player.isInsideVehicle() && ArtMap.artistHandler.containsPlayer(player)) {
+        if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }
@@ -120,7 +119,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private void checkPreviewing(Player player, Cancellable event) {
 
-        if (ArtMap.previewing.containsKey(player)) {
+        if (ArtMap.getPreviewing().containsKey(player)) {
 
             if (player.getItemInHand().getType() == Material.MAP) {
 
@@ -135,7 +134,7 @@ public class PlayerInteractEaselListener implements Listener {
         if (block.getType() == Material.WALL_SIGN) {
             Sign sign = ((Sign) block.getState());
 
-            if (sign.getLine(3).equals(EaselPart.arbitrarySignID)) {
+            if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
 
                 if (EaselInteractListener.easels.containsKey(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {

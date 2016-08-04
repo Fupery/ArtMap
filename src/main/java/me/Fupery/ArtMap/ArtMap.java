@@ -5,7 +5,9 @@ import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.*;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.Stats;
@@ -26,10 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    public static final ArtistHandler artistHandler = new ArtistHandler();
-    public static final ConcurrentHashMap<Player, Preview> previewing = new ConcurrentHashMap<>();
-    public static final VersionHandler bukkitVersion = new VersionHandler();
+    private static ArtistHandler artistHandler;
+    private static ConcurrentHashMap<Player, Preview> previewing;
+    private static VersionHandler bukkitVersion;
+    private static TaskManager taskManager;
     private static ArtDatabase artDatabase;
+    private static ChannelCacheManager cacheManager;
+    private static Lang lang;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
     private PixelTable pixelTable;
@@ -43,18 +48,6 @@ public class ArtMap extends JavaPlugin {
         return (ArtMap) Bukkit.getPluginManager().getPlugin("ArtMap");
     }
 
-    public static void runTask(Runnable runnable) {
-        Bukkit.getScheduler().runTask(plugin(), runnable);
-    }
-
-    public static void runTaskLater(Runnable runnable, int ticks) {
-        Bukkit.getScheduler().runTaskLater(plugin(), runnable, ticks);
-    }
-
-    public static void runTaskAsync(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin(), runnable);
-    }
-
     public static HelpMenu getHelpMenu() {
         ArtMap plugin = plugin();
         if (plugin.helpMenu.get() == null) {
@@ -63,29 +56,55 @@ public class ArtMap extends JavaPlugin {
         return plugin.helpMenu.get();
     }
 
+    public static TaskManager getTaskManager() {
+        return taskManager;
+    }
+
+    public static ArtistHandler getArtistHandler() {
+        return artistHandler;
+    }
+
+    public static ConcurrentHashMap<Player, Preview> getPreviewing() {
+        return previewing;
+    }
+
+    public static VersionHandler getBukkitVersion() {
+        return bukkitVersion;
+    }
+
+    public static ChannelCacheManager getCacheManager() {
+        return cacheManager;
+    }
+
+    public static Lang getLang() {
+        return lang;
+    }
+
     @Override
     public void onEnable() {
-
         saveDefaultConfig();
 
+        taskManager = new TaskManager(this);
+        previewing = new ConcurrentHashMap<>();
+        artistHandler = new ArtistHandler();
+        bukkitVersion = new VersionHandler();
         artDatabase = ArtDatabase.buildDatabase();
+        cacheManager = new ChannelCacheManager();
+        FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
+        lang = new Lang(getConfig().getString("language"), langFile, getConfig().getBoolean("disableActionBar"));
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
-            getLogger().warning(Lang.CANNOT_BUILD_DATABASE.rawMessage());
+            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
             return;
         }
-
         if (!loadTables()) {
-            getLogger().warning(Lang.INVALID_DATA_TABLES.rawMessage());
+            getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
             getPluginLoader().disablePlugin(this);
             return;
         }
-
         FileConfiguration filter = YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
         titleFilter = filter.getStringList("blacklisted");
-
-        ArtMaterial.setupRecipes();
 
         getCommand("artmap").setExecutor(new CommandHandler());
 
@@ -102,6 +121,7 @@ public class ArtMap extends JavaPlugin {
             manager.registerEvents(new PlayerDismountListener(), this);
         }
         helpMenu = new WeakReference<>(null);
+        ArtMaterial.setupRecipes();
         Stats.init(this);
     }
 
@@ -115,6 +135,12 @@ public class ArtMap extends JavaPlugin {
                 Preview.stop(player);
             }
         }
+        taskManager = null;
+        previewing = null;
+        artistHandler = null;
+        bukkitVersion = null;
+        artDatabase = null;
+        cacheManager = null;
     }
 
     private boolean loadTables() {

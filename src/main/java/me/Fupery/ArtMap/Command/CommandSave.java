@@ -5,9 +5,9 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -29,58 +29,56 @@ public class CommandSave extends Command {
         final Player player = (Player) sender;
 
         if (!new TitleFilter(title).check()) {
-            msg.message = Lang.BAD_TITLE.message();
+            msg.message = ArtMap.getLang().getMsg("BAD_TITLE");
             return;
         }
 
         MapArt art = ArtMap.getArtDatabase().getArtwork(title);
 
         if (art != null) {
-            msg.message = Lang.TITLE_USED.message();
+            msg.message = ArtMap.getLang().getMsg("TITLE_USED");
             return;
         }
 
-        if (!ArtMap.artistHandler.containsPlayer(player)) {
-            player.sendMessage(Lang.NOT_RIDING_EASEL.message());
+        if (!ArtMap.getArtistHandler().containsPlayer(player)) {
+            player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));
             return;
         }
 
 
-        ArtMap.runTask(new Runnable() {
-            @Override
-            public void run() {
-                Easel easel = null;
+        ArtMap.getTaskManager().SYNC.run(() -> {
+            Easel easel = null;
 
-                Entity seat = player.getVehicle();
+            Entity seat = player.getVehicle();
 
-                if (seat != null) {
+            if (seat != null) {
 
-                    if (seat.hasMetadata("easel")) {
-                        String tag = seat.getMetadata("easel").get(0).asString();
-                        Location location = LocationTag.getLocation(seat.getWorld(), tag);
+                if (seat.hasMetadata("easel")) {
+                    String tag = seat.getMetadata("easel").get(0).asString();
+                    Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-                        easel = Easel.getEasel(location, EaselPart.SIGN);
-                    }
+                    easel = Easel.getEasel(location, EaselPart.SIGN);
                 }
-
-                if (easel == null) {
-                    player.sendMessage(Lang.NOT_RIDING_EASEL.message());
-                    return;
-                }
-                ArtMap.artistHandler.removePlayer(player);
-
-                MapArt art = new MapArt(easel.getItem().getDurability(), title, player);
-                art.saveArtwork();
-
-                easel.getFrame().setItem(new ItemStack(Material.AIR));
-                ItemStack leftOver = player.getInventory().addItem(art.getMapItem()).get(0);
-
-                if (leftOver != null) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-                }
-                SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
-                player.sendMessage(String.format(Lang.SAVE_SUCCESS.message(), title));
             }
+
+            if (easel == null) {
+                player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));
+                return;
+            }
+            ArtMap.getArtistHandler().removePlayer(player);
+
+            MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
+            art1.saveArtwork();
+
+            easel.getFrame().setItem(new ItemStack(Material.AIR));
+            ItemStack leftOver = player.getInventory().addItem(art1.getMapItem()).get(0);
+
+            if (leftOver != null) {
+                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+            }
+            SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
+            easel.playEffect(Effect.HAPPY_VILLAGER);
+            player.sendMessage(String.format(ArtMap.getLang().getMsg("SAVE_SUCCESS"), title));
         });
     }
 }

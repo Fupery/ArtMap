@@ -21,7 +21,7 @@ public class ArtworkMenu extends ListMenu {
     private final UUID artist;
 
     public ArtworkMenu(InventoryMenu parent, UUID artist) {
-        super(parent, Lang.MENU_ARTWORKS.rawMessage(), Lang.BUTTON_CLOSE.rawMessage());
+        super(parent, ArtMap.getLang().getMsg("MENU_ARTWORKS"), ArtMap.getLang().getMsg("BUTTON_CLOSE"));
         this.artist = artist;
     }
 
@@ -79,7 +79,7 @@ public class ArtworkMenu extends ListMenu {
             super(Material.MAP);
             ItemMeta meta = artwork.getMapItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.add(HelpMenu.click);
+            lore.add(HelpMenu.CLICK);
             meta.setLore(lore);
             setItemMeta(meta);
             this.artwork = artwork;

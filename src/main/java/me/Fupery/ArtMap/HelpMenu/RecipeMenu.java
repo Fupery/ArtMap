@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.HelpMenu;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
@@ -20,17 +20,17 @@ import java.util.List;
 public class RecipeMenu extends InventoryMenu {
 
     public RecipeMenu(InventoryMenu parent) {
-        super(parent, ChatColor.DARK_BLUE + Lang.MENU_RECIPE.rawMessage(), InventoryType.HOPPER);
+        super(parent, ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_RECIPE"), InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 
     private static MenuButton[] generateButtons(InventoryMenu menu) {
         MenuButton[] buttons = new MenuButton[5];
-        buttons[0] = new MenuButton.StaticButton(Material.SIGN, Lang.Array.INFO_RECIPES.messages());
+        buttons[0] = new MenuButton.StaticButton(Material.SIGN, ArtMap.getLang().getArray("INFO_RECIPES"));
         buttons[1] = new RecipeButton(ArtMaterial.EASEL);
         buttons[2] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
-        buttons[4] = new MenuButton.CloseButton(menu, Lang.BUTTON_CLOSE.rawMessage());
+        buttons[4] = new MenuButton.CloseButton(menu, ArtMap.getLang().getMsg("BUTTON_CLOSE"));
         return buttons;
     }
 
@@ -38,7 +38,7 @@ public class RecipeMenu extends InventoryMenu {
         ItemStack[] ingredients = recipe.getPreview();
 
         Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
-                String.format(Lang.RECIPE_HEADER.rawMessage(),
+                String.format(ArtMap.getLang().getMsg("RECIPE_HEADER"),
                         recipe.name().toLowerCase()));
 
         for (int i = 0; i < ingredients.length; i++) {
@@ -57,7 +57,7 @@ public class RecipeMenu extends InventoryMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.rawMessage());// TODO: 3/08/2016 ADMIN FUNCTION
+            lore.set(lore.size() - 1, ChatColor.GREEN + ArtMap.getLang().getMsg("RECIPE_BUTTON"));// TODO: 3/08/2016 ADMIN FUNCTION
             meta.setLore(lore);
             setItemMeta(meta);
         }

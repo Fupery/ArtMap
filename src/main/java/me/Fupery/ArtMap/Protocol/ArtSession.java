@@ -27,10 +27,10 @@ class ArtSession {
         marker = player.getWorld().spawnEntity(player.getEyeLocation(), EntityType.ARMOR_STAND);
         ArmorStand stand = (ArmorStand) marker;
         stand.setVisible(false);
-        if (ArtMap.bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8)
+        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8)
             stand.setInvulnerable(true);
         stand.setGravity(false);
-        ArtMap.runTaskLater(() -> stand.teleport(player.getLocation()), 2);
+        ArtMap.getTaskManager().SYNC.runLater(() -> stand.teleport(player.getLocation()), 2);
         DYE = new Dye(canvas);
         FILL = new Fill(canvas);
         SHADE = new Shade(canvas);
