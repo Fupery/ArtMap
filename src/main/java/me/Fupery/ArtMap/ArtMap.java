@@ -91,7 +91,7 @@ public class ArtMap extends JavaPlugin {
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
-        lang = new Lang(getConfig().getString("language"), langFile);
+        lang = new Lang(getConfig().getString("language"), langFile, getConfig().getBoolean("disableActionBar"));
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
