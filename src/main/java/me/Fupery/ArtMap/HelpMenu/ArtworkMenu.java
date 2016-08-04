@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.HelpMenu;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Command.CommandPreview;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.ListMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
@@ -20,7 +21,7 @@ public class ArtworkMenu extends ListMenu {
     private final UUID artist;
 
     public ArtworkMenu(InventoryMenu parent, UUID artist) {
-        super(parent, "Player Artworks");
+        super(parent, Lang.MENU_ARTWORKS.rawMessage(), Lang.BUTTON_CLOSE.rawMessage());
         this.artist = artist;
     }
 

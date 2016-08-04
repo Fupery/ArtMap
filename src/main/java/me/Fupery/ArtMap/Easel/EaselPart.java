@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -18,7 +19,7 @@ public enum EaselPart {
     SEAT(ArtMap.bukkitVersion.getVersion().getSeatXOffset(), ArtMap.bukkitVersion.getVersion().getSeatZOffset(), true);
 
     public static final String arbitrarySignID = "*{=}*";
-    public static final String easelID = "Easel";
+    public static final String easelID = Lang.RECIPE_EASEL_NAME.rawMessage();
     private static final boolean requiresSeatCompensation = (ArtMap.bukkitVersion.getVersion() == v1_8);
     final double modifier;
     final double heightOffset;

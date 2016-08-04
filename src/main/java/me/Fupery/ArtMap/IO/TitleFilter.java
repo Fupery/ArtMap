@@ -18,6 +18,8 @@ public class TitleFilter {
 
         ArtMap plugin = ArtMap.plugin();
 
+        if (!plugin.getConfig().getString("language").equalsIgnoreCase("english")) return true;
+
         if (title.matches("[\\w]{3,16}")) {
 
             for (String reject : plugin.getTitleFilter()) {

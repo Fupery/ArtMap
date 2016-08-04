@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -19,7 +20,7 @@ import java.util.List;
 public class RecipeMenu extends InventoryMenu {
 
     public RecipeMenu(InventoryMenu parent) {
-        super(parent, "§1Choose a Recipe", InventoryType.HOPPER);
+        super(parent, ChatColor.DARK_BLUE + Lang.MENU_RECIPE.rawMessage(), InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 
@@ -29,7 +30,7 @@ public class RecipeMenu extends InventoryMenu {
         buttons[1] = new RecipeButton(ArtMaterial.EASEL);
         buttons[2] = new RecipeButton(ArtMaterial.CANVAS);
         buttons[3] = new RecipeButton(ArtMaterial.PAINT_BUCKET);
-        buttons[4] = new MenuButton.CloseButton(menu);
+        buttons[4] = new MenuButton.CloseButton(menu, Lang.BUTTON_CLOSE.rawMessage());
         return buttons;
     }
 
@@ -56,7 +57,7 @@ public class RecipeMenu extends InventoryMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(3, HelpMenu.click + " Recipe");
+            lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.rawMessage());// TODO: 3/08/2016 ADMIN FUNCTION
             meta.setLore(lore);
             setItemMeta(meta);
         }

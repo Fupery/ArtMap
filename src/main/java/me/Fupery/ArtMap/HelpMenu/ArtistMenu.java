@@ -1,10 +1,12 @@
 package me.Fupery.ArtMap.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.ListMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,7 +19,7 @@ import java.util.UUID;
 public class ArtistMenu extends ListMenu {
 
     public ArtistMenu(InventoryMenu parent) {
-        super(parent, "§1Click an Artist");
+        super(parent, ChatColor.BLUE + Lang.MENU_ARTIST.rawMessage(), Lang.BUTTON_CLOSE.rawMessage());
     }
 
     private MenuButton[] generateButtons(Player player) {

@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.HelpMenu;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
@@ -10,7 +11,7 @@ import static me.Fupery.ArtMap.Utils.Lang.Array.*;
 
 public class ToolMenu extends InventoryMenu {
     protected ToolMenu(InventoryMenu parent) {
-        super(parent, "§1Hover for usage", InventoryType.HOPPER);
+        super(parent, ChatColor.DARK_BLUE + Lang.MENU_TOOLS.rawMessage(), InventoryType.HOPPER);
         addButtons(generateButtons());
     }
 

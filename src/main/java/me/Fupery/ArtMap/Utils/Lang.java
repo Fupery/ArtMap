@@ -17,7 +17,10 @@ public enum Lang {
     MAP_NOT_FOUND(true), MAPDATA_ERROR(true), NO_CRAFT_PERM(true), NO_ARTWORKS(true), BAD_TITLE(true),
     TITLE_USED(true), PREVIEWING(false), EMPTY_HAND_PREVIEW(true), BACKUP_SUCCESS(false), BACKUP_ERROR(true),
     RESTORE_ERROR(true), RESTORE_ALREADY_FOUND(false), RESTORE_SUCCESS(false), INVALID_DATA_TABLES(true),
-    CANNOT_BUILD_DATABASE(true), RECIPE_HEADER(false);
+    CANNOT_BUILD_DATABASE(true), RECIPE_HEADER(false), MENU_RECIPE(false), MENU_ARTIST(false), MENU_ARTWORKS(false),
+    MENU_DYES(false), MENU_HELP(false), MENU_TOOLS(false), BUTTON_CLICK(false), BUTTON_CLOSE(false), BUTTON_BACK(false),
+    RECIPE_BUTTON(false), ADMIN_RECIPE(false), RECIPE_HELP(false), RECIPE_EASEL_NAME(false), RECIPE_CANVAS_NAME(false),
+    RECIPE_PAINTBUCKET_NAME(false);
 
     public static final String prefix = "§b[ArtMap] ";
     final boolean isErrorMessage;
@@ -29,7 +32,6 @@ public enum Lang {
         String language = plugin.getConfig().getString("language");
         FileConfiguration langFile =
                 YamlConfiguration.loadConfiguration(plugin.getTextResourceFile("lang.yml"));
-
         if (!langFile.contains(language)) {
             language = "english";
         }
@@ -54,7 +56,8 @@ public enum Lang {
 
     public enum Array {
         HELP_GETTING_STARTED, HELP_RECIPES, HELP_TOOLS, HELP_LIST, HELP_CLOSE, HELP_DYES, CONSOLE_HELP,
-        INFO_DYES, INFO_RECIPES, INFO_TOOLS, TOOL_DYE, TOOL_PAINTBUCKET, TOOL_COAL, TOOL_FEATHER, TOOL_COMPASS;
+        INFO_DYES, INFO_RECIPES, INFO_TOOLS, TOOL_DYE, TOOL_PAINTBUCKET, TOOL_COAL, TOOL_FEATHER, TOOL_COMPASS,
+        RECIPE_EASEL, RECIPE_CANVAS, RECIPE_PAINTBUCKET;
 
         String[] messages;
 
