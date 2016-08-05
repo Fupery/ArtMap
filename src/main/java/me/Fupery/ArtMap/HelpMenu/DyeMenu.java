@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 public class DyeMenu extends InventoryMenu {
 
     protected DyeMenu(InventoryMenu parent) {
-        super(parent, "§1Dyes for painting", InventoryType.CHEST);
+        super(parent, ArtMap.getLang().getMsg("MENU_DYES"), InventoryType.CHEST);
         addButtons(generateButtons());
     }
 
