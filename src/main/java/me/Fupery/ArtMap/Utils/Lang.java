@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import static me.Fupery.ArtMap.Utils.Reflection.*;
+import static me.Fupery.ArtMap.Utils.Reflection.ChatPacketBuilder;
 
 public class Lang {
     public static final String PREFIX = "§b[ArtMap] ";
@@ -60,7 +60,9 @@ public class Lang {
         private MessageSender(String message) {
             this.message = PREFIX + message.replaceAll("§l", "");
         }
-        private MessageSender() {}
+
+        private MessageSender() {
+        }
 
         public void send(Player player) {
             player.sendMessage(message);
@@ -73,6 +75,7 @@ public class Lang {
         private WrappedActionBarPacket(Object packet) {
             this.packet = packet;
         }
+
         @Override
         public void send(Player player) {
             ArtMap.getCacheManager().getChannel(player.getUniqueId()).writeAndFlush(packet);
@@ -94,7 +97,7 @@ public class Lang {
                 ChatPacketBuilder packetBuilder = new ChatPacketBuilder();
                 EASEL_PUNCH = buildPacket(packetBuilder, getMsg("EASEL_HELP"), false);
                 EASEL_NO_CANVAS = buildPacket(packetBuilder, getMsg("NEED_CANVAS"), true);
-                EASEL_MOUNT = buildPacket(packetBuilder, getMsg("PAINTING"), true);
+                EASEL_MOUNT = buildPacket(packetBuilder, getMsg("PAINTING"), false);
                 EASEL_DISMOUNT = buildPacket(packetBuilder, getMsg("SAVE_USAGE"), false);
                 EASEL_USED = buildPacket(packetBuilder, getMsg("ELSE_USING"), true);
                 EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM"), true);

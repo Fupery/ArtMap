@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

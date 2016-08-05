@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.HelpMenu;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Command.CommandPreview;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.ListMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;

@@ -140,9 +140,9 @@ public class Easel {
                 //Check if entity is a stand
 
 //                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
-                    if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
-                        return stand;
-                    }
+                if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
+                    return stand;
+                }
 //               }
             }
         }
@@ -212,7 +212,7 @@ public class Easel {
     }
 
     public void breakEasel() {
-        if (!exists.getAndSet(false))return;
+        if (!exists.getAndSet(false)) return;
         EaselInteractListener.easels.remove(location);
         final Collection<Entity> entities = getNearbyEntities();
         final ArmorStand stand = getStand(entities);
