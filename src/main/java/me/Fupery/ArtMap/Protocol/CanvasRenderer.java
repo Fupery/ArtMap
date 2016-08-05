@@ -21,7 +21,6 @@ public class CanvasRenderer extends MapRenderer {
     private ListIterator<byte[]> iterator;
     private boolean active;
     private Cursor cursor;
-    private ArtBrush brush;
 
     CanvasRenderer(MapView mapView, int yawOffset) {
         this.mapView = mapView;
@@ -40,7 +39,6 @@ public class CanvasRenderer extends MapRenderer {
             return;
         }
         cursor = new Cursor(yawOffset);
-        brush = new ArtBrush(this, axisLength);
     }
 
     @Override
@@ -151,10 +149,6 @@ public class CanvasRenderer extends MapRenderer {
         active = false;
         dirtyPixels.clear();
         cursor = null;
-    }
-
-    public ArtBrush getBrush() {
-        return brush;
     }
 
     public boolean isOffCanvas() {
