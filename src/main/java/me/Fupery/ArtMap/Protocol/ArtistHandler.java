@@ -124,24 +124,23 @@ public class ArtistHandler {
     }
 
     private void removeSeat(Entity seat) {
-        ArtMap.getTaskManager().SYNC.runLater(() -> {
-            if (seat == null) {
-                return;
-            }
+//        ArtMap.getTaskManager().SYNC.runLater(() -> {
+        if (seat == null) {
+            return;
+        }
 
-            if (!seat.hasMetadata("easel")) {
-                return;
-            }
-            String tag = seat.getMetadata("easel").get(0).asString();
-            Location location = LocationTag.getLocation(seat.getWorld(), tag);
+        if (!seat.hasMetadata("easel")) {
+            return;
+        }
+        String tag = seat.getMetadata("easel").get(0).asString();
+        Location location = LocationTag.getLocation(seat.getWorld(), tag);
 
-            if (EaselInteractListener.easels.containsKey(location)) {
-                Easel easel = EaselInteractListener.easels.get(location);
-                easel.setIsPainting(false);
-            }
-            seat.remove();
-        }, 1);
-
+        if (EaselInteractListener.easels.containsKey(location)) {
+            Easel easel = EaselInteractListener.easels.get(location);
+            easel.setIsPainting(false);
+        }
+        seat.remove();
+//        }, 1);
     }
 
     private synchronized void clearPlayers() {
