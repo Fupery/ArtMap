@@ -109,8 +109,7 @@ public enum EaselPart {
     public Entity spawn(Location easelLocation, BlockFace facing) {
 
         if (this == SIGN) {
-            org.bukkit.material.Sign signFace
-                    = new org.bukkit.material.Sign(Material.SIGN);
+            org.bukkit.material.Sign signFace = new org.bukkit.material.Sign(Material.SIGN);
             BlockFace signFacing = getSignFacing(facing);
             signFace.setFacingDirection(signFacing);
 
