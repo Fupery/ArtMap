@@ -1,3 +1,23 @@
+#------------------------------------------#
+#          ArtMap Language File            #
+#------------------------------------------#
+#
+# Replace the strings below with an appropriate translation
+#
+# EXAMPLE: “Replace me with a translation!”
+#
+# Any time you see '%s' - this is a special character that will be replaced with a word.
+# For example, if a player saves an artwork named "Art", then "Successfully saved '%s'"
+# will become "Successfully saved Art".
+# So any time you see '%s', don't change it! Just change the words around it.
+#
+# Any time you see "/artmap", leave that unchanged as well (this is the help command)
+#
+# Any time you see § next to a number or letter (something like §a or §2), this is a colour code
+# Please don't modify or remove these either.
+#
+# Thanks for providing your translation! :)
+
 english:
 #Player Messages
   COMMAND_SAVE: "save"
