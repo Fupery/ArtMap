@@ -19,6 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Easel {
 
@@ -26,11 +27,13 @@ public class Easel {
     private boolean isPainting;
     private WeakReference<ArmorStand> stand;
     private WeakReference<ItemFrame> frame;
+    private AtomicBoolean exists;
 
     private Easel(Location location) {
         this.location = location;
         stand = new WeakReference<>(null);
         frame = new WeakReference<>(null);
+        exists = new AtomicBoolean(false);
     }
 
     //Spawns an easel at the location provided, facing the direction provided
@@ -50,6 +53,7 @@ public class Easel {
         } else {
             easel.stand = new WeakReference<>(stand);
             easel.frame = new WeakReference<>(frame);
+            easel.exists.set(true);
             return easel;
         }
     }
@@ -77,6 +81,7 @@ public class Easel {
                 easel.frame = new WeakReference<>(frame);
 
                 EaselInteractListener.easels.put(easel.location, easel);
+                easel.exists.set(true);
                 return easel;
             }
         }
@@ -207,7 +212,7 @@ public class Easel {
     }
 
     public void breakEasel() {
-
+        if (!exists.getAndSet(false))return;
         EaselInteractListener.easels.remove(location);
         final Collection<Entity> entities = getNearbyEntities();
         final ArmorStand stand = getStand(entities);
@@ -219,15 +224,14 @@ public class Easel {
 
             if (stand != null && stand.isValid()) {
                 stand.remove();
+                location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
             }
 
             if (frame != null && frame.isValid()) {
                 removeItem();
                 frame.remove();
             }
-            location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
         });
-
     }
 
     public BlockFace getFacing() {
