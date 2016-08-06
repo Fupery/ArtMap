@@ -35,6 +35,7 @@ public class ArtMap extends JavaPlugin {
     private List<String> titleFilter;
     private PixelTable pixelTable;
     private WeakReference<HelpMenu> helpMenu;
+    private boolean hasRegisteredListeners = false;
 
     public static ArtDatabase getArtDatabase() {
         return artDatabase;
@@ -87,7 +88,9 @@ public class ArtMap extends JavaPlugin {
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
-        lang = new Lang(getConfig().getString("language"), langFile, getConfig().getBoolean("disableActionBar"));
+        boolean disableActionBar = bukkitVersion.getVersion() == VersionHandler.BukkitVersion.v1_8
+                || getConfig().getBoolean("disableActionBar");
+        lang = new Lang(getConfig().getString("language"), langFile, disableActionBar);
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
@@ -104,17 +107,20 @@ public class ArtMap extends JavaPlugin {
 
         getCommand("artmap").setExecutor(new CommandHandler());
 
-        PluginManager manager = getServer().getPluginManager();
-        manager.registerEvents(new PlayerInteractListener(), this);
-        manager.registerEvents(new PlayerInteractEaselListener(), this);
-        manager.registerEvents(new PlayerQuitListener(), this);
-        manager.registerEvents(new ChunkUnloadListener(), this);
-        manager.registerEvents(new PlayerCraftListener(), this);
-        manager.registerEvents(new InventoryInteractListener(), this);
-        manager.registerEvents(new EaselInteractListener(), this);
-        if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
-            manager.registerEvents(new PlayerSwapHandListener(), this);
-            manager.registerEvents(new PlayerDismountListener(), this);
+        if (!hasRegisteredListeners) {
+            PluginManager manager = getServer().getPluginManager();
+            manager.registerEvents(new PlayerInteractListener(), this);
+            manager.registerEvents(new PlayerInteractEaselListener(), this);
+            manager.registerEvents(new PlayerQuitListener(), this);
+            manager.registerEvents(new ChunkUnloadListener(), this);
+            manager.registerEvents(new PlayerCraftListener(), this);
+            manager.registerEvents(new InventoryInteractListener(), this);
+            manager.registerEvents(new EaselInteractListener(), this);
+            if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
+                manager.registerEvents(new PlayerSwapHandListener(), this);
+                manager.registerEvents(new PlayerDismountListener(), this);
+            }
+            hasRegisteredListeners = true;
         }
         helpMenu = new WeakReference<>(null);
         ArtMaterial.setupRecipes();
@@ -131,12 +137,14 @@ public class ArtMap extends JavaPlugin {
                 Preview.stop(player);
             }
         }
+        reloadConfig();
         taskManager = null;
         previewing = null;
         artistHandler = null;
         bukkitVersion = null;
         artDatabase = null;
         cacheManager = null;
+        lang = null;
     }
 
     private boolean loadTables() {
