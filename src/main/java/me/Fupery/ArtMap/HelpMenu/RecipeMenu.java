@@ -38,8 +38,7 @@ public class RecipeMenu extends InventoryMenu {
         ItemStack[] ingredients = recipe.getPreview();
 
         Inventory inventory = Bukkit.createInventory(player, InventoryType.WORKBENCH,
-                String.format(ArtMap.getLang().getMsg("RECIPE_HEADER"),
-                        recipe.name().toLowerCase()));
+                String.format(ArtMap.getLang().getMsg("RECIPE_HEADER"), recipe.name().toLowerCase()));
 
         for (int i = 0; i < ingredients.length; i++) {
             inventory.setItem(i + 1, ingredients[i]);
@@ -57,7 +56,7 @@ public class RecipeMenu extends InventoryMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(lore.size() - 1, ChatColor.GREEN + ArtMap.getLang().getMsg("RECIPE_BUTTON"));// TODO: 3/08/2016 ADMIN FUNCTION
+            lore.set(lore.size() - 1, ChatColor.GREEN + ArtMap.getLang().getMsg("RECIPE_BUTTON"));
             meta.setLore(lore);
             setItemMeta(meta);
         }

@@ -27,29 +27,21 @@ public class PlayerInteractEaselListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-
         Player player = event.getPlayer();
-
-        callEaselEvent(player, event.getRightClicked(), event,
-                isSneaking(player));
+        callEaselEvent(player, event.getRightClicked(), event, isSneaking(player));
         checkPreviewing(player, event);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-
         Player player = event.getPlayer();
-        callEaselEvent(player, event.getRightClicked(), event,
-                isSneaking(player));
-
+        callEaselEvent(player, event.getRightClicked(), event, isSneaking(player));
         checkPreviewing(player, event);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-
-        callEaselEvent(event.getDamager(), event.getEntity(), event,
-                EaselEvent.ClickType.LEFT_CLICK);
+        callEaselEvent(event.getDamager(), event.getEntity(), event, EaselEvent.ClickType.LEFT_CLICK);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -110,7 +102,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private boolean checkIsPainting(Player player, Cancellable event) {
 
-        if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
+        if (player.isInsideVehicle() && AxwrtMap.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }
@@ -120,12 +112,8 @@ public class PlayerInteractEaselListener implements Listener {
     private void checkPreviewing(Player player, Cancellable event) {
 
         if (ArtMap.getPreviewing().containsKey(player)) {
-
-            if (player.getItemInHand().getType() == Material.MAP) {
-
-                Preview.stop(player);
-                event.setCancelled(true);
-            }
+            Preview.stop(player);
+            event.setCancelled(true);
         }
     }
 

@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,6 +46,11 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
+
+        if (ArtMap.getPreviewing().containsKey(event.getPlayer())) {
+            event.setCancelled(true);
+            Preview.stop(event.getPlayer());
+        }
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
                 || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)

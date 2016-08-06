@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,13 +56,15 @@ public class Lang {
     }
 
     public static class MessageSender {
-        private String message;
+        private final String message;
 
         private MessageSender(String message) {
-            this.message = PREFIX + message.replaceAll("§l", "");
+            this.message = PREFIX + message.replaceAll("§l", "")
+                    .replaceAll("§3", "§6").replaceAll("§4", "§c").replaceAll("§b", "§6");
         }
 
         private MessageSender() {
+            message = "";
         }
 
         public void send(Player player) {
