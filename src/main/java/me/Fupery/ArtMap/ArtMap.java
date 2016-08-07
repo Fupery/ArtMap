@@ -7,12 +7,7 @@ import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.ArtMap.Utils.TaskManager;
-import me.Fupery.ArtMap.Utils.VersionHandler;
-import me.Fupery.DataTables.DataTables;
-import me.Fupery.DataTables.PixelTable;
+import me.Fupery.ArtMap.Utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,7 +31,7 @@ public class ArtMap extends JavaPlugin {
     private static Lang lang;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
-    private PixelTable pixelTable;
+    private PixelTableManager pixelTable;
     private WeakReference<HelpMenu> helpMenu;
     private boolean hasRegisteredListeners = false;
 
@@ -150,13 +145,7 @@ public class ArtMap extends JavaPlugin {
     }
 
     private boolean loadTables() {
-        try {
-            pixelTable = DataTables.loadTable(mapResolutionFactor);
-        } catch (DataTables.InvalidResolutionFactorException e) {
-            pixelTable = null;
-            e.printStackTrace();
-        }
-        return (pixelTable != null);
+        return ((pixelTable = PixelTableManager.buildTables(mapResolutionFactor)) != null);
     }
 
     public int getMapResolutionFactor() {
@@ -167,7 +156,7 @@ public class ArtMap extends JavaPlugin {
         return titleFilter;
     }
 
-    public PixelTable getPixelTable() {
+    public PixelTableManager getPixelTable() {
         return pixelTable;
     }
 

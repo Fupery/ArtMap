@@ -9,8 +9,6 @@ import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Reflection;
-import me.Fupery.DataTables.DataTables;
-import me.Fupery.DataTables.PixelTable;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -62,17 +60,6 @@ public class ArtistHandler {
                 return packet;
             }
         };
-    }
-
-    private static PixelTable loadTables() {
-        PixelTable pixelTable;
-        try {
-            pixelTable = DataTables.loadTable(4);
-        } catch (DataTables.InvalidResolutionFactorException e) {
-            pixelTable = null;
-            e.printStackTrace();
-        }
-        return pixelTable;
     }
 
     public void addPlayer(final Player player, MapView mapView, int yawOffset) {

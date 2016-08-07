@@ -1,8 +1,8 @@
 package me.Fupery.ArtMap.Protocol;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.PixelTableManager;
 import me.Fupery.ArtMap.Utils.Reflection;
-import me.Fupery.DataTables.PixelTable;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -32,7 +32,7 @@ public class CanvasRenderer extends MapRenderer {
         active = true;
         loadMap();
 
-        PixelTable pixelTable = ArtMap.plugin().getPixelTable();
+        PixelTableManager pixelTable = ArtMap.plugin().getPixelTable();
 
         if (pixelTable == null) {
             mapView.removeRenderer(this);
