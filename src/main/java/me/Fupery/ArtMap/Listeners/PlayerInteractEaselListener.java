@@ -102,7 +102,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private boolean checkIsPainting(Player player, Cancellable event) {
 
-        if (player.isInsideVehicle() && AxwrtMap.getArtistHandler().containsPlayer(player)) {
+        if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }
