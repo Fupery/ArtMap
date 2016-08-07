@@ -7,7 +7,10 @@ import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.*;
+import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
 import org.bukkit.Bukkit;
@@ -124,7 +127,6 @@ public class ArtMap extends JavaPlugin {
         }
         helpMenu = new WeakReference<>(null);
         ArtMaterial.setupRecipes();
-        Stats.init(this);
     }
 
     @Override
