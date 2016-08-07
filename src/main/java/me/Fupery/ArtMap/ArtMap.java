@@ -86,8 +86,7 @@ public class ArtMap extends JavaPlugin {
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
-        boolean disableActionBar = bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_10
-                || getConfig().getBoolean("disableActionBar");
+        boolean disableActionBar = getConfig().getBoolean("disableActionBar");
         lang = new Lang(getConfig().getString("language"), langFile, disableActionBar);
 
         if (artDatabase == null) {

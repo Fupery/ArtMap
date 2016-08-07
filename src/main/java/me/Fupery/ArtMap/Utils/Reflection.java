@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
-import net.minecraft.server.v1_10_R1.IChatBaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -181,19 +180,12 @@ public class Reflection {
         public ChatPacketBuilder(String NMS_Prefix) {
             String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
             String chatComponentName = NMS_Prefix + ".IChatBaseComponent";
-            String chatSerializerName = "ChatSerializer";
+            String chatSerializerName = chatComponentName + "$ChatSerializer";
 
-            Class[] chatComponentSubclasses = IChatBaseComponent.class.getDeclaredClasses();
-            chatSerializerClass = null;
-            for (Class chatComponentSubclass : chatComponentSubclasses) {
-                if (chatComponentSubclass.getSimpleName().equals(chatSerializerName)) {
-                    chatSerializerClass = chatComponentSubclass;
-                    break;
-                }
-            }
             try {
                 Class chatPacketClass = Class.forName(packetClassName);
                 Class chatComponentClass = Class.forName(chatComponentName);
+                chatSerializerClass = Class.forName(chatSerializerName);
 
                 packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, byte.class);
                 chatSerializer = chatSerializerClass.getDeclaredMethod("a", String.class);
