@@ -47,18 +47,19 @@ public class RecipeLoader {
             throw new InvalidRecipeException(recipeName, "Recipe cannot have less than two materials");
 
         List<String> shape = recipeData.getStringList("SHAPE");
+        boolean hasShape = shape != null && shape.size() != 0;
         HashMap<Character, WrappedMaterial> materials = readRecipeMaterials(recipeName, recipeMaterials);
 
-        Recipe recipe = shape != null ? new ShapedRecipe(result) : new ShapelessRecipe(result);
+        Recipe recipe = hasShape ? new ShapedRecipe(result) : new ShapelessRecipe(result);
 
-        if (shape != null) {
+        if (hasShape) {
             validateRecipeShape(recipeName, shape);
             ((ShapedRecipe) recipe).shape(shape.get(0), shape.get(1), shape.get(2));
         }
 
         for (Character key : materials.keySet()) {
             WrappedMaterial material = materials.get(key);
-            if (shape != null) {
+            if (hasShape) {
                 ((ShapedRecipe) recipe).setIngredient(key, material.getData());
             } else {
                 ((ShapelessRecipe) recipe).addIngredient(material.amount, material.getData());
