@@ -102,7 +102,7 @@ public class Lang {
                 EASEL_MOUNT = buildPacket(packetBuilder, getMsg("PAINTING"), false);
                 EASEL_DISMOUNT = buildPacket(packetBuilder, getMsg("SAVE_USAGE"), false);
                 EASEL_USED = buildPacket(packetBuilder, getMsg("ELSE_USING"), true);
-                EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM"), true);
+                EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM_ACTION"), true);
                 EASEL_NO_EDIT = buildPacket(packetBuilder, getMsg("NO_EDIT_PERM"), true);
                 EASEL_INVALID_POS = buildPacket(packetBuilder, getMsg("INVALID_POS"), true);
             } else {
@@ -111,7 +111,7 @@ public class Lang {
                 EASEL_MOUNT = new MessageSender(getMsg("PAINTING"));
                 EASEL_DISMOUNT = new MessageSender(getMsg("SAVE_USAGE"));
                 EASEL_USED = new MessageSender(getMsg("ELSE_USING"));
-                EASEL_PERMISSION = new MessageSender(getMsg("NO_PERM"));
+                EASEL_PERMISSION = new MessageSender(getMsg("NO_PERM_ACTION"));
                 EASEL_NO_EDIT = new MessageSender(getMsg("NO_EDIT_PERM"));
                 EASEL_INVALID_POS = new MessageSender(getMsg("INVALID_POS"));
             }

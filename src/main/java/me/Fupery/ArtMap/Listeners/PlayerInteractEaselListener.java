@@ -1,11 +1,16 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Compatability.InteractPermissionHandler;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
+import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -20,37 +25,46 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
+import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.*;
+import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.*;
+
 public class PlayerInteractEaselListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         callEaselEvent(player, event.getRightClicked(), event, isSneaking(player));
         checkPreviewing(player, event);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        Player player = event.getPlayer();
+        callEaselEvent(player, event.getRightClicked(), event, ClickType.LEFT_CLICK);
+        checkPreviewing(player, event);
+
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         callEaselEvent(player, event.getRightClicked(), event, isSneaking(player));
         checkPreviewing(player, event);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        callEaselEvent(event.getDamager(), event.getEntity(), event, EaselEvent.ClickType.LEFT_CLICK);
+        callEaselEvent(event.getDamager(), event.getEntity(), event, ClickType.LEFT_CLICK);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
-
         if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY) {
-
-            callEaselEvent(event.getRemover(), event.getEntity(), event,
-                    EaselEvent.ClickType.LEFT_CLICK);
+            callEaselEvent(event.getRemover(), event.getEntity(), event, ClickType.LEFT_CLICK);
         }
     }
 
@@ -70,38 +84,40 @@ public class PlayerInteractEaselListener implements Listener {
         checkSignBreak(event.getBlock(), event);
     }
 
-    private void callEaselEvent(Entity clicker, Entity clicked,
-                                Cancellable event, EaselEvent.ClickType click) {
-
+    private void callEaselEvent(Entity clicker, Entity clicked, Cancellable event, ClickType click) {
         EaselPart part = EaselPart.getPartType(clicked);
+        if (part == null || part == EaselPart.SEAT) return;
 
-        if (part != null && part != EaselPart.SEAT) {
+        Easel easel = Easel.getEasel(clicked.getLocation(), part);
+        if (easel == null) return;
 
-            Easel easel = Easel.getEasel(clicked.getLocation(), part);
+        if (!(clicker instanceof Player)) return;
+        Player player = (Player) clicker;
 
-            if (easel != null) {
-                boolean wasCancelled = event.isCancelled();
-                event.setCancelled(true);
+        InteractAction action = (click == ClickType.SHIFT_RIGHT_CLICK) ? BUILD : INTERACT;
 
-                if (clicker instanceof Player) {
-                    Player player = (Player) clicker;
+        boolean allowed =
+                player.hasPermission("artmap.admin") ||
+                ArtMap.getCompatManager().checkActionAllowed(player, clicked.getLocation(), action);
+        event.setCancelled(true);
 
-                    if (!checkIsPainting(player, event) && !wasCancelled) {
-                        Bukkit.getServer().getPluginManager().callEvent(
-                                new EaselEvent(easel, click, player));
-                    }
-                }
-            }
+        if (!allowed) {
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
+            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+            easel.playEffect(Effect.CRIT);
+            return;
         }
+
+        if (!checkIsPainting(player, event))
+            Bukkit.getServer().getPluginManager().callEvent(new EaselEvent(easel, click, player));
     }
 
-    private EaselEvent.ClickType isSneaking(Player player) {
-        return (player.isSneaking()) ? EaselEvent.ClickType.SHIFT_RIGHT_CLICK :
-                EaselEvent.ClickType.RIGHT_CLICK;
+    private ClickType isSneaking(Player player) {
+        return (player.isSneaking()) ? ClickType.SHIFT_RIGHT_CLICK :
+                ClickType.RIGHT_CLICK;
     }
 
     private boolean checkIsPainting(Player player, Cancellable event) {
-
         if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;

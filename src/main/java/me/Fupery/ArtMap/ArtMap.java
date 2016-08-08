@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandHandler;
+import me.Fupery.ArtMap.Compatability.CompatibilityManager;
+import me.Fupery.ArtMap.Compatability.WGCompat;
 import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
@@ -36,6 +38,7 @@ public class ArtMap extends JavaPlugin {
     private static ArtDatabase artDatabase;
     private static ChannelCacheManager cacheManager;
     private static RecipeLoader recipeLoader;
+    private static CompatibilityManager compatManager;
     private static Lang lang;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
@@ -87,6 +90,10 @@ public class ArtMap extends JavaPlugin {
         return recipeLoader;
     }
 
+    public static CompatibilityManager getCompatManager() {
+        return compatManager;
+    }
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -97,6 +104,7 @@ public class ArtMap extends JavaPlugin {
         bukkitVersion = new VersionHandler();
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
+        compatManager = new CompatibilityManager();
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         boolean disableActionBar = getConfig().getBoolean("disableActionBar");
         lang = new Lang(getConfig().getString("language"), langFile, disableActionBar);
@@ -155,6 +163,7 @@ public class ArtMap extends JavaPlugin {
         cacheManager = null;
         lang = null;
         recipeLoader = null;
+        compatManager = null;
     }
 
     private FileConfiguration loadOptionalYAML(String configOption, String fileName) {
@@ -165,7 +174,7 @@ public class ArtMap extends JavaPlugin {
             File file = new File(getDataFolder(), fileName);
             if (!file.exists()) {
                 try {
-                    file.createNewFile();
+                    if (!file.createNewFile()) return defaultValues;
                     Files.copy(getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     getLogger().info(String.format("Failed to build %s file", fileName));
