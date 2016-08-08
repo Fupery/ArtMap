@@ -7,9 +7,14 @@ public class CompatibilityManager implements InteractPermissionHandler {
     private InteractPermissionHandler[] interactHandlers;
 
     public CompatibilityManager() {
-        interactHandlers = new InteractPermissionHandler[]{
-                new WGCompat()
-        };
+        InteractPermissionHandler wgCompat;
+        try {
+             wgCompat = new WGCompat();
+        } catch (Exception | NoClassDefFoundError e) {
+            interactHandlers = new InteractPermissionHandler[0];
+            return;
+        }
+        interactHandlers = new InteractPermissionHandler[]{wgCompat};
     }
 
     @Override

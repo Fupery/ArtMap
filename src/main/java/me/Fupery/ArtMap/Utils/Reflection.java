@@ -31,10 +31,7 @@ public class Reflection {
             playerConnection = getField(nmsPlayer, "playerConnection");
             networkManager = getField(playerConnection, "networkManager");
             channel = (Channel) getField(networkManager, "channel");
-
-        } catch (NoSuchFieldException | NoSuchMethodException
-                | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             return null;
         }
         return channel;

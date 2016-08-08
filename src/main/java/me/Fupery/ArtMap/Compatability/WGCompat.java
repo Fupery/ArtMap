@@ -12,11 +12,7 @@ public class WGCompat implements InteractPermissionHandler {
     private Object worldGuardPlugin;
 
     WGCompat() {
-        try {
-            worldGuardPlugin = WGBukkit.getPlugin();
-        } catch (Exception e) {
-            worldGuardPlugin = null;
-        }
+        this.worldGuardPlugin = WGBukkit.getPlugin();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -54,7 +55,6 @@ public abstract class ArtistProtocol {
                     }
                 });
             }
-
         } catch (Exception e) {
             Bukkit.getLogger().warning("[ArtMap] Error unbinding player channel:");
             e.printStackTrace();

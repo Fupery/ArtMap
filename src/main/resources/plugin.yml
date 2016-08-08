@@ -3,6 +3,7 @@ main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depends: []
+softdepend: [WorldGuard]
 author: Fupery
 
 commands:
@@ -19,8 +20,12 @@ permissions:
   artmap.artist:
     description: Allows creation of artworks
     default: op
+  artmap.artkit:
+    description: Gives players a kit of art supplies while they use an easel
+    default: op
   artmap.admin:
     description: Allows administrative commands
     children:
       artmap.artist: true
+      artmap.artkit: true
     default: op
