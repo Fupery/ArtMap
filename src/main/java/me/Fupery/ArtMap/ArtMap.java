@@ -7,16 +7,23 @@ import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.*;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.WeakReference;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +35,7 @@ public class ArtMap extends JavaPlugin {
     private static TaskManager taskManager;
     private static ArtDatabase artDatabase;
     private static ChannelCacheManager cacheManager;
+    private static RecipeLoader recipeLoader;
     private static Lang lang;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
@@ -75,6 +83,10 @@ public class ArtMap extends JavaPlugin {
         return lang;
     }
 
+    public static RecipeLoader getRecipeLoader() {
+        return recipeLoader;
+    }
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -85,10 +97,9 @@ public class ArtMap extends JavaPlugin {
         bukkitVersion = new VersionHandler();
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
-        FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
+        FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         boolean disableActionBar = getConfig().getBoolean("disableActionBar");
         lang = new Lang(getConfig().getString("language"), langFile, disableActionBar);
-
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
             getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
@@ -120,6 +131,7 @@ public class ArtMap extends JavaPlugin {
             hasRegisteredListeners = true;
         }
         helpMenu = new WeakReference<>(null);
+        recipeLoader = new RecipeLoader(loadOptionalYAML("customRecipes", "recipe.yml"));
         ArtMaterial.setupRecipes();
     }
 
@@ -133,6 +145,7 @@ public class ArtMap extends JavaPlugin {
                 Preview.stop(player);
             }
         }
+        recipeLoader.unloadRecipes();
         reloadConfig();
         taskManager = null;
         previewing = null;
@@ -141,6 +154,26 @@ public class ArtMap extends JavaPlugin {
         artDatabase = null;
         cacheManager = null;
         lang = null;
+        recipeLoader = null;
+    }
+
+    private FileConfiguration loadOptionalYAML(String configOption, String fileName) {
+        FileConfiguration defaultValues = YamlConfiguration.loadConfiguration(getTextResource(fileName));
+        if (!getConfig().getBoolean(configOption)) {
+            return defaultValues;
+        } else {
+            File file = new File(getDataFolder(), fileName);
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                    Files.copy(getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    getLogger().info(String.format("Failed to build %s file", fileName));
+                    return defaultValues;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file);
+        }
     }
 
     private boolean loadTables() {

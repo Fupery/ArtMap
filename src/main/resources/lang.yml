@@ -2,7 +2,8 @@
 #          ArtMap Language File            #
 #------------------------------------------#
 #
-# Replace the strings below with an appropriate translation
+# Replace the strings below
+# It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
 #
 # EXAMPLE: “Replace me with a translation!”
 #
@@ -14,9 +15,6 @@
 # Any time you see "/artmap", leave that unchanged as well (this is the help command)
 #
 # Any time you see § next to a number or letter (something like §a or §2), this is a colour code
-# Please don't modify or remove these either.
-#
-# Thanks for providing your translation! :)
 
 english:
 #Player Messages

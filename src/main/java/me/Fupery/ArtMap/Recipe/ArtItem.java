@@ -89,14 +89,12 @@ class ItemEasel extends ArtItem {
 
     @Override
     org.bukkit.inventory.Recipe getRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(new ItemEasel());
-        recipe.shape("*s*", "tft", "lal");
-        recipe.setIngredient('s', Material.STICK);
-        recipe.setIngredient('t', Material.STRING);
-        recipe.setIngredient('f', Material.ITEM_FRAME);
-        recipe.setIngredient('l', Material.LEATHER);
-        recipe.setIngredient('a', Material.ARMOR_STAND);
-        return recipe;
+        try {
+            return ArtMap.getRecipeLoader().getRecipe(new ItemEasel(), "EASEL");
+        } catch (RecipeLoader.InvalidRecipeException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -118,12 +116,12 @@ class ItemCanvas extends ArtItem {
 
     @Override
     org.bukkit.inventory.Recipe getRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(new ItemCanvas());
-        recipe.shape("lel", "epe", "lel");
-        recipe.setIngredient('l', Material.LEATHER);
-        recipe.setIngredient('p', Material.EMPTY_MAP);
-        recipe.setIngredient('e', Material.EMERALD);
-        return recipe;
+        try {
+            return ArtMap.getRecipeLoader().getRecipe(new ItemCanvas(), "CANVAS");
+        } catch (RecipeLoader.InvalidRecipeException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
