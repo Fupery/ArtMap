@@ -30,7 +30,7 @@ public abstract class ArtistProtocol {
                 handler = new PacketHandler();
                 channel.pipeline().addBefore("packet_handler", handlerName, handler);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ClassCastException e) {
             handler = (PacketHandler) channel.pipeline().get(handlerName);
         }
         handler.player = player;

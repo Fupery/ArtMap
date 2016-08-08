@@ -1,11 +1,14 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -19,6 +22,8 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.BUILD;
 
 public class PlayerInteractListener implements Listener {
 
@@ -44,7 +49,12 @@ public class PlayerInteractListener implements Listener {
         } else return BlockFace.NORTH;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    private static void notifyFailedPlacement(Player player, Location location) {
+        location.getWorld().spigot().playEffect(location, Effect.CRIT, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
+        SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
         if (ArtMap.getPreviewing().containsKey(event.getPlayer())) {
@@ -53,8 +63,7 @@ public class PlayerInteractListener implements Listener {
         }
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
-                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
-                || event.isCancelled()) {
+                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
         event.setCancelled(true);
@@ -63,17 +72,26 @@ public class PlayerInteractListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
+        Location baseLocation = event.getClickedBlock().getLocation().clone().add(.5, 1.25, .5);
+        Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
+        CompatibilityManager compat = ArtMap.getCompatManager();
 
-        if (!player.hasPermission("artmap.artist")) {
-            ArtMap.getLang().sendMsg("NO_PERM", player);
+        if (!player.hasPermission("artmap.artist")
+                || !compat.checkActionAllowed(player, baseLocation, BUILD)
+                || !compat.checkActionAllowed(player, easelLocation, BUILD)) {
+            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
+            notifyFailedPlacement(player, baseLocation);
             return;
         }
-        Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
         BlockFace facing = getFacing(player);
+        Location frameBlock = new LocationHelper(easelLocation).shiftTowards(facing);
 
-        if (easelLocation.getBlock().getType() != Material.AIR || Easel.checkForEasel(easelLocation)) {
+        if (easelLocation.getBlock().getType() != Material.AIR
+                || baseLocation.getBlock().getType() != Material.AIR
+                || frameBlock.getBlock().getType() != Material.AIR
+                || Easel.checkForEasel(easelLocation)) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
-            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+            notifyFailedPlacement(player, baseLocation);
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
@@ -84,7 +102,7 @@ public class PlayerInteractListener implements Listener {
 
         if (easel == null) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
-            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+            notifyFailedPlacement(player, baseLocation);
         }
     }
 

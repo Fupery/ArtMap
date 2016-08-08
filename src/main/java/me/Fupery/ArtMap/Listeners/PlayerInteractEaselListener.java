@@ -1,12 +1,10 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Compatability.InteractPermissionHandler;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -29,8 +27,9 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.*;
-import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.*;
+import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction;
+import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.BUILD;
+import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.INTERACT;
 
 public class PlayerInteractEaselListener implements Listener {
 
@@ -95,13 +94,9 @@ public class PlayerInteractEaselListener implements Listener {
         Player player = (Player) clicker;
 
         InteractAction action = (click == ClickType.SHIFT_RIGHT_CLICK) ? BUILD : INTERACT;
-
-        boolean allowed =
-                player.hasPermission("artmap.admin") ||
-                ArtMap.getCompatManager().checkActionAllowed(player, clicked.getLocation(), action);
         event.setCancelled(true);
 
-        if (!allowed) {
+        if (!ArtMap.getCompatManager().checkActionAllowed(player, clicked.getLocation(), action)) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
