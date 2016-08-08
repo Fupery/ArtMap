@@ -10,11 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChannelCacheManager {
     private final ConcurrentHashMap<UUID, CacheablePlayerChannel> cacheMap = new ConcurrentHashMap<>();
     private CleanupThread cleanup = null;
+    private final Object cleanupLock = new Object();
 
     private CacheablePlayerChannel cacheChannel(UUID player) {
         CacheablePlayerChannel playerChannel = new CacheablePlayerChannel(player, 30000); //30 seconds
         cacheMap.put(player, playerChannel);
-        if (cleanup == null) cleanup = new CleanupThread();
+        synchronized (cleanupLock) {
+            if (cleanup == null) cleanup = new CleanupThread();
+        }
         return playerChannel;
     }
 
@@ -38,8 +41,10 @@ public class ChannelCacheManager {
         @Override
         public void run() {
             if (cacheMap.isEmpty()) {
-                cancel();
-                cleanup = null;
+                synchronized (cleanupLock) {
+                    cancel();
+                    cleanup = null;
+                }
             }
             for (UUID key : cacheMap.keySet()) {
                 CacheablePlayerChannel value = cacheMap.get(key);

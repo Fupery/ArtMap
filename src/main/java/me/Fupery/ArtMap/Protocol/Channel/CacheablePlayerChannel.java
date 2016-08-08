@@ -23,7 +23,7 @@ class CacheablePlayerChannel {
     }
 
     boolean isExpired() {
-        return expiryTime != -1 && expiryTime >= System.currentTimeMillis();
+        return channel == null || !channel.isOpen() || (expiryTime != -1 && expiryTime >= System.currentTimeMillis());
     }
 
     Channel getChannel() {
