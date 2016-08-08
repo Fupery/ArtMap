@@ -2,6 +2,9 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TitleFilter {
 
     private final String title;
@@ -18,25 +21,31 @@ public class TitleFilter {
 
         ArtMap plugin = ArtMap.plugin();
 
-        if (!plugin.getConfig().getString("language").equalsIgnoreCase("english")) return true;
+        if (containsIllegalCharacters(title)) return false;
 
-        if (title.matches("[\\w]{3,16}")) {
-
-            for (String reject : plugin.getTitleFilter()) {
-
-                if (plugin.getConfig().getBoolean("swearFilter")) {
-
-                    if (title.toLowerCase().contains(reject)
-                            || adjTitle.contains(reject)) {
-                        return false;
-                    }
-                }
-            }
-
-        } else {
+        if (!title.matches("[\\w]{3,16}")) {
             return false;
         }
+
+        if (!plugin.getConfig().getString("language").equalsIgnoreCase("english")) return true;
+
+        for (String reject : plugin.getTitleFilter()) {
+
+            if (plugin.getConfig().getBoolean("swearFilter")) {
+
+                if (title.toLowerCase().contains(reject)
+                        || adjTitle.contains(reject)) {
+                    return false;
+                }
+            }
+        }
         return true;
+    }
+
+    public boolean containsIllegalCharacters(String toExamine) {
+        Pattern pattern = Pattern.compile("[\\.!~#@*+%{}<>\\[\\]|\"\\\\/&-^]");
+        Matcher matcher = pattern.matcher(toExamine);
+        return matcher.find();
     }
 
     //removes repeat characters & underscores
