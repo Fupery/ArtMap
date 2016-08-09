@@ -48,7 +48,7 @@ public class Reflection {
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throw new NoSuchFieldException(String.format("Field '%s' could not be found in '%s'. Fields found: {%s}",
-                            fieldName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredFields())));
+                    fieldName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredFields())));
         }
         return field.get(obj);
     }

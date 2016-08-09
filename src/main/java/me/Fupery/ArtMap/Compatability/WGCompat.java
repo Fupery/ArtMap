@@ -1,12 +1,10 @@
 package me.Fupery.ArtMap.Compatability;
 
 import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.blacklist.action.Action;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

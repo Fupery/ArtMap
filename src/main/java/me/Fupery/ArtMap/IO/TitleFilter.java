@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
-import org.bukkit.Bukkit;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +15,12 @@ public class TitleFilter {
         this.title = title;
         chars = title.toCharArray();
         adjTitle = replaceCharacters();
+    }
+
+    public static boolean containsIllegalCharacters(String toExamine) {
+        Pattern pattern = Pattern.compile("[!@#$|%^&*()-/\\\\;:.,<>~`?]");
+        Matcher matcher = pattern.matcher(toExamine);
+        return matcher.find();
     }
 
     public boolean check() {
@@ -38,12 +43,6 @@ public class TitleFilter {
             }
         }
         return true;
-    }
-
-    public static boolean containsIllegalCharacters(String toExamine) {
-        Pattern pattern = Pattern.compile("[!@#$|%^&*()-/\\\\;:.,<>~`?]");
-        Matcher matcher = pattern.matcher(toExamine);
-        return matcher.find();
     }
 
     //removes repeat characters & underscores

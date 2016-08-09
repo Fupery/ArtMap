@@ -4,7 +4,6 @@ import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.ErrorLogger;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;

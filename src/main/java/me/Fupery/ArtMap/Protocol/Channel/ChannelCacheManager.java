@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChannelCacheManager {
     private final ConcurrentHashMap<UUID, CacheablePlayerChannel> cacheMap = new ConcurrentHashMap<>();
-    private CleanupThread cleanup = null;
     private final Object cleanupLock = new Object();
+    private CleanupThread cleanup = null;
 
     private CacheablePlayerChannel cacheChannel(UUID player) {
         CacheablePlayerChannel playerChannel = new CacheablePlayerChannel(player, 30000); //30 seconds

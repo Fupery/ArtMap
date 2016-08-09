@@ -9,7 +9,7 @@ public class CompatibilityManager implements InteractPermissionHandler {
     public CompatibilityManager() {
         InteractPermissionHandler wgCompat;
         try {
-             wgCompat = new WGCompat();
+            wgCompat = new WGCompat();
         } catch (Exception | NoClassDefFoundError e) {
             interactHandlers = new InteractPermissionHandler[0];
             return;

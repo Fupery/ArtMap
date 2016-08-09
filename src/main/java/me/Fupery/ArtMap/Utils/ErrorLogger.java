@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class ErrorLogger {
             }
         });
     }
+
     private static File getDataFolder() {
         if (dataFolder == null || dataFolder.get() == null) {
             dataFolder = new WeakReference<>(ArtMap.plugin().getDataFolder());
