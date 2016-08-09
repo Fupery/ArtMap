@@ -240,7 +240,9 @@ public class Easel {
     }
 
     public void playEffect(Effect effect) {
-        Location loc = new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
+        BlockFace facing = getFacing();
+        Location loc = (facing == null) ? location :
+         new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
         loc.getWorld().spigot().playEffect(loc, effect, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
     }
 
