@@ -58,7 +58,9 @@ public class ArtDatabase {
 
         if (map != null) {
             int mapIDValue = map.getInt(MAP_TAG);
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG)));
+            OfflinePlayer player = (map.contains(ARTIST_TAG)) ?
+                    Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG))) :
+                    null;
             String date = map.getString(DATE_TAG);
             return new MapArt(((short) mapIDValue), title, player, date);
         }
