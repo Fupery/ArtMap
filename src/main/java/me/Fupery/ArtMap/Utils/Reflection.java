@@ -225,7 +225,7 @@ public class Reflection {
 
         private void logFailure(Exception e) {
             Bukkit.getLogger().warning("[ArtMap] failed to instantiate protocol! Is this version supported?");
-            e.printStackTrace();
+            ErrorLogger.log(e);
         }
     }
 }

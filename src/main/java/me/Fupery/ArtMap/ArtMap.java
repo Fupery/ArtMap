@@ -161,6 +161,7 @@ public class ArtMap extends JavaPlugin {
         lang = null;
         recipeLoader = null;
         compatManager = null;
+        helpMenu = null;
     }
 
     private FileConfiguration loadOptionalYAML(String configOption, String fileName) {
