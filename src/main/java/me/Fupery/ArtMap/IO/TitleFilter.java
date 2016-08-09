@@ -42,8 +42,8 @@ public class TitleFilter {
         return true;
     }
 
-    public boolean containsIllegalCharacters(String toExamine) {
-        Pattern pattern = Pattern.compile("[\\.!~#@*+%{}<>\\[\\]|\"\\\\/&-^]");
+    public static boolean containsIllegalCharacters(String toExamine) {
+        Pattern pattern = Pattern.compile("[!@#$%^&*()-/\\\\;:.,<>~`?\"']");
         Matcher matcher = pattern.matcher(toExamine);
         return matcher.find();
     }
