@@ -123,8 +123,7 @@ public class ArtDatabase {
         for (String title : list) {
             MapArt art = getArtwork(title);
 
-            if (art != null) {
-
+            if (art != null && art.isValid()) {
                 if (!artist.equals("all")
                         && !art.getPlayer().getName().equalsIgnoreCase(artist)) {
                     continue;
@@ -149,7 +148,7 @@ public class ArtDatabase {
             for (String title : list) {
                 MapArt art = getArtwork(title);
 
-                if (art != null && !returnList.contains(art.getPlayer().getUniqueId())) {
+                if (art != null && art.isValid() && !returnList.contains(art.getPlayer().getUniqueId())) {
                     returnList.add(art.getPlayer().getUniqueId());
                 }
             }
