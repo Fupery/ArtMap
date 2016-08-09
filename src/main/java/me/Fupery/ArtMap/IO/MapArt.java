@@ -54,7 +54,8 @@ public class MapArt {
     }
 
     public boolean isValid() {
-        return title != null && title.matches("[\\w]{3,16}") && player != null && player.hasPlayedBefore();
+        return title != null && title.length() > 2 && title.length() <= 16
+                && player != null && player.hasPlayedBefore();
     }
 
     @Override

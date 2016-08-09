@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
+import org.bukkit.Bukkit;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,18 +24,15 @@ public class TitleFilter {
 
         if (containsIllegalCharacters(title)) return false;
 
-        if (!title.matches("[\\w]{3,16}")) {
+        if (title.length() < 3 || title.length() > 16) {
             return false;
         }
 
         if (!plugin.getConfig().getString("language").equalsIgnoreCase("english")) return true;
 
-        for (String reject : plugin.getTitleFilter()) {
-
-            if (plugin.getConfig().getBoolean("swearFilter")) {
-
-                if (title.toLowerCase().contains(reject)
-                        || adjTitle.contains(reject)) {
+        if (plugin.getConfig().getBoolean("swearFilter")) {
+            for (String reject : plugin.getTitleFilter()) {
+                if (title.toLowerCase().contains(reject) || adjTitle.contains(reject)) {
                     return false;
                 }
             }
@@ -43,7 +41,7 @@ public class TitleFilter {
     }
 
     public static boolean containsIllegalCharacters(String toExamine) {
-        Pattern pattern = Pattern.compile("[!@#$%^&*()-/\\\\;:.,<>~`?\"']");
+        Pattern pattern = Pattern.compile("[!@#$|%^&*()-/\\\\;:.,<>~`?]");
         Matcher matcher = pattern.matcher(toExamine);
         return matcher.find();
     }
