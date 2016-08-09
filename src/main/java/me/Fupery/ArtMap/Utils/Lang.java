@@ -1,7 +1,9 @@
 package me.Fupery.ArtMap.Utils;
 
+import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,7 +31,7 @@ public class Lang {
 
     private static WrappedActionBarPacket buildPacket(ChatPacketBuilder builder, String message, boolean isError) {
         String formattedMessage = isError ? "§c§l✷ " + message + " §c§l✷" : "§6✾ " + message + " §6✾";
-        return new WrappedActionBarPacket(builder.buildActionBarPacket(formattedMessage));
+        return new WrappedActionBarPacket(message, builder.buildActionBarPacket(formattedMessage));
     }
 
     public String getMsg(String key) {
@@ -55,15 +57,11 @@ public class Lang {
     }
 
     public static class MessageSender {
-        private final String message;
+        protected final String message;
 
         private MessageSender(String message) {
             this.message = PREFIX + message.replaceAll("§l", "")
                     .replaceAll("§3", "§6").replaceAll("§4", "§c").replaceAll("§b", "§6");
-        }
-
-        private MessageSender() {
-            message = "";
         }
 
         public void send(Player player) {
@@ -74,13 +72,16 @@ public class Lang {
     public static class WrappedActionBarPacket extends MessageSender {
         private final Object packet;
 
-        private WrappedActionBarPacket(Object packet) {
+        private WrappedActionBarPacket(String message, Object packet) {
+            super(message);
             this.packet = packet;
         }
 
         @Override
         public void send(Player player) {
-            ArtMap.getCacheManager().getChannel(player.getUniqueId()).writeAndFlush(packet);
+            Channel channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
+            if (channel != null) channel.writeAndFlush(packet);
+            else player.sendMessage(message);
         }
     }
 

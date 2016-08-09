@@ -62,7 +62,7 @@ public class ArtistHandler {
         };
     }
 
-    public void addPlayer(final Player player, MapView mapView, int yawOffset) {
+    public synchronized void addPlayer(final Player player, MapView mapView, int yawOffset) {
         artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
         if (!protocol.injectPlayer(player)) {
             artists.remove(player.getUniqueId());
