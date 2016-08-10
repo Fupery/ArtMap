@@ -3,7 +3,7 @@ main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depends: []
-softdepend: [WorldGuard]
+softdepend: [WorldGuard, Faction]
 author: Fupery
 
 commands:

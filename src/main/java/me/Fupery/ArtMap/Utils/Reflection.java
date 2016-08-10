@@ -31,7 +31,7 @@ public class Reflection {
             nmsPlayer = invokeMethod(player, "getHandle");
             playerConnection = getField(nmsPlayer, "playerConnection");
             networkManager = getField(playerConnection, "networkManager");
-            channel = (Channel) getField(networkManager, "channel");
+            channel = (Channel) getField(networkManager, "channl");
 
         } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             ErrorLogger.log(e);

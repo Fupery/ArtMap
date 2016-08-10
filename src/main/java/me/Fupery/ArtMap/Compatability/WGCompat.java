@@ -5,10 +5,12 @@ import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import me.Fupery.ArtMap.Easel.EaselEvent;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class WGCompat implements InteractPermissionHandler {
+public class WGCompat implements RegionHandler {
     private Object worldGuardPlugin;
 
     WGCompat() {
@@ -16,20 +18,15 @@ public class WGCompat implements InteractPermissionHandler {
     }
 
     @Override
-    public boolean checkActionAllowed(Player player, Location location, InteractAction action) {
-        if (!isLoaded()) return true;
+    public boolean checkBuildAllowed(Player player, Location location) {
+        return ((WorldGuardPlugin) worldGuardPlugin).canBuild(player, location);
+    }
+
+    @Override
+    public boolean checkInteractAllowed(Player player, Entity entity, EaselEvent.ClickType click) {
         WorldGuardPlugin wg = ((WorldGuardPlugin) worldGuardPlugin);
-        if (wg.canBuild(player, location)) return true;
-        else if (action == InteractAction.BUILD) return false;
-        ApplicableRegionSet set = wg.getRegionContainer().createQuery().getApplicableRegions(location);
-        LocalPlayer localPlayer = wg.wrapPlayer(player);
-        if (action == InteractAction.INTERACT) {
-            return set.testState(localPlayer, DefaultFlag.INTERACT);
-        } else if (action == InteractAction.USE) {
-            return set.testState(localPlayer, DefaultFlag.USE);
-        } else {
-            return true;
-        }
+        ApplicableRegionSet set = wg.getRegionContainer().createQuery().getApplicableRegions(entity.getLocation());
+        return set.testState(wg.wrapPlayer(player), DefaultFlag.INTERACT);
     }
 
     @Override

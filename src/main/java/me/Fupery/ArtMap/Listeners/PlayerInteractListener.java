@@ -8,6 +8,7 @@ import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,8 +23,6 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.BUILD;
 
 public class PlayerInteractListener implements Listener {
 
@@ -75,10 +74,9 @@ public class PlayerInteractListener implements Listener {
         Location baseLocation = event.getClickedBlock().getLocation().clone().add(.5, 1.25, .5);
         Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
         CompatibilityManager compat = ArtMap.getCompatManager();
-
         if (!player.hasPermission("artmap.artist")
-                || !compat.checkActionAllowed(player, baseLocation, BUILD)
-                || !compat.checkActionAllowed(player, easelLocation, BUILD)) {
+                || !compat.checkBuildAllowed(player, baseLocation)
+                || !compat.checkBuildAllowed(player, easelLocation)) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
             notifyFailedPlacement(player, baseLocation);
             return;

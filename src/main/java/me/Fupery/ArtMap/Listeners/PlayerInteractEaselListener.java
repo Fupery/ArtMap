@@ -27,10 +27,6 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction;
-import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.BUILD;
-import static me.Fupery.ArtMap.Compatability.InteractPermissionHandler.InteractAction.INTERACT;
-
 public class PlayerInteractEaselListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
@@ -93,10 +89,9 @@ public class PlayerInteractEaselListener implements Listener {
         if (!(clicker instanceof Player)) return;
         Player player = (Player) clicker;
 
-        InteractAction action = (click == ClickType.SHIFT_RIGHT_CLICK) ? BUILD : INTERACT;
         event.setCancelled(true);
 
-        if (!ArtMap.getCompatManager().checkActionAllowed(player, clicked.getLocation(), action)) {
+        if (!ArtMap.getCompatManager().checkInteractAllowed(player, clicked, click)) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
