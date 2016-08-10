@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Utils;
+package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
@@ -39,7 +39,7 @@ public class ErrorLogger {
                 fileWriter = new FileWriter(file, true);
                 logger = new PrintWriter(fileWriter);
                 logger.println(dateFormat.format(new Date()));
-                logger.println("[VERSION]:" + Bukkit.getServer().getVersion() + ", " + ArtMap.plugin().toString());
+                logger.println("[VERSION]:" + Bukkit.getServer().getVersion() + ", " + ArtMap.instance().toString());
                 logger.println("---------------------[SERVER]---------------------");
                 String loadedPlugins = "Loaded Plugins: [";
                 for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
@@ -67,7 +67,7 @@ public class ErrorLogger {
 
     private static File getDataFolder() {
         if (dataFolder == null || dataFolder.get() == null) {
-            dataFolder = new WeakReference<>(ArtMap.plugin().getDataFolder());
+            dataFolder = new WeakReference<>(ArtMap.instance().getDataFolder());
         }
         return dataFolder.get();
     }

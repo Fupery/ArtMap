@@ -25,7 +25,7 @@ public class TitleFilter {
 
     public boolean check() {
 
-        ArtMap plugin = ArtMap.plugin();
+        ArtMap plugin = ArtMap.instance();
 
         if (containsIllegalCharacters(title)) return false;
 

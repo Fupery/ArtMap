@@ -57,7 +57,7 @@ public class EaselInteractListener implements Listener {
                 if (easel.getItem().getType() == Material.MAP) {
                     easel.rideEasel(player);
                     return;
-                    //remove items that were added while plugin is unloaded etc.
+                    //remove items that were added while instance is unloaded etc.
                 } else if (easel.getItem().getType() != Material.AIR) {
                     easel.removeItem();
                     return;

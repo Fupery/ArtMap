@@ -36,7 +36,7 @@ public class ArtDatabase {
     }
 
     public static ArtDatabase buildDatabase() {
-        mapData = new File(ArtMap.plugin().getDataFolder(), "mapList.yml");
+        mapData = new File(ArtMap.instance().getDataFolder(), "mapList.yml");
 
         if (!mapData.exists()) {
 
@@ -238,7 +238,7 @@ public class ArtDatabase {
                 loadConfiguration();
 
             } catch (IOException e) {
-                ArtMap.plugin().getLogger().info(String.format(ArtMap.getLang().getMsg("MAPDATA_ERROR"),
+                ArtMap.instance().getLogger().info(String.format(ArtMap.getLang().getMsg("MAPDATA_ERROR"),
                         mapData.getAbsolutePath(), e));
             }
         });

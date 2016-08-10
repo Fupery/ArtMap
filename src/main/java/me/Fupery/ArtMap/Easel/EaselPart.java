@@ -13,33 +13,37 @@ import org.bukkit.entity.ItemFrame;
 
 import static me.Fupery.ArtMap.ArtMap.getBukkitVersion;
 import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_8;
+import static org.bukkit.entity.EntityType.ARMOR_STAND;
+import static org.bukkit.entity.EntityType.ITEM_FRAME;
 
 public enum EaselPart {
-    STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false),
-    SEAT(getBukkitVersion().getVersion().getSeatXOffset(), getBukkitVersion().getVersion().getSeatYOffset(), true),
-    MARKER(SEAT.modifier, 0, true);
+    STAND(ARMOR_STAND, 0.4, -1, true), FRAME(ITEM_FRAME, 1, 0, false),
+    SIGN(ARMOR_STAND, 0, 0, false),
+    SEAT(ARMOR_STAND, getBukkitVersion().getVersion().getSeatXOffset(),
+            getBukkitVersion().getVersion().getSeatYOffset(), true),
+    MARKER(ARMOR_STAND, SEAT.modifier, 0, true);
 
     public static final String ARBITRARY_SIGN_ID = "*{=}*";
     public static final String EASEL_ID = ArtMap.getLang().getMsg("RECIPE_EASEL_NAME");
-    private static final boolean requiresSeatCompensation = (ArtMap.getBukkitVersion().getVersion() == v1_8);
+    private static final boolean requiresSeatCompensation = (getBukkitVersion().getVersion() == v1_8);
 
+    final EntityType entityType;
     final double modifier;
     final double heightOffset;
     final boolean centred;
 
-    EaselPart(double modifier, double heightOffset, boolean centred) {
+    EaselPart(EntityType entityType, double modifier, double heightOffset, boolean centred) {
+        this.entityType = entityType;
         this.modifier = modifier;
         this.heightOffset = heightOffset;
         this.centred = centred;
     }
 
     public static EaselPart getPartType(Entity entity) {
-
         switch (entity.getType()) {
             case ARMOR_STAND:
                 ArmorStand stand = (ArmorStand) entity;
-                return (stand.isVisible()) ?
-                        STAND : SEAT;
+                return stand.isVisible() ? STAND : (stand.isSmall() ? MARKER : SEAT);
             case ITEM_FRAME:
                 return FRAME;
         }
@@ -93,20 +97,7 @@ public enum EaselPart {
     }
 
     private EntityType getType() {
-
-        switch (this) {
-            case STAND:
-                return EntityType.ARMOR_STAND;
-            case FRAME:
-                return EntityType.ITEM_FRAME;
-            case SIGN:
-                break;
-            case SEAT:
-                return EntityType.ARMOR_STAND;
-            case MARKER:
-                return EntityType.ARMOR_STAND;
-        }
-        return null;
+        return entityType;
     }
 
     public Entity spawn(Location easelLocation, BlockFace facing) {

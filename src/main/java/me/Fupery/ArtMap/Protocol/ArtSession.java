@@ -37,11 +37,7 @@ class ArtSession {
 
     boolean start(Player player) {
         Location location = easel.getLocation();
-        //Set up seat
         seat = (ArmorStand) EaselPart.SEAT.spawn(location, easel.getFacing());
-        //set up marker
-//        Location standLoc = player.getEyeLocation().clone();
-//        standLoc.setY(0);
         marker = (ArmorStand) EaselPart.MARKER.spawn(easel.getLocation(), easel.getFacing());
 
         seat.setPassenger(player);
@@ -52,7 +48,6 @@ class ArtSession {
         //Run tasks
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
         TaskManager taskManager = ArtMap.getTaskManager();
-//        taskManager.SYNC.runLater(() -> marker.teleport(player.getLocation()), 2);
         taskManager.SYNC.runLater(() -> {
             if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
         }, 30);

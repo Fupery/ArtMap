@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import org.bukkit.Bukkit;

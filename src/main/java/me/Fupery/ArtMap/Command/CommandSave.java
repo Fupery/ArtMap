@@ -2,16 +2,12 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

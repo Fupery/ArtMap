@@ -68,8 +68,7 @@ public class Easel {
         } else {
 
             Easel easel = new Easel(easelLocation);
-            Collection<Entity> entities =
-                    easelLocation.getWorld().getNearbyEntities(easelLocation, 2, 2, 2);
+            Collection<Entity> entities = easelLocation.getWorld().getNearbyEntities(easelLocation, 2, 2, 2);
             ArmorStand stand = easel.getStand(entities);
             ItemFrame frame = easel.getFrame(entities);
 

@@ -14,7 +14,7 @@ public class HelpMenu extends Menu {
     public static final String CLICK = ChatColor.GREEN + ArtMap.getLang().getMsg("BUTTON_CLICK");
 
     public HelpMenu() {
-        super(ArtMap.plugin(), ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_HELP"), InventoryType.HOPPER);
+        super(ArtMap.instance(), ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_HELP"), InventoryType.HOPPER);
         addButtons(generateButtons(this));
     }
 

@@ -4,12 +4,16 @@ import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
+import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.*;
+import me.Fupery.ArtMap.Utils.Lang;
+import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -28,31 +33,35 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    private static ArtistHandler artistHandler;
-    private static ConcurrentHashMap<Player, Preview> previewing;
-    private static VersionHandler bukkitVersion;
-    private static TaskManager taskManager;
-    private static ArtDatabase artDatabase;
-    private static ChannelCacheManager cacheManager;
-    private static RecipeLoader recipeLoader;
-    private static CompatibilityManager compatManager;
-    private static Lang lang;
+    private static SoftReference<ArtMap> pluginInstance = null;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
+    private ArtistHandler artistHandler;
+    private ConcurrentHashMap<Player, Preview> previewing;
+    private VersionHandler bukkitVersion;
+    private TaskManager taskManager;
+    private ArtDatabase artDatabase;
+    private ChannelCacheManager cacheManager;
+    private RecipeLoader recipeLoader;
+    private CompatibilityManager compatManager;
+    private Lang lang;
     private List<String> titleFilter;
     private PixelTableManager pixelTable;
     private WeakReference<HelpMenu> helpMenu;
     private boolean hasRegisteredListeners = false;
 
     public static ArtDatabase getArtDatabase() {
-        return artDatabase;
+        return instance().artDatabase;
     }
 
-    public static ArtMap plugin() {
-        return (ArtMap) Bukkit.getPluginManager().getPlugin("ArtMap");
+    public static ArtMap instance() {
+        if (pluginInstance == null || pluginInstance.get() == null) {
+            pluginInstance = new SoftReference<>((ArtMap) Bukkit.getPluginManager().getPlugin("ArtMap"));
+        }
+        return pluginInstance.get();
     }
 
     public static HelpMenu getHelpMenu() {
-        ArtMap plugin = plugin();
+        ArtMap plugin = instance();
         if (plugin.helpMenu.get() == null) {
             plugin.helpMenu = new WeakReference<>(new HelpMenu());
         }
@@ -60,39 +69,40 @@ public class ArtMap extends JavaPlugin {
     }
 
     public static TaskManager getTaskManager() {
-        return taskManager;
+        return instance().taskManager;
     }
 
     public static ArtistHandler getArtistHandler() {
-        return artistHandler;
+        return instance().artistHandler;
     }
 
     public static ConcurrentHashMap<Player, Preview> getPreviewing() {
-        return previewing;
+        return instance().previewing;
     }
 
     public static VersionHandler getBukkitVersion() {
-        return bukkitVersion;
+        return instance().bukkitVersion;
     }
 
     public static ChannelCacheManager getCacheManager() {
-        return cacheManager;
+        return instance().cacheManager;
     }
 
     public static Lang getLang() {
-        return lang;
+        return instance().lang;
     }
 
     public static RecipeLoader getRecipeLoader() {
-        return recipeLoader;
+        return instance().recipeLoader;
     }
 
     public static CompatibilityManager getCompatManager() {
-        return compatManager;
+        return instance().compatManager;
     }
 
     @Override
     public void onEnable() {
+        pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
 
         taskManager = new TaskManager(this);
@@ -152,16 +162,7 @@ public class ArtMap extends JavaPlugin {
         }
         recipeLoader.unloadRecipes();
         reloadConfig();
-        taskManager = null;
-        previewing = null;
-        artistHandler = null;
-        bukkitVersion = null;
-        artDatabase = null;
-        cacheManager = null;
-        lang = null;
-        recipeLoader = null;
-        compatManager = null;
-        helpMenu = null;
+        pluginInstance = null;
     }
 
     private FileConfiguration loadOptionalYAML(String configOption, String fileName) {

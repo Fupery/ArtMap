@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Utils;
+package me.Fupery.ArtMap.IO;
 
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;

@@ -16,11 +16,11 @@ class Cursor {
 
     Cursor(int yawOffset) {
 
-        yawTable = ArtMap.plugin().getPixelTable().getYawBounds();
-        pitchTables = ArtMap.plugin().getPixelTable().getPitchBounds();
+        yawTable = ArtMap.instance().getPixelTable().getYawBounds();
+        pitchTables = ArtMap.instance().getPixelTable().getPitchBounds();
         this.yawOffset = yawOffset;
 
-        limit = (128 / ArtMap.plugin().getMapResolutionFactor()) - 1;
+        limit = (128 / ArtMap.instance().getMapResolutionFactor()) - 1;
         yawOffCanvas = false;
         pitchOffCanvas = false;
         int mid = limit / 2;

@@ -34,7 +34,7 @@ public class CommandRestore extends Command {
         boolean overwrite = (args.length > 2 && args[2].equals("-o"));
 
         //Check if backups folder is valid
-        File backupsFolder = new File(ArtMap.plugin().getDataFolder(), "backups");
+        File backupsFolder = new File(ArtMap.instance().getDataFolder(), "backups");
 
         if (!backupsFolder.exists() && !backupsFolder.mkdir()) {
             msg.message = String.format(ArtMap.getLang().getMsg("RESTORE_ERROR"), backupsFolder.getName());

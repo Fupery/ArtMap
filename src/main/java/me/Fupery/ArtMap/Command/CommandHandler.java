@@ -34,7 +34,7 @@ public class CommandHandler implements CommandExecutor {
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (sender instanceof Player) {
-                    ArtMap.getHelpMenu().open(ArtMap.plugin(), (Player) sender);
+                    ArtMap.getHelpMenu().open(ArtMap.instance(), (Player) sender);
 
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
@@ -48,7 +48,7 @@ public class CommandHandler implements CommandExecutor {
                 ArtMap.getTaskManager().SYNC.run(new Runnable() {
                     @Override
                     public void run() {
-                        JavaPlugin plugin = ArtMap.plugin();
+                        JavaPlugin plugin = ArtMap.instance();
                         plugin.onDisable();
                         plugin.onEnable();
                         sender.sendMessage(Lang.PREFIX + ChatColor.GREEN + "Successfully reloaded ArtMap!");

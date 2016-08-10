@@ -21,7 +21,7 @@ public abstract class Preview extends BukkitRunnable {
         checkCurrentPreviews(player);
         ItemStack item = art.getMapItem();
         Preview preview = new ItemPreview(player, item);
-        preview.runTaskLaterAsynchronously(ArtMap.plugin(), 300);
+        preview.runTaskLaterAsynchronously(ArtMap.instance(), 300);
         player.setItemInHand(item);
         ArtMap.getPreviewing().put(player, preview);
     }
@@ -29,7 +29,7 @@ public abstract class Preview extends BukkitRunnable {
     public static void inventory(Player player, Inventory previewInventory) {
         checkCurrentPreviews(player);
         Preview preview = new RecipePreview(player, previewInventory);
-        preview.runTaskLaterAsynchronously(ArtMap.plugin(), 300);
+        preview.runTaskLaterAsynchronously(ArtMap.instance(), 300);
         player.openInventory(previewInventory);
         ArtMap.getPreviewing().put(player, preview);
     }
