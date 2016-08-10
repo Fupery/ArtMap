@@ -48,18 +48,7 @@ public class CommandSave extends Command {
 
         ArtMap.getTaskManager().SYNC.run(() -> {
             Easel easel = null;
-
-            Entity seat = player.getVehicle();
-
-            if (seat != null) {
-
-                if (seat.hasMetadata("easel")) {
-                    String tag = seat.getMetadata("easel").get(0).asString();
-                    Location location = LocationTag.getLocation(seat.getWorld(), tag);
-
-                    easel = Easel.getEasel(location, EaselPart.SIGN);
-                }
-            }
+            easel = ArtMap.getArtistHandler().getEasel(player);
 
             if (easel == null) {
                 player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));

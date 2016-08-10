@@ -65,6 +65,13 @@ public class ArtistHandler {
         }
     }
 
+    public Easel getEasel(Player player) {
+        if (artists.containsKey(player.getUniqueId())) {
+            return artists.get(player.getUniqueId()).getEasel();
+        }
+        return null;
+    }
+
     public boolean containsPlayer(Player player) {
         return (artists.containsKey(player.getUniqueId()));
     }

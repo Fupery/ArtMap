@@ -88,6 +88,10 @@ class ArtSession {
         canvas.setPitch(pitch);
     }
 
+    public Easel getEasel() {
+        return easel;
+    }
+
     void end(Player player) {
         player.leaveVehicle();
         if (marker != null) marker.remove();
