@@ -3,7 +3,7 @@ main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depends: []
-softdepend: [WorldGuard, Faction]
+softdepend: [WorldGuard, Factions, Denizen, GriefPrevention]
 author: Fupery
 
 commands:
@@ -16,13 +16,22 @@ commands:
         <command> reload : Reloads the config
         <command> backup : Create a backup of all current artworks
         <command> restore <backupname> <worldname> <-o> : Restore a backup folder from plugins/ArtMap/backups
+
 permissions:
-  artmap.artist:
-    description: Allows creation of artworks
+  artmap.region.member:
+    description: Allows players to place/break easels in regions that they are a member of, but DO NOT own.
     default: op
+
+  artmap.artist:
+    description: Allows players to paint, and place/break easels in any region they own, or are a member of.
+    children:
+      artmap.region.member: true
+    default: op
+
   artmap.artkit:
     description: Gives players a kit of art supplies while they use an easel
     default: op
+
   artmap.admin:
     description: Allows administrative commands
     children:
