@@ -107,7 +107,7 @@ public class ArtMap extends JavaPlugin {
 
         taskManager = new TaskManager(this);
         previewing = new ConcurrentHashMap<>();
-        artistHandler = new ArtistHandler();
+        artistHandler = new ArtistHandler(this);
         bukkitVersion = new VersionHandler();
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();

@@ -4,15 +4,19 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.Protocol.Brushes.*;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 
-class ArtSession {
+public class ArtSession {
     private final CanvasRenderer canvas;
     private final Brush DYE;
     private final Brush FILL;
@@ -23,6 +27,7 @@ class ArtSession {
     private long lastStroke;
     private ArmorStand marker;
     private ArmorStand seat;
+    private ItemStack[] inventory;
 
     ArtSession(Easel easel, MapView mapView, int yawOffset) {
         this.easel = easel;
@@ -51,6 +56,9 @@ class ArtSession {
         taskManager.SYNC.runLater(() -> {
             if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
         }, 30);
+        if (ArtistHandler.isArtKitForced() && player.hasPermission("artmap.artkit")) {
+            addKit(player);
+        }
         return true;
     }
 
@@ -83,12 +91,38 @@ class ArtSession {
         canvas.setPitch(pitch);
     }
 
+    public void addKit(Player player) {
+        PlayerInventory inventory = player.getInventory();
+        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
+            ItemStack leftOver = inventory.addItem(inventory.getItemInOffHand()).get(0);
+            inventory.setItemInOffHand(new ItemStack(Material.AIR));
+            if (leftOver != null) player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+            this.inventory = inventory.getStorageContents().clone();
+            inventory.setStorageContents(ArtItem.getKit());
+        } else {
+            this.inventory = inventory.getContents();
+            inventory.setContents(ArtItem.getKit());
+        }
+    }
+
+    public void removeKit(Player player) {
+        if (inventory != null) {
+            if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
+                player.getInventory().setStorageContents(inventory);
+            } else {
+                player.getInventory().setContents(inventory);
+            }
+            inventory = null;
+        }
+    }
+
     public Easel getEasel() {
         return easel;
     }
 
     void end(Player player) {
         player.leaveVehicle();
+        removeKit(player);
         if (marker != null) marker.remove();
         if (seat != null) seat.remove();
         easel.setIsPainting(false);

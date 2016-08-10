@@ -8,7 +8,6 @@ import me.Fupery.ArtMap.Protocol.Packet.PacketType;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
@@ -20,11 +19,13 @@ import static me.Fupery.ArtMap.Protocol.Packet.ArtistPacket.PacketInteract.Inter
 
 public class ArtistHandler {
 
+    private static boolean forceArtKit;
     private final ConcurrentHashMap<UUID, ArtSession> artists;
     private final ArtistProtocol protocol;
 
-    public ArtistHandler() {
+    public ArtistHandler(ArtMap plugin) {
         artists = new ConcurrentHashMap<>();
+        forceArtKit = plugin.getConfig().getBoolean("forceArtKit");
 
         protocol = new ArtistProtocol() {
 
@@ -58,6 +59,10 @@ public class ArtistHandler {
         };
     }
 
+    public static boolean isArtKitForced() {
+        return forceArtKit;
+    }
+
     public synchronized void addPlayer(final Player player, Easel easel, MapView mapView, int yawOffset) {
         ArtSession session = new ArtSession(easel, mapView, yawOffset);
         if (protocol.injectPlayer(player) && session.start(player)) {
@@ -77,10 +82,6 @@ public class ArtistHandler {
     }
 
     public synchronized void removePlayer(final Player player) {
-        removePlayer(player, player.getVehicle());
-    }
-
-    public synchronized void removePlayer(final Player player, Entity seat) {
         if (!artists.containsKey(player.getUniqueId())) return;//just for safety :)
         ArtSession session = artists.get(player.getUniqueId());
         artists.remove(player.getUniqueId());
@@ -103,6 +104,10 @@ public class ArtistHandler {
             }, 1);
 
         }
+    }
+
+    public ArtSession getCurrentSession(Player player) {
+        return artists.get(player.getUniqueId());
     }
 
     private synchronized void clearPlayers() {

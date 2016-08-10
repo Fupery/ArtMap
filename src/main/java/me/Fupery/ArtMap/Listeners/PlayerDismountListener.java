@@ -17,7 +17,7 @@ public class PlayerDismountListener implements Listener {
         }
         Player player = (Player) event.getEntity();
         if (ArtMap.getArtistHandler().containsPlayer(player)) {
-            ArtMap.getArtistHandler().removePlayer(player, event.getDismounted());
+            ArtMap.getArtistHandler().removePlayer(player);
         }
     }
 }

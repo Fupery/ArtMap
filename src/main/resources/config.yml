@@ -14,3 +14,7 @@ customLang: false
 
 #If you want to set custom recipes, set this to 'true' then use "/artmap reload" to generate a recipe file
 customRecipes: false
+
+#If true, players with 'artmap.artkit' permission will automatically get a kit of art supplies when they mount an easel
+#Their normal inventory will be returned to them on dismount.
+forceArtKit: false
