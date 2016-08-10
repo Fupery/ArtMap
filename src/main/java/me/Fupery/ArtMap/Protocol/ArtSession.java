@@ -91,7 +91,7 @@ public class ArtSession {
         canvas.setPitch(pitch);
     }
 
-    public void addKit(Player player) {
+    private void addKit(Player player) {
         PlayerInventory inventory = player.getInventory();
         if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
             ItemStack leftOver = inventory.addItem(inventory.getItemInOffHand()).get(0);
