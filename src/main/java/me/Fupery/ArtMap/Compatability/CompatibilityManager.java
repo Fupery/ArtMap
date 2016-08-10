@@ -16,6 +16,7 @@ public class CompatibilityManager implements RegionHandler {
         regionHandlers = new ArrayList<>();
         loadRegionHandler(WGCompat.class);
         loadRegionHandler(FactionsCompat.class);
+        loadRegionHandler(GriefPreventionCompat.class);
         reflectionHandler = loadReflectionHandler();
     }
 

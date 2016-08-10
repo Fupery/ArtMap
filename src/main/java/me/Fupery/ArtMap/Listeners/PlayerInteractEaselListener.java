@@ -91,7 +91,11 @@ public class PlayerInteractEaselListener implements Listener {
 
         event.setCancelled(true);
 
-        if (!ArtMap.getCompatManager().checkInteractAllowed(player, clicked, click)) {
+        boolean interactionAllowed = (click == ClickType.SHIFT_RIGHT_CLICK) ?
+                ArtMap.getCompatManager().checkBuildAllowed(player, clicked.getLocation()) :
+                ArtMap.getCompatManager().checkInteractAllowed(player, clicked, click);
+
+        if (!interactionAllowed) {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
