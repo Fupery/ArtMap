@@ -78,7 +78,14 @@ public class Lang {
 
         @Override
         public void send(Player player) {
-            Channel channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
+            Channel channel;
+            try {
+                channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
+            } catch (Exception e) {
+                Bukkit.getLogger().info(
+                        "[ArtMap] Error binding player channel! Check /plugins/ArtMap/error.log for info.");
+                channel = null;
+            }
             if (channel != null) channel.writeAndFlush(packet);
             else player.sendMessage(message);
         }

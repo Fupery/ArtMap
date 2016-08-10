@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import me.Fupery.ArtMap.Utils.ErrorLogger;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -56,7 +57,8 @@ public abstract class ArtistProtocol {
                 });
             }
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[ArtMap] Error unbinding player channel:");
+            Bukkit.getLogger().warning(Lang.PREFIX + "Error unbinding player channel!" +
+                    " Check /plugins/ArtMap/error.log for info.");
             ErrorLogger.log(e);
         }
         channelLookup.remove(player.getUniqueId());
@@ -69,7 +71,7 @@ public abstract class ArtistProtocol {
             channel = Reflection.getPlayerChannel(player);
 
             if (channel == null) {
-                Bukkit.getLogger().warning("[ArtMap] Error binding player channel!");
+                Bukkit.getLogger().warning(Lang.PREFIX + "Error binding player channel!");
                 return null;
             }
             channelLookup.put(player.getUniqueId(), channel);
@@ -104,7 +106,8 @@ public abstract class ArtistProtocol {
 
             } catch (Exception e) {
                 ErrorLogger.log(e);
-//                Bukkit.getLogger().log(Level.SEVERE, Lang.PREFIX + "Error in onPacketInAsync().", e);
+                Bukkit.getLogger().warning(Lang.PREFIX
+                        + "Error in onPacketInAsync(). Check /plugins/ArtMap/error.log for info.");
             }
             if (msg != null) {
                 super.channelRead(context, msg);
