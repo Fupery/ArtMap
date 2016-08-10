@@ -68,7 +68,8 @@ public class RecipeMenu extends InventoryMenu {
                 ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);
 
                 if (leftOver != null) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+                    ArtMap.getTaskManager().SYNC.run(() ->
+                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
                 }
 
             } else {
