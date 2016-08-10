@@ -1,14 +1,12 @@
 package me.Fupery.ArtMap.Compatability;
 
 import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.TerritoryAccess;
 import com.massivecraft.factions.engine.EngineMain;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.massivecore.MassiveCore;
 import com.massivecraft.massivecore.ps.PS;
 import me.Fupery.ArtMap.Easel.EaselEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

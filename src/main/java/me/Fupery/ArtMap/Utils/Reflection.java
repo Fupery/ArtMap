@@ -24,16 +24,10 @@ public class Reflection {
     }
 
     public static Channel getPlayerChannel(Player player) {
-        Object nmsPlayer, playerConnection, networkManager;
         Channel channel;
-
         try {
-            nmsPlayer = invokeMethod(player, "getHandle");
-            playerConnection = getField(nmsPlayer, "playerConnection");
-            networkManager = getField(playerConnection, "networkManager");
-            channel = (Channel) getField(networkManager, "channl");
-
-        } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            channel = ArtMap.getCompatManager().getReflectionHandler().getPlayerChannel(player);
+        } catch (Exception e) {
             ErrorLogger.log(e);
             return null;
         }
@@ -74,7 +68,7 @@ public class Reflection {
             method.setAccessible(true);
         } catch (NoSuchMethodException e) {
             throw new NoSuchMethodException(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
-                    methodName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredFields())));
+                    methodName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredMethods())));
         }
         return method.invoke(obj);
     }
@@ -224,7 +218,7 @@ public class Reflection {
         }
 
         private void logFailure(Exception e) {
-            Bukkit.getLogger().warning("[ArtMap] failed to instantiate protocol! Is this version supported?");
+            Bukkit.getLogger().warning(Lang.PREFIX + " failed to instantiate protocol! Is this version supported?");
             ErrorLogger.log(e);
         }
     }

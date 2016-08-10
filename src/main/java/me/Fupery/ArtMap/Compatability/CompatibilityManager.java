@@ -10,11 +10,13 @@ import java.util.List;
 
 public class CompatibilityManager implements RegionHandler {
     private List<RegionHandler> regionHandlers;
+    private ReflectionHandler reflectionHandler;
 
     public CompatibilityManager() {
         regionHandlers = new ArrayList<>();
-        loadHandler(WGCompat.class);
-        loadHandler(FactionsCompat.class);
+        loadRegionHandler(WGCompat.class);
+        loadRegionHandler(FactionsCompat.class);
+        reflectionHandler = loadReflectionHandler();
     }
 
     @Override
@@ -35,17 +37,42 @@ public class CompatibilityManager implements RegionHandler {
         return true;
     }
 
+    public ReflectionHandler getReflectionHandler() {
+        return reflectionHandler;
+    }
+
     @Override
     public boolean isLoaded() {
         return true;
     }
 
-    private void loadHandler(Class<? extends RegionHandler> handlerClass) {
+    private ReflectionHandler loadReflectionHandler() {
+        ReflectionHandler handler;
+        try {
+            handler = new DenizenCompat();
+            if (!handler.isLoaded()) handler = new VanillaReflectionHandler();
+        } catch (Exception | NoClassDefFoundError e) {
+            handler = new VanillaReflectionHandler();
+        }
+        return handler;
+    }
+
+    private void loadRegionHandler(Class<? extends RegionHandler> handlerClass) {
         try {
             RegionHandler handler = handlerClass.newInstance();
             if (handler.isLoaded()) regionHandlers.add(handler);
         } catch (Exception | NoClassDefFoundError e) {
             //fail silently
         }
+    }
+
+    @Override
+    public String toString() {
+        String string = "Plugin compatability hooks: ";
+        for (RegionHandler regionHandler : regionHandlers) {
+            string += regionHandler.getClass().getSimpleName() + " [LOADED:" + regionHandler.isLoaded() + "], ";
+        }
+        string += "Reflection Handler: " + reflectionHandler.getClass();
+        return string;
     }
 }
