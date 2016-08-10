@@ -16,7 +16,8 @@ import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_8;
 
 public enum EaselPart {
     STAND(0.4, -1, true), FRAME(1, 0, false), SIGN(0, 0, false),
-    SEAT(getBukkitVersion().getVersion().getSeatXOffset(), getBukkitVersion().getVersion().getSeatZOffset(), true);
+    SEAT(getBukkitVersion().getVersion().getSeatXOffset(), getBukkitVersion().getVersion().getSeatYOffset(), true),
+    MARKER(SEAT.modifier, 0, true);
 
     public static final String ARBITRARY_SIGN_ID = "*{=}*";
     public static final String EASEL_ID = ArtMap.getLang().getMsg("RECIPE_EASEL_NAME");
@@ -36,7 +37,8 @@ public enum EaselPart {
 
         switch (entity.getType()) {
             case ARMOR_STAND:
-                return (entity.isCustomNameVisible()) ?
+                ArmorStand stand = (ArmorStand) entity;
+                return (stand.isVisible()) ?
                         STAND : SEAT;
             case ITEM_FRAME:
                 return FRAME;
@@ -101,6 +103,8 @@ public enum EaselPart {
                 break;
             case SEAT:
                 return EntityType.ARMOR_STAND;
+            case MARKER:
+                return EntityType.ARMOR_STAND;
         }
         return null;
     }
@@ -121,7 +125,7 @@ public enum EaselPart {
         } else {
             Location partPos = getPartPos(easelLocation, facing);
 
-            if (this == SEAT || partPos.getBlock().getType() == Material.AIR) {
+            if (this == SEAT || this == MARKER || partPos.getBlock().getType() == Material.AIR) {
                 Entity entity = easelLocation.getWorld().spawnEntity(partPos, getType());
 
                 switch (this) {
@@ -147,6 +151,14 @@ public enum EaselPart {
                         seat.setGravity(false);
                         seat.setRemoveWhenFarAway(true);
                         return seat;
+
+                    case MARKER:
+                        ArmorStand marker = (ArmorStand) entity;
+                        marker.setVisible(false);
+                        marker.setGravity(false);
+                        marker.setRemoveWhenFarAway(true);
+                        marker.setSmall(true);
+                        return marker;
                 }
             }
         }
@@ -165,7 +177,7 @@ public enum EaselPart {
             case SOUTH:
                 z = modifier;
 
-                if (requiresSeatCompensation && this == SEAT) {
+                if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
                     z += .031;
                 }
                 yaw = 0;
@@ -178,7 +190,7 @@ public enum EaselPart {
                 x = modifier;
                 yaw = 270;
 
-                if (requiresSeatCompensation && this == SEAT) {
+                if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
                     x += .031;
                 }
                 break;

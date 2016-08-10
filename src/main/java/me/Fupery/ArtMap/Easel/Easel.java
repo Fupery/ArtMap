@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
-import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -15,7 +14,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -180,25 +178,8 @@ public class Easel {
     }
 
     public void rideEasel(Player player) {
-
-        ArtMap plugin = ArtMap.plugin();
-
-        ArmorStand seat = ((ArmorStand) EaselPart.SEAT.spawn(location, getFacing()));
-
-        if (seat == null) {
-            return;
-        }
-        SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
-        seat.setPassenger(player);
-        seat.setMetadata("easel", new FixedMetadataValue(plugin, LocationTag.createTag(location)));
-
-        setIsPainting(true);
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
-
-        ArtMap.getArtistHandler().addPlayer(player, mapView, EaselPart.getYawOffset(getFacing()));
-        ArtMap.getTaskManager().SYNC.runLater(() -> {
-            if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
-        }, 30);
+        ArtMap.getArtistHandler().addPlayer(player, this, mapView, EaselPart.getYawOffset(getFacing()));
     }
 
     public void removeItem() {
@@ -242,7 +223,7 @@ public class Easel {
     public void playEffect(Effect effect) {
         BlockFace facing = getFacing();
         Location loc = (facing == null) ? location :
-         new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
+                new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
         loc.getWorld().spigot().playEffect(loc, effect, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
     }
 

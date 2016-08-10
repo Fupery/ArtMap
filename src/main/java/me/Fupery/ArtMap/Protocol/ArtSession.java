@@ -1,11 +1,13 @@
 package me.Fupery.ArtMap.Protocol;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.Protocol.Brushes.*;
-import me.Fupery.ArtMap.Utils.VersionHandler;
+import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
@@ -16,25 +18,45 @@ class ArtSession {
     private final Brush FILL;
     private final Brush SHADE;
     private final Brush FLIP;
+    private final Easel easel;
     private Brush currentBrush;
     private long lastStroke;
-    private Entity marker;
+    private ArmorStand marker;
+    private ArmorStand seat;
 
-    ArtSession(Player player, MapView mapView, int yawOffset) {
+    ArtSession(Easel easel, MapView mapView, int yawOffset) {
+        this.easel = easel;
         canvas = new CanvasRenderer(mapView, yawOffset);
         currentBrush = null;
         lastStroke = System.currentTimeMillis();
-        marker = player.getWorld().spawnEntity(player.getEyeLocation(), EntityType.ARMOR_STAND);
-        ArmorStand stand = (ArmorStand) marker;
-        stand.setVisible(false);
-        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8)
-            stand.setInvulnerable(true);
-        stand.setGravity(false);
-        ArtMap.getTaskManager().SYNC.runLater(() -> stand.teleport(player.getLocation()), 2);
         DYE = new Dye(canvas);
         FILL = new Fill(canvas);
         SHADE = new Shade(canvas);
         FLIP = new Flip(canvas);
+    }
+
+    boolean start(Player player) {
+        Location location = easel.getLocation();
+        //Set up seat
+        seat = (ArmorStand) EaselPart.SEAT.spawn(location, easel.getFacing());
+        //set up marker
+//        Location standLoc = player.getEyeLocation().clone();
+//        standLoc.setY(0);
+        marker = (ArmorStand) EaselPart.MARKER.spawn(easel.getLocation(), easel.getFacing());
+
+        seat.setPassenger(player);
+        if (seat == null || seat.getPassenger() == null || marker == null) {
+            return false;
+        }
+        easel.setIsPainting(true);
+        //Run tasks
+        SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
+        TaskManager taskManager = ArtMap.getTaskManager();
+//        taskManager.SYNC.runLater(() -> marker.teleport(player.getLocation()), 2);
+        taskManager.SYNC.runLater(() -> {
+            if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
+        }, 30);
+        return true;
     }
 
     void paint(ItemStack brush, Brush.BrushAction action) {
@@ -66,8 +88,12 @@ class ArtSession {
         canvas.setPitch(pitch);
     }
 
-    void end() {
-        marker.remove();
+    void end(Player player) {
+        player.leaveVehicle();
+        if (marker != null) marker.remove();
+        if (seat != null) seat.remove();
+        easel.setIsPainting(false);
+        SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         canvas.stop();
         canvas.saveMap();
     }
