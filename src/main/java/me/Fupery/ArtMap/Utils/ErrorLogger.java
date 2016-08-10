@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,7 +28,6 @@ public class ErrorLogger {
                         throwable.printStackTrace();
                         return;
                     }
-                    file.setReadOnly();
                 } catch (IOException e) {
                     throwable.printStackTrace();
                     return;
@@ -40,6 +40,15 @@ public class ErrorLogger {
                 logger = new PrintWriter(fileWriter);
                 logger.println(dateFormat.format(new Date()));
                 logger.println("[VERSION]:" + Bukkit.getServer().getVersion() + ", " + ArtMap.plugin().toString());
+                logger.println("---------------------[SERVER]---------------------");
+                String loadedPlugins = "Loaded Plugins: [";
+                for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+                    loadedPlugins += plugin.toString() + ", ";
+                }
+                loadedPlugins += "]";
+                logger.println(loadedPlugins);
+                logger.println(ArtMap.getCompatManager().toString());
+                logger.println("--------------------[STACKTRACE]---------------------");
                 logger.println(throwable.getMessage());
                 for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
                     logger.println(stackTraceElement.toString());
@@ -51,6 +60,7 @@ public class ErrorLogger {
                 logger.close();
             } catch (IOException e) {
                 throwable.printStackTrace();
+                return;
             }
         });
     }
