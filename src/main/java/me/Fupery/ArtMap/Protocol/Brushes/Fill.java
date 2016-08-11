@@ -81,7 +81,7 @@ public class Fill extends Brush {
     }
 
     private void fillPixel(byte colour) {
-        final byte[] pixel = canvas.getPixel();
+        final byte[] pixel = canvas.getCurrentPixel();
 
         if (pixel != null) {
 

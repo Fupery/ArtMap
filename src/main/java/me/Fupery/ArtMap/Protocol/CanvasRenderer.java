@@ -8,17 +8,16 @@ import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CanvasRenderer extends MapRenderer {
 
     private final int resolutionFactor;
     private final int axisLength;
+    private final int maxUpdate;
     private final MapView mapView;
     private byte[][] pixelBuffer;
-    private ArrayList<byte[]> dirtyPixels;
-    private ListIterator<byte[]> iterator;
+    private ConcurrentLinkedQueue<byte[]> dirtyPixels;
     private boolean active;
     private Cursor cursor;
 
@@ -26,6 +25,7 @@ public class CanvasRenderer extends MapRenderer {
         this.mapView = mapView;
         resolutionFactor = ArtMap.instance().getMapResolutionFactor();
         axisLength = 128 / resolutionFactor;
+        maxUpdate = ArtMap.getArtistHandler().SETTINGS.MAX_PIXELS_UPDATE_TICK;
         clearRenderers();
         mapView.addRenderer(this);
 
@@ -44,13 +44,12 @@ public class CanvasRenderer extends MapRenderer {
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
-        if (!active || dirtyPixels == null || iterator == null
-                || pixelBuffer == null || dirtyPixels.size() == 0) {
+        if (!active || dirtyPixels == null || dirtyPixels.peek() == null || pixelBuffer == null) {
             return;
         }
-        while (iterator.hasPrevious()) {
-
-            byte[] pixel = iterator.previous();
+        for (int i = 0; i < maxUpdate; i++) {
+            byte[] pixel = dirtyPixels.poll();
+            if (pixel == null) return;
             int px = pixel[0] * resolutionFactor;
             int py = pixel[1] * resolutionFactor;
 
@@ -60,18 +59,21 @@ public class CanvasRenderer extends MapRenderer {
                     canvas.setPixel(px + x, py + y, pixelBuffer[pixel[0]][pixel[1]]);
                 }
             }
-            iterator.remove();
         }
     }
 
     //adds pixel at location
     public void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
-        iterator.add(new byte[]{((byte) x), ((byte) y)});
+        dirtyPixels.add(new byte[]{((byte) x), ((byte) y)});
+    }
+
+    public byte getPixel(int x, int y) {
+        return pixelBuffer[x][y];
     }
 
     //finds the corresponding pixel for the yaw & pitch clicked
-    public byte[] getPixel() {
+    public byte[] getCurrentPixel() {
         byte[] pixel = new byte[2];
 
         pixel[0] = ((byte) cursor.getX());
@@ -130,8 +132,7 @@ public class CanvasRenderer extends MapRenderer {
         byte[] colours = Reflection.getMap(mapView);
 
         pixelBuffer = new byte[axisLength][axisLength];
-        dirtyPixels = new ArrayList<>();
-        iterator = dirtyPixels.listIterator();
+        dirtyPixels = new ConcurrentLinkedQueue<>();
 
         int px, py;
         for (int x = 0; x < 128; x++) {
@@ -156,7 +157,7 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     public byte[][] getPixelBuffer() {
-        return pixelBuffer;
+        return pixelBuffer.clone();
     }
 
     public void setYaw(float yaw) {

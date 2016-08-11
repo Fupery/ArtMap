@@ -20,7 +20,7 @@ public class Dye extends Brush {
         }
         if (action == BrushAction.LEFT_CLICK) {
             clean();
-            byte[] pixel = canvas.getPixel();
+            byte[] pixel = canvas.getCurrentPixel();
             if (pixel != null) {
                 canvas.addPixel(pixel[0], pixel[1], dye.getData());
             }
@@ -29,7 +29,7 @@ public class Dye extends Brush {
                 clean();
             }
             byte colour = dye.getData();
-            byte[] pixel = canvas.getPixel();
+            byte[] pixel = canvas.getCurrentPixel();
 
             if (pixel != null) {
 
