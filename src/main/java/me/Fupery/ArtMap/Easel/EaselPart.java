@@ -128,6 +128,7 @@ public enum EaselPart {
                         stand.setCustomName(EASEL_ID);
                         stand.setGravity(false);
                         stand.setRemoveWhenFarAway(false);
+                        stand.setArms(false);
                         return stand;
 
                     case FRAME:
@@ -140,6 +141,7 @@ public enum EaselPart {
                         ArmorStand seat = (ArmorStand) entity;
                         seat.setVisible(false);
                         seat.setGravity(false);
+                        seat.setArms(false);
                         seat.setRemoveWhenFarAway(true);
                         return seat;
 
