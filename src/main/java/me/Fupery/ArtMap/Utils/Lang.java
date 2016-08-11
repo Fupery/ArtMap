@@ -13,13 +13,14 @@ import java.util.List;
 import static me.Fupery.ArtMap.Utils.Reflection.ChatPacketBuilder;
 
 public class Lang {
-    public static final String PREFIX = "§b[ArtMap] ";
+    public static String PREFIX = "§b[ArtMap] ";
     public final ActionBarHandler ACTION_BAR_MESSAGES;
     private final ConfigurationSection lang;
 
-    public Lang(String language, FileConfiguration langFile, boolean actionBarDisabled) {
+    public Lang(String language, FileConfiguration langFile, boolean actionBarDisabled, boolean hidePrefix) {
         if (!langFile.contains(language)) language = "english";
         lang = langFile.getConfigurationSection(language);
+        if (hidePrefix) PREFIX = "";
         if (lang == null) {
             Bukkit.getLogger().warning("Error loading lang.yml!");
             ACTION_BAR_MESSAGES = null;

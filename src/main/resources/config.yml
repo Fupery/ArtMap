@@ -18,3 +18,6 @@ customRecipes: false
 #If true, players with 'artmap.artkit' permission will automatically get a kit of art supplies when they mount an easel
 #Their normal inventory will be returned to them on dismount.
 forceArtKit: false
+
+#If true, return messages to players will not have the [ArtMap] prefix
+hidePrefix: false

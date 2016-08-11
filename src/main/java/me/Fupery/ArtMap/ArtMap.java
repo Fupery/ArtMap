@@ -114,7 +114,8 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager();
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         boolean disableActionBar = getConfig().getBoolean("disableActionBar");
-        lang = new Lang(getConfig().getString("language"), langFile, disableActionBar);
+        boolean hidePrefix = getConfig().getBoolean("hidePrefix");
+        lang = new Lang(getConfig().getString("language"), langFile, disableActionBar, hidePrefix);
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
             getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
