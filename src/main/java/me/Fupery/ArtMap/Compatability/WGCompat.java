@@ -20,8 +20,9 @@ public class WGCompat implements RegionHandler {
     public boolean checkBuildAllowed(Player player, Location location) {
         WorldGuardPlugin wg = ((WorldGuardPlugin) worldGuardPlugin);
         ApplicableRegionSet set = wg.getRegionContainer().createQuery().getApplicableRegions(location);
-        return wg.canBuild(player, location) && (player.hasPermission("artmap.region.member")
-                || set.isOwnerOfAll(wg.wrapPlayer(player)));
+
+        return (wg.canBuild(player, location) && player.hasPermission("artmap.region.member"))
+                || set.isOwnerOfAll(wg.wrapPlayer(player));
     }
 
     @Override
