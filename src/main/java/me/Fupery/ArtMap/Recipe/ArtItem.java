@@ -47,13 +47,11 @@ abstract public class ArtItem extends ItemStack {
             Material material = dye.getRecipeItem().getItemType();
             String name = dye.getDisplay() + dye.name().toLowerCase();
             itemStack[i] = getKitItem(name, material, dye.getRecipeItem().getData());
-            itemStack[i].setAmount(16);
         }
         itemStack[25] = getKitItem("§lFeather", Material.FEATHER);
         itemStack[26] = getKitItem("§7§lCoal", Material.COAL);
         itemStack[27] = getKitItem("§6§lCompass", Material.COMPASS);
         ItemStack bucket = new PaintBucket(ArtDye.BLACK);
-        bucket.setAmount(16);
         ItemMeta bucketMeta = bucket.getItemMeta();
         List<String> bucketLore = bucketMeta.getLore();
         bucketLore.add(ArtItem.KIT_KEY);
