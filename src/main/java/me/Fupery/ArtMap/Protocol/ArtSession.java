@@ -28,6 +28,7 @@ public class ArtSession {
     private ArmorStand marker;
     private ArmorStand seat;
     private ItemStack[] inventory;
+    private boolean active = false;
 
     ArtSession(Easel easel, MapView mapView, int yawOffset) {
         this.easel = easel;
@@ -56,7 +57,7 @@ public class ArtSession {
         taskManager.SYNC.runLater(() -> {
             if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
         }, 30);
-        if (ArtistHandler.isArtKitForced() && player.hasPermission("artmap.artkit")) {
+        if (ArtMap.getArtistHandler().SETTINGS.FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
             addKit(player);
         }
         return true;
@@ -109,6 +110,7 @@ public class ArtSession {
         if (inventory != null) {
             if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
                 player.getInventory().setStorageContents(inventory);
+                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
             } else {
                 player.getInventory().setContents(inventory);
             }
@@ -129,5 +131,14 @@ public class ArtSession {
         SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         canvas.stop();
         canvas.saveMap();
+        active = false;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    void setActive(boolean active) {
+        this.active = active;
     }
 }
