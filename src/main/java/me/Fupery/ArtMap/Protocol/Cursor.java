@@ -15,12 +15,11 @@ class Cursor {
     private boolean pitchOffCanvas;
 
     Cursor(int yawOffset) {
-
-        yawTable = ArtMap.plugin().getPixelTable().getYawBounds();
-        pitchTables = ArtMap.plugin().getPixelTable().getPitchBounds();
+        yawTable = ArtMap.instance().getPixelTable().getYawBounds();
+        pitchTables = ArtMap.instance().getPixelTable().getPitchBounds();
         this.yawOffset = yawOffset;
 
-        limit = (128 / ArtMap.plugin().getMapResolutionFactor()) - 1;
+        limit = (128 / ArtMap.instance().getMapResolutionFactor()) - 1;
         yawOffCanvas = false;
         pitchOffCanvas = false;
         int mid = limit / 2;
@@ -31,14 +30,14 @@ class Cursor {
         updatePitchBounds();
     }
 
-    public void setPitch(float pitch) {
+    void setPitch(float pitch) {
         if (this.pitch != pitch) {
             this.pitch = pitch;
             updateYPos();
         }
     }
 
-    public void setYaw(float yaw) {
+    void setYaw(float yaw) {
         if (this.yaw != yaw) {
             this.yaw = yaw;
             updateXPos();
@@ -114,15 +113,15 @@ class Cursor {
         downBound = ((float[]) pitchTables[x])[y + 1];
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 
-    public boolean isOffCanvas() {
+    boolean isOffCanvas() {
         return yawOffCanvas || pitchOffCanvas;
     }
 }

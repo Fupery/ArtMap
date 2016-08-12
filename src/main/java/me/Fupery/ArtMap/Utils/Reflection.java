@@ -2,9 +2,9 @@ package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
-import net.minecraft.server.v1_10_R1.IChatBaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -13,6 +13,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class Reflection {
 
@@ -24,18 +25,11 @@ public class Reflection {
     }
 
     public static Channel getPlayerChannel(Player player) {
-        Object nmsPlayer, playerConnection, networkManager;
         Channel channel;
-
         try {
-            nmsPlayer = invokeMethod(player, "getHandle");
-            playerConnection = getField(nmsPlayer, "playerConnection");
-            networkManager = getField(playerConnection, "networkManager");
-            channel = (Channel) getField(networkManager, "channel");
-
-        } catch (NoSuchFieldException | NoSuchMethodException
-                | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            channel = ArtMap.getCompatManager().getReflectionHandler().getPlayerChannel(player);
+        } catch (Exception e) {
+            ErrorLogger.log(e);
             return null;
         }
         return channel;
@@ -43,22 +37,40 @@ public class Reflection {
 
     public static Object getField(Object obj, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = obj.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        Field field;
+        try {
+            field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new NoSuchFieldException(String.format("Field '%s' could not be found in '%s'. Fields found: {%s}",
+                    fieldName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredFields())));
+        }
         return field.get(obj);
     }
 
     public static void setField(Object obj, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = obj.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        Field field;
+        try {
+            field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new NoSuchFieldException(String.format("Field '%s' could not be found in '%s'. Fields found: [%s]",
+                    fieldName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredFields())));
+        }
         field.set(obj, value);
     }
 
     public static Object invokeMethod(Object obj, String methodName)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = obj.getClass().getDeclaredMethod(methodName);
-        method.setAccessible(true);
+        Method method;
+        try {
+            method = obj.getClass().getDeclaredMethod(methodName);
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodException(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
+                    methodName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredMethods())));
+        }
         return method.invoke(obj);
     }
 
@@ -181,19 +193,12 @@ public class Reflection {
         public ChatPacketBuilder(String NMS_Prefix) {
             String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
             String chatComponentName = NMS_Prefix + ".IChatBaseComponent";
-            String chatSerializerName = "ChatSerializer";
+            String chatSerializerName = chatComponentName + "$ChatSerializer";
 
-            Class[] chatComponentSubclasses = IChatBaseComponent.class.getDeclaredClasses();
-            chatSerializerClass = null;
-            for (Class chatComponentSubclass : chatComponentSubclasses) {
-                if (chatComponentSubclass.getSimpleName().equals(chatSerializerName)) {
-                    chatSerializerClass = chatComponentSubclass;
-                    break;
-                }
-            }
             try {
                 Class chatPacketClass = Class.forName(packetClassName);
                 Class chatComponentClass = Class.forName(chatComponentName);
+                chatSerializerClass = Class.forName(chatSerializerName);
 
                 packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, byte.class);
                 chatSerializer = chatSerializerClass.getDeclaredMethod("a", String.class);
@@ -214,8 +219,8 @@ public class Reflection {
         }
 
         private void logFailure(Exception e) {
-            Bukkit.getLogger().warning("[ArtMap] failed to instantiate protocol! Is this version supported?");
-            e.printStackTrace();
+            Bukkit.getLogger().warning(Lang.PREFIX + " failed to instantiate protocol! Is this version supported?");
+            ErrorLogger.log(e);
         }
     }
 }

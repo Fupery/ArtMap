@@ -3,9 +3,11 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.Test;
 import me.Fupery.ArtMap.Utils.Lang;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
@@ -33,7 +35,7 @@ public class CommandHandler implements CommandExecutor {
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (sender instanceof Player) {
-                    ArtMap.getHelpMenu().open(ArtMap.plugin(), (Player) sender);
+                    ArtMap.getHelpMenu().open(ArtMap.instance(), (Player) sender);
 
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
@@ -41,10 +43,25 @@ public class CommandHandler implements CommandExecutor {
             }
         });
 
-        commands.put("test", new Command(null, "/artmap test", true) {// TODO: 7/08/2016 remove test 
+        commands.put("test", new Command(null, "/artmap test", true) {// TODO: 7/08/2016 remove test
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 ArtMap.getMenuHandler().openMenu(((Player) sender), new Test());
+            }
+        });
+        commands.put("reload", new Command("artmap.admin", "/artmap restore", true) {
+            @Override
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                ArtMap.getTaskManager().SYNC.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        JavaPlugin plugin = ArtMap.instance();
+                        plugin.onDisable();
+                        plugin.onEnable();
+                        sender.sendMessage(Lang.PREFIX + ChatColor.GREEN + "Successfully reloaded ArtMap!");
+                    }
+                });
+
             }
         });
     }
@@ -62,7 +79,7 @@ public class CommandHandler implements CommandExecutor {
             }
 
         } else {
-            commands.get("HELP").runPlayerCommand(sender, args);
+            commands.get("help").runPlayerCommand(sender, args);
         }
         return true;
     }

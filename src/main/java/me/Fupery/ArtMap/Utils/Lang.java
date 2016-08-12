@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Utils;
 
+import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -9,16 +10,17 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import static me.Fupery.ArtMap.Utils.Reflection.*;
+import static me.Fupery.ArtMap.Utils.Reflection.ChatPacketBuilder;
 
 public class Lang {
-    public static final String PREFIX = "§b[ArtMap] ";
+    public static String PREFIX = "§b[ArtMap] ";
     public final ActionBarHandler ACTION_BAR_MESSAGES;
     private final ConfigurationSection lang;
 
-    public Lang(String language, FileConfiguration langFile, boolean actionBarDisabled) {
+    public Lang(String language, FileConfiguration langFile, boolean actionBarDisabled, boolean hidePrefix) {
         if (!langFile.contains(language)) language = "english";
         lang = langFile.getConfigurationSection(language);
+        if (hidePrefix) PREFIX = "";
         if (lang == null) {
             Bukkit.getLogger().warning("Error loading lang.yml!");
             ACTION_BAR_MESSAGES = null;
@@ -29,7 +31,7 @@ public class Lang {
 
     private static WrappedActionBarPacket buildPacket(ChatPacketBuilder builder, String message, boolean isError) {
         String formattedMessage = isError ? "§c§l✷ " + message + " §c§l✷" : "§6✾ " + message + " §6✾";
-        return new WrappedActionBarPacket(builder.buildActionBarPacket(formattedMessage));
+        return new WrappedActionBarPacket(message, builder.buildActionBarPacket(formattedMessage));
     }
 
     public String getMsg(String key) {
@@ -55,12 +57,12 @@ public class Lang {
     }
 
     public static class MessageSender {
-        private String message;
+        protected final String message;
 
         private MessageSender(String message) {
-            this.message = PREFIX + message.replaceAll("§l", "");
+            this.message = PREFIX + message.replaceAll("§l", "")
+                    .replaceAll("§3", "§6").replaceAll("§4", "§c").replaceAll("§b", "§6");
         }
-        private MessageSender() {}
 
         public void send(Player player) {
             player.sendMessage(message);
@@ -70,12 +72,23 @@ public class Lang {
     public static class WrappedActionBarPacket extends MessageSender {
         private final Object packet;
 
-        private WrappedActionBarPacket(Object packet) {
+        private WrappedActionBarPacket(String message, Object packet) {
+            super(message);
             this.packet = packet;
         }
+
         @Override
         public void send(Player player) {
-            ArtMap.getCacheManager().getChannel(player.getUniqueId()).writeAndFlush(packet);
+            Channel channel;
+            try {
+                channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
+            } catch (Exception e) {
+                Bukkit.getLogger().info(
+                        "[ArtMap] Error binding player channel! Check /plugins/ArtMap/error.log for info.");
+                channel = null;
+            }
+            if (channel != null) channel.writeAndFlush(packet);
+            else player.sendMessage(message);
         }
     }
 
@@ -94,10 +107,10 @@ public class Lang {
                 ChatPacketBuilder packetBuilder = new ChatPacketBuilder();
                 EASEL_PUNCH = buildPacket(packetBuilder, getMsg("EASEL_HELP"), false);
                 EASEL_NO_CANVAS = buildPacket(packetBuilder, getMsg("NEED_CANVAS"), true);
-                EASEL_MOUNT = buildPacket(packetBuilder, getMsg("PAINTING"), true);
+                EASEL_MOUNT = buildPacket(packetBuilder, getMsg("PAINTING"), false);
                 EASEL_DISMOUNT = buildPacket(packetBuilder, getMsg("SAVE_USAGE"), false);
                 EASEL_USED = buildPacket(packetBuilder, getMsg("ELSE_USING"), true);
-                EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM"), true);
+                EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM_ACTION"), true);
                 EASEL_NO_EDIT = buildPacket(packetBuilder, getMsg("NO_EDIT_PERM"), true);
                 EASEL_INVALID_POS = buildPacket(packetBuilder, getMsg("INVALID_POS"), true);
             } else {
@@ -106,7 +119,7 @@ public class Lang {
                 EASEL_MOUNT = new MessageSender(getMsg("PAINTING"));
                 EASEL_DISMOUNT = new MessageSender(getMsg("SAVE_USAGE"));
                 EASEL_USED = new MessageSender(getMsg("ELSE_USING"));
-                EASEL_PERMISSION = new MessageSender(getMsg("NO_PERM"));
+                EASEL_PERMISSION = new MessageSender(getMsg("NO_PERM_ACTION"));
                 EASEL_NO_EDIT = new MessageSender(getMsg("NO_EDIT_PERM"));
                 EASEL_INVALID_POS = new MessageSender(getMsg("INVALID_POS"));
             }

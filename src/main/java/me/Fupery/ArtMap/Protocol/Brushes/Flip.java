@@ -15,7 +15,7 @@ public class Flip extends Brush {
 
     @Override
     public void paint(BrushAction action, ItemStack brush, long strokeTime) {
-        byte[][] buffer = canvas.getPixelBuffer().clone();
+        byte[][] buffer = canvas.getPixelBuffer();
 
         byte[][] matrix = new byte[buffer.length][];
         for (int i = 0; i < buffer.length; i++) {

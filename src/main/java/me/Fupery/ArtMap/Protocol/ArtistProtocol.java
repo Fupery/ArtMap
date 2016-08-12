@@ -4,6 +4,7 @@ import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
@@ -11,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public abstract class ArtistProtocol {
 
@@ -32,7 +32,7 @@ public abstract class ArtistProtocol {
                 handler = new PacketHandler();
                 channel.pipeline().addBefore("packet_handler", handlerName, handler);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ClassCastException e) {
             handler = (PacketHandler) channel.pipeline().get(handlerName);
         }
         handler.player = player;
@@ -56,10 +56,10 @@ public abstract class ArtistProtocol {
                     }
                 });
             }
-
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[ArtMap] Error unbinding player channel:");
-            e.printStackTrace();
+            Bukkit.getLogger().warning(Lang.PREFIX + "Error unbinding player channel!" +
+                    " Check /plugins/ArtMap/error.log for info.");
+            ErrorLogger.log(e);
         }
         channelLookup.remove(player.getUniqueId());
     }
@@ -71,7 +71,7 @@ public abstract class ArtistProtocol {
             channel = Reflection.getPlayerChannel(player);
 
             if (channel == null) {
-                Bukkit.getLogger().warning("[ArtMap] Error binding player channel!");
+                Bukkit.getLogger().warning(Lang.PREFIX + "Error binding player channel!");
                 return null;
             }
             channelLookup.put(player.getUniqueId(), channel);
@@ -105,7 +105,9 @@ public abstract class ArtistProtocol {
                 msg = onPacketInAsync(player, channel, msg);
 
             } catch (Exception e) {
-                Bukkit.getLogger().log(Level.SEVERE, Lang.PREFIX + "Error in onPacketInAsync().", e);
+                ErrorLogger.log(e);
+                Bukkit.getLogger().warning(Lang.PREFIX
+                        + "Error in onPacketInAsync(). Check /plugins/ArtMap/error.log for info.");
             }
             if (msg != null) {
                 super.channelRead(context, msg);

@@ -21,7 +21,7 @@ public class CommandBackup extends Command {
 
     @Override
     public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-        File backupsFolder = new File(ArtMap.plugin().getDataFolder(), "backups");
+        File backupsFolder = new File(ArtMap.instance().getDataFolder(), "backups");
 
         if (!backupsFolder.exists() && !backupsFolder.mkdir()) {
             msg.message = ArtMap.getLang().getMsg("BACKUP_ERROR");

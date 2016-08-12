@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.ListMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
@@ -30,7 +29,9 @@ public class ArtistMenu extends ListMenu {
             buttons = new MenuButton[artists.length];
 
             for (int i = 0; i < artists.length; i++) {
-                buttons[i] = new ArtworkListButton(this, artists[i]);
+                OfflinePlayer artist = Bukkit.getOfflinePlayer(artists[i]);
+                if (artist == null || !artist.hasPlayedBefore()) continue;
+                buttons[i] = new ArtworkListButton(this, artist);
             }
 
         } else {
@@ -55,9 +56,9 @@ public class ArtistMenu extends ListMenu {
         final UUID artist;
         final InventoryMenu menu;
 
-        public ArtworkListButton(InventoryMenu menu, UUID artist) {
+        public ArtworkListButton(InventoryMenu menu, OfflinePlayer artist) {
             super(Material.SKULL_ITEM);
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artist);
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artist.getUniqueId());
 
             setDurability((short) 3);
             SkullMeta meta = (SkullMeta) getItemMeta();
@@ -66,7 +67,7 @@ public class ArtistMenu extends ListMenu {
             meta.setDisplayName(offlinePlayer.getName());
             meta.setLore(Collections.singletonList(HelpMenu.CLICK));
             setItemMeta(meta);
-            this.artist = artist;
+            this.artist = artist.getUniqueId();
             this.menu = menu;
         }
 

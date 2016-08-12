@@ -35,7 +35,7 @@ public abstract class ListMenu implements MenuTemplate {
 
     @Override
     public InventoryType getType() {
-        Bukkit.getScheduler().runTaskLater(ArtMap.plugin(), new Runnable() {
+        Bukkit.getScheduler().runTaskLater(ArtMap.instance(), new Runnable() {
             @Override
             public void run() {
                 //Your code here!
@@ -105,10 +105,10 @@ public abstract class ListMenu implements MenuTemplate {
 
     protected void changePage(Player player, int page, boolean forward) {
         page += forward ? 1 : -1;
-        MenuButton[] buttons = paginateButtons(page, listItems);
-        clearButtons();
-        addButtons(buttons);
-        updateInventory(plugin, player);
+//        MenuButton[] buttons = paginateButtons(page, listItems);
+//        clearButtons();
+//        addButtons(buttons);
+//        updateInventory(plugin, player);
     }
 
     static class PageButton extends Button {

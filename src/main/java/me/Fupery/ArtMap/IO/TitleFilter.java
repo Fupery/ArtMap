@@ -2,6 +2,9 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TitleFilter {
 
     private final String title;
@@ -14,27 +17,30 @@ public class TitleFilter {
         adjTitle = replaceCharacters();
     }
 
+    public static boolean containsIllegalCharacters(String toExamine) {
+        Pattern pattern = Pattern.compile("[!@#$|%^&*()-/\\\\;:.,<>~`?]");
+        Matcher matcher = pattern.matcher(toExamine);
+        return matcher.find();
+    }
+
     public boolean check() {
 
-        ArtMap plugin = ArtMap.plugin();
+        ArtMap plugin = ArtMap.instance();
+
+        if (containsIllegalCharacters(title)) return false;
+
+        if (title.length() < 3 || title.length() > 16) {
+            return false;
+        }
 
         if (!plugin.getConfig().getString("language").equalsIgnoreCase("english")) return true;
 
-        if (title.matches("[\\w]{3,16}")) {
-
+        if (plugin.getConfig().getBoolean("swearFilter")) {
             for (String reject : plugin.getTitleFilter()) {
-
-                if (plugin.getConfig().getBoolean("swearFilter")) {
-
-                    if (title.toLowerCase().contains(reject)
-                            || adjTitle.contains(reject)) {
-                        return false;
-                    }
+                if (title.toLowerCase().contains(reject) || adjTitle.contains(reject)) {
+                    return false;
                 }
             }
-
-        } else {
-            return false;
         }
         return true;
     }

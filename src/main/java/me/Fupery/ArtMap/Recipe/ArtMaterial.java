@@ -15,7 +15,7 @@ public enum ArtMaterial {
     PAINT_BUCKET(new PaintBucket(ArtDye.BLACK));
 
     private final ArtItem artItem;
-    private final Recipe recipe;
+    private Recipe recipe;
 
     ArtMaterial(ArtItem artItem) {
         this.artItem = artItem;
@@ -25,6 +25,7 @@ public enum ArtMaterial {
     public static void setupRecipes() {
 
         for (ArtMaterial material : values()) {
+            material.recipe = material.artItem.getRecipe();
             material.artItem.addRecipe(material);
         }
     }

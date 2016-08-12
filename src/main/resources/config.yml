@@ -1,6 +1,6 @@
 #ArtMap Config
 
-#Currently supported languages: [english, mandarin, dutch]
+#Currently supported languages: [english, mandarin, dutch, russian, german]
 language: english
 
 #If true, prevents players from using obvious english swear words in artwork titles.
@@ -8,3 +8,16 @@ swearFilter: true
 
 #If true, action bar messages (messages displayed above a player's toolbar) are disabled
 disableActionBar: false
+
+#If you want to set custom return messages, set this to 'true' then use "/artmap reload" to generate a lang file
+customLang: false
+
+#If you want to set custom recipes, set this to 'true' then use "/artmap reload" to generate a recipe file
+customRecipes: false
+
+#If true, players with 'artmap.artkit' permission will automatically get a kit of art supplies when they mount an easel
+#Their normal inventory will be returned to them on dismount.
+forceArtKit: false
+
+#If true, return messages to players will not have the [ArtMap] prefix
+hidePrefix: false

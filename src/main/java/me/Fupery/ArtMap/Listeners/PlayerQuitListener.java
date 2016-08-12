@@ -18,6 +18,7 @@ public class PlayerQuitListener implements Listener {
         Player player = event.getPlayer();
 
         if (ArtMap.getArtistHandler().containsPlayer(player)) {
+            ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
             ArtMap.getArtistHandler().removePlayer(player);
         }
         if (ArtMap.getPreviewing().containsKey(player)) {
@@ -32,11 +33,14 @@ public class PlayerQuitListener implements Listener {
         if (event.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
-        if (ArtMap.getArtistHandler().containsPlayer(event.getEntity())) {
-            ArtMap.getArtistHandler().removePlayer(event.getEntity());
+        Player player = event.getEntity();
+        if (ArtMap.getArtistHandler().containsPlayer(player)) {
+            event.setKeepInventory(true);
+            ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
+            ArtMap.getArtistHandler().removePlayer(player);
         }
-        if (ArtMap.getPreviewing().containsKey(event.getEntity())) {
-            Preview.stop(event.getEntity());
+        if (ArtMap.getPreviewing().containsKey(player)) {
+            Preview.stop(player);
         }
     }
 

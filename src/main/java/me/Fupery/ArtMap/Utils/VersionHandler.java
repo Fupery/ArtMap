@@ -66,7 +66,7 @@ public class VersionHandler {
             return this == v1_8 ? 1.2 : 1.219;
         }
 
-        public double getSeatZOffset() {
+        public double getSeatYOffset() {
             return this == v1_8 ? -2.22 : -2.24979;
         }
 

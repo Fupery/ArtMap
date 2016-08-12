@@ -36,7 +36,7 @@ public class ArtDatabase {
     }
 
     public static ArtDatabase buildDatabase() {
-        mapData = new File(ArtMap.plugin().getDataFolder(), "mapList.yml");
+        mapData = new File(ArtMap.instance().getDataFolder(), "mapList.yml");
 
         if (!mapData.exists()) {
 
@@ -58,7 +58,9 @@ public class ArtDatabase {
 
         if (map != null) {
             int mapIDValue = map.getInt(MAP_TAG);
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG)));
+            OfflinePlayer player = (map.contains(ARTIST_TAG)) ?
+                    Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG))) :
+                    null;
             String date = map.getString(DATE_TAG);
             return new MapArt(((short) mapIDValue), title, player, date);
         }
@@ -123,8 +125,7 @@ public class ArtDatabase {
         for (String title : list) {
             MapArt art = getArtwork(title);
 
-            if (art != null) {
-
+            if (art != null && art.isValid()) {
                 if (!artist.equals("all")
                         && !art.getPlayer().getName().equalsIgnoreCase(artist)) {
                     continue;
@@ -149,7 +150,7 @@ public class ArtDatabase {
             for (String title : list) {
                 MapArt art = getArtwork(title);
 
-                if (art != null && !returnList.contains(art.getPlayer().getUniqueId())) {
+                if (art != null && art.isValid() && !returnList.contains(art.getPlayer().getUniqueId())) {
                     returnList.add(art.getPlayer().getUniqueId());
                 }
             }
@@ -237,7 +238,7 @@ public class ArtDatabase {
                 loadConfiguration();
 
             } catch (IOException e) {
-                ArtMap.plugin().getLogger().info(String.format(ArtMap.getLang().getMsg("MAPDATA_ERROR"),
+                ArtMap.instance().getLogger().info(String.format(ArtMap.getLang().getMsg("MAPDATA_ERROR"),
                         mapData.getAbsolutePath(), e));
             }
         });

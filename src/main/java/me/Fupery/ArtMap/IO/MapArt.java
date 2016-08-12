@@ -53,6 +53,11 @@ public class MapArt {
         return mapOutput;
     }
 
+    public boolean isValid() {
+        return title != null && title.length() > 2 && title.length() <= 16
+                && player != null && player.hasPlayedBefore();
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof MapArt && equals(((MapArt) obj), false);

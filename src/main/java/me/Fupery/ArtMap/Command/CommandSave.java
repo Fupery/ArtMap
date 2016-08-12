@@ -2,16 +2,12 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,18 +44,7 @@ public class CommandSave extends Command {
 
         ArtMap.getTaskManager().SYNC.run(() -> {
             Easel easel = null;
-
-            Entity seat = player.getVehicle();
-
-            if (seat != null) {
-
-                if (seat.hasMetadata("easel")) {
-                    String tag = seat.getMetadata("easel").get(0).asString();
-                    Location location = LocationTag.getLocation(seat.getWorld(), tag);
-
-                    easel = Easel.getEasel(location, EaselPart.SIGN);
-                }
-            }
+            easel = ArtMap.getArtistHandler().getEasel(player);
 
             if (easel == null) {
                 player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));

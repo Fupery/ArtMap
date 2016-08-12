@@ -61,7 +61,7 @@ final class MenuCacheManager {
 
     private class CleanupThread extends BukkitRunnable {
         CleanupThread() {
-            this.runTaskTimerAsynchronously(ArtMap.plugin(), 300, 300); //15 seconds
+            this.runTaskTimerAsynchronously(ArtMap.instance(), 300, 300); //15 seconds
         }// TODO: 5/08/2016 new task scheduling
 
         @Override

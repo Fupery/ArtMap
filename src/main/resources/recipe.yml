@@ -1,0 +1,38 @@
+#ArtMap Recipe File
+#It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
+#If the recipes in this file can't be read, the default ones will be useed
+
+EXAMPLE_RECIPE:
+  MATERIALS: #List the materials here. Their tag is used to define the recipe shape
+    a: {MATERIAL: INK_SACK, DURABILITY: 10, AMOUNT: 5} #Material key must be a single unique character
+    b: {MATERIAL: STICK, AMOUNT: 2} #The amount and durability tags are optional
+    c: REDSTONE #If you don't want to set the amount or durability, you can just use the material
+    d: GLOWSTONE
+  SHAPE: #To create a shapeless recipe, remove this section
+    - "aba" #top row
+    - "bcb" #middle row
+    - "aba" #bottom row
+
+#ArtMap default recipes
+#[WARNING] Do not change the recipe name
+EASEL:
+  MATERIALS:
+    s: STICK
+    t: STRING
+    f: ITEM_FRAME
+    l: LEATHER
+    a: ARMOR_STAND
+  SHAPE:
+    - "*s*"
+    - "tft"
+    - "lal"
+
+CANVAS:
+  MATERIALS:
+    l: LEATHER
+    p: EMPTY_MAP
+    e: EMERALD
+  SHAPE:
+    - "lel"
+    - "epe"
+    - "lel"

@@ -1,3 +1,21 @@
+#------------------------------------------#
+#          ArtMap Language File            #
+#------------------------------------------#
+#
+# Replace the strings below
+# It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
+#
+# EXAMPLE: “Replace me with a translation!”
+#
+# Any time you see '%s' - this is a special character that will be replaced with a word.
+# For example, if a player saves an artwork named "Art", then "Successfully saved '%s'"
+# will become "Successfully saved Art".
+# So any time you see '%s', don't change it! Just change the words around it.
+#
+# Any time you see "/artmap", leave that unchanged as well (this is the help command)
+#
+# Any time you see § next to a number or letter (something like §a or §2), this is a colour code
+
 english:
 #Player Messages
   COMMAND_SAVE: "save"
@@ -20,6 +38,7 @@ english:
   PLAYER_NOT_FOUND: "§cPlayer '%s' could not be found."
   INVALID_POS: "§4§lYou can't place an easel there!"
   NO_PERM: "§cYou don't have permission to do this."
+  NO_PERM_ACTION: "§4§lYou don't have permission to do this."
   ELSE_USING: "§4§lSomeone else is using this canvas!"
   NOT_RIDING_EASEL: "§cYou must be sitting at your easel to save."
   NEED_CANVAS: "§4§lPlace a canvas on the easel to paint. §3§l/artmap §4§lfor more info."
@@ -178,7 +197,7 @@ english:
     - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
     - "  §e * Optional [-o] flag enables artwork overwriting"
 
-mandarin:
+mandarin: #Translation provided by Laynooooor [https://www.spigotmc.org/members/187394/]
 #Player Messages
   COMMAND_SAVE: "保存"
   COMMAND_DELETE: "删除"
@@ -200,6 +219,7 @@ mandarin:
   PLAYER_NOT_FOUND: "§c无法找到玩家 '%s'."
   INVALID_POS: "§4§l你不能在这里放置画架!"
   NO_PERM: "§c你没有权限使用这个命令."
+  NO_PERM_ACTION: "§4§l你没有权限使用这个命令."
   ELSE_USING: "§4§l其他人正在使用这块画布!"
   NOT_RIDING_EASEL: "§c你必须坐在画架前面才能保存(右击画布即可)."
   NEED_CANVAS: "§4§l请先在画板上放置画布以进行创作. 使用命令 §3§l/artmap §4§l获取更多帮助."
@@ -356,7 +376,7 @@ mandarin:
     - "§3/artmap restore <备份名称> <世界名称> [-o] §b: §e从指定的备份文件夹中恢复全部画作*"
     - "  §e * 使用选项 [-o] 启用覆盖同名文件功能"
 
-dutch:
+dutch: #Translation provided by Sikatsu [https://www.spigotmc.org/members/88844/]
   #Player Messages
   COMMAND_SAVE: "save"
   COMMAND_DELETE: "delete"
@@ -378,6 +398,7 @@ dutch:
   PLAYER_NOT_FOUND: "§cSpeler '%s' kon niet gevonden worden."
   INVALID_POS: "§4§lJe kunt hier geen schildersezel plaatsen."
   NO_PERM: "§cJe hebt hier geen toestemming voor."
+  NO_PERM_ACTION: "§4§lJe hebt hier geen toestemming voor."
   ELSE_USING: "§4§lIemand anders gebruikt deze canvas!"
   NOT_RIDING_EASEL: "§cJe moet op je schildersezel zitten om het op te slaan."
   NEED_CANVAS: "§4§lJe moet een canvas op de schildersezel plaatsen om te beginnen. Typ §3§l/artmap §4§lvoor meer info."
@@ -534,3 +555,367 @@ dutch:
   - "§3/artmap backup §b: §eMaak een backup van alle huidige schilderijen in /plugins/ArtMap/backup/"
   - "§3/artmap restore <backupname> <worldname> [-o] §b: §eHerstel alle schilderijen van de backup folder*"
   - "  §e * Optioneel [-o] flag activeert overschrijvingen."
+
+russian: #Translation provided by exzotic [https://www.spigotmc.org/members/111714/]
+#Player Messages
+  COMMAND_SAVE: "save"
+  COMMAND_DELETE: "delete"
+  COMMAND_PREVIEW: "preview"
+  COMMAND_RESTORE: "restore"
+  COMMAND_BACKUP: "backup"
+  HELP: "§6/artmap для списка команд."
+  SAVE_USAGE: "§6Введите §e/artmap save <название> §6чтобы сохранить картину."
+  SAVE_SUCCESS: "§6Успешно сохранено как '%s'!"
+  EASEL_HELP: "§3§lПравый клик, чтобы начать рисовать, §b§lShift + Правый клик, чтобы сломать."
+  PAINTING: "§b§lНажимайте на холст красителями или ведром с краской, чтобы рисовать."
+  DELETED: "§6Успешно удалено '%s'."
+  PREVIEWING: "§6Предпросмотр картины '%s'."
+  BACKUP_SUCCESS: "§6Бэкап успешно создан для %s"
+  RESTORE_SUCCESS: "§6Успешно восстановлены %s картины из %s"
+  RESTORE_ALREADY_FOUND: "%s Картины уже исключены, используйте -o чтобы включить перезапись."
+  RECIPE_HEADER: "Рецепт для §a[%s]"
+  NO_CONSOLE: "§cТолько для игроков."
+  PLAYER_NOT_FOUND: "§cИгрок '%s' не найден."
+  INVALID_POS: "§4§lВы не можете установить мольберт здесь!"
+  NO_PERM: "§cНедостаточно прав."
+  NO_PERM_ACTION: "§4§lНедостаточно прав."
+  ELSE_USING: "§4§lКто-то уже использует этот холст!"
+  NOT_RIDING_EASEL: "§cВы должны сидеть у мольберта, чтобы сохранить картину."
+  NEED_CANVAS: "§4§lУстановите холст на мольберт, чтобы рисовать. §3§l/artmap §4§lдля информации."
+  NOT_YOUR_EASEL: "§cВы не можете уничтожить мольберт %s!"
+  BREAK_CANVAS: "Shift + Правый клик по мольберту, чтобы сломать его."
+  MAP_NOT_FOUND: "§cКартина '%s' не найдена."
+  NO_ARTWORKS: "§cНет не одной сохраненной картины!"
+  NO_EDIT_PERM: "§4§lВы не можете изменять картины других игроков"
+  NO_CRAFT_PERM: "§cВы не можете копировать картины других игроков"
+  BAD_TITLE: "§cСтранное название. Название должно быть от 3 до 16 символов и содержать только буквы и цифры!"
+  TITLE_USED: "§cНазвание уже занято."
+  EMPTY_HAND_PREVIEW: "§cНеобходима пустая рука, чтобы посмотреть."
+  MAPDATA_ERROR: "§cОшибка в чтении mapdata.yml в %s: %s"
+  BACKUP_ERROR: "§cПапка бекапов не может быть создана!"
+  NO_WORLD: "§cМир '%s' не найден"
+  RESTORE_ERROR: "§cПапка для бекапов '%s' не найдена!"
+  INVALID_DATA_TABLES: "§cНеизвестная ошибка, плагин не может быть запущен."
+  CANNOT_BUILD_DATABASE: "§cОшибка в базе данных MapArt - плагин отключен."
+
+#help menu
+  #Menu titles
+  MENU_RECIPE: "Выберите рецепт"
+  MENU_ARTIST: "Нажмите на художника"
+  MENU_ARTWORKS: "Картина игрока"
+  MENU_DYES: "Красители для рисования"
+  MENU_HELP: "Выберите меню помощи"
+  MENU_TOOLS: "Наведитесь на предмет для информации" #Hover over a tool to view how it is used
+  BUTTON_CLICK: "Нажмите, чтобы посмотреть"
+  BUTTON_CLOSE: "Закрыть меню" #close the menu
+  BUTTON_BACK: "Назад" #go back to previous page
+  RECIPE_BUTTON: "Левый клик посмотреть рецепт"
+  ADMIN_RECIPE: "Правый клик выдать предмет"
+  RECIPE_HELP: "§a/artmap §2для помощи"
+  RECIPE_EASEL_NAME: "Мольберт"
+  RECIPE_CANVAS_NAME: "Холст"
+  RECIPE_PAINTBUCKET_NAME: "Ведро с краской"
+
+  #Menu Buttons
+  HELP_GETTING_STARTED:
+    - "                 §6§l⊱§e§lНачало§6§l⊰"
+    - "                §3❉§b§oДобро пожаловать в ArtMap!§3❉"
+    - ""
+    - "   §a1§2. §7Создайте в верстаке §6Мольберт §7и §6Холст§7."
+    - "   §a2§2. §7Установите Мольберт и используйте Холст §7на нем."
+    - "   §a3§2. §7Нажимайте на Холст §2красителями §7& §3инструментами §7, чтобы рисовать."
+    - "   §a4§2. §7Когда вы закончите, введите §e/artmap save§7."
+    - ""
+    - "§7§oПосмотрите на другие предметы в меню, чтобы"
+    - "§7§oузнать больше о рецептах, красителях и инструментах."
+    - ""
+    - "    §8░░░░§e❃§lКоманды ArtMap§r§e⤸§8░░░░░░░░░░░░░"
+    - "§6•§f/artmap save <название>    §6➯   §7сохранить свою картину"
+    - "§6•§f/artmap delete <название>  §6➯ §7удалить свою картину"
+    - "§6•§f/artmap preview <название> §6➯  §7предпросмотр картины"
+
+  HELP_RECIPES:
+    - "             §6§l⊱§e§lРецепты§6§l⊰"
+    - "§7Посмотреть рецепты для создания"
+    - "§7предметов, которые понадобятся для рисования."
+    - "          §a✸§2§oНажмите, чтобы посмотреть§a✸"
+
+  HELP_TOOLS:
+    - "            §6§l⊱§e§lИнструменты§6§l⊰"
+    - "§7Посмотреть на инструменты"
+    - "§7которые помогут вам рисовать."
+    - "       §a✸§2§oНажмите, чтобы посмотреть§a✸"
+
+  HELP_DYES:
+    - "           §6§l⊱§e§lКрасители§6§l⊰"
+    - "§7Посмотреть на красители"
+    - "§7которыми вы можете рисовать."
+    - "      §a✸§2§oНажмите, чтобы посмотреть§a✸"
+
+  HELP_LIST:
+    - "             §6§l⊱§e§lКартины§6§l⊰"
+    - "      §3✺§b§oСписок картин игроков§3✺"
+    - "§7Посмотреть на свои картины"
+    - "§7или картины других игроков"
+    - "          §a✸§2§oНажмите, чтобы посмотреть§a✸"
+
+  HELP_CLOSE:
+    - "    §6§l⊱§e§lНазад§6§l⊰"
+    - "§4﴾§cЗакрыть меню§4﴿"
+
+  INFO_DYES:
+    - "              §6§l⊱§e§lКрасители§6§l⊰"
+    - "§7Нажимайте на холст любым из этих"
+    - "§7красителей, чтобы рисовать."
+    - ""
+    - "   §a• §7§oЛевый клик, чтобы нарисовать пиксель"
+    - "   §a• §7§oПравый клик, чтобы рисовать линией"
+    - ""
+    - "§7Любой краситель можно совместить с ведром"
+    - "§7чтобы сделать §6Ведро с краской§7."
+    - "           §b§oНаведитесь, чтобы посмотреть цвет"
+
+  INFO_RECIPES:
+    - "              §6§l⊱§e§lПомощь по рецептам§6§l⊰"
+    - "§7Совместите картину с §6пустой картой"
+    - "§7чтобы создать копию."
+    - "§7Только автор может создать"
+    - "§7копию картины."
+    - "        §b§oНаведитесь, чтобы посмотреть информацию"
+
+  INFO_TOOLS:
+    - "              §6§l⊱§e§lПомощь по инструментам§6§l⊰"
+    - "§7Вы можете использовать эти предметы"
+    - "§7вместе с красителями."
+    - "       §b§oНаведитесь, чтобы посмотреть информацию"
+
+  TOOL_DYE:
+    - "              §6§l⊱§e§lКрасители§6§l⊰"
+    - " §7Левый клик, чтобы нарисовать пиксель"
+    - " §7Правый клик, чтобы рисовать линией"
+    - "§a✸§2§oНажмите, чтобы посмотреть цвета§a✸"
+
+  TOOL_PAINTBUCKET:
+    - "         §6§l⊱§e§lВедро с краской§6§l⊰"
+    - "§7Левый клик, чтобы закрасить"
+    - "§7холст. Совместите с красителем"
+    - "§7чтобы изменить цвет краски в ведре."
+    - "§7Правый клик отменяет последнее закрашивание."
+
+  TOOL_COAL:
+    - "              §6§l⊱§e§lУголь§6§l⊰"
+    - "§7Левый клик, чтобы затемнить пиксель."
+    - "§7Правый клик, чтобы затемнять линией."
+
+  TOOL_FEATHER:
+    - "            §6§l⊱§e§lПеро§6§l⊰"
+    - "§7Левый клик, чтобы сделать пиксель светлее."
+    - "§7Правый клик, чтобы делать линии светлее."
+
+  TOOL_COMPASS:
+    - "            §6§l⊱§e§lКомпас§6§l⊰"
+    - "§7Левый клик, чтобы перевернуть по горизонтали."
+    - "§7Правый клик, чтобы перевернуть по вертикали."
+
+  RECIPE_EASEL:
+    - "§7Необходим для создания картин"
+    - "§7Правый клик, чтобы установить"
+
+  RECIPE_CANVAS:
+    - "§7Используйте на §aМольберте"
+    - "§7чтобы начать рисовать"
+
+  RECIPE_PAINTBUCKET:
+    - "§7Используется с §aМольбертом §7и"
+    - "§aХолстом §7, чтобы закрасить его краской"
+    - "§7Правый клик отменяет последнее закрашивание."
+
+  CONSOLE_HELP:
+    - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+    - "§3/artmap delete <название> §b: §eУдалить картину"
+    - "§3/artmap backup §b: §eСоздать бэкап текущих картин в /plugins/ArtMap/backup/"
+    - "§3/artmap restore <названиебэкапа> <мир> [-o] §b: §eВосстанавливает все картины из бэкапа*"
+    - "  §e * Необязательный [-o] флаг, включает перезапись картин"
+
+german: #Translation provided by Juyas [https://www.spigotmc.org/members/91627/]
+#Spieler Nachrichten
+  COMMAND_SAVE: "Speichern"
+  COMMAND_DELETE: "Löschen"
+  COMMAND_PREVIEW: "Vorschau"
+  COMMAND_RESTORE: "Wiederherstellen"
+  COMMAND_BACKUP: "Sichern"
+  HELP: "§6Gib /artmap ein, um eine Befehlsliste anzuzeigen."
+  SAVE_USAGE: "§6Gib §e/artmap save <title> §6 ein, um dein Kunstwerk zu speichern."
+  SAVE_SUCCESS: "§6'%s' wurde erfolgreich gespeichert!"
+  EASEL_HELP: "§3§lRechtsklick um zu malen, §b§lSneaken + Rechtsklick um zu entfernen."
+  PAINTING: "§b§lKlicke mit Farben oder einem Farbeimer auf die Leinwand um zu malen."
+  DELETED: "§6'%s' wurde erfolgreich gelöscht."
+  PREVIEWING: "§6Vorschau von '%s'."
+  BACKUP_SUCCESS: "§6Backup erfolgreich erstellt: %s"
+  RESTORE_SUCCESS: "§6%s Kunstwerke erfolgreich von %s wiederhergestellt"
+  RESTORE_ALREADY_FOUND: "%s Kunstwerke sind bereits vorhanden, benutze die Option -o um diese zu überschreiben."
+  RECIPE_HEADER: "Rezept für §a[%s]"
+  NO_CONSOLE: "§cDieser Befehl ist nur für Spieler."
+  PLAYER_NOT_FOUND: "§cSpieler '%s' nicht gefunden."
+  INVALID_POS: "§4§lDu kannst dort keinen Leinwandständer aufstellen."
+  NO_PERM: "§cDu hast keine Berechtigung dies zu tun."
+  NO_PERM: "§4§lDu hast keine Berechtigung dies zu tun."
+  ELSE_USING: "§4§lEin anderer Spieler benutzt diese Leinwand bereits!"
+  NOT_RIDING_EASEL: "§cDu musst vor deiner Leinwand sitzen um diese speichern zu können."
+  NEED_CANVAS: "§4§lDu musst zuerst eine Leinwand auf dem Ständer platzieren um malen zu können. Gib §3§l/artmap §4§lein um Details zu erfahren."
+  NOT_YOUR_EASEL: "§cDu kannst nicht %s's Kunstwerk zerstören!"
+  BREAK_CANVAS: "Sneaken + Rechtsklick um den Ständer abzubauen."
+  MAP_NOT_FOUND: "§cDas Kunstwerk '%s' konnte nicht gefunden werden."
+  NO_ARTWORKS: "§cEs wurden noch keine Kunstwerke gespeichert!"
+  NO_EDIT_PERM: "§4§lDu kannst nicht das Kunstwerk eines anderen Spielers editieren!"
+  NO_CRAFT_PERM: "§cDu kannst nicht das Kunstwerk eines anderen Spielers kopieren!"
+  BAD_TITLE: "§cUngültiger Titel. Kunstwerk Titel müssen zwischen 3 und 16 Zeichen haben und dürfen nur Buchstaben und Zahlen enthalten!"
+  TITLE_USED: "§cTut mir Leid, aber es existiert bereits ein Kunstwerk mit diesem Namen."
+  EMPTY_HAND_PREVIEW: "§cDeine Hände müssen leer sein, damit dir eine Vorschau angezeigt werden kann."
+  MAPDATA_ERROR: "§cFehler! mapdata.yml at %s: %s"
+  BACKUP_ERROR: "§cDer Backup-Ordner konnte nicht erstellt werden."
+  NO_WORLD: "§cEine Welt mit dem Namen '%s' gibt es nicht."
+  RESTORE_ERROR: "§cBackup-Ordner '%s' wurde nicht gefunden!"
+  INVALID_DATA_TABLES: "§cUngültige Daten, Plug-In konnte nicht initialisiert werden."
+  CANNOT_BUILD_DATABASE: "§cFehler beim Erstellen der MapArt-Datenbank - Plug-In wird deaktiviert."
+
+#Hilfe Menü
+  #Menü Titel
+  MENU_RECIPE: "Wähle ein Rezept"
+  MENU_ARTIST: "Wähle einen Autor"
+  MENU_ARTWORKS: "Kunstwerke von Spielern"
+  MENU_DYES: "Farben zum Malen"
+  MENU_HELP: "Wähle eine Hilfe"
+  MENU_TOOLS: "Bewege die Maus für Informationen" #Bewege die Maus über ein Werkzeug, um zu erfahren, wie es funktioniert
+  BUTTON_CLICK: "Zum Anzeigen klicken"
+  BUTTON_CLOSE: "Schließen" #schließt das Menü
+  BUTTON_BACK: "Zurück" #Gehe eine Seite zurück
+  RECIPE_BUTTON: "Linksklick um das Rezept anzuzeigen"
+  ADMIN_RECIPE: "Rechtsklick um das Item zu erhalten"
+  RECIPE_HELP: "§a/artmap §2um eine Hilfe anzuzeigen"
+  RECIPE_EASEL_NAME: "Leinwandständer"
+  RECIPE_CANVAS_NAME: "Leinwand"
+  RECIPE_PAINTBUCKET_NAME: "Farbeimer"
+
+  #Menü Einträge
+  HELP_GETTING_STARTED:
+    - "                 §6§l⊱§e§lGetting Started§6§l⊰"
+    - "                §3❉§b§oWillkommen zu ArtMap!§3❉"
+    - ""
+    - "   §a1§2. §7Crafte ein §6Leinwandständer §7und eine §6Leinwand§7."
+    - "   §a2§2. §7Plaziere den §6Leinwandständer§7 und klicke mit"
+    - "      §7der §6Leinwand§7 darauf."
+    - "   §a3§2. §7Klicke auf die Leinwand mit §2Farben §7und"
+    - "      §7§3Werkzeugen §7um darauf zu malen."
+    - "   §a4§2. §7Wenn du fertig bist, gib ein: §e/artmap save§7."
+    - ""
+    - "§7§oSchau dir auch die anderen Einträge im Menü an."
+    - "§7§oInformationen zu Farben und Werkzeugen."
+    - ""
+    - "    §8░░░░§e❃§lBefehle §r§e⤸§8░░░░░░░░░░░░░░░░░░░░░"
+    - "§6•§f/artmap save <title>    §6➯ §7Speichere dein Kunstwerk"
+    - "§6•§f/artmap delete <title>  §6➯ §7Lösche dein Kunstwerk"
+    - "§6•§f/artmap preview <title> §6➯ §7Vorschau eines Kunstwerkes"
+
+  HELP_RECIPES:
+    - "                §6§l⊱§e§lRezepte§6§l⊰"
+    - "§7Zeigt die Rezepte an, damit du weißt,"
+    - "§7welche Items du alle zum Malen benötigst."
+    - "         §a✸§2§oZum Anzeigen klicken§a✸"
+
+  HELP_TOOLS:
+    - "           §6§l⊱§e§lWerkzeuge§6§l⊰"
+    - "§7Zeigt alle Werkzeuge an,"
+    - "§7die dir beim Malen helfen können."
+    - "     §a✸§2§oZum Anzeigen klicken§a✸"
+
+  HELP_DYES:
+    - "           §6§l⊱§e§lFarben§6§l⊰"
+    - "§7Zeigt dir alle Farben an,"
+    - "§7mit denen du malen kannst."
+    - "     §a✸§2§oZum Anzeigen klicken§a✸"
+
+  HELP_LIST:
+    - "            §6§l⊱§e§lKunstwerke§6§l⊰"
+    - "   §3✺§b§oKunstwerke von Spielern anzeigen§3✺"
+    - "§7Zeigt deine Kunstwerke oder die eines"
+    - "§7anderen Spielers an. Die Kunstwerke der"
+    - "§7Spieler sind nach Autor gruppiert."
+    - "     §a✸§2§oZum Anzeigen klicken§a✸"
+
+  HELP_CLOSE:
+    - "    §6§l⊱§e§lZurück§6§l⊰"
+    - "§4﴾§cMenü schließen§4﴿"
+
+  INFO_DYES:
+    - "             §6§l⊱§e§lFarben zum Malen§6§l⊰"
+    - "§7Klicke mit Farben aus dieser Liste auf deine Leinwand,"
+    - "§7um mit ihnen darauf zu malen."
+    - ""
+    - "   §a• §7§oLinksklick malt ein Pixel"
+    - "   §a• §7§oRechtsklick malt eine Linie"
+    - ""
+    - "§7Jede Farbe kann mit einem Eimer kombiniert werden,"
+    - "§7um einen §6Farbeimer§7 herzustellen."
+    - "       §b§oBewege die Maus darüber um die Farbe anzuzeigen"
+
+  INFO_RECIPES:
+    - "              §6§l⊱§e§lRezepte§6§l⊰"
+    - "§7Lege ein Kunstwerk zusammen mit einer §6leeren Karte"
+    - "§7in eine Werkbank, um eine Kopie des Kunstwerkes zu erstellen."
+    - "§7Nur der echte Autor kann eine Kopie erstellen."
+    - "       §b§oBewege die Maus darüber für eine Info"
+
+  INFO_TOOLS:
+    - "              §6§l⊱§e§lWerkzeuge§6§l⊰"
+    - "§7Du kannst diese Items zusätzlich zu normalen"
+    - "§2Farben §7benutzen, damit das Malen leichter wird."
+    - "       §b§oBewege die Maus darüber für eine Info"
+
+  TOOL_DYE:
+    - "              §6§l⊱§e§lFarben§6§l⊰"
+    - " §7Linksklick um Pixel zu malen"
+    - " §7Rechtsklick um Linien zu malen"
+    - "§a✸§2§oKlicke um alle Farben anzuzeigen§a✸"
+
+  TOOL_PAINTBUCKET:
+    - "         §6§l⊱§e§lFarbeimer§6§l⊰"
+    - "§7Linksklicken um die Fläche auszufüllen"
+    - "§7Lege es zusammen mit einer Farbe in die Werkbank,"
+    - "§7um die Farbe des Farbeimers zu ändern."
+    - "§7Rechtsklick um es rückgängig zu machen."
+
+  TOOL_COAL:
+    - "            §6§l⊱§e§lKohle§6§l⊰"
+    - "§7Linksklick um Pixel zu verdunkeln."
+    - "§7Rechtsklick um Linien zu verdunkeln."
+
+  TOOL_FEATHER:
+    - "            §6§l⊱§e§lFeder§6§l⊰"
+    - "§7Linksklick um Pixel aufzuhellen."
+    - "§7Rechtsklick um Linien aufzuhellen."
+
+  TOOL_COMPASS:
+    - "          §6§l⊱§e§lKompass§6§l⊰"
+    - "§7Linksklick um horizontal zu spiegeln."
+    - "§7Rechtsklick um vertikal zu spiegeln."
+
+  RECIPE_EASEL:
+    - "§7Benötigt um Kunstwerke zu editieren."
+    - "§7Platziere es mit einem Rechtsklick."
+
+  RECIPE_CANVAS:
+    - "§7Benutze es mit einem §aLeinwandständer"
+    - "§7um darauf malen zu können."
+
+  RECIPE_PAINTBUCKET:
+    - "§7Benutze es mit einem §aLeinwandständer"
+    - "§7und einer §aLeinwand §7um Flächen auszufüllen."
+    - "§7Rechtsklick um Änderungen rückgängig zu machen."
+
+  CONSOLE_HELP:
+    - "§3---------------------------------§b[ArtMap] §6Konsolen Befehle:§3---------------------------------"
+    - "§3/artmap delete <title> §b: §eLösche ein Kunstwerk"
+    - "§3/artmap backup §b: §eErstellt von allen Kunstwerken ein Backup im Ordner: /plugins/ArtMap/backup/"
+    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eStellt alle Kunstwerke aus dem Backup-Ordner wieder her*"
+    - "  §e * Benutze die Option [-o] um bestehende Kunstwerke durch die Wiederherstellung zu überschreiben."

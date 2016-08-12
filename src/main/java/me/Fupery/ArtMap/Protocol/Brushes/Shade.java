@@ -38,7 +38,7 @@ public class Shade extends Brush {
     }
 
     private void shadePixel(boolean darken) {
-        byte[] pixel = canvas.getPixel();
+        byte[] pixel = canvas.getCurrentPixel();
         byte colour = getPixelShade(darken, canvas.getPixelBuffer()[pixel[0]][pixel[1]]);
         canvas.addPixel(pixel[0], pixel[1], colour);
     }
@@ -50,7 +50,7 @@ public class Shade extends Brush {
 
     private void flowShade(boolean darken) {
 
-        byte[] pixel = canvas.getPixel();
+        byte[] pixel = canvas.getCurrentPixel();
 
         if (pixel != null) {
 

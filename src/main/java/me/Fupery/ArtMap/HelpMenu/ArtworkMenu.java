@@ -3,12 +3,12 @@ package me.Fupery.ArtMap.HelpMenu;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Command.CommandPreview;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.API.InventoryMenu;
 import me.Fupery.InventoryMenu.API.ListMenu;
 import me.Fupery.InventoryMenu.API.MenuButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +26,9 @@ public class ArtworkMenu extends ListMenu {
     }
 
     static MenuButton[] generateButtons(UUID artist) {
-        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(Bukkit.getOfflinePlayer(artist).getName());
+        OfflinePlayer player = Bukkit.getOfflinePlayer(artist);
+        if (player == null || !player.hasPlayedBefore()) return new MenuButton[0];
+        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getName());
         MenuButton[] buttons;
 
         if (artworks != null && artworks.length > 0) {

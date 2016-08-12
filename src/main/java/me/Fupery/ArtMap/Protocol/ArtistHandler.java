@@ -3,18 +3,10 @@ package me.Fupery.ArtMap.Protocol;
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
-import me.Fupery.ArtMap.Utils.Lang;
-import me.Fupery.ArtMap.Utils.LocationTag;
 import me.Fupery.ArtMap.Utils.Reflection;
-import me.Fupery.DataTables.DataTables;
-import me.Fupery.DataTables.PixelTable;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
@@ -26,17 +18,17 @@ import static me.Fupery.ArtMap.Protocol.Packet.ArtistPacket.PacketInteract.Inter
 
 public class ArtistHandler {
 
+    public final Settings SETTINGS;
     private final ConcurrentHashMap<UUID, ArtSession> artists;
     private final ArtistProtocol protocol;
 
-    public ArtistHandler() {
+    public ArtistHandler(ArtMap plugin) {
         artists = new ConcurrentHashMap<>();
+        SETTINGS = new Settings(plugin.getConfig().getBoolean("forceArtKit"), 16384);
 
         protocol = new ArtistProtocol() {
-
             @Override
             public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
-
                 if (artists.containsKey(sender.getUniqueId())) {
                     ArtistPacket artistPacket = Reflection.getArtistPacket(packet);
                     if (artistPacket == null) {
@@ -64,27 +56,19 @@ public class ArtistHandler {
         };
     }
 
-    private static PixelTable loadTables() {
-        PixelTable pixelTable;
-        try {
-            pixelTable = DataTables.loadTable(4);
-        } catch (DataTables.InvalidResolutionFactorException e) {
-            pixelTable = null;
-            e.printStackTrace();
+    public synchronized void addPlayer(final Player player, Easel easel, MapView mapView, int yawOffset) {
+        ArtSession session = new ArtSession(easel, mapView, yawOffset);
+        if (session.start(player) && protocol.injectPlayer(player)) {
+            artists.put(player.getUniqueId(), session);
+            session.setActive(true);
         }
-        return pixelTable;
     }
 
-    public void addPlayer(final Player player, MapView mapView, int yawOffset) {
-        artists.put(player.getUniqueId(), new ArtSession(player, mapView, yawOffset));
-        if (!protocol.injectPlayer(player)) {
-            artists.remove(player.getUniqueId());
-            Entity seat = player.getVehicle();
-            if (seat != null) {
-                player.leaveVehicle();
-                removeSeat(seat);
-            }
+    public Easel getEasel(Player player) {
+        if (artists.containsKey(player.getUniqueId())) {
+            return artists.get(player.getUniqueId()).getEasel();
         }
+        return null;
     }
 
     public boolean containsPlayer(Player player) {
@@ -92,56 +76,16 @@ public class ArtistHandler {
     }
 
     public synchronized void removePlayer(final Player player) {
-        removePlayer(player, player.getVehicle());
-    }
-
-    public synchronized void removePlayer(final Player player, Entity seat) {
         if (!artists.containsKey(player.getUniqueId())) return;//just for safety :)
         ArtSession session = artists.get(player.getUniqueId());
+        if (!session.isActive()) return;
         artists.remove(player.getUniqueId());
+        session.end(player);
         protocol.uninjectPlayer(player);
-        SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
-        player.leaveVehicle();
-        removeSeat(seat);
-
-        if (session != null) {
-            session.end();
-        } else {
-            ArtMap.getTaskManager().SYNC.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    ArtSession session = artists.get(player.getUniqueId());
-                    if (session != null) {
-                        session.end();
-                    } else {
-                        Bukkit.getLogger().warning(Lang.PREFIX + String.format(
-                                "§cRenderer not found for player: %s", player.getName()));
-                    }
-                }
-            }, 1);
-
-        }
     }
 
-    private void removeSeat(Entity seat) {
-        ArtMap.getTaskManager().SYNC.runLater(() -> {
-            if (seat == null) {
-                return;
-            }
-
-            if (!seat.hasMetadata("easel")) {
-                return;
-            }
-            String tag = seat.getMetadata("easel").get(0).asString();
-            Location location = LocationTag.getLocation(seat.getWorld(), tag);
-
-            if (EaselInteractListener.easels.containsKey(location)) {
-                Easel easel = EaselInteractListener.easels.get(location);
-                easel.setIsPainting(false);
-            }
-            seat.remove();
-        }, 1);
-
+    public ArtSession getCurrentSession(Player player) {
+        return artists.get(player.getUniqueId());
     }
 
     private synchronized void clearPlayers() {
@@ -153,5 +97,16 @@ public class ArtistHandler {
     public void stop() {
         clearPlayers();
         protocol.close();
+    }
+
+    public static class Settings {
+        public final boolean FORCE_ART_KIT;
+        public final int MAX_PIXELS_UPDATE_TICK;
+
+        private Settings(boolean forceArtKit, int maxPixelsUpdatedPerTick) {
+            this.FORCE_ART_KIT = forceArtKit;
+            this.MAX_PIXELS_UPDATE_TICK = (maxPixelsUpdatedPerTick > 16384 || maxPixelsUpdatedPerTick <= 0)
+                    ? 16384 : maxPixelsUpdatedPerTick;
+        }
     }
 }
