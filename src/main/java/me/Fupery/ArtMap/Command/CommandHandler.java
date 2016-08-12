@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.Test;
 import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public class CommandHandler implements CommandExecutor {
         commands.put("restore", new CommandRestore());
 
         //convenience commands
-        commands.put("HELP", new Command(null, "/artmap [HELP]", true) {
+        commands.put("help", new Command(null, "/artmap [help]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -37,6 +38,13 @@ public class CommandHandler implements CommandExecutor {
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                 }
+            }
+        });
+
+        commands.put("test", new Command(null, "/artmap test", true) {// TODO: 7/08/2016 remove test 
+            @Override
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                ArtMap.getMenuHandler().openMenu(((Player) sender), new Test());
             }
         });
     }

@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Listeners.*;
+import me.Fupery.ArtMap.Menu.API.DynamicMenuHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -34,6 +35,7 @@ public class ArtMap extends JavaPlugin {
     private static TaskManager taskManager;
     private static ArtDatabase artDatabase;
     private static ChannelCacheManager cacheManager;
+    private static DynamicMenuHandler menuHandler;
     private static Lang lang;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private List<String> titleFilter;
@@ -80,6 +82,10 @@ public class ArtMap extends JavaPlugin {
         return lang;
     }
 
+    public static DynamicMenuHandler getMenuHandler() {
+        return menuHandler;
+    }
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -92,6 +98,7 @@ public class ArtMap extends JavaPlugin {
         cacheManager = new ChannelCacheManager();
         FileConfiguration langFile = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
         lang = new Lang(getConfig().getString("language"), langFile, getConfig().getBoolean("disableActionBar"));
+        menuHandler = new DynamicMenuHandler(this);
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
@@ -128,6 +135,7 @@ public class ArtMap extends JavaPlugin {
     @Override
     public void onDisable() {
         artistHandler.stop();
+        menuHandler.closeAll(true);
 
         if (previewing.size() > 0) {
 
@@ -141,6 +149,8 @@ public class ArtMap extends JavaPlugin {
         bukkitVersion = null;
         artDatabase = null;
         cacheManager = null;
+        menuHandler = null;
+        lang = null;
     }
 
     private boolean loadTables() {
