@@ -5,7 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.Fupery</groupId>
     <artifactId>ArtMap</artifactId>
+<<<<<<< Updated upstream
     <version>2.3.14</version>
+=======
+    <version>2.3.15</version>
+>>>>>>> Stashed changes
     <description>Make pixel art!</description>
     <profiles>
     </profiles>
@@ -133,6 +137,11 @@
             <groupId>br.net.fabiozumbi12</groupId>
             <artifactId>RedProtect</artifactId>
             <version>6.6.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcdesimp.landlord</groupId>
+            <artifactId>Landlord</artifactId>
+            <version>1.4.1</version>
         </dependency>
     </dependencies>
 </project>
