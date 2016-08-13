@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
@@ -34,14 +35,20 @@ public class CommandHandler implements CommandExecutor {
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (sender instanceof Player) {
-                    ArtMap.getHelpMenu().open(ArtMap.instance(), (Player) sender);
+                    ArtMap.getTaskManager().SYNC.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            MenuHandler menuHandler = ArtMap.getMenuHandler();
+                            menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
+                        }
+                    });
+
 
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                 }
             }
         });
-
         commands.put("reload", new Command("artmap.admin", "/artmap restore", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
