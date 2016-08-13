@@ -77,9 +77,10 @@ public abstract class ListMenu extends CacheableMenu {
         return buttons;
     }
 
-    protected void changePage(boolean forward) {
+    protected void changePage(Player player, boolean forward) {
         if (forward) page++;
         else page--;
+        refresh(player);
     }
 
     protected abstract Button[] getListItems();
@@ -97,7 +98,7 @@ public abstract class ListMenu extends CacheableMenu {
         public void onClick(Player player, ClickType clickType) {
             if (forward) SoundCompat.UI_BUTTON_CLICK.play(player);
             else SoundCompat.UI_BUTTON_CLICK.play(player);
-            changePage(forward);
+            changePage(player, forward);
         }
     }
 }

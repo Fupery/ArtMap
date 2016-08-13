@@ -24,6 +24,7 @@ public abstract class CacheableMenu implements MenuTemplate {
     }
 
     private void loadButtons(Inventory inventory) {
+        buttons = getButtons();
         for (int slot = 0; slot < buttons.length && slot < inventory.getSize(); slot++) {
             if (buttons[slot] != null) inventory.setItem(slot, buttons[slot]);
             else inventory.setItem(slot, new ItemStack(Material.AIR));
@@ -31,7 +32,6 @@ public abstract class CacheableMenu implements MenuTemplate {
     }
 
     void open(Player player) {
-        buttons = getButtons();
         Inventory inventory = Bukkit.createInventory(player, type, heading);
         loadButtons(inventory);
         player.openInventory(inventory);

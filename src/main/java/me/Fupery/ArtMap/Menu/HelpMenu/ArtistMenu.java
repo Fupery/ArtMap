@@ -19,12 +19,7 @@ import java.util.UUID;
 
 public class ArtistMenu extends ListMenu implements ChildMenu {
 
-    private UUID viewer;
-
-    public ArtistMenu(Player viewer, int page) {
-        super(ChatColor.BLUE + ArtMap.getLang().getMsg("MENU_ARTIST"), page);
-        this.viewer = viewer.getUniqueId();
-    }
+    private final UUID viewer;
 
     public ArtistMenu(Player viewer) {
         super(ChatColor.BLUE + ArtMap.getLang().getMsg("MENU_ARTIST"), 0);
