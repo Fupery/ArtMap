@@ -12,7 +12,7 @@ public class DenizenCompat implements ReflectionHandler {
 
     private final boolean loaded;
 
-    public DenizenCompat() {
+    DenizenCompat() {
         DenizenAPI.getCurrentInstance();
         loaded = true;
     }

@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Compatability;
 
 import me.Fupery.ArtMap.Easel.EaselEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,11 +15,16 @@ public class CompatibilityManager implements RegionHandler {
 
     public CompatibilityManager() {
         regionHandlers = new ArrayList<>();
-        loadRegionHandler(WGCompat.class);
+        loadRegionHandler(WorldGuardCompat.class);
         loadRegionHandler(FactionsCompat.class);
         loadRegionHandler(GriefPreventionCompat.class);
         loadRegionHandler(RedProtectCompat.class);
+        loadRegionHandler(LandlordCompat.class);
         reflectionHandler = loadReflectionHandler();
+        for (RegionHandler regionHandler : regionHandlers) {
+            Bukkit.getLogger().info(String.format("[ArtMap] %s hooks enabled.",
+                    regionHandler.getClass().getSimpleName().replace("Compat", "")));
+        }
     }
 
     @Override
@@ -64,7 +70,7 @@ public class CompatibilityManager implements RegionHandler {
             RegionHandler handler = handlerClass.newInstance();
             if (handler.isLoaded()) regionHandlers.add(handler);
         } catch (Exception | NoClassDefFoundError e) {
-            //fail silently
+            return;
         }
     }
 

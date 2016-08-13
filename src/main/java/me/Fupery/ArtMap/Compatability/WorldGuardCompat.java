@@ -9,10 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class WGCompat implements RegionHandler {
+public class WorldGuardCompat implements RegionHandler {
     private Object worldGuardPlugin;
 
-    WGCompat() {
+    WorldGuardCompat() {
         this.worldGuardPlugin = WGBukkit.getPlugin();
     }
 

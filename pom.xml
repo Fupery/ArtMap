@@ -5,11 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.Fupery</groupId>
     <artifactId>ArtMap</artifactId>
-<<<<<<< Updated upstream
-    <version>2.3.14</version>
-=======
-    <version>2.3.15</version>
->>>>>>> Stashed changes
+    <version>2.3.16</version>
     <description>Make pixel art!</description>
     <profiles>
     </profiles>

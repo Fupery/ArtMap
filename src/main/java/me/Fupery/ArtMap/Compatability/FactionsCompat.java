@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 class FactionsCompat implements RegionHandler {
     private final boolean loaded;
 
-    public FactionsCompat() {
+    FactionsCompat() {
         Factions.get();
         EngineMain.get();
         MassiveCore.get();

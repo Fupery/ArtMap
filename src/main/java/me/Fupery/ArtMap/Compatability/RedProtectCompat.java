@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class RedProtectCompat implements RegionHandler {
+class RedProtectCompat implements RegionHandler {
 
     private final boolean loaded;
 
