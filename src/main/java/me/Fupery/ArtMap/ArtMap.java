@@ -5,7 +5,7 @@ import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.Listeners.*;
-import me.Fupery.ArtMap.Menu.Handler.DynamicMenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -34,7 +34,7 @@ public class ArtMap extends JavaPlugin {
 
     private static SoftReference<ArtMap> pluginInstance = null;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
-    private DynamicMenuHandler menuHandler;
+    private MenuHandler menuHandler;
     private ArtistHandler artistHandler;
     private ConcurrentHashMap<Player, Preview> previewing;
     private VersionHandler bukkitVersion;
@@ -91,7 +91,7 @@ public class ArtMap extends JavaPlugin {
         return instance().compatManager;
     }
 
-    public static DynamicMenuHandler getMenuHandler() {
+    public static MenuHandler getMenuHandler() {
         return instance().menuHandler;
     }
 
@@ -106,7 +106,7 @@ public class ArtMap extends JavaPlugin {
         bukkitVersion = new VersionHandler();
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
-        menuHandler = new DynamicMenuHandler(this);
+        menuHandler = new MenuHandler(this);
         compatManager = new CompatibilityManager();
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         boolean disableActionBar = getConfig().getBoolean("disableActionBar");
@@ -150,7 +150,7 @@ public class ArtMap extends JavaPlugin {
     @Override
     public void onDisable() {
         artistHandler.stop();
-        menuHandler.closeAll(true);
+        menuHandler.closeAll();
 
         if (previewing.size() > 0) {
 

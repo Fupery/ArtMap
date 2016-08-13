@@ -1,5 +1,8 @@
 package me.Fupery.ArtMap.Menu.API;
 
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import org.bukkit.entity.Player;
+
 public interface ChildMenu extends MenuTemplate {
-    MenuTemplate getParent();
+    CacheableMenu getParent(Player viewer);
 }

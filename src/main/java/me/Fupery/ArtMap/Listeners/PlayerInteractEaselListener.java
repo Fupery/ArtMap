@@ -63,7 +63,7 @@ public class PlayerInteractEaselListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
         if (checkSignBreak(event.getBlock(), event)) {

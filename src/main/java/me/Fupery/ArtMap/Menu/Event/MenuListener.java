@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Menu.Event;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Menu.Handler.DynamicMenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Menu.HelpMenu.ArtworkMenu;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
@@ -24,9 +24,9 @@ import static me.Fupery.ArtMap.Menu.Event.MenuEvent.MenuCloseEvent;
 import static me.Fupery.ArtMap.Menu.Event.MenuEvent.MenuInteractEvent;
 
 public class MenuListener implements Listener {
-    private final DynamicMenuHandler handler;
+    private final MenuHandler handler;
 
-    public MenuListener(DynamicMenuHandler handler, JavaPlugin plugin) {
+    public MenuListener(MenuHandler handler, JavaPlugin plugin) {
         this.handler = handler;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
@@ -71,7 +71,6 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onMenuInteract(final InventoryClickEvent event) {
-        Bukkit.getLogger().info("interact " + handler.isTrackingPlayer(((Player) event.getWhoClicked())));//todo remove logging
         if (!handler.isTrackingPlayer((Player) event.getWhoClicked())) {
             return;
         }
@@ -99,7 +98,6 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onMenuClose(InventoryCloseEvent event) {
-        Bukkit.getLogger().info("menu close");//todo remove logging
         Player player = ((Player) event.getPlayer());
 
         if (player != null && handler.isTrackingPlayer(player)) {

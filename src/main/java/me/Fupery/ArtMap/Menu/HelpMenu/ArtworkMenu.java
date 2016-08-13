@@ -1,16 +1,14 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Command.CommandPreview;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
-import me.Fupery.ArtMap.Menu.API.MenuTemplate;
-import me.Fupery.ArtMap.Menu.API.StoragePattern;
+import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
-import me.Fupery.ArtMap.Menu.Templates.ListMenu;
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -26,11 +24,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ArtworkMenu extends ListMenu implements ChildMenu {
-    private final MenuTemplate parent;
     private final UUID artist;
+    private ArtistMenu parent;
 
-    public ArtworkMenu(MenuTemplate parent, UUID artist, int page) {
-        super(processTitle(artist), StoragePattern.CACHED_WEAKLY, page);
+    public ArtworkMenu(ArtistMenu parent, UUID artist, int page) {
+        super(processTitle(artist), page);
         this.parent = parent;
         this.artist = artist;
     }
@@ -52,23 +50,23 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
         return processedName;
     }
 
+    public static boolean isPreviewItem(ItemStack item) {
+        return item != null && item.getType() == Material.MAP && item.hasItemMeta()
+                && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
+    }
+
     @Override
-    public MenuTemplate getParent() {
+    public CacheableMenu getParent(Player viewer) {
         return parent;
     }
 
     @Override
-    protected ListMenu clone() {
-        return new ArtworkMenu(parent, artist, page);
-    }
-
-    @Override
-    protected Button[] getListItems(Player viewer) {
+    protected Button[] getListItems() {
         OfflinePlayer player = Bukkit.getOfflinePlayer(artist);
         if (player == null || !player.hasPlayedBefore()) return new Button[0];
         MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getName());
         Button[] buttons;
-        boolean adminButton = viewer.hasPermission("artmap.admin");
+        boolean adminButton = parent.getViewer().hasPermission("artmap.admin");
 
         if (artworks != null && artworks.length > 0) {
             buttons = new Button[artworks.length];
@@ -84,7 +82,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
     }
 
     @Override
-    public void onMenuCloseEvent(CacheableMenu menu, Player viewer, MenuCloseReason reason) {
+    public void onMenuCloseEvent(Player viewer, MenuCloseReason reason) {
         if (reason == MenuCloseReason.SPECIAL) return;
         if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
             ItemStack offHand = viewer.getInventory().getItemInOffHand();
@@ -110,7 +108,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
         }
 
         @Override
-        public void onClick(CacheableMenu menu, Player player, ClickType clickType) {
+        public void onClick(Player player, ClickType clickType) {
 
             if (clickType == ClickType.LEFT) {
                 if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
@@ -132,7 +130,19 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                     }
                 } else {
                     ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
-                    CommandPreview.previewArtwork(player, artwork);
+
+                    ArtMap.getTaskManager().SYNC.run(() -> {
+                        if (ArtMap.getPreviewing().containsKey(player)) {
+                            ArtMap.getPreviewing().get(player).stopPreviewing();
+                        }
+                        SoundCompat.BLOCK_CLOTH_FALL.play(player);
+                        if (player.getItemInHand().getType() != Material.AIR) {
+                            ArtMap.getLang().sendMsg("EMPTY_HAND_PREVIEW", player);
+                            return;
+                        }
+                        Preview.artwork(player, artwork);
+                    });
+
                 }
             } else if (clickType == ClickType.RIGHT && player.hasPermission("artmap.artist")) {
                 SoundCompat.BLOCK_CLOTH_FALL.play(player);
@@ -141,9 +151,5 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                         player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
             }
         }
-    }
-    public static boolean isPreviewItem(ItemStack item) {
-        return item != null && item.getType() == Material.MAP && item.hasItemMeta()
-                && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
     }
 }

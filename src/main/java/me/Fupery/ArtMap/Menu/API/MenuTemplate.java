@@ -2,59 +2,41 @@ package me.Fupery.ArtMap.Menu.API;
 
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryType;
 
 public interface MenuTemplate {
-
-    /**
-     * @return The menu's title - max 32 characters
-     */
-    String getHeading();
-
-    /**
-     * @return The menu inventory's type
-     */
-    InventoryType getType();
-
-    /**
-     * @return The caching pattern used to store the menu
-     */
-    StoragePattern getPattern();
 
     /**
      * Called after the menu has been sent to the player
      *
      * @param viewer The player viewing the menu
      */
-    void onMenuOpenEvent(CacheableMenu menu, Player viewer);
+    void onMenuOpenEvent(Player viewer);
 
     /**
      * Called when the menu is updated
      *
      * @param viewer The player viewing the menu
      */
-    void onMenuRefreshEvent(CacheableMenu menu, Player viewer);
+    void onMenuRefreshEvent(Player viewer);
 
     /**
      * Called when the player clicks the menu
      *
      * @param viewer The player viewing the menu
      */
-    void onMenuClickEvent(CacheableMenu menu, Player viewer, int slot, ClickType click);
+    void onMenuClickEvent(Player viewer, int slot, ClickType click);
 
     /**
      * Called after the player closes the menu
      *
      * @param viewer The player viewing the menu
      */
-    void onMenuCloseEvent(CacheableMenu menu, Player viewer, MenuCloseReason reason);
+    void onMenuCloseEvent(Player viewer, MenuCloseReason reason);
 
     /**
-     * @param viewer The player viewing the menu
      * @return A list of itemstack buttons that fill the menu
      */
-    Button[] getButtons(Player viewer);
+    Button[] getButtons();
 }
