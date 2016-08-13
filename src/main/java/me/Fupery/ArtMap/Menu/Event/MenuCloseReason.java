@@ -6,17 +6,35 @@ public enum MenuCloseReason {
      */
     DEATH(false),
     /**
-     * Used when a menu is closed by a player
+     * Used when a menu is closed by a player through the menu
      */
     DONE(true),
+
+    /**
+     * Used when a menu is closed by a player by pressing escape
+     */
+    CLIENT(false),
+
+    /**
+     * Used by a child menu is closed in order to return to its parent menu
+     */
+    BACK(true),
+
     /**
      * Used when a menu is closed in order to open a linked menu
      */
     SWITCH(true),
+
     /**
      * Used when a menu closes because the player viewing it has quit the game
      */
     QUIT(false),
+
+    /**
+     * Used for menu-specific actions
+     */
+    SPECIAL(true),
+
     /**
      * Used by the system to close a menu forcibly
      */

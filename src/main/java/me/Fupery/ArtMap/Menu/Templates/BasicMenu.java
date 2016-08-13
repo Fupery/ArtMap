@@ -1,9 +1,8 @@
 package me.Fupery.ArtMap.Menu.Templates;
 
-import me.Fupery.ArtMap.Menu.API.CacheableMenu;
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Menu.API.MenuTemplate;
 import me.Fupery.ArtMap.Menu.API.StoragePattern;
-import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -37,14 +36,18 @@ public abstract class BasicMenu implements MenuTemplate {
     }
 
     @Override
-    public void onMenuOpenEvent(CacheableMenu menu, Player player) { }
+    public void onMenuOpenEvent(CacheableMenu menu, Player viewer) {
+    }
 
     @Override
-    public void onMenuRefreshEvent(CacheableMenu menu, Player player) { }
+    public void onMenuRefreshEvent(CacheableMenu menu, Player viewer) {
+    }
 
     @Override
-    public void onMenuClickEvent(CacheableMenu menu, Player player, int slot, ClickType click) { }
+    public void onMenuClickEvent(CacheableMenu menu, Player viewer, int slot, ClickType click) {
+    }
 
     @Override
-    public void onMenuCloseEvent(CacheableMenu menu, Player player, MenuCloseReason reason) {}
+    public void onMenuCloseEvent(CacheableMenu menu, Player viewer, MenuCloseReason reason) {
+    }
 }

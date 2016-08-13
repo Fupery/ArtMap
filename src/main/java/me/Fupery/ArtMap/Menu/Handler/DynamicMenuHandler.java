@@ -1,26 +1,20 @@
-package me.Fupery.ArtMap.Menu.API;
+package me.Fupery.ArtMap.Menu.Handler;
 
-import me.Fupery.ArtMap.Menu.API.CacheableMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.MenuCacheManager;
 import me.Fupery.ArtMap.Menu.API.MenuTemplate;
-import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Event.MenuListener;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class DynamicMenuHandler {
-    private final ConcurrentHashMap<UUID, MenuTemplate> openMenus = new ConcurrentHashMap<>();
-    private final MenuCacheManager cacheManager = new MenuCacheManager();
+    private final ConcurrentHashMap<UUID, CacheableMenu> openMenus = new ConcurrentHashMap<>();
     private final MenuListener listener;
 
     public DynamicMenuHandler(JavaPlugin plugin) {
@@ -52,16 +46,18 @@ public final class DynamicMenuHandler {
     }
 
     public void openMenu(Player player, MenuTemplate template) {
+        Bukkit.getLogger().info(template.getClass().getName() + ", " + cacheManager.contains(template));//todo remove logging
         if (openMenus.containsKey(player.getUniqueId())) closeMenu(player, MenuCloseReason.SWITCH);
-        CacheableMenu menu = cacheManager.getMenu(template);
-        if (menu == null) menu = cacheManager.cacheMenu(template);
-        openMenus.put(player.getUniqueId(), template);
+        CacheableMenu menu = openMenus.get(player.getUniqueId());
+        openMenus.put(player.getUniqueId(), menu);
         menu.open(player);
     }
 
     public void fireClickEvent(Player player, int slot, ClickType clickType) {
+        Bukkit.getLogger().info(openMenus.containsKey(player.getUniqueId()) + " | " + (player.getOpenInventory() == null));//todo remove logging
         if (!openMenus.containsKey(player.getUniqueId()) || player.getOpenInventory() == null) return;
         CacheableMenu menu = getMenu(player);
+        Bukkit.getLogger().info("Menu :" + (menu != null));//todo remove logging
         if (menu != null) menu.click(player, slot, clickType);
     }
 
@@ -72,10 +68,17 @@ public final class DynamicMenuHandler {
     }
 
     public void closeMenu(Player player, MenuCloseReason reason) {
+        Bukkit.getLogger().info(reason.name() + " | " + openMenus.containsKey(player.getUniqueId()));//todo remove logging
         if (!openMenus.containsKey(player.getUniqueId())) return;
         CacheableMenu menu = getMenu(player);
-        if (menu != null) menu.close(player, reason);
         openMenus.remove(player.getUniqueId());
+        if (menu != null) {
+            menu.close(player, reason);
+            MenuTemplate template = menu.getTemplate();
+            if (template instanceof ChildMenu && reason == MenuCloseReason.BACK) {
+                openMenu(player, ((ChildMenu) template).getParent());
+            }
+        }
     }
 
     public void closeAll(boolean invalidateCaches) {

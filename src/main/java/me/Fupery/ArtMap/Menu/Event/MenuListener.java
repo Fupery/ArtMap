@@ -1,9 +1,11 @@
 package me.Fupery.ArtMap.Menu.Event;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Menu.API.DynamicMenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.DynamicMenuHandler;
+import me.Fupery.ArtMap.Menu.HelpMenu.ArtworkMenu;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static me.Fupery.ArtMap.Menu.Event.MenuEvent.MenuCloseEvent;
@@ -68,7 +71,7 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onMenuInteract(final InventoryClickEvent event) {
-
+        Bukkit.getLogger().info("interact " + handler.isTrackingPlayer(((Player) event.getWhoClicked())));//todo remove logging
         if (!handler.isTrackingPlayer((Player) event.getWhoClicked())) {
             return;
         }
@@ -94,11 +97,13 @@ public class MenuListener implements Listener {
         event.setCancelled(true);
     }
 
+    @EventHandler
     public void onMenuClose(InventoryCloseEvent event) {
+        Bukkit.getLogger().info("menu close");//todo remove logging
         Player player = ((Player) event.getPlayer());
 
         if (player != null && handler.isTrackingPlayer(player)) {
-            fireMenuEvent(new MenuCloseEvent(player, event.getInventory(), MenuCloseReason.DONE));
+            fireMenuEvent(new MenuCloseEvent(player, event.getInventory(), MenuCloseReason.CLIENT));
         }
     }
 
@@ -113,6 +118,9 @@ public class MenuListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (handler.isTrackingPlayer(event.getEntity())) {
             fireMenuEvent(new MenuCloseEvent(event.getEntity(), MenuCloseReason.DEATH));
+            for (ItemStack item : event.getDrops()) {
+                if (ArtworkMenu.isPreviewItem(item)) item.setType(Material.AIR);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Menu.Button;
 
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -54,6 +55,6 @@ public abstract class Button extends ItemStack {
         this(material, 0, text);
     }
 
-    public abstract void onClick(Player player, ClickType clickType);
+    public abstract void onClick(CacheableMenu menu, Player player, ClickType clickType);
 
 }

@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Menu.API;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +52,7 @@ final class MenuCacheManager {
 
     void empty() {
         synchronized (cleanupLock) {
-            cleanupThread.cancel();
+            if (cleanupThread != null) cleanupThread.cancel();
         }
         cacheMap.clear();
     }
@@ -61,8 +63,8 @@ final class MenuCacheManager {
 
     private class CleanupThread extends BukkitRunnable {
         CleanupThread() {
-            this.runTaskTimerAsynchronously(ArtMap.instance(), 300, 300); //15 seconds
-        }// TODO: 5/08/2016 new task scheduling
+            ArtMap.getTaskManager().getTaskHandler(this).runTimer(true, 300, 300);
+        }
 
         @Override
         public void run() {
@@ -75,6 +77,7 @@ final class MenuCacheManager {
             for (MenuTemplate key : cacheMap.keySet()) {
                 CacheableMenu value = cacheMap.get(key);
                 if (value.isExpired()) {
+                    Bukkit.getLogger().info(key.getHeading() + " REMOVED");//todo remove logging
                     cacheMap.remove(key);
                 }
             }

@@ -1,8 +1,10 @@
 package me.Fupery.ArtMap.Menu.Button;
 
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 public class StaticButton extends Button {
 
@@ -22,6 +24,10 @@ public class StaticButton extends Button {
         super(material, text);
     }
 
+    public StaticButton(Material material, String displayName) {
+        super(material, displayName);
+    }
+
     public StaticButton(Material material) {
         super(material);
     }
@@ -30,8 +36,14 @@ public class StaticButton extends Button {
         super(material, durability);
     }
 
+    public StaticButton(ItemStack itemStack) {
+        super(itemStack.getType(), itemStack.getDurability());
+        setAmount(itemStack.getAmount());
+        setItemMeta(itemStack.getItemMeta().clone());
+    }
+
     @Override
-    public void onClick(Player player, ClickType clickType) {
+    public void onClick(CacheableMenu menu, Player player, ClickType clickType) {
         //do nothing
     }
 }

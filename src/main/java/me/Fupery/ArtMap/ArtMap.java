@@ -2,11 +2,10 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
-import me.Fupery.ArtMap.HelpMenu.HelpMenu;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.Listeners.*;
-import me.Fupery.ArtMap.Menu.API.DynamicMenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.DynamicMenuHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -26,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -34,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
-    private DynamicMenuHandler menuHandler;
     private static SoftReference<ArtMap> pluginInstance = null;
     private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
+    private DynamicMenuHandler menuHandler;
     private ArtistHandler artistHandler;
     private ConcurrentHashMap<Player, Preview> previewing;
     private VersionHandler bukkitVersion;
@@ -48,7 +46,6 @@ public class ArtMap extends JavaPlugin {
     private Lang lang;
     private List<String> titleFilter;
     private PixelTableManager pixelTable;
-    private WeakReference<HelpMenu> helpMenu;
     private boolean hasRegisteredListeners = false;
 
     public static ArtDatabase getArtDatabase() {
@@ -60,14 +57,6 @@ public class ArtMap extends JavaPlugin {
             pluginInstance = new SoftReference<>((ArtMap) Bukkit.getPluginManager().getPlugin("ArtMap"));
         }
         return pluginInstance.get();
-    }
-
-    public static HelpMenu getHelpMenu() {
-        ArtMap plugin = instance();
-        if (plugin.helpMenu.get() == null) {
-            plugin.helpMenu = new WeakReference<>(new HelpMenu());
-        }
-        return plugin.helpMenu.get();
     }
 
     public static TaskManager getTaskManager() {
@@ -154,7 +143,6 @@ public class ArtMap extends JavaPlugin {
             }
             hasRegisteredListeners = true;
         }
-        helpMenu = new WeakReference<>(null);
         recipeLoader = new RecipeLoader(loadOptionalYAML("customRecipes", "recipe.yml"));
         ArtMaterial.setupRecipes();
     }
