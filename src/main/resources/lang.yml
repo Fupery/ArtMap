@@ -919,3 +919,183 @@ german: #Translation provided by Juyas [https://www.spigotmc.org/members/91627/]
     - "§3/artmap backup §b: §eErstellt von allen Kunstwerken ein Backup im Ordner: /plugins/ArtMap/backup/"
     - "§3/artmap restore <backupname> <worldname> [-o] §b: §eStellt alle Kunstwerke aus dem Backup-Ordner wieder her*"
     - "  §e * Benutze die Option [-o] um bestehende Kunstwerke durch die Wiederherstellung zu überschreiben."
+    
+italian: #Translation provided by luminatimc [https://www.spigotmc.org/members/luminatimc.108885/]
+#Player Messages
+  COMMAND_SAVE: "salva"
+  COMMAND_DELETE: "cancella"
+  COMMAND_PREVIEW: "anteprima"
+  COMMAND_RESTORE: "ripristina"
+  COMMAND_BACKUP: "backup"
+  HELP: "§6/artmap per la lista dei comandi."
+  SAVE_USAGE: "§6Use §e/artmap save <title> §6per salvare."
+  SAVE_SUCCESS: "§6Salvataggio riuscito di '%s'!"
+  EASEL_HELP: "§3§lTasto-Destro per dipingere, §b§lSneak + Tasto-Destro per rompere."
+  PAINTING: "§b§lClicca sulla tela con colori/secchi colorati per dipingere!"
+  DELETED: "§6Hai cancellato '%s'."
+  PREVIEWING: "§6Anteprima di '%s'."
+  BACKUP_SUCCESS: "§6Hai creato con successo un Backup di %s"
+  RESTORE_SUCCESS: "§6Hai ripristinato %s da %s"
+  RESTORE_ALREADY_FOUND: "%s artworks were excluded, usa -o to enable overwriting."
+  RECIPE_HEADER: "Ricetta per §a[%s]"
+  NO_CONSOLE: "§cComando eseguibile solo da giocatori."
+  PLAYER_NOT_FOUND: "§cGiocatore '%s' non torvato."
+  INVALID_POS: "§4§lNon puoi piazzare qui la tela!"
+  NO_PERM: "§cNon hai il permesso."
+  NO_PERM_ACTION: "§4§lNon hai il permesso."
+  ELSE_USING: "§4§lQualcun altro sta usando al tela!"
+  NOT_RIDING_EASEL: "§cDevi essere seduto nella tua tela per salvare."
+  NEED_CANVAS: "§4§lPiazza una tela sul cavalletto. §3§l/artmap §4§lper maggiori informazioni."
+  NOT_YOUR_EASEL: "§cNon puoi distruggere %s's artwork!"
+  BREAK_CANVAS: "Sneak + Tasto-Destro sul cavalletto per romperlo."
+  MAP_NOT_FOUND: "§c'%s' non è stato torvato."
+  NO_ARTWORKS: "§cAttualmente non ci sono opere salvate!"
+  NO_EDIT_PERM: "§4§lNon puoi modificare opere di altri giocatori!"
+  NO_CRAFT_PERM: "§cNon puoi copiare le opere degli altri giocatori!"
+  BAD_TITLE: "§cTitolo Invalido. I titoli devono contenere dai 3 ai 16 caratteri (solo lettere e numeri)."
+  TITLE_USED: "§cMi dispiace, ma quesot titolo è già in uso."
+  EMPTY_HAND_PREVIEW: "§cDevi avere la mano vuota per vedere l'anteprima."
+  MAPDATA_ERROR: "§cErrore leggendo mapdata.yml su %s: %s"
+  BACKUP_ERROR: "§cLa cartella di Backup non può essere creata!"
+  NO_WORLD: "§cNon è stato torvato alcun mondo chiamato '%s'"
+  RESTORE_ERROR: "§cCartella di Backup '%s' non trovata!"
+  INVALID_DATA_TABLES: "§cData tables invalidi, il plugin non può essere inizializzato."
+  CANNOT_BUILD_DATABASE: "§cErrore costruendo MapArt database - il plugin sarà disabilitato."
+
+#help menu
+  #Menu titles
+  MENU_RECIPE: "Seleziona una ricetta"
+  MENU_ARTIST: "Clicca un Artista"
+  MENU_ARTWORKS: "Opere Giocatori"
+  MENU_DYES: "Colori per dipingere"
+  MENU_HELP: "Scegli un Help Topic"
+  MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
+  BUTTON_CLICK: "Clicca per vedere"
+  BUTTON_CLOSE: "Chiudi" #close the menu
+  BUTTON_BACK: "Indietro" #go back to previous page
+  RECIPE_BUTTON: "Tasto-Sinistro per vedere la ricetta"
+  ADMIN_RECIPE: "Tasto-Destro per prendere l'oggetto"
+  RECIPE_HELP: "§a/artmap §2per l'aiuto"
+  RECIPE_EASEL_NAME: "Easel"
+  RECIPE_CANVAS_NAME: "Canvas"
+  RECIPE_PAINTBUCKET_NAME: "Secchiello da Pittura"
+
+  #Menu Buttons
+  HELP_GETTING_STARTED:
+    - "                 §6§l⊱§e§lLINEE GUIDA§6§l⊰"
+    - "                §3❉§b§oBenvenuto su ArtMap!§3❉"
+    - ""
+    - "   §a1§2. §7Crafta un §6Cavalletto §7e una §6tela§7."
+    - "   §a2§2. §7Posiziona il Cavalletto e usa la Tela §7su di esso."
+    - "   §a3§2. §7Clicca sulla Tela con i §2Colori §7& §3in mano §7per disegnare."
+    - "   §a4§2. §7Quando hai finito, usa §e/artmap save§7."
+    - ""
+    - "§7§oClicca su le altre TAB nel menu per avere altre informazioni"
+    - "§7§oinformazioni sui crafting, attrezzi e sui vari colori."
+    - ""
+    - "    §8░░░░§e❃§lCOMANDI §r§e⤸§8░░░░░░░░░░░░░"
+    - "§6•§f/artmap save <title>    §6➯   §7salva il tuo disegno"
+    - "§6•§f/artmap delete <title>  §6➯ §7cancella il tuo disegno"
+    - "§6•§f/artmap preview <title> §6➯  §7anteprima del tuo disegno"
+
+  HELP_RECIPES:
+    - "             §6§l⊱§e§lRecipes§6§l⊰"
+    - "§7Visualizza tutti i crafting"
+    - "§7e tutti gli oggetti neccessari per disegnare."
+    - "          §a✸§2§oClicca per vedere§a✸"
+
+  HELP_TOOLS:
+    - "            §6§l⊱§e§lATTREZZI§6§l⊰"
+    - "§7Visualizza tutti gli attrezzi"
+    - "§7che ti serviranno per disegnare."
+    - "       §a✸§2§oClicca per vedere§a✸"
+
+  HELP_DYES:
+    - "           §6§l⊱§e§lCOLORI§6§l⊰"
+    - "§7Visualizza tutti i colori"
+    - "§7che servono per disegnare."
+    - "      §a✸§2§oClicca per vedere§a✸"
+
+  HELP_LIST:
+    - "             §6§l⊱§e§lDISEGNI§6§l⊰"
+    - "      §3✺§b§oVisualizza Galleria Disegni§3✺"
+    - "§7Visualizza i tuoi disegni oppure quelli degli altri giocatori"
+    - "§7Disegni raggruppati per Artista."
+    - "          §a✸§2§oClicca per navigare§a✸"
+
+  HELP_CLOSE:
+    - "    §6§l⊱§e§lBack§6§l⊰"
+    - "§4﴾§cChiudi Menu§4﴿"
+
+  INFO_DYES:
+    - "              §6§l⊱§e§lCOLORI§6§l⊰"
+    - "§7Clicca sulla tela con un colore"
+    - "§7per iniziare a disegnare."
+    - ""
+    - "   §a• §7§oTasto-Sinistro per disegnare quadrati"
+    - "   §a• §7§oTasto-Destro per disegnare linee"
+    - ""
+    - "§7Ogni colore può essere unito ad un secchiello"
+    - "§7per fare appunto il §6Secchiello da Pittura§7."
+    - "           §b§oPassa sopra per vedere i colori"
+
+  INFO_RECIPES:
+    - "              §6§l⊱§e§lRICETTARIO§6§l⊰"
+    - "§7Crafta ongi disegno con una §6mappa vuota"
+    - "§7per creare una copia. Solo l'auotore"
+    - "§7originale può fare copie di essa."
+    - "        §b§oPassa sopra con il mouse per altre Info"
+
+  INFO_TOOLS:
+    - "              §6§l⊱§e§lINFO ATTREZZI§6§l⊰"
+    - "§7Puoi usare i vari attrezzi combinati"
+    - "§2con i colori §7per aiutarti a disegnare."
+    - "       §b§oPassa sopra con il mouse per altre Info"
+
+  TOOL_DYE:
+    - "              §6§l⊱§e§lCOLORI§6§l⊰"
+    - " §7Tasto-Sinistro per disegnare quadrati"
+    - " §7Tasto-Destro per disegnare linee"
+    - "§a✸§2§oClicca per vedere tutti i colori§a✸"
+
+  TOOL_PAINTBUCKET:
+    - "         §6§l⊱§e§lSECCHIELLO DA PITTURA§6§l⊰"
+    - "§7Tasto-Sinistro per rimepire un'area."
+    - "§7Per craftarlo, combina un seccchio"
+    - "§7unito al colore desiderato."
+    - "§7Tasto-Destro per annullare l'ultimo riempimento."
+
+  TOOL_COAL:
+    - "              §6§l⊱§e§lCOAL§6§l⊰"
+    - "§7Tasto-Sinistro per quadrati scuri."
+    - "§7Tasto-Destro per linee scure."
+
+  TOOL_FEATHER:
+    - "            §6§l⊱§e§lPIUMA§6§l⊰"
+    - "§7Tasto-Sinistro per quadrati chairi."
+    - "§7Tasto-Destro per linee chiare."
+
+  TOOL_COMPASS:
+    - "            §6§l⊱§e§lBUSSOLA§6§l⊰"
+    - "§7Tasto-Sinistro per girare orizzontalmente."
+    - "§7Tasto-Destro per girare verticalmente."
+
+  RECIPE_EASEL:
+    - "§7Clicca per modificre disegni"
+    - "§7Tasto-Destro per piazzare"
+
+  RECIPE_CANVAS:
+    - "§7Usa su un §aCavalletto"
+    - "§7per iniziare a disegnare"
+
+  RECIPE_PAINTBUCKET:
+    - "§7Usa con un §aCavalletto §7e"
+    - "§aTela §7per riempire di colori."
+    - "§7Tasto-Destro per annullare."
+
+  CONSOLE_HELP:
+    - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+    - "§3/artmap delete <title> §b: §eCancella un disegno"
+    - "§3/artmap backup §b: §eCrea un Backup di tutti i disegni su /plugins/ArtMap/backup/"
+    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRipristina tutti i disegni da una cartella di Backup*"
+    - "  §e * Opzionale [-o] flag che abilita la sovrascrizione dei disegni"

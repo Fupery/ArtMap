@@ -38,7 +38,7 @@ public class Lang {
         String msg = lang.getString(key);
         if (msg != null) return msg;
         Bukkit.getLogger().warning("Error loading key from lang.yml: " + key);
-        return null;
+        return "[" + key + "] NOT FOUND IN lang.yml";
     }
 
     public void sendMsg(String key, CommandSender player) {

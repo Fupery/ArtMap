@@ -1,6 +1,6 @@
 #ArtMap Config
 
-#Currently supported languages: [english, mandarin, dutch, russian, german]
+#Currently supported languages: [english, mandarin, dutch, russian, german, italian]
 language: english
 
 #If true, prevents players from using obvious english swear words in artwork titles.
