@@ -21,6 +21,9 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler(RedProtectCompat.class);
         loadRegionHandler(LandlordCompat.class);
         reflectionHandler = loadReflectionHandler();
+        if (!(reflectionHandler instanceof VanillaReflectionHandler))
+            Bukkit.getLogger().info(String.format("[ArtMap] %s reflection handler enabled.",
+                    reflectionHandler.getClass().getSimpleName().replace("Compat", "")));
         for (RegionHandler regionHandler : regionHandlers) {
             Bukkit.getLogger().info(String.format("[ArtMap] %s hooks enabled.",
                     regionHandler.getClass().getSimpleName().replace("Compat", "")));
@@ -55,14 +58,11 @@ public class CompatibilityManager implements RegionHandler {
     }
 
     private ReflectionHandler loadReflectionHandler() {
-        ReflectionHandler handler;
-        try {
-            handler = new DenizenCompat();
-            if (!handler.isLoaded()) handler = new VanillaReflectionHandler();
-        } catch (Exception | NoClassDefFoundError e) {
-            handler = new VanillaReflectionHandler();
-        }
-        return handler;
+        ReflectionHandler denizenHandler = new DenizenCompat();
+        if (denizenHandler.isLoaded()) return denizenHandler;
+        ReflectionHandler iDisguiseHandler = new iDisguiseCompat();
+        if (iDisguiseHandler.isLoaded()) return iDisguiseHandler;
+        return new VanillaReflectionHandler();
     }
 
     private void loadRegionHandler(Class<? extends RegionHandler> handlerClass) {

@@ -48,6 +48,18 @@ public class Reflection {
         return field.get(obj);
     }
 
+    public static Object getSuperField(Object obj, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+        Field field;
+        try {
+            field = obj.getClass().getSuperclass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new NoSuchFieldException(String.format("Field '%s' could not be found in '%s'. Fields found: {%s}",
+                    fieldName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredFields())));
+        }
+        return field.get(obj);
+    }
+
     public static void setField(Object obj, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
         Field field;

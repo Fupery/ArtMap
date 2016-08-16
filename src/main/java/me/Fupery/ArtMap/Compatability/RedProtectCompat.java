@@ -27,7 +27,7 @@ class RedProtectCompat implements RegionHandler {
     @Override
     public boolean checkInteractAllowed(Player player, Entity entity, EaselEvent.ClickType click) {
         Region currentRegion = RedProtectAPI.getRegion(entity.getLocation());
-        return currentRegion.canSign(player);
+        return currentRegion == null || currentRegion.canSign(player);
     }
 
     @Override
