@@ -24,7 +24,7 @@ public class WorldGuardCompat implements RegionHandler {
         ApplicableRegionSet set = wg.getRegionContainer().createQuery().getApplicableRegions(location);
         return wg.canBuild(player, location) && (player.hasPermission("artmap.region.member") ||
                 ((set.size() > 0 && set.isOwnerOfAll(wg.wrapPlayer(player)))
-                || set.testState(wg.wrapPlayer(player), DefaultFlag.BUILD)));
+                        || set.testState(wg.wrapPlayer(player), DefaultFlag.BUILD)));
     }
 
     @Override
@@ -40,3 +40,4 @@ public class WorldGuardCompat implements RegionHandler {
         return worldGuardPlugin != null;
     }
 }
+
