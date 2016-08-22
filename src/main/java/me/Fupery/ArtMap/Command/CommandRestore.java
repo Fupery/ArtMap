@@ -7,8 +7,10 @@ import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
@@ -19,19 +21,28 @@ import java.util.ArrayList;
 public class CommandRestore extends Command {
 
     CommandRestore() {
-        super("op", "/artmap restore <backupname>", true);
+        super("op", "/artmap restore <backupname> [worldname] [-o]", true);
     }
 
     @Override
     public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-        //Check world is valid
-        World world = Bukkit.getWorld(args[1]);
-
+        World world = null;
+        if (sender instanceof Player) world = ((Player) sender).getWorld();
+        else if (args.length > 2) {
+            //Check world is valid
+            world = Bukkit.getWorld(args[2]);
+        }
         if (world == null) {
-            sender.sendMessage(String.format(ArtMap.getLang().getMsg("NO_WORLD"), args[1]));
+            String worldName = (args.length > 2) ? args[2] : null;
+            sender.sendMessage(String.format(ArtMap.getLang().getMsg("NO_WORLD"), worldName));
+            sender.sendMessage(ChatColor.RED + "/artmap restore <backupname> <worldname> [-o]");
+            return;
         }
         //Check if overwrite flag is provided
-        boolean overwrite = (args.length > 2 && args[2].equals("-o"));
+        boolean overwrite = false;
+        for (String arg : args) {
+            if (arg.equals("-o")) overwrite = true;
+        }
 
         //Check if backups folder is valid
         File backupsFolder = new File(ArtMap.instance().getDataFolder(), "backups");
@@ -41,7 +52,7 @@ public class CommandRestore extends Command {
             return;
         }
 
-        File backup = new File(backupsFolder, args[0]);
+        File backup = new File(backupsFolder, args[1]);
 
         if (!backup.exists()) {
             msg.message = String.format(ArtMap.getLang().getMsg("RESTORE_ERROR"), backup.getAbsolutePath());
