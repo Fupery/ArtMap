@@ -104,18 +104,12 @@ public class Easel {
     }
 
     private boolean hasSign() {
-
-        if (location.getBlock().getType() == Material.WALL_SIGN) {
-
-            if (location.getBlock().getState() instanceof Sign) {
+        if (location.getBlock().getType() == Material.WALL_SIGN
+                && location.getBlock().getState() instanceof Sign) {
                 Sign sign = ((Sign) location.getBlock().getState());
-
-                if (!sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
-                    return false;
-                }
-            }
+                return sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID);
         }
-        return true;
+        return false;
     }
 
     private ArmorStand getStand(Collection<Entity> entities) {
