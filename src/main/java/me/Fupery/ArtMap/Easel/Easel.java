@@ -106,8 +106,8 @@ public class Easel {
     private boolean hasSign() {
         if (location.getBlock().getType() == Material.WALL_SIGN
                 && location.getBlock().getState() instanceof Sign) {
-                Sign sign = ((Sign) location.getBlock().getState());
-                return sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID);
+            Sign sign = ((Sign) location.getBlock().getState());
+            return sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID);
         }
         return false;
     }

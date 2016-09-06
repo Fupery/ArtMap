@@ -145,7 +145,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                     });
 
                 }
-            } else if (clickType == ClickType.RIGHT ) {
+            } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);
                     ItemStack leftOver = player.getInventory().addItem(artwork.getMapItem()).get(0);
