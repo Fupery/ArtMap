@@ -10,10 +10,7 @@ import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.Lang;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.ArtMap.Utils.TaskManager;
-import me.Fupery.ArtMap.Utils.VersionHandler;
+import me.Fupery.ArtMap.Utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,6 +43,7 @@ public class ArtMap extends JavaPlugin {
     private Lang lang;
     private List<String> titleFilter;
     private PixelTableManager pixelTable;
+    private Configuration config;
     private boolean hasRegisteredListeners = false;
 
     public static ArtDatabase getArtDatabase() {
@@ -95,11 +93,15 @@ public class ArtMap extends JavaPlugin {
         return instance().menuHandler;
     }
 
+    public static Configuration getConfiguration() {
+        return instance().config;
+    }
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
-
+        config = new Configuration(this);
         taskManager = new TaskManager(this);
         previewing = new ConcurrentHashMap<>();
         artistHandler = new ArtistHandler(this);
@@ -109,9 +111,7 @@ public class ArtMap extends JavaPlugin {
         menuHandler = new MenuHandler(this);
         compatManager = new CompatibilityManager();
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
-        boolean disableActionBar = getConfig().getBoolean("disableActionBar");
-        boolean hidePrefix = getConfig().getBoolean("hidePrefix");
-        lang = new Lang(getConfig().getString("language"), langFile, disableActionBar, hidePrefix);
+        lang = new Lang(config.LANGUAGE, langFile, config.DISABLE_ACTION_BAR, config.HIDE_PREFIX);
 
         if (artDatabase == null) {
             getPluginLoader().disablePlugin(this);
