@@ -1,7 +1,5 @@
 package me.Fupery.ArtMap.IO.ColourMap;
 
-import org.bukkit.Bukkit;
-
 import java.io.IOException;
 
 import static me.Fupery.ArtMap.IO.MapManager.MapSize;

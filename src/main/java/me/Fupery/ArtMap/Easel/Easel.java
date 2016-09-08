@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Listeners.EaselInteractListener;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
@@ -42,7 +41,7 @@ public class Easel {
         SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
 
         Easel easel = new Easel(location);
-        EaselInteractListener.easels.put(location, easel);
+        EaselEvent.easels.put(location, easel);
 
         if (stand == null || frame == null) {
             easel.breakEasel();
@@ -61,9 +60,9 @@ public class Easel {
         Location easelLocation =
                 part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
-        if (EaselInteractListener.easels.containsKey(easelLocation)) {
+        if (EaselEvent.easels.containsKey(easelLocation)) {
 
-            return EaselInteractListener.easels.get(easelLocation);
+            return EaselEvent.easels.get(easelLocation);
 
         } else {
 
@@ -77,7 +76,7 @@ public class Easel {
                 easel.stand = new WeakReference<>(stand);
                 easel.frame = new WeakReference<>(frame);
 
-                EaselInteractListener.easels.put(easel.location, easel);
+                EaselEvent.easels.put(easel.location, easel);
                 easel.exists.set(true);
                 return easel;
             }
@@ -96,8 +95,8 @@ public class Easel {
 
         } else {
 
-            if (EaselInteractListener.easels.containsKey(location)) {
-                EaselInteractListener.easels.remove(location);
+            if (EaselEvent.easels.containsKey(location)) {
+                EaselEvent.easels.remove(location);
             }
             return false;
         }
@@ -187,7 +186,7 @@ public class Easel {
 
     public void breakEasel() {
         if (!exists.getAndSet(false)) return;
-        EaselInteractListener.easels.remove(location);
+        EaselEvent.easels.remove(location);
         final Collection<Entity> entities = getNearbyEntities();
         final ArmorStand stand = getStand(entities);
         final ItemFrame frame = getFrame(entities);

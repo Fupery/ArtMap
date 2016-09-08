@@ -2,9 +2,9 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
+import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.IO.PixelTableManager;
-import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
@@ -139,7 +139,6 @@ public class ArtMap extends JavaPlugin {
             manager.registerEvents(new ChunkUnloadListener(), this);
             manager.registerEvents(new PlayerCraftListener(), this);
             manager.registerEvents(new InventoryInteractListener(), this);
-            manager.registerEvents(new EaselInteractListener(), this);
             if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
                 manager.registerEvents(new PlayerSwapHandListener(), this);
                 manager.registerEvents(new PlayerDismountListener(), this);
