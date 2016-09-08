@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Configuration {
