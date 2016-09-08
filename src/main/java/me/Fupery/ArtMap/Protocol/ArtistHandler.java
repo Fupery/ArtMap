@@ -24,7 +24,7 @@ public class ArtistHandler {
 
     public ArtistHandler(ArtMap plugin) {
         artists = new ConcurrentHashMap<>();
-        SETTINGS = new Settings(plugin.getConfig().getBoolean("forceArtKit"), 16384);
+        SETTINGS = new Settings(ArtMap.getConfiguration().FORCE_ART_KIT, 16384);
 
         protocol = new ArtistProtocol() {
             @Override

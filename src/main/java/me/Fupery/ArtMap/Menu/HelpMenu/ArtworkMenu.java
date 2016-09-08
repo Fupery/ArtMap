@@ -26,10 +26,12 @@ import java.util.UUID;
 public class ArtworkMenu extends ListMenu implements ChildMenu {
     private final UUID artist;
     private ArtistMenu parent;
+    private boolean adminViewing;
 
-    public ArtworkMenu(ArtistMenu parent, UUID artist, int page) {
+    public ArtworkMenu(ArtistMenu parent, UUID artist, boolean adminViewing, int page) {
         super(processTitle(artist), page);
         this.parent = parent;
+        this.adminViewing = adminViewing;
         this.artist = artist;
     }
 
@@ -66,13 +68,12 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
         if (player == null || !player.hasPlayedBefore()) return new Button[0];
         MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getUniqueId());
         Button[] buttons;
-        boolean adminButton = parent.getViewer().hasPermission("artmap.admin");
 
         if (artworks != null && artworks.length > 0) {
             buttons = new Button[artworks.length];
 
             for (int i = 0; i < artworks.length; i++) {
-                buttons[i] = new PreviewButton(this, artworks[i], adminButton);
+                buttons[i] = new PreviewButton(this, artworks[i], adminViewing);
             }
 
         } else {
@@ -90,7 +91,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
         }
     }
 
-    private static class PreviewButton extends Button {
+    private class PreviewButton extends Button {
 
         private final MapArt artwork;
         private final ArtworkMenu artworkMenu;
@@ -144,11 +145,15 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                     });
 
                 }
-            } else if (clickType == ClickType.RIGHT && player.hasPermission("artmap.artist")) {
-                SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                ItemStack leftOver = player.getInventory().addItem(artwork.getMapItem()).get(0);
-                if (leftOver != null) ArtMap.getTaskManager().SYNC.run(() ->
-                        player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
+            } else if (clickType == ClickType.RIGHT) {
+                if (player.hasPermission("artmap.admin")) {
+                    SoundCompat.BLOCK_CLOTH_FALL.play(player);
+                    ItemStack leftOver = player.getInventory().addItem(artwork.getMapItem()).get(0);
+                    if (leftOver != null) ArtMap.getTaskManager().SYNC.run(() ->
+                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
+                } else if (adminViewing) {
+                    ArtMap.getLang().sendMsg("NO_PERM", player);
+                }
             }
         }
     }

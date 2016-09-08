@@ -81,7 +81,7 @@ public class PlayerInteractEaselListener implements Listener {
 
     private void callEaselEvent(Entity clicker, Entity clicked, Cancellable event, ClickType click) {
         EaselPart part = EaselPart.getPartType(clicked);
-        if (part == null || part == EaselPart.SEAT) return;
+        if (part == null || part == EaselPart.SEAT || part == EaselPart.MARKER) return;
 
         Easel easel = Easel.getEasel(clicked.getLocation(), part);
         if (easel == null) return;

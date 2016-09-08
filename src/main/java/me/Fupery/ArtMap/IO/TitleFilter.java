@@ -33,9 +33,9 @@ public class TitleFilter {
             return false;
         }
 
-        if (!plugin.getConfig().getString("language").equalsIgnoreCase("english")) return true;
+        if (!ArtMap.getConfiguration().LANGUAGE.equalsIgnoreCase("english")) return true;
 
-        if (plugin.getConfig().getBoolean("swearFilter")) {
+        if (ArtMap.getConfiguration().SWEAR_FILTER) {
             for (String reject : plugin.getTitleFilter()) {
                 if (title.toLowerCase().contains(reject) || adjTitle.contains(reject)) {
                     return false;

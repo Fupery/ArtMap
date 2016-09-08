@@ -80,7 +80,8 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
         @Override
         public void onClick(Player player, ClickType clickType) {
             SoundCompat.UI_BUTTON_CLICK.play(player);
-            ArtMap.getMenuHandler().openMenu(player, new ArtworkMenu(getMenu(), artist, 0));
+            ArtMap.getMenuHandler().openMenu(player,
+                    new ArtworkMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
         }
     }
 }

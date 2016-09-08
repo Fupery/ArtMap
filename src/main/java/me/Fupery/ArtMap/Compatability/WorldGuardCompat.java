@@ -38,3 +38,4 @@ public class WorldGuardCompat implements RegionHandler {
         return worldGuardPlugin != null;
     }
 }
+

@@ -9,10 +9,7 @@ import me.Fupery.ArtMap.Protocol.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.Lang;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.ArtMap.Utils.TaskManager;
-import me.Fupery.ArtMap.Utils.VersionHandler;
+import me.Fupery.ArtMap.Utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,6 +45,7 @@ public class ArtMap extends JavaPlugin {
     private Lang lang;
     private List<String> titleFilter;
     private PixelTableManager pixelTable;
+    private Configuration config;
     private boolean hasRegisteredListeners = false;
 
     public static ArtDatabase getArtDatabase() {
@@ -101,11 +99,15 @@ public class ArtMap extends JavaPlugin {
         return instance().mapManager;
     }
 
+    public static Configuration getConfiguration() {
+        return instance().config;
+    }
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
-
+        config = new Configuration(this);
         taskManager = new TaskManager(this);
         previewing = new ConcurrentHashMap<>();
         artistHandler = new ArtistHandler(this);
@@ -115,11 +117,9 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager();
         mapManager = new MapManager(this);
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
-        boolean disableActionBar = getConfig().getBoolean("disableActionBar");
-        boolean hidePrefix = getConfig().getBoolean("hidePrefix");
-        lang = new Lang(getConfig().getString("language"), langFile, disableActionBar, hidePrefix);
         artDatabase = new SQLiteDatabase(this);
-//        setupDatabase();
+        lang = new Lang(config.LANGUAGE, langFile, config.DISABLE_ACTION_BAR, config.HIDE_PREFIX);
+//
 //        if (artDatabase == null) {
 //            getPluginLoader().disablePlugin(this);
 //            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
@@ -188,22 +188,6 @@ public class ArtMap extends JavaPlugin {
             }
             return YamlConfiguration.loadConfiguration(file);
         }
-    }
-
-    private void setupDatabase() {
-        try {
-            getDatabase().find(MapArt.class).findRowCount();
-        } catch (PersistenceException ex) {
-            getLogger().info("Building MapArt database");
-            installDDL();
-        }
-    }
-
-    @Override
-    public List<Class<?>> getDatabaseClasses() {
-        List<Class<?>> list = new ArrayList<>();
-        list.add(MapArt.class);
-        return list;
     }
 
     private boolean loadTables() {
