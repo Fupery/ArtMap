@@ -18,6 +18,11 @@ public class ErrorLogger {
     private static final String log = "error.log";
     private static WeakReference<File> dataFolder = null;
 
+    public static void log(Throwable throwable, String consoleMessage) {
+        ArtMap.instance().getLogger().warning(consoleMessage);
+        log(throwable);
+    }
+
     public static void log(Throwable throwable) {
         File dataFolder = getDataFolder();
         ArtMap.getTaskManager().ASYNC.run(() -> {

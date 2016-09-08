@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class SQLiteDatabase implements ArtDatabase {
 
-    static final String sqlError = "[ArtMap] Database error, check error.log for more info!";
+    static final String sqlError = "Database error, check error.log for more info!";
     private final String TABLE = "artworks";
     private final String ALL_BUT_MAP = "title, id, artist, date";
     private final File dbFile;
@@ -30,8 +30,7 @@ public class SQLiteDatabase implements ArtDatabase {
             try {
                 dbFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning("[ArtMap] File write error: 'ArtMap.db' - Check error.log for details");
-                ErrorLogger.log(e);// TODO: 23/08/2016
+                ErrorLogger.log(e, "File write error: 'ArtMap.db' - Check error.log for details");
             }
         }
         try {
@@ -41,8 +40,7 @@ public class SQLiteDatabase implements ArtDatabase {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
         } catch (SQLException e) {
             connection = null;
-            Bukkit.getLogger().warning(sqlError);
-            ErrorLogger.log(e);// TODO: 23/08/2016
+            ErrorLogger.log(e, sqlError);
         }
         return connection;
     }
@@ -62,22 +60,19 @@ public class SQLiteDatabase implements ArtDatabase {
                     ");");
             connection = getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TABLE);
-            ResultSet rs = ps.executeQuery();
+            ps.executeQuery();
         } catch (SQLException e) {
-            Bukkit.getLogger().warning(sqlError);
-            ErrorLogger.log(e);// TODO: 23/08/2016
+            ErrorLogger.log(e, sqlError);
         } finally {
             if (buildTableStatement != null) try {
                 buildTableStatement.close();
             } catch (SQLException e) {
-                Bukkit.getLogger().warning(sqlError);
-                ErrorLogger.log(e);// TODO: 23/08/2016
+                ErrorLogger.log(e, sqlError);
             }
             if (connection != null) try {
                 connection.close();
             } catch (SQLException e) {
-                Bukkit.getLogger().warning(sqlError);
-                ErrorLogger.log(e);// TODO: 23/08/2016
+                ErrorLogger.log(e, sqlError);
             }
         }
     }
@@ -203,8 +198,7 @@ public class SQLiteDatabase implements ArtDatabase {
                         artists.add(UUID.fromString(results.getString("artist")));
                     }
                 } catch (SQLException e) {
-                    Bukkit.getLogger().warning(sqlError);
-                    ErrorLogger.log(e);// TODO: 23/08/2016
+                    ErrorLogger.log(e, sqlError);
                 }
                 return artists.toArray(new UUID[artists.size()]);
             }
@@ -246,8 +240,7 @@ public class SQLiteDatabase implements ArtDatabase {
         try {
             compressed = new f32x32().generateBLOB(map);
         } catch (IOException e) {
-            Bukkit.getLogger().info("[ArtMap] Compression error, check error.log for more info!");
-            ErrorLogger.log(e);
+            ErrorLogger.log(e, "Compression error, check error.log for more info!");
             return;
         }
         Bukkit.getLogger().info("MAP:" + compressed.length);//todo remove logging
@@ -288,8 +281,7 @@ public class SQLiteDatabase implements ArtDatabase {
                 prepare(statement);
                 result = (statement.executeUpdate() != 0);
             } catch (Exception e) {
-                Bukkit.getLogger().warning(SQLiteDatabase.sqlError);
-                ErrorLogger.log(e);// TODO: 23/08/2016
+                ErrorLogger.log(e, SQLiteDatabase.sqlError);
             } finally {
                 close(connection, statement);
             }
@@ -326,8 +318,7 @@ public class SQLiteDatabase implements ArtDatabase {
                 prepare(statement);
                 result = read(statement.executeQuery());
             } catch (Exception e) {
-                Bukkit.getLogger().warning(SQLiteDatabase.sqlError);
-                ErrorLogger.log(e);// TODO: 23/08/2016
+                ErrorLogger.log(e, sqlError);
             } finally {
                 close(connection, statement);
             }
