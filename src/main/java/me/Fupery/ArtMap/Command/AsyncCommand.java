@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public abstract class Command {
+public abstract class AsyncCommand {
 
     private final String permission;
     private final boolean consoleAllowed;
@@ -15,7 +15,7 @@ public abstract class Command {
     private int minArgs;
     private int maxArgs;
 
-    Command(String permission, String usage, boolean consoleAllowed) {
+    AsyncCommand(String permission, String usage, boolean consoleAllowed) {
         this.permission = permission;
         this.consoleAllowed = consoleAllowed;
 

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-public class CommandDelete extends Command {
+public class CommandDelete extends AsyncCommand {
 
     CommandDelete() {
         super(null, "/artmap delete <title>", true);

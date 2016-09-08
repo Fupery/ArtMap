@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandPreview extends Command {
+public class CommandPreview extends AsyncCommand {
 
     CommandPreview() {
         super(null, "/artmap preview <title>", false);

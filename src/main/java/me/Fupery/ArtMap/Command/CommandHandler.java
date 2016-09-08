@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 public class CommandHandler implements CommandExecutor {
 
-    private final HashMap<String, Command> commands;
+    private final HashMap<String, AsyncCommand> commands;
 
     public CommandHandler() {
         commands = new HashMap<>();
@@ -30,7 +30,7 @@ public class CommandHandler implements CommandExecutor {
         commands.put("preview", new CommandPreview());
 
         //convenience commands
-        commands.put("help", new Command(null, "/artmap [help]", true) {
+        commands.put("help", new AsyncCommand(null, "/artmap [help]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
@@ -44,7 +44,7 @@ public class CommandHandler implements CommandExecutor {
                 }
             }
         });
-        commands.put("reload", new Command("artmap.admin", "/artmap restore", true) {
+        commands.put("reload", new AsyncCommand("artmap.admin", "/artmap restore", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 ArtMap.getTaskManager().SYNC.run(() -> {
@@ -55,23 +55,27 @@ public class CommandHandler implements CommandExecutor {
                 });
             }
         });
-        commands.put("restore", new Command("artmap.admin", "/artmap restore <title>", true) {
+        commands.put("restore", new AsyncCommand("artmap.admin", "/artmap restore <title>", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
                 if (art == null) {
-                    ArtMap.getLang().sendMsg("MAP_NOT_FOUND", sender);
+                    sender.sendMessage(String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]));
                 } else {
                     byte[] map = ArtMap.getArtDatabase().getMap(art.getTitle());
                     ArtMap.getTaskManager().SYNC.run(() -> {
                         MapView mapView = Bukkit.getMap(art.getMapId());
                         if (mapView == null) {
                             mapView = Bukkit.createMap(((Player) sender).getWorld());
-                            ArtMap.getArtDatabase().updateMapID(art.updateMapId(mapView.getId()));
-                            sender.sendMessage("Map ID not found - assigning new id!");// TODO: 8/09/2016 hardcoding
+                            final MapView finalMapView = mapView;
+                            ArtMap.getTaskManager().ASYNC.run(() -> {
+                                ArtMap.getArtDatabase().updateMapID(art.updateMapId(finalMapView.getId()));
+                            });
+                            sender.sendMessage("Map id missing, assigning new id!");// TODO: 8/09/2016 hardcoding
                         }
+                        int id = mapView.getId();
                         Reflection.setWorldMap(mapView, map);
-                        sender.sendMessage("Restored Successfully!");// TODO: 8/09/2016 hardcoding
+                        sender.sendMessage(String.format("Successfully restored %s with map ID %s!", art.getTitle(), id));// TODO: 8/09/2016 hardcoding
                     });
                 }
             }
