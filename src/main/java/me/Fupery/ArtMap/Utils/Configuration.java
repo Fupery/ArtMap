@@ -1,7 +1,9 @@
 package me.Fupery.ArtMap.Utils;
 
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Compatability.CompatibilityManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Configuration {
     public final String LANGUAGE;
@@ -11,9 +13,8 @@ public class Configuration {
     public final boolean CUSTOM_RECIPES;
     public final boolean FORCE_ART_KIT;
     public final boolean HIDE_PREFIX;
-    public final boolean LAZY_MAP_ID;
 
-    public Configuration(JavaPlugin plugin) {
+    public Configuration(ArtMap plugin, CompatibilityManager manager) {
         FileConfiguration configuration = plugin.getConfig();
         this.LANGUAGE = configuration.getString("language");
         this.SWEAR_FILTER = configuration.getBoolean("swearFilter");
@@ -22,6 +23,5 @@ public class Configuration {
         this.CUSTOM_RECIPES = configuration.getBoolean("customRecipes");
         this.FORCE_ART_KIT = configuration.getBoolean("forceArtKit");
         this.HIDE_PREFIX = configuration.getBoolean("hidePrefix");
-        this.LAZY_MAP_ID = configuration.getBoolean("lazyMapId");
     }
 }

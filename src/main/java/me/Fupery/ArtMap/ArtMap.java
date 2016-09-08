@@ -101,7 +101,8 @@ public class ArtMap extends JavaPlugin {
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
-        config = new Configuration(this);
+        compatManager = new CompatibilityManager();
+        config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
         previewing = new ConcurrentHashMap<>();
         artistHandler = new ArtistHandler(this);
@@ -109,7 +110,6 @@ public class ArtMap extends JavaPlugin {
         artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
-        compatManager = new CompatibilityManager();
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         lang = new Lang(config.LANGUAGE, langFile, config.DISABLE_ACTION_BAR, config.HIDE_PREFIX);
 
