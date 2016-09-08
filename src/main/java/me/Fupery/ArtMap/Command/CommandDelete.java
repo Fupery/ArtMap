@@ -29,20 +29,17 @@ public class CommandDelete extends Command {
             msg.message = ArtMap.getLang().getMsg("NO_PERM");
             return;
         }
-
         if (ArtMap.getArtDatabase().deleteArtwork(args[1])) {
-            MapView mapView = Bukkit.getMap(art.getMapId());
-            Reflection.setWorldMap(mapView, new byte[128 * 128]);
-
-            for (MapRenderer renderer : mapView.getRenderers()) {
-                mapView.removeRenderer(renderer);
-            }
+            ArtMap.getTaskManager().SYNC.run(() -> {
+                MapView mapView = Bukkit.getMap(art.getMapId());
+                Reflection.setWorldMap(mapView, new byte[128 * 128]);
+                for (MapRenderer renderer : mapView.getRenderers()) {
+                    mapView.removeRenderer(renderer);
+                }
+            });
             msg.message = String.format(ArtMap.getLang().getMsg("DELETED"), args[1]);
-            return;
-
         } else {
             msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
-            return;
         }
     }
 }

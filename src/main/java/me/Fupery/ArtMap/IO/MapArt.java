@@ -61,7 +61,7 @@ public class MapArt {
     }
 
     public void saveArtwork() {
-        ArtMap.getArtDatabase().addArtwork(this);
+        ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtwork(this));
     }
 
     public short getMapId() {

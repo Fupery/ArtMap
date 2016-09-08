@@ -56,7 +56,6 @@ public class CommandPreview extends Command {
             msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
             return;
         }
-
         if (!previewArtwork(player, art)) {
             msg.message = ArtMap.getLang().getMsg("EMPTY_HAND_PREVIEW");
             return;

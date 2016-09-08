@@ -9,23 +9,22 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
-public class SQLiteDatabase implements ArtDatabase {
+public class ArtDatabase {
 
-    static final String sqlError = "Database error, check error.log for more info!";
+    private static final String sqlError = "Database error, check error.log for more info!";
     private final String TABLE = "artworks";
     private final String ALL_BUT_MAP = "title, id, artist, date";
     private final File dbFile;
     private Connection connection;
 
-    public SQLiteDatabase(JavaPlugin plugin) {
+    public ArtDatabase(JavaPlugin plugin) {
         dbFile = new File(plugin.getDataFolder(), "ArtMap.db");
         initialize();
     }
 
-    Connection getConnection() {
+    private Connection getConnection() {
         if (!dbFile.exists()) {
             try {
                 dbFile.createNewFile();
@@ -77,36 +76,36 @@ public class SQLiteDatabase implements ArtDatabase {
         }
     }
 
-    @Override
+
     public void close() {
     }
 
-    @Override
+
     public MapArt getArtwork(String title) {
         return new QueuedQuery<MapArt>() {
 
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
 
-            @Override
+
             MapArt read(ResultSet set) throws SQLException {
                 return (set.next()) ? readArtwork(set) : null;
             }
         }.execute("SELECT " + ALL_BUT_MAP + " FROM " + TABLE + " WHERE title=?;");
     }
 
-    @Override
+
     public MapArt getArtwork(short mapData) {
         return new QueuedQuery<MapArt>() {
 
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapData);
             }
 
-            @Override
+
             MapArt read(ResultSet set) throws SQLException {
                 return (set.next()) ? readArtwork(set) : null;
             }
@@ -121,15 +120,15 @@ public class SQLiteDatabase implements ArtDatabase {
         return new MapArt((short) id, title, artist, date);
     }
 
-    @Override
+
     public boolean containsArtwork(MapArt art, boolean ignoreMapID) {
         return new QueuedQuery<Boolean>() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, art.getTitle());
             }
 
-            @Override
+
             Boolean read(ResultSet set) throws SQLException {
                 return set.next();
             }
@@ -137,40 +136,40 @@ public class SQLiteDatabase implements ArtDatabase {
                 && (ignoreMapID || containsMapID(art.getMapId()));
     }
 
-    @Override
+
     public boolean containsMapID(short mapID) {
         return new QueuedQuery<Boolean>() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapID);
             }
 
-            @Override
+
             Boolean read(ResultSet set) throws SQLException {
                 return set.next();
             }
         }.execute("SELECT id FROM " + TABLE + " WHERE id=?;");
     }
 
-    @Override
+
     public boolean deleteArtwork(String title) {
         return new QueuedStatement() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
         }.execute("DELETE FROM " + TABLE + " WHERE title=?;");
     }
 
-    @Override
+
     public MapArt[] listMapArt(UUID artist) {
         return new QueuedQuery<MapArt[]>() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, artist.toString());
             }
 
-            @Override
+
             MapArt[] read(ResultSet results) throws SQLException {
                 ArrayList<MapArt> artworks = new ArrayList<>();
                 while (results.next()) {
@@ -181,15 +180,15 @@ public class SQLiteDatabase implements ArtDatabase {
         }.execute("SELECT " + ALL_BUT_MAP + " FROM " + TABLE + " WHERE artist = ? ORDER BY title;");
     }
 
-    @Override
+
     public UUID[] listArtists(UUID player) {
         return new QueuedQuery<UUID[]>() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, player.toString());
             }
 
-            @Override
+
             UUID[] read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
                 artists.add(0, player);
@@ -207,7 +206,7 @@ public class SQLiteDatabase implements ArtDatabase {
 
     public void updateMapID(MapArt art) {
         new QueuedStatement() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, art.getMapId());
                 statement.setString(2, art.getTitle());
@@ -218,22 +217,20 @@ public class SQLiteDatabase implements ArtDatabase {
     public byte[] getMap(String title) {
         return new QueuedQuery<byte[]>() {
 
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
 
-            @Override
+
             byte[] read(ResultSet set) throws SQLException {
                 byte[] blob = set.getBytes("map");
-//                Bukkit.getLogger().info(f32x32.arrayToString(blob));//todo remove logging
-//                Bukkit.getLogger().info(f32x32.arrayToString(new f32x32().readBLOB(blob)));//todo remove logging
                 return blob == null ? null : new f32x32().readBLOB(blob);
             }
         }.execute("SELECT map FROM " + TABLE + " WHERE title=?;");
     }
 
-    @Override
+
     public void addArtwork(MapArt art) {
         byte[] map = Reflection.getMap(Bukkit.getMap(art.getMapId()));
         byte[] compressed;
@@ -243,9 +240,8 @@ public class SQLiteDatabase implements ArtDatabase {
             ErrorLogger.log(e, "Compression error, check error.log for more info!");
             return;
         }
-        Bukkit.getLogger().info("MAP:" + compressed.length);//todo remove logging
         new QueuedStatement() {
-            @Override
+
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, art.getTitle());
                 statement.setInt(2, art.getMapId());
@@ -256,7 +252,7 @@ public class SQLiteDatabase implements ArtDatabase {
         }.execute("INSERT INTO " + TABLE + " (title, id, artist, date, map) VALUES(?,?,?,?,?);");
     }
 
-    @Override
+
     public void addArtworks(MapArt... artworks) {
         for (MapArt artwork : artworks) {
             addArtwork(artwork);
@@ -265,12 +261,10 @@ public class SQLiteDatabase implements ArtDatabase {
 
     private abstract class QueuedStatement extends QueuedQuery<Boolean> {
 
-        @Override
         Boolean read(ResultSet set) throws SQLException {
             return false;//unused
         }
 
-        @Override
         Boolean execute(String query) {
             Connection connection = null;
             PreparedStatement statement = null;
@@ -281,7 +275,7 @@ public class SQLiteDatabase implements ArtDatabase {
                 prepare(statement);
                 result = (statement.executeUpdate() != 0);
             } catch (Exception e) {
-                ErrorLogger.log(e, SQLiteDatabase.sqlError);
+                ErrorLogger.log(e, ArtDatabase.sqlError);
             } finally {
                 close(connection, statement);
             }

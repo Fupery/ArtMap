@@ -29,14 +29,6 @@ public class f32x32 implements MapFormatter {
         return foldedData;
     }
 
-    public static String arrayToString(byte[] array) {
-        String string = "[";
-        for (byte b : array) {
-            string += b + ", ";
-        }
-        return string + "]";
-    }
-
     @Override
     public byte[] generateBLOB(byte[] mapData) throws IOException {
         byte[] compressedData;
@@ -47,7 +39,6 @@ public class f32x32 implements MapFormatter {
         } else {
             throw new IOException("Invalid MapData!");
         }
-        Bukkit.getLogger().info(arrayToString(compressedData));
         return compressedData;
     }
 

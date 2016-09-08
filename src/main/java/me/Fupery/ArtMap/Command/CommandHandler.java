@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.SQLiteDatabase;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
@@ -40,8 +39,6 @@ public class CommandHandler implements CommandExecutor {
                         MenuHandler menuHandler = ArtMap.getMenuHandler();
                         menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                     });
-
-
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                 }
@@ -62,24 +59,21 @@ public class CommandHandler implements CommandExecutor {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
-                ArtMap.getTaskManager().SYNC.run(() -> {
-
-                    if (art == null) {
-                        ArtMap.getLang().sendMsg("MAP_NOT_FOUND", sender);
-
-                    } else {
-                        byte[] map = ((SQLiteDatabase) ArtMap.getArtDatabase()).getMap(art.getTitle());
+                if (art == null) {
+                    ArtMap.getLang().sendMsg("MAP_NOT_FOUND", sender);
+                } else {
+                    byte[] map = ArtMap.getArtDatabase().getMap(art.getTitle());
+                    ArtMap.getTaskManager().SYNC.run(() -> {
                         MapView mapView = Bukkit.getMap(art.getMapId());
                         if (mapView == null) {
                             mapView = Bukkit.createMap(((Player) sender).getWorld());
-                            ((SQLiteDatabase) ArtMap.getArtDatabase()).updateMapID(art.updateMapId(mapView.getId()));
+                            ArtMap.getArtDatabase().updateMapID(art.updateMapId(mapView.getId()));
                             sender.sendMessage("Map ID not found - assigning new id!");// TODO: 8/09/2016 hardcoding
                         }
                         Reflection.setWorldMap(mapView, map);
                         sender.sendMessage("Restored Successfully!");// TODO: 8/09/2016 hardcoding
-                    }
-
-                });
+                    });
+                }
             }
         });
     }
