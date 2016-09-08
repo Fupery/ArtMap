@@ -2,7 +2,10 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
-import me.Fupery.ArtMap.IO.*;
+import me.Fupery.ArtMap.IO.MapManager;
+import me.Fupery.ArtMap.IO.PixelTableManager;
+import me.Fupery.ArtMap.IO.ArtDatabase;
+import me.Fupery.ArtMap.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
@@ -17,14 +20,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.persistence.PersistenceException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.SoftReference;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -117,14 +118,9 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager();
         mapManager = new MapManager(this);
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
-        artDatabase = new SQLiteDatabase(this);
+        artDatabase = new ArtDatabase(this);
+        new FlatDatabaseConverter(this).convertDatabase();
         lang = new Lang(config.LANGUAGE, langFile, config.DISABLE_ACTION_BAR, config.HIDE_PREFIX);
-//
-//        if (artDatabase == null) {
-//            getPluginLoader().disablePlugin(this);
-//            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
-//            return;
-//        }
         if (!loadTables()) {
             getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
             getPluginLoader().disablePlugin(this);
