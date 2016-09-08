@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,11 @@ public class CompatibilityManager implements RegionHandler {
             Bukkit.getLogger().info(String.format("[ArtMap] %s hooks enabled.",
                     regionHandler.getClass().getSimpleName().replace("Compat", "")));
         }
+    }
+
+    public boolean isPluginLoaded(String pluginName) {
+        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(pluginName);
+        return plugin != null && plugin.isEnabled();
     }
 
     @Override

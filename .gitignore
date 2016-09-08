@@ -5,7 +5,10 @@
 .settings/*
 target/*
 *.iml
+
 *.DS_STORE
+
 dependency-reduced-pom.xml
 
 license.rtf
+

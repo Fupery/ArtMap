@@ -108,14 +108,14 @@ public class ArtMap extends JavaPlugin {
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
-        config = new Configuration(this);
+        compatManager = new CompatibilityManager();
+        config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
         previewing = new ConcurrentHashMap<>();
         artistHandler = new ArtistHandler(this);
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
-        compatManager = new CompatibilityManager();
         mapManager = new MapManager(this);
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         artDatabase = new ArtDatabase(this);
