@@ -2,8 +2,7 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
-import me.Fupery.ArtMap.IO.ArtDatabase;
-import me.Fupery.ArtMap.IO.PixelTableManager;
+import me.Fupery.ArtMap.IO.*;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
@@ -21,12 +20,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.persistence.PersistenceException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.SoftReference;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +42,7 @@ public class ArtMap extends JavaPlugin {
     private TaskManager taskManager;
     private ArtDatabase artDatabase;
     private ChannelCacheManager cacheManager;
+    private MapManager mapManager;
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
     private Lang lang;
@@ -95,6 +97,10 @@ public class ArtMap extends JavaPlugin {
         return instance().menuHandler;
     }
 
+    public static MapManager getMapManager() {
+        return instance().mapManager;
+    }
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
@@ -104,20 +110,21 @@ public class ArtMap extends JavaPlugin {
         previewing = new ConcurrentHashMap<>();
         artistHandler = new ArtistHandler(this);
         bukkitVersion = new VersionHandler();
-        artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
         compatManager = new CompatibilityManager();
+        mapManager = new MapManager(this);
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         boolean disableActionBar = getConfig().getBoolean("disableActionBar");
         boolean hidePrefix = getConfig().getBoolean("hidePrefix");
         lang = new Lang(getConfig().getString("language"), langFile, disableActionBar, hidePrefix);
-
-        if (artDatabase == null) {
-            getPluginLoader().disablePlugin(this);
-            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
-            return;
-        }
+        artDatabase = new SQLiteDatabase(this);
+//        setupDatabase();
+//        if (artDatabase == null) {
+//            getPluginLoader().disablePlugin(this);
+//            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
+//            return;
+//        }
         if (!loadTables()) {
             getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
             getPluginLoader().disablePlugin(this);
@@ -151,9 +158,10 @@ public class ArtMap extends JavaPlugin {
     public void onDisable() {
         artistHandler.stop();
         menuHandler.closeAll();
+        mapManager.saveKeys();
+
 
         if (previewing.size() > 0) {
-
             for (Player player : previewing.keySet()) {
                 Preview.stop(player);
             }
@@ -180,6 +188,22 @@ public class ArtMap extends JavaPlugin {
             }
             return YamlConfiguration.loadConfiguration(file);
         }
+    }
+
+    private void setupDatabase() {
+        try {
+            getDatabase().find(MapArt.class).findRowCount();
+        } catch (PersistenceException ex) {
+            getLogger().info("Building MapArt database");
+            installDDL();
+        }
+    }
+
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+        List<Class<?>> list = new ArrayList<>();
+        list.add(MapArt.class);
+        return list;
     }
 
     private boolean loadTables() {

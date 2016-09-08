@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
@@ -66,8 +67,8 @@ public class EaselInteractListener implements Listener {
                 ArtMaterial material = ArtMaterial.getCraftItemType(player.getItemInHand());
 
                 if (material == ArtMaterial.CANVAS) {
-                    mapView = ArtMap.getArtDatabase().generateMapID(player.getWorld());
-                    Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
+                    mapView = ArtMap.getMapManager().generateMapID(player.getWorld());
+                    Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
                     mountMap(easel, mapView, player);
                     easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
                     return;
@@ -77,7 +78,7 @@ public class EaselInteractListener implements Listener {
 
                     if (art != null) {
 
-                        if (!player.getUniqueId().equals(art.getPlayer().getUniqueId())) {
+                        if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
                             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_EDIT.send(player);
                             easel.playEffect(Effect.CRIT);
                             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
@@ -88,7 +89,7 @@ public class EaselInteractListener implements Listener {
                             ArtMap.getPreviewing().get(player).stopPreviewing();
                             return;
                         }
-                        mapView = MapArt.cloneArtwork(player.getWorld(), art.getMapID());
+                        mapView = MapManager.cloneArtwork(player.getWorld(), art.getMapId());
                         mountMap(easel, mapView, player);
                         easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
                         return;
@@ -109,10 +110,10 @@ public class EaselInteractListener implements Listener {
                         mapView.removeRenderer(renderer);
                     }
 
-                    mapView.addRenderer(new GenericMapRenderer(MapArt.BLANK_MAP));
+                    mapView.addRenderer(new GenericMapRenderer(MapManager.BLANK_MAP));
                     ArtMap.getTaskManager().ASYNC.run(() -> {
-                        Reflection.setWorldMap(mapView, MapArt.BLANK_MAP);
-                        ArtMap.getArtDatabase().recycleID(id);
+                        Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
+                        ArtMap.getMapManager().recycleID(id);
                     });
                     easel.removeItem();
                 }

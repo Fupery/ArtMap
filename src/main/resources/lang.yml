@@ -8,7 +8,7 @@
 # EXAMPLE: “Replace me with a translation!”
 #
 # Any time you see '%s' - this is a special character that will be replaced with a word.
-# For example, if a player saves an artwork named "Art", then "Successfully saved '%s'"
+# For example, if an artist saves an artwork named "Art", then "Successfully saved '%s'"
 # will become "Successfully saved Art".
 # So any time you see '%s', don't change it! Just change the words around it.
 #

@@ -4,6 +4,7 @@ version: ${project.version}
 description: ${project.description}
 depends: []
 softdepend: [WorldGuard, Factions, Denizen, GriefPrevention, RedProtect]
+database: true
 author: Fupery
 
 commands:
@@ -14,8 +15,6 @@ commands:
         <command> preview <title> : Preview an artwork
         <command> help : Display help
         <command> reload : Reloads the config
-        <command> backup : Create a backup of all current artworks
-        <command> restore <backupname> <worldname> <-o> : Restore a backup folder from plugins/ArtMap/backups
 
 permissions:
   artmap.region.member:

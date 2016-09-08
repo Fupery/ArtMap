@@ -4,9 +4,7 @@ import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.Fupery.ArtMap.Easel.EaselEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,7 +22,7 @@ public class WorldGuardCompat implements RegionHandler {
         ApplicableRegionSet set = wg.getRegionContainer().createQuery().getApplicableRegions(location);
         return wg.canBuild(player, location) && (player.hasPermission("artmap.region.member") ||
                 ((set.size() > 0 && set.isOwnerOfAll(wg.wrapPlayer(player)))
-                || set.testState(wg.wrapPlayer(player), DefaultFlag.BUILD)));
+                        || set.testState(wg.wrapPlayer(player), DefaultFlag.BUILD)));
     }
 
     @Override
