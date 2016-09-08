@@ -270,10 +270,6 @@ public class SQLiteDatabase implements ArtDatabase {
         }// FIXME: 23/08/2016
     }
 
-    public void runTest(String id) {
-        new ByteReadTest().runTest(id);
-    }
-
     private abstract class QueuedStatement extends QueuedQuery<Boolean> {
 
         @Override
@@ -334,57 +330,6 @@ public class SQLiteDatabase implements ArtDatabase {
                 ErrorLogger.log(e);// TODO: 23/08/2016
             } finally {
                 close(connection, statement);
-            }
-            return result;
-        }
-    }
-
-    public class ByteReadTest {
-        void runTest(String title) {
-            byte[] map = getMap(title);
-            for (byte b : map) System.out.print(b);
-            Bukkit.getLogger().info(String.format("Read Map Length for %s: %s", title, map.length));
-        }
-    }
-
-    public class ByteSaveTest {
-
-        private static final String TABLE = "test_table";
-        private static final String BUILD_TABLE_STATEMENT =
-                "CREATE TABLE IF NOT EXISTS " + TABLE + " (" +
-                        "id      varchar(32) NOT NULL UNIQUE," +
-                        "test    LONGVARBINARY       NOT NULL," +
-                        "PRIMARY KEY (id)" +
-                        ");";
-
-
-        void runTest(String id) {
-            byte[] test = new byte[30];
-            Arrays.fill(test, (byte) 90);
-            Bukkit.getLogger().info("Insert Result: " + saveByte(id, test));
-        }
-
-        boolean saveByte(String rowID, byte[] byteTest) {
-            Connection connection = null;
-            PreparedStatement statement = null;
-            boolean result = false;
-            try {
-                connection = getConnection();
-                statement = connection.prepareStatement("INSERT INTO " + TABLE + " (id, test) VALUES(?, ?);");
-                statement.setString(1, rowID);
-                statement.setBytes(2, byteTest);
-                result = (statement.executeUpdate() != 0);
-            } catch (Exception e) {
-                Bukkit.getLogger().warning(SQLiteDatabase.sqlError);
-                ErrorLogger.log(e);
-            } finally {
-                try {
-                    if (connection != null) connection.close();
-                    if (statement != null) statement.close();
-                } catch (SQLException e) {
-                    Bukkit.getLogger().warning(SQLiteDatabase.sqlError);
-                    ErrorLogger.log(e);
-                }
             }
             return result;
         }

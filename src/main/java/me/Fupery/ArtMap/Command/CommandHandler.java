@@ -82,12 +82,6 @@ public class CommandHandler implements CommandExecutor {
                 });
             }
         });
-        commands.put("tst", new Command(null, "/artmap tst <id>", true) {
-            @Override
-            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ((SQLiteDatabase) ArtMap.getArtDatabase()).runTest(args[1]);
-            }
-        });
     }
 
     @Override
