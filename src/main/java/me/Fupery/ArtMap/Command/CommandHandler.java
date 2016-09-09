@@ -55,7 +55,7 @@ public class CommandHandler implements CommandExecutor {
                 });
             }
         });
-        commands.put("restore", new AsyncCommand("artmap.admin", "/artmap restore <title>", true) {
+        commands.put("restore", new AsyncCommand("artmap.admin", "/artmap restore <title>", false) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
@@ -71,11 +71,12 @@ public class CommandHandler implements CommandExecutor {
                             ArtMap.getTaskManager().ASYNC.run(() -> {
                                 ArtMap.getArtDatabase().updateMapID(art.updateMapId(finalMapView.getId()));
                             });
-                            sender.sendMessage("Map id missing, assigning new id!");// TODO: 8/09/2016 hardcoding
+                            sender.sendMessage(ArtMap.getLang().getMsg("MISSING_MAP_ID"));
                         }
                         int id = mapView.getId();
                         Reflection.setWorldMap(mapView, map);
-                        sender.sendMessage(String.format("Successfully restored %s with map ID %s!", art.getTitle(), id));// TODO: 8/09/2016 hardcoding
+                        sender.sendMessage(String.format(
+                                ArtMap.getLang().getMsg("RESTORED_SUCCESSFULY"), art.getTitle(), id));
                     });
                 }
             }
