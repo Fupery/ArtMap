@@ -46,22 +46,11 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.sqlite</pattern>
-                                    <shadedPattern>me.Fupery.shaded.sqlite</shadedPattern>
-                                    <excludes>
-                                        <exclude>org.codehaus.plexus.util.xml.Xpp3Dom</exclude>
-                                        <exclude>org.codehaus.plexus.util.xml.pull.*</exclude>
-                                    </excludes>
-                                </relocation>
-                            </relocations>
                             <minimizeJar>false</minimizeJar>
                             <artifactSet>
                                 <includes>
                                     <include>me.Fupery:InventoryMenu:*</include>
                                     <include>me.Fupery:DataTables:*</include>
-                                    <include>org.xerial:sqlite-jdbc:*</include>
                                 </includes>
                                 <excludes>
                                     <exclude>org.spigotmc:*</exclude>
@@ -114,12 +103,6 @@
             <artifactId>bukkit</artifactId>
             <version>1.10.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.8.11.2</version>
-            <scope>compile</scope>
         </dependency>
         <!--COMPATABILITY DEPENDENCIES-->
         <dependency>
