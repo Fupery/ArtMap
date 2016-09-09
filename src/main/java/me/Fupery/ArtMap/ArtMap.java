@@ -112,12 +112,12 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager();
         config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
-        previewing = new ConcurrentHashMap<>();
+        mapManager = new MapManager(this);
         artistHandler = new ArtistHandler(this);
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
-        mapManager = new MapManager(this);
+        previewing = new ConcurrentHashMap<>();
         ConfigurationSection defaultLang = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         artDatabase = new ArtDatabase(this);

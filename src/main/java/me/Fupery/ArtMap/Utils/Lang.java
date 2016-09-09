@@ -42,7 +42,7 @@ public class Lang {
 
     public String getMsg(String key) {
         if (!lang.contains(key)) {
-            Bukkit.getLogger().warning("Error loading key from lang.yml: '" + key +"'! Default value used.");
+            Bukkit.getLogger().warning("Error loading key from lang.yml: '" + key + "'! Default value used.");
             if (defaults == null || !defaults.contains(key)) return "[" + key + "] NOT FOUND";
             lang.set(key, defaults.get(key));
         }
