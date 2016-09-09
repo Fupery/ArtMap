@@ -26,16 +26,17 @@ public class FlatDatabaseConverter {
         String dbFileName = "mapList.yml";
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
         if (!databaseFile.exists()) return false;
-        plugin.getLogger().info("§a§lOld 'mapList.yml' database found! " +
-                "Converting to new format (this may take a while, but will only run once) ...");
+        plugin.getLogger().info("Old 'mapList.yml' database found! Converting to new format ...");
+        plugin.getLogger().info("(This may take a while, but will only need to run once)");
         List<MapArt> artworks = readArtworks(databaseFile);
         ArtMap.getArtDatabase().addArtworks(artworks.toArray(new MapArt[artworks.size()]));
         File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
         if (!databaseFile.renameTo(disabledDatabaseFile)) {
-            plugin.getLogger().info("§c§lError disabling mapList.yml! Delete this file manually.");
+            plugin.getLogger().info("Error disabling mapList.yml! Delete this file manually.");
             return false;
         }
-        plugin.getLogger().info(String.format("§a§lConversion completed! %s artworks converted.", artworks.size()));
+        plugin.getLogger().info(String.format("Conversion completed! %s artworks converted. " +
+                "mapList.yml has been disabled.", artworks.size()));
         return true;
     }
 
@@ -53,10 +54,10 @@ public class FlatDatabaseConverter {
                 String date = map.getString("date");
                 MapArt artwork = new MapArt(((short) mapIDValue), title, player, date);
                 if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
+                    plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
+                } else {
                     plugin.getLogger().info(String.format("    Converting '%s' ...", title));
                     artworkList.add(artwork);
-                } else {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 }
             }
         }
