@@ -15,18 +15,24 @@ import static me.Fupery.ArtMap.Utils.Reflection.ChatPacketBuilder;
 public class Lang {
     public static String PREFIX = "§b[ArtMap] ";
     public final ActionBarHandler ACTION_BAR_MESSAGES;
+    private final ConfigurationSection defaults;
     private final ConfigurationSection lang;
 
-    public Lang(String language, FileConfiguration langFile, boolean actionBarDisabled, boolean hidePrefix) {
+    public Lang(ConfigurationSection defaultLang, FileConfiguration langFile, Configuration configuration) {
+        String language = configuration.LANGUAGE;
         if (!langFile.contains(language)) language = "english";
+
+        if (!language.equals("english")) this.defaults = defaultLang;
+        else this.defaults = null;
+
         lang = langFile.getConfigurationSection(language);
-        if (hidePrefix) PREFIX = "";
+        if (configuration.HIDE_PREFIX) PREFIX = "";
         if (lang == null) {
             Bukkit.getLogger().warning("Error loading lang.yml!");
             ACTION_BAR_MESSAGES = null;
             return;
         }
-        this.ACTION_BAR_MESSAGES = new ActionBarHandler(actionBarDisabled);
+        this.ACTION_BAR_MESSAGES = new ActionBarHandler(configuration.DISABLE_ACTION_BAR);
     }
 
     private static WrappedActionBarPacket buildPacket(ChatPacketBuilder builder, String message, boolean isError) {
@@ -35,10 +41,12 @@ public class Lang {
     }
 
     public String getMsg(String key) {
-        String msg = lang.getString(key);
-        if (msg != null) return msg;
-        Bukkit.getLogger().warning("Error loading key from lang.yml: " + key);
-        return "[" + key + "] NOT FOUND IN lang.yml";
+        if (!lang.contains(key)) {
+            Bukkit.getLogger().warning("Error loading key from lang.yml: '" + key +"'! Default value used.");
+            if (defaults == null || !defaults.contains(key)) return "[" + key + "] NOT FOUND";
+            lang.set(key, defaults.get(key));
+        }
+        return lang.getString(key);
     }
 
     public void sendMsg(String key, CommandSender player) {

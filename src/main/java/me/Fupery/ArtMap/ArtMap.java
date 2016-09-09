@@ -14,6 +14,7 @@ import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.*;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -117,10 +118,11 @@ public class ArtMap extends JavaPlugin {
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
         mapManager = new MapManager(this);
+        ConfigurationSection defaultLang = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         artDatabase = new ArtDatabase(this);
         new FlatDatabaseConverter(this).convertDatabase();
-        lang = new Lang(config.LANGUAGE, langFile, config.DISABLE_ACTION_BAR, config.HIDE_PREFIX);
+        lang = new Lang(defaultLang.getConfigurationSection("english"), langFile, config);
         if (!loadTables()) {
             getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
             getPluginLoader().disablePlugin(this);
