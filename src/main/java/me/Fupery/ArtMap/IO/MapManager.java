@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.ColourMap.f32x32;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
@@ -28,9 +29,24 @@ public class MapManager {
         loadKeys();
     }
 
+    static byte[] decompressMap(byte[] mapData) {
+        return mapData == null ? new byte[MapSize.MAX.size] : new f32x32().readBLOB(mapData);
+    }
+
+    static byte[] compressMap(MapView mapView) {
+        byte[] map = Reflection.getMap(mapView);
+        byte[] compressed;
+        try {
+            compressed = new f32x32().generateBLOB(map);
+        } catch (IOException e) {
+            ErrorLogger.log(e, "Compression error, check error.log for more info!");
+            return new byte[0];
+        }
+        return compressed;
+    }
 
     private static byte[] getBlankMap() {
-        byte[] mapOutput = new byte[128 * 128];
+        byte[] mapOutput = new byte[MapSize.MAX.size];
         Arrays.fill(mapOutput, ArtDye.WHITE.getData());
         return mapOutput;
     }

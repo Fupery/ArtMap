@@ -3,12 +3,14 @@ package me.Fupery.ArtMap.IO;
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class ArtDatabase {
@@ -187,8 +189,6 @@ public class ArtDatabase {
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, player.toString());
             }
-
-
             UUID[] read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
                 artists.add(0, player);
@@ -216,47 +216,44 @@ public class ArtDatabase {
 
     public byte[] getMap(String title) {
         return new QueuedQuery<byte[]>() {
-
-
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
-
-
             byte[] read(ResultSet set) throws SQLException {
                 byte[] blob = set.getBytes("map");
-                return blob == null ? null : new f32x32().readBLOB(blob);
+                return MapManager.decompressMap(blob);
             }
         }.execute("SELECT map FROM " + TABLE + " WHERE title=?;");
     }
 
 
-    public void addArtwork(MapArt art) {
-        byte[] map = Reflection.getMap(Bukkit.getMap(art.getMapId()));
-        byte[] compressed;
-        try {
-            compressed = new f32x32().generateBLOB(map);
-        } catch (IOException e) {
-            ErrorLogger.log(e, "Compression error, check error.log for more info!");
-            return;
-        }
+    public void addArtwork(MapArt art, MapView mapView) {
         new QueuedStatement() {
-
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, art.getTitle());
                 statement.setInt(2, art.getMapId());
                 statement.setString(3, art.getArtist().toString());
                 statement.setString(4, art.getDate());
-                statement.setBytes(5, compressed);
+                statement.setBytes(5, MapManager.compressMap(mapView));
             }
         }.execute("INSERT INTO " + TABLE + " (title, id, artist, date, map) VALUES(?,?,?,?,?);");
     }
 
 
-    public void addArtworks(MapArt... artworks) {
-        for (MapArt artwork : artworks) {
-            addArtwork(artwork);
-        }// FIXME: 23/08/2016
+    public void addArtworks(HashMap<MapArt, MapView> artworks) {
+        new QueuedStatement() {
+            @Override
+            void prepare(PreparedStatement statement) throws SQLException {
+                for (MapArt art : artworks.keySet()) {
+                    statement.setString(1, art.getTitle());
+                    statement.setInt(2, art.getMapId());
+                    statement.setString(3, art.getArtist().toString());
+                    statement.setString(4, art.getDate());
+                    statement.setBytes(5, MapManager.compressMap(artworks.get(art)));
+                    statement.addBatch();
+                }
+            }
+        }.executeBatch("INSERT INTO " + TABLE + " (title, id, artist, date, map) VALUES(?,?,?,?,?);");
     }
 
     private abstract class QueuedStatement extends QueuedQuery<Boolean> {
@@ -274,6 +271,23 @@ public class ArtDatabase {
                 statement = connection.prepareStatement(query);
                 prepare(statement);
                 result = (statement.executeUpdate() != 0);
+            } catch (Exception e) {
+                ErrorLogger.log(e, ArtDatabase.sqlError);
+            } finally {
+                close(connection, statement);
+            }
+            return result;
+        }
+
+        int[] executeBatch(String query) {
+            Connection connection = null;
+            PreparedStatement statement = null;
+            int[] result = new int[0];
+            try {
+                connection = getConnection();
+                statement = connection.prepareStatement(query);
+                prepare(statement);
+                result = statement.executeBatch();
             } catch (Exception e) {
                 ErrorLogger.log(e, ArtDatabase.sqlError);
             } finally {
