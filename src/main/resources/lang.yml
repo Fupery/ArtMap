@@ -257,6 +257,8 @@ mandarin: #Translation provided by Laynooooor [https://www.spigotmc.org/members/
   RECIPE_EASEL_NAME: "画架"
   RECIPE_CANVAS_NAME: "画布"
   RECIPE_PAINTBUCKET_NAME: "颜料桶"
+  MAP_ID_MISSING: "没有地图 ID，分配新的 ID !"
+  RESTORED_SUCCESSFULY: "成功保存画作 %s , 地图 ID 为 %s!"
 
   #Menu Buttons
   HELP_GETTING_STARTED:
