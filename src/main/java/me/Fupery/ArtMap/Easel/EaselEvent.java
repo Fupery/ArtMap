@@ -56,7 +56,7 @@ public final class EaselEvent {
                     easel.removeItem();
                     return;
                 }
-                ArtMaterial material = ArtMaterial.getCraftItemType(player.getInventory().getItemInMainHand());
+                ArtMaterial material = ArtMaterial.getCraftItemType(player.getItemInHand());
 
                 if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getMapManager().generateMapID(player.getWorld());
@@ -65,7 +65,7 @@ public final class EaselEvent {
                     return;
 
                 } else if (material == ArtMaterial.MAP_ART) {
-                    ArtMap.getTaskManager().ASYNC.run(() -> editArtwork(player.getInventory().getItemInMainHand()));
+                    ArtMap.getTaskManager().ASYNC.run(() -> editArtwork(player.getItemInHand()));
                     return;
                 }
                 ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
