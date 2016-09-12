@@ -1,8 +1,5 @@
 package me.Fupery.ArtMap.IO;
 
-import me.Fupery.ArtMap.IO.ColourMap.f32x32;
-import me.Fupery.ArtMap.Utils.Reflection;
-import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -189,6 +186,7 @@ public class ArtDatabase {
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, player.toString());
             }
+
             UUID[] read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
                 artists.add(0, player);
@@ -219,6 +217,7 @@ public class ArtDatabase {
             void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
+
             byte[] read(ResultSet set) throws SQLException {
                 byte[] blob = set.getBytes("map");
                 return MapManager.decompressMap(blob);
