@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
@@ -10,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -74,7 +76,7 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage(ArtMap.getLang().getMsg("MISSING_MAP_ID"));
                         }
                         int id = mapView.getId();
-                        Reflection.setWorldMap(mapView, map);
+                        ArtMap.getMapManager().overrideMap(mapView, map);
                         sender.sendMessage(String.format(
                                 ArtMap.getLang().getMsg("RESTORED_SUCCESSFULY"), art.getTitle(), id));
                     });

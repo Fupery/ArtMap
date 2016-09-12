@@ -3,11 +3,13 @@ package me.Fupery.ArtMap.IO;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
 import me.Fupery.ArtMap.Utils.ArtDye;
+import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.io.File;
@@ -27,6 +29,14 @@ public class MapManager {
     public MapManager(ArtMap plugin) {
         file = new File(plugin.getDataFolder(), "keys.yml");
         loadKeys();
+    }
+
+    public void overrideMap(MapView mapView, byte[] map) {
+        Reflection.setWorldMap(mapView, map);
+        for (MapRenderer renderer : mapView.getRenderers()) {
+            mapView.removeRenderer(renderer);
+        }
+        mapView.addRenderer(new GenericMapRenderer(map));
     }
 
     static byte[] decompressMap(byte[] mapData) {
