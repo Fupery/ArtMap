@@ -35,6 +35,9 @@ public class CommandHandler implements CommandExecutor {
 
                 if (sender instanceof Player) {
                     ArtMap.getTaskManager().SYNC.run(() -> {
+                        if (args.length > 0 & sender.hasPermission("artmap.admin")) {
+                            ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
+                        }
                         MenuHandler menuHandler = ArtMap.getMenuHandler();
                         menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                     });
