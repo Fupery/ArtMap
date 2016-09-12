@@ -46,7 +46,7 @@ public class CommandHandler implements CommandExecutor {
                 }
             }
         });
-        commands.put("reload", new AsyncCommand("artmap.admin", "/artmap restore", true) {
+        commands.put("reload", new AsyncCommand("artmap.admin", "/artmap reload", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 ArtMap.getTaskManager().SYNC.run(() -> {
