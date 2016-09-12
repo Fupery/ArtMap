@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
@@ -12,9 +14,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -167,6 +171,17 @@ public class Easel {
     public void mountCanvas(MapView mapView) {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
         getFrame().setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
+        playEffect(Effect.POTION_SWIRL_TRANSPARENT);
+    }
+
+    void editArtwork(MapView mapView, String original) {
+        SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
+        ItemStack item = new ItemStack(Material.MAP, 1, mapView.getId());
+        ItemMeta meta = item.getItemMeta();
+        meta.setLore(Arrays.asList(ArtItem.COPY_KEY, original));
+        item.setItemMeta(meta);
+        getFrame().setItem(item);
+        playEffect(Effect.POTION_SWIRL_TRANSPARENT);
     }
 
     public void rideEasel(Player player) {
@@ -175,13 +190,29 @@ public class Easel {
     }
 
     public void removeItem() {
-        ItemStack item = (getFrame().getItem().getType() == Material.MAP)
-                ? ArtMaterial.CANVAS.getItem() : getFrame().getItem().clone();
-
-        if (item.getType() != Material.AIR) {
+        ItemStack item = getItem();
+        if (isACopy(item)) {
+            final String originalName = item.getItemMeta().getLore().get(1);
             getFrame().setItem(new ItemStack(Material.AIR));
-            location.getWorld().dropItemNaturally(location, item);
+            ArtMap.getTaskManager().ASYNC.run(() -> {
+                MapArt original = ArtMap.getArtDatabase().getArtwork(originalName);
+                ArtMap.getTaskManager().SYNC.run(() -> {
+                    location.getWorld().dropItemNaturally(location, original.getMapItem());
+                });
+            });
+        } else {
+            ItemStack drop = (item.getType() == Material.MAP) ? ArtMaterial.CANVAS.getItem() : item.clone();
+            if (drop.getType() != Material.AIR) {
+                getFrame().setItem(new ItemStack(Material.AIR));
+                location.getWorld().dropItemNaturally(location, drop);
+            }
         }
+    }
+
+    private boolean isACopy(ItemStack map) {
+        return (map != null && map.getType() == Material.MAP &&
+                map.hasItemMeta() && map.getItemMeta().hasLore()
+                && map.getItemMeta().getLore().get(0).equals(ArtItem.COPY_KEY));
     }
 
     public void breakEasel() {

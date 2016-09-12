@@ -21,6 +21,7 @@ abstract public class ArtItem extends ItemStack {
     public static final String PAINT_BUCKET_KEY = "§b§oPaint Bucket";
     public static final String KIT_KEY = "§b§oArtKit Item";
     public static final String PREVIEW_KEY = "§b§oPreview Artwork";
+    public static final String COPY_KEY = "§b§oArtwork Copy";
     public static final String HELP = ArtMap.getLang().getMsg("RECIPE_HELP");
     private static WeakReference<ItemStack[]> kitReference = new WeakReference<>(getKit());
 

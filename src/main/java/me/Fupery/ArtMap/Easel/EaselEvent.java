@@ -61,7 +61,8 @@ public final class EaselEvent {
                 if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getMapManager().generateMapID(player.getWorld());
                     Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
-                    mountMap(easel, mapView, player);
+                    easel.mountCanvas(mapView);
+                    consumeCurrentItem(player);
                     return;
 
                 } else if (material == ArtMaterial.MAP_ART) {
@@ -75,6 +76,9 @@ public final class EaselEvent {
 
             case SHIFT_RIGHT_CLICK:
                 if (easel.hasItem()) {
+                    if (ArtMaterial.MAP_ART.isValidMaterial(easel.getItem())) {
+
+                    }
                     final short id = easel.getItem().getDurability();
                     mapView = Bukkit.getMap(id);
                     for (MapRenderer renderer : mapView.getRenderers()) {
@@ -107,8 +111,8 @@ public final class EaselEvent {
                 return;
             }
             MapView mapView = MapManager.cloneArtwork(player.getWorld(), art.getMapId());
-            mountMap(easel, mapView, player);
-            easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
+            easel.editArtwork(mapView, art.getTitle());
+            consumeCurrentItem(player);
         } else {
             ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
@@ -116,15 +120,10 @@ public final class EaselEvent {
         }
     }
 
-    private void mountMap(Easel easel, MapView mapView, Player player) {
-        easel.mountCanvas(mapView);
-
-        if (easel.getItem() != null) {
-            ItemStack removed = player.getItemInHand().clone();
-            removed.setAmount(1);
-            player.getInventory().removeItem(removed);
-        }
-        easel.playEffect(Effect.POTION_SWIRL_TRANSPARENT);
+    private void consumeCurrentItem(Player player) {
+        ItemStack removed = player.getItemInHand().clone();
+        removed.setAmount(1);
+        player.getInventory().removeItem(removed);
     }
 
     public enum ClickType {
