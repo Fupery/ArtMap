@@ -3,15 +3,12 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
-import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Lang;
-import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 

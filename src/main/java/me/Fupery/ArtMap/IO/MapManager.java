@@ -31,14 +31,6 @@ public class MapManager {
         loadKeys();
     }
 
-    public void overrideMap(MapView mapView, byte[] map) {
-        Reflection.setWorldMap(mapView, map);
-        for (MapRenderer renderer : mapView.getRenderers()) {
-            mapView.removeRenderer(renderer);
-        }
-        mapView.addRenderer(new GenericMapRenderer(map));
-    }
-
     static byte[] decompressMap(byte[] mapData) {
         return mapData == null ? new byte[MapSize.MAX.size] : new f32x32().readBLOB(mapData);
     }
@@ -67,6 +59,14 @@ public class MapManager {
         byte[] oldMap = Reflection.getMap(oldMapView);
         Reflection.setWorldMap(newMapView, oldMap);
         return newMapView;
+    }
+
+    public void overrideMap(MapView mapView, byte[] map) {
+        Reflection.setWorldMap(mapView, map);
+        for (MapRenderer renderer : mapView.getRenderers()) {
+            mapView.removeRenderer(renderer);
+        }
+        mapView.addRenderer(new GenericMapRenderer(map));
     }
 
     public void recycleID(short id) {
