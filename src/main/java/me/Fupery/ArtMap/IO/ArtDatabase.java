@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ArtDatabase {
 
-    private static final String sqlError = "Database error, check error.log for more info!";
+    private static final String sqlError = "Database error,";
     private final String TABLE = "artworks";
     private final String ALL_BUT_MAP = "title, id, artist, date";
     private final File dbFile;
@@ -28,7 +28,7 @@ public class ArtDatabase {
             try {
                 dbFile.createNewFile();
             } catch (IOException e) {
-                ErrorLogger.log(e, "File write error: 'ArtMap.db' - Check error.log for details");
+                ErrorLogger.log(e, "File write error: 'ArtMap.db'!");
             }
         }
         try {
@@ -244,11 +244,16 @@ public class ArtDatabase {
             @Override
             void prepare(PreparedStatement statement) throws SQLException {
                 for (MapArt art : artworks.keySet()) {
-                    statement.setString(1, art.getTitle());
-                    statement.setInt(2, art.getMapId());
-                    statement.setString(3, art.getArtist().toString());
-                    statement.setString(4, art.getDate());
-                    statement.setBytes(5, MapManager.compressMap(artworks.get(art)));
+                    try {
+                        statement.setString(1, art.getTitle());
+                        statement.setInt(2, art.getMapId());
+                        statement.setString(3, art.getArtist().toString());
+                        statement.setString(4, art.getDate());
+                        statement.setBytes(5, MapManager.compressMap(artworks.get(art)));
+                    } catch (Exception e) {
+                        ErrorLogger.log(e, String.format("Error writing %s to database!", art.getTitle()));
+                        continue;
+                    }
                     statement.addBatch();
                 }
             }

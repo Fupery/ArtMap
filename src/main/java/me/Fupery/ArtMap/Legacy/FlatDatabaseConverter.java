@@ -54,12 +54,17 @@ public class FlatDatabaseConverter {
                 OfflinePlayer player = (map.contains("artist")) ?
                         Bukkit.getOfflinePlayer(UUID.fromString(map.getString("artist"))) : null;
                 String date = map.getString("date");
-                MapArt artwork = new MapArt(((short) mapIDValue), title, player, date);
+                MapArt artwork = new MapArt(mapIDValue, title, player, date);
+                MapView mapView = Bukkit.getMap(mapIDValue);
+                if (mapView == null) {
+                    plugin.getLogger().info(String.format("    Ignoring '%s' (failed to access map data) ...", title));
+                    continue;
+                }
                 if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {
                     plugin.getLogger().info(String.format("    Converting '%s' ...", title));
-                    artworkList.put(artwork, Bukkit.getMap(mapIDValue));
+                    artworkList.put(artwork, mapView);
                 }
             }
         }
