@@ -2,10 +2,14 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Reflection;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 
-public class CommandDelete extends Command {
+public class CommandDelete extends AsyncCommand {
 
     CommandDelete() {
         super(null, "/artmap delete <title>", true);
@@ -13,23 +17,29 @@ public class CommandDelete extends Command {
 
     @Override
     public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-
         MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
-        if (art != null && sender instanceof Player
-                && !(art.getPlayer().getName().equalsIgnoreCase(sender.getName())
+        if (art == null) {
+            msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
+            return;
+        }
+        if (sender instanceof Player
+                && !(art.getArtistPlayer().getUniqueId().equals(((Player) sender).getUniqueId())
                 || sender.hasPermission("artmap.admin"))) {
             msg.message = ArtMap.getLang().getMsg("NO_PERM");
             return;
         }
-
         if (ArtMap.getArtDatabase().deleteArtwork(args[1])) {
+            ArtMap.getTaskManager().SYNC.run(() -> {
+                MapView mapView = Bukkit.getMap(art.getMapId());
+                Reflection.setWorldMap(mapView, new byte[128 * 128]);
+                for (MapRenderer renderer : mapView.getRenderers()) {
+                    mapView.removeRenderer(renderer);
+                }
+            });
             msg.message = String.format(ArtMap.getLang().getMsg("DELETED"), args[1]);
-            return;
-
         } else {
             msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
-            return;
         }
     }
 }

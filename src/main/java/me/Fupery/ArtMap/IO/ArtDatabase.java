@@ -1,246 +1,340 @@
 package me.Fupery.ArtMap.IO;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Reflection;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class ArtDatabase {
 
-    public static final String ARTWORKS_TAG = "artworks";
-    private static final String RECYCLED_KEYS_TAG = "recycled_keys";
-    private static final String ARTIST_TAG = "artist";
-    private static final String MAP_TAG = "mapID";
-    private static final String DATE_TAG = "date";
-    private static UUID[] artistList = null; // FIXME: 25/07/2016 cache artists better
-    private static boolean artistsUpToDate = false;
-    private static File mapData;
-    private ConfigurationSection artworks;
-    private ConfigurationSection recycled_keys;
+    private static final String sqlError = "Database error,";
+    private final String TABLE = "artworks";
+    private final String ALL_BUT_MAP = "title, id, artist, date";
+    private final File dbFile;
+    private Connection connection;
 
-    private ArtDatabase() {
-        loadConfiguration();
+    public ArtDatabase(JavaPlugin plugin) {
+        dbFile = new File(plugin.getDataFolder(), "ArtMap.db");
+        initialize();
     }
 
-    public static ArtDatabase buildDatabase() {
-        mapData = new File(ArtMap.instance().getDataFolder(), "mapList.yml");
-
-        if (!mapData.exists()) {
-
+    private Connection getConnection() {
+        if (!dbFile.exists()) {
             try {
-
-                if (!mapData.createNewFile()) {
-                    return null;
-                }
-
+                dbFile.createNewFile();
             } catch (IOException e) {
-                return null;
+                ErrorLogger.log(e, "File write error: 'ArtMap.db'!");
             }
         }
-        return new ArtDatabase();
+        try {
+            if (connection != null && !connection.isClosed()) {
+                return connection;
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
+        } catch (SQLException e) {
+            connection = null;
+            ErrorLogger.log(e, sqlError);
+        }
+        return connection;
     }
+
+    public void initialize() {
+        connection = getConnection();
+        Statement buildTableStatement = null;
+        try {
+            buildTableStatement = connection.createStatement();
+            buildTableStatement.executeUpdate("CREATE TABLE IF NOT EXISTS " + TABLE + " (" +
+                    "title   varchar(32)       NOT NULL UNIQUE," +
+                    "id      INT               NOT NULL UNIQUE," +
+                    "artist  varchar(32)       NOT NULL," +
+                    "date    varchar(32)       NOT NULL," +
+                    "map     BLOB       NOT NULL," +
+                    "PRIMARY KEY (title)" +
+                    ");");
+            connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TABLE);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            ErrorLogger.log(e, sqlError);
+        } finally {
+            if (buildTableStatement != null) try {
+                buildTableStatement.close();
+            } catch (SQLException e) {
+                ErrorLogger.log(e, sqlError);
+            }
+            if (connection != null) try {
+                connection.close();
+            } catch (SQLException e) {
+                ErrorLogger.log(e, sqlError);
+            }
+        }
+    }
+
+
+    public void close() {
+    }
+
 
     public MapArt getArtwork(String title) {
-        ConfigurationSection map = artworks.getConfigurationSection(title);
+        return new QueuedQuery<MapArt>() {
 
-        if (map != null) {
-            int mapIDValue = map.getInt(MAP_TAG);
-            OfflinePlayer player = (map.contains(ARTIST_TAG)) ?
-                    Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG))) :
-                    null;
-            String date = map.getString(DATE_TAG);
-            return new MapArt(((short) mapIDValue), title, player, date);
-        }
-        return null;
+
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, title);
+            }
+
+
+            MapArt read(ResultSet set) throws SQLException {
+                return (set.next()) ? readArtwork(set) : null;
+            }
+        }.execute("SELECT " + ALL_BUT_MAP + " FROM " + TABLE + " WHERE title=?;");
     }
+
 
     public MapArt getArtwork(short mapData) {
+        return new QueuedQuery<MapArt>() {
 
-        Set<String> keys = artworks.getKeys(false);
 
-        for (String title : keys) {
-
-            ConfigurationSection map = artworks.getConfigurationSection(title);
-            short data = (short) map.getInt(MAP_TAG);
-
-            if (mapData == data) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(map.getString(ARTIST_TAG)));
-                String date = map.getString(DATE_TAG);
-                return new MapArt(mapData, title, player, date);
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setInt(1, mapData);
             }
-        }
-        return null;
+
+
+            MapArt read(ResultSet set) throws SQLException {
+                return (set.next()) ? readArtwork(set) : null;
+            }
+        }.execute("SELECT " + ALL_BUT_MAP + " FROM " + TABLE + " WHERE id=?;");
     }
+
+    private MapArt readArtwork(ResultSet set) throws SQLException {
+        String title = set.getString("title");
+        int id = set.getInt("id");
+        UUID artist = UUID.fromString(set.getString("artist"));
+        String date = set.getString("date");
+        return new MapArt((short) id, title, artist, date);
+    }
+
 
     public boolean containsArtwork(MapArt art, boolean ignoreMapID) {
-        MapArt art2 = getArtwork(art.getTitle());
-        return art2 != null && art2.equals(art, ignoreMapID);
+        return new QueuedQuery<Boolean>() {
+
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, art.getTitle());
+            }
+
+
+            Boolean read(ResultSet set) throws SQLException {
+                return set.next();
+            }
+        }.execute("SELECT title FROM " + TABLE + " WHERE title=?;")
+                && (ignoreMapID || containsMapID(art.getMapId()));
     }
+
 
     public boolean containsMapID(short mapID) {
-        return getArtwork(mapID) != null;
-    }
+        return new QueuedQuery<Boolean>() {
 
-    public synchronized boolean deleteArtwork(String title) {
-        ConfigurationSection map = artworks.getConfigurationSection(title);
-
-        if (map != null) {
-            int mapIDValue = map.getInt(MAP_TAG);
-            //clear map data
-            MapView mapView = Bukkit.getMap((short) mapIDValue);
-            Reflection.setWorldMap(mapView, new byte[128 * 128]);
-
-            for (MapRenderer renderer : mapView.getRenderers()) {
-                mapView.removeRenderer(renderer);
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setInt(1, mapID);
             }
-            //remove map from list
-            artworks.set(title, null);
-            updateMaps();
-            artistsUpToDate = false;
-            return true;
-        }
-        return false;
+
+
+            Boolean read(ResultSet set) throws SQLException {
+                return set.next();
+            }
+        }.execute("SELECT id FROM " + TABLE + " WHERE id=?;");
     }
 
-    public MapArt[] listMapArt(String artist) {
-        ArrayList<MapArt> returnList;
 
-        Set<String> list = artworks.getKeys(false);
-        returnList = new ArrayList<>();
+    public boolean deleteArtwork(String title) {
+        return new QueuedStatement() {
 
-        int i = 0;
-        for (String title : list) {
-            MapArt art = getArtwork(title);
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, title);
+            }
+        }.execute("DELETE FROM " + TABLE + " WHERE title=?;");
+    }
 
-            if (art != null && art.isValid()) {
-                if (!artist.equals("all")
-                        && !art.getPlayer().getName().equalsIgnoreCase(artist)) {
-                    continue;
+
+    public MapArt[] listMapArt(UUID artist) {
+        return new QueuedQuery<MapArt[]>() {
+
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, artist.toString());
+            }
+
+
+            MapArt[] read(ResultSet results) throws SQLException {
+                ArrayList<MapArt> artworks = new ArrayList<>();
+                while (results.next()) {
+                    artworks.add(readArtwork(results));
                 }
-                returnList.add(art);
-                i++;
+                return artworks.toArray(new MapArt[artworks.size()]);
             }
-        }
-        return returnList.toArray(new MapArt[returnList.size()]);
+        }.execute("SELECT " + ALL_BUT_MAP + " FROM " + TABLE + " WHERE artist = ? ORDER BY title;");
     }
+
 
     public UUID[] listArtists(UUID player) {
-        if (!artistsUpToDate) {
-            ArrayList<UUID> returnList;
+        return new QueuedQuery<UUID[]>() {
 
-            Set<String> list = artworks.getKeys(true);
-            returnList = new ArrayList<>();
-
-            if (player != null) {
-                returnList.add(0, player);
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, player.toString());
             }
-            for (String title : list) {
-                MapArt art = getArtwork(title);
 
-                if (art != null && art.isValid() && !returnList.contains(art.getPlayer().getUniqueId())) {
-                    returnList.add(art.getPlayer().getUniqueId());
+            UUID[] read(ResultSet results) throws SQLException {
+                ArrayList<UUID> artists = new ArrayList<>();
+                artists.add(0, player);
+                try {
+                    while (results.next()) {
+                        artists.add(UUID.fromString(results.getString("artist")));
+                    }
+                } catch (SQLException e) {
+                    ErrorLogger.log(e, sqlError);
+                }
+                return artists.toArray(new UUID[artists.size()]);
+            }
+        }.execute("SELECT DISTINCT artist FROM " + TABLE + " WHERE artist!=? ORDER BY artist;");
+    }
+
+    public void updateMapID(MapArt art) {
+        new QueuedStatement() {
+
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setInt(1, art.getMapId());
+                statement.setString(2, art.getTitle());
+            }
+        }.execute("UPDATE " + TABLE + " SET id=? WHERE title=?;");
+    }
+
+    public byte[] getMap(String title) {
+        return new QueuedQuery<byte[]>() {
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, title);
+            }
+
+            byte[] read(ResultSet set) throws SQLException {
+                byte[] blob = set.getBytes("map");
+                return MapManager.decompressMap(blob);
+            }
+        }.execute("SELECT map FROM " + TABLE + " WHERE title=?;");
+    }
+
+
+    public void addArtwork(MapArt art, MapView mapView) {
+        new QueuedStatement() {
+            void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, art.getTitle());
+                statement.setInt(2, art.getMapId());
+                statement.setString(3, art.getArtist().toString());
+                statement.setString(4, art.getDate());
+                statement.setBytes(5, MapManager.compressMap(mapView));
+            }
+        }.execute("INSERT INTO " + TABLE + " (title, id, artist, date, map) VALUES(?,?,?,?,?);");
+    }
+
+
+    public void addArtworks(HashMap<MapArt, MapView> artworks) {
+        new QueuedStatement() {
+            @Override
+            void prepare(PreparedStatement statement) throws SQLException {
+                for (MapArt art : artworks.keySet()) {
+                    try {
+                        statement.setString(1, art.getTitle());
+                        statement.setInt(2, art.getMapId());
+                        statement.setString(3, art.getArtist().toString());
+                        statement.setString(4, art.getDate());
+                        statement.setBytes(5, MapManager.compressMap(artworks.get(art)));
+                    } catch (Exception e) {
+                        ErrorLogger.log(e, String.format("Error writing %s to database!", art.getTitle()));
+                        continue;
+                    }
+                    statement.addBatch();
                 }
             }
-            artistList = returnList.toArray(new UUID[returnList.size()]);
-            artistsUpToDate = true;
-        }
-        return artistList;
+        }.executeBatch("INSERT INTO " + TABLE + " (title, id, artist, date, map) VALUES(?,?,?,?,?);");
     }
 
-    public synchronized void addArtwork(MapArt art) {
-        ConfigurationSection map = artworks.createSection(art.getTitle());
-        map.set(MAP_TAG, art.getMapID());
-        map.set(ARTIST_TAG, art.getPlayer().getUniqueId().toString());
-        map.set(DATE_TAG, art.getDate());
-        updateMaps();
-        artistsUpToDate = false;
-    }
+    private abstract class QueuedStatement extends QueuedQuery<Boolean> {
 
-    public synchronized void addArtworks(MapArt... artworks) {
-        for (MapArt art : artworks) {
-            ConfigurationSection map = this.artworks.createSection(art.getTitle());
-            map.set(MAP_TAG, art.getMapID());
-            map.set(ARTIST_TAG, art.getPlayer().getUniqueId().toString());
-            map.set(DATE_TAG, art.getDate());
-        }
-        updateMaps();
-        artistsUpToDate = false;
-    }
-
-    public void recycleID(short id) {
-        List<Short> shortList;
-
-        shortList = recycled_keys.getShortList("keys");
-
-        if (shortList == null) {
-            shortList = new ArrayList<>();
-        }
-        shortList.add(id);
-        recycled_keys.set("keys", shortList);
-        updateMaps();
-    }
-
-    public MapView generateMapID(World world) {
-        MapView mapView = null;
-        List<Short> shortList = recycled_keys.getShortList("keys");
-
-        if (shortList != null && shortList.size() > 0) {
-            short id = shortList.get(0);
-
-            if (getArtwork(id) == null) {
-                mapView = Bukkit.getMap(id);
-                shortList.remove(0);
-                recycled_keys.set("keys", shortList);
-                updateMaps();
-            }
+        Boolean read(ResultSet set) throws SQLException {
+            return false;//unused
         }
 
-        if (mapView == null) {
-            mapView = Bukkit.createMap(world);
-        }
-
-        return mapView;
-    }
-
-    private synchronized void loadConfiguration() {
-        FileConfiguration configuration = YamlConfiguration.loadConfiguration(mapData);
-        artworks = configuration.getConfigurationSection(ARTWORKS_TAG);
-        recycled_keys = configuration.getConfigurationSection(RECYCLED_KEYS_TAG);
-
-        if (artworks == null) {
-            artworks = configuration.createSection(ARTWORKS_TAG);
-        }
-        if (recycled_keys == null) {
-            recycled_keys = configuration.createSection(RECYCLED_KEYS_TAG);
-        }
-    }
-
-    private synchronized void updateMaps() {
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        Boolean execute(String query) {
+            Connection connection = null;
+            PreparedStatement statement = null;
+            boolean result = false;
             try {
-                FileConfiguration configuration = new YamlConfiguration();
-                configuration.set(ARTWORKS_TAG, artworks);
-                configuration.set(RECYCLED_KEYS_TAG, recycled_keys);
-                configuration.save(mapData);
-                loadConfiguration();
-
-            } catch (IOException e) {
-                ArtMap.instance().getLogger().info(String.format(ArtMap.getLang().getMsg("MAPDATA_ERROR"),
-                        mapData.getAbsolutePath(), e));
+                connection = getConnection();
+                statement = connection.prepareStatement(query);
+                prepare(statement);
+                result = (statement.executeUpdate() != 0);
+            } catch (Exception e) {
+                ErrorLogger.log(e, ArtDatabase.sqlError);
+            } finally {
+                close(connection, statement);
             }
-        });
+            return result;
+        }
+
+        int[] executeBatch(String query) {
+            Connection connection = null;
+            PreparedStatement statement = null;
+            int[] result = new int[0];
+            try {
+                connection = getConnection();
+                statement = connection.prepareStatement(query);
+                prepare(statement);
+                result = statement.executeBatch();
+            } catch (Exception e) {
+                ErrorLogger.log(e, ArtDatabase.sqlError);
+            } finally {
+                close(connection, statement);
+            }
+            return result;
+        }
+    }
+
+    private abstract class QueuedQuery<T> {
+
+        abstract void prepare(PreparedStatement statement) throws SQLException;
+
+        abstract T read(ResultSet set) throws SQLException;
+
+        void close(Connection connection, PreparedStatement statement) {
+            if (connection != null) try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (statement != null) try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        T execute(String query) {
+            Connection connection = null;
+            PreparedStatement statement = null;
+            T result = null;
+            try {
+                connection = getConnection();
+                statement = connection.prepareStatement(query);
+                prepare(statement);
+                result = read(statement.executeQuery());
+            } catch (Exception e) {
+                ErrorLogger.log(e, sqlError);
+            } finally {
+                close(connection, statement);
+            }
+            return result;
+        }
     }
 }

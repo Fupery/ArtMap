@@ -25,7 +25,7 @@ public class PlayerCraftListener implements Listener {
 
             if (art != null) {
 
-                if (event.getWhoClicked().getUniqueId().equals(art.getPlayer().getUniqueId())) {
+                if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
 
                     Player player = (Player) event.getWhoClicked();
 

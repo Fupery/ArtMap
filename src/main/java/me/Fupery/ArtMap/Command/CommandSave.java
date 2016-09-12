@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandSave extends Command {
+public class CommandSave extends AsyncCommand {
 
     CommandSave() {
         super("artmap.artist", "/artmap save <title>", false);

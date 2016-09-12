@@ -7,7 +7,6 @@ import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -102,8 +101,7 @@ public class PlayerInteractEaselListener implements Listener {
             return;
         }
 
-        if (!checkIsPainting(player, event))
-            Bukkit.getServer().getPluginManager().callEvent(new EaselEvent(easel, click, player));
+        if (!checkIsPainting(player, event)) new EaselEvent(easel, click, player).callEvent();
     }
 
     private ClickType isSneaking(Player player) {
@@ -134,7 +132,7 @@ public class PlayerInteractEaselListener implements Listener {
 
             if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
 
-                if (EaselInteractListener.easels.containsKey(block.getLocation())
+                if (EaselEvent.easels.containsKey(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {
                     event.setCancelled(true);
                     return true;

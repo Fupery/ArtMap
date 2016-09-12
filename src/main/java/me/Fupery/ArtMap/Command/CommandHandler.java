@@ -1,19 +1,22 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Utils.Lang;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class CommandHandler implements CommandExecutor {
 
-    private final HashMap<String, Command> commands;
+    private final HashMap<String, AsyncCommand> commands;
 
     public CommandHandler() {
         commands = new HashMap<>();
@@ -25,42 +28,59 @@ public class CommandHandler implements CommandExecutor {
 
         commands.put("preview", new CommandPreview());
 
-        commands.put("backup", new CommandBackup());
-
-        commands.put("restore", new CommandRestore());
-
         //convenience commands
-        commands.put("help", new Command(null, "/artmap [help]", true) {
+        commands.put("help", new AsyncCommand(null, "/artmap [help]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 
                 if (sender instanceof Player) {
-                    ArtMap.getTaskManager().SYNC.run(new Runnable() {
-                        @Override
-                        public void run() {
-                            MenuHandler menuHandler = ArtMap.getMenuHandler();
-                            menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
+                    ArtMap.getTaskManager().SYNC.run(() -> {
+                        if (args.length > 0 & sender.hasPermission("artmap.admin")) {
+                            ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                         }
+                        MenuHandler menuHandler = ArtMap.getMenuHandler();
+                        menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                     });
-
-
                 } else {
                     ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
                 }
             }
         });
-        commands.put("reload", new Command("artmap.admin", "/artmap restore", true) {
+        commands.put("reload", new AsyncCommand("artmap.admin", "/artmap reload", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ArtMap.getTaskManager().SYNC.run(new Runnable() {
-                    @Override
-                    public void run() {
-                        JavaPlugin plugin = ArtMap.instance();
-                        plugin.onDisable();
-                        plugin.onEnable();
-                        sender.sendMessage(Lang.PREFIX + ChatColor.GREEN + "Successfully reloaded ArtMap!");
-                    }
+                ArtMap.getTaskManager().SYNC.run(() -> {
+                    JavaPlugin plugin = ArtMap.instance();
+                    plugin.onDisable();
+                    plugin.onEnable();
+                    sender.sendMessage(Lang.PREFIX + ChatColor.GREEN + "Successfully reloaded ArtMap!");
                 });
+            }
+        });
+        commands.put("restore", new AsyncCommand("artmap.admin", "/artmap restore <title>", false) {
+            @Override
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
+                if (art == null) {
+                    sender.sendMessage(String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]));
+                } else {
+                    byte[] map = ArtMap.getArtDatabase().getMap(art.getTitle());
+                    ArtMap.getTaskManager().SYNC.run(() -> {
+                        MapView mapView = Bukkit.getMap(art.getMapId());
+                        if (mapView == null) {
+                            mapView = Bukkit.createMap(((Player) sender).getWorld());
+                            final MapView finalMapView = mapView;
+                            ArtMap.getTaskManager().ASYNC.run(() -> {
+                                ArtMap.getArtDatabase().updateMapID(art.updateMapId(finalMapView.getId()));
+                            });
+                            sender.sendMessage(ArtMap.getLang().getMsg("MISSING_MAP_ID"));
+                        }
+                        int id = mapView.getId();
+                        ArtMap.getMapManager().overrideMap(mapView, map);
+                        sender.sendMessage(String.format(
+                                ArtMap.getLang().getMsg("RESTORED_SUCCESSFULY"), art.getTitle(), id));
+                    });
+                }
             }
         });
     }

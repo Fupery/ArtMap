@@ -231,8 +231,7 @@ public class Reflection {
         }
 
         private void logFailure(Exception e) {
-            Bukkit.getLogger().warning(Lang.PREFIX + " failed to instantiate protocol! Is this version supported?");
-            ErrorLogger.log(e);
+            ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported?");
         }
     }
 }

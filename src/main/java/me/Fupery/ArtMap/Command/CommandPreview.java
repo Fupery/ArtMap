@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandPreview extends Command {
+public class CommandPreview extends AsyncCommand {
 
     CommandPreview() {
         super(null, "/artmap preview <title>", false);
@@ -56,7 +56,6 @@ public class CommandPreview extends Command {
             msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
             return;
         }
-
         if (!previewArtwork(player, art)) {
             msg.message = ArtMap.getLang().getMsg("EMPTY_HAND_PREVIEW");
             return;

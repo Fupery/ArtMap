@@ -66,7 +66,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
     protected Button[] getListItems() {
         OfflinePlayer player = Bukkit.getOfflinePlayer(artist);
         if (player == null || !player.hasPlayedBefore()) return new Button[0];
-        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getName());
+        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getUniqueId());
         Button[] buttons;
 
         if (artworks != null && artworks.length > 0) {

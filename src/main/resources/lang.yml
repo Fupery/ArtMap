@@ -8,7 +8,7 @@
 # EXAMPLE: “Replace me with a translation!”
 #
 # Any time you see '%s' - this is a special character that will be replaced with a word.
-# For example, if a player saves an artwork named "Art", then "Successfully saved '%s'"
+# For example, if an artist saves an artwork named "Art", then "Successfully saved '%s'"
 # will become "Successfully saved Art".
 # So any time you see '%s', don't change it! Just change the words around it.
 #
@@ -51,12 +51,14 @@ english:
   BAD_TITLE: "§cInvalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
   TITLE_USED: "§cSorry, this title is already being used."
   EMPTY_HAND_PREVIEW: "§cYou need to have an empty hand to preview."
-  MAPDATA_ERROR: "§cError reading mapdata.yml at %s: %s"
-  BACKUP_ERROR: "§cBackup folder could not be created!"
-  NO_WORLD: "§cNo world called '%s' could be found"
-  RESTORE_ERROR: "§cBackup folder '%s' could not be found!"
+  MAPDATA_ERROR: "§cError reading mapdata.yml at %s: %s"                  #DEPRECATED
+  BACKUP_ERROR: "§cBackup folder could not be created!"                   #DEPRECATED
+  NO_WORLD: "§cNo world called '%s' could be found"                       #DEPRECATED
+  RESTORE_ERROR: "§cBackup folder '%s' could not be found!"               #DEPRECATED
   INVALID_DATA_TABLES: "§cInvalid data tables, plugin cannot be initialized."
   CANNOT_BUILD_DATABASE: "§cError building MapArt database - plugin will be disabled."
+  MAP_ID_MISSING: "§cMap id missing, assigning new id!"
+  RESTORED_SUCCESSFULY: "§6Successfully restored %s with map ID %s!" #The first %s will be the name of an artwork, the second is its id.
 
 #help menu
   #Menu titles
@@ -193,9 +195,7 @@ english:
   CONSOLE_HELP:
     - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
     - "§3/artmap delete <title> §b: §eDelete an artwork"
-    - "§3/artmap backup §b: §eCreate a backup of all current artworks at /plugins/ArtMap/backup/"
-    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRestore all artworks from the backup folder given*"
-    - "  §e * Optional [-o] flag enables artwork overwriting"
+    - "§3/artmap restore <title> §b: §eRestore a corrupted artwork"
 
 mandarin: #Translation provided by Laynooooor [https://www.spigotmc.org/members/187394/]
 #Player Messages
@@ -255,6 +255,8 @@ mandarin: #Translation provided by Laynooooor [https://www.spigotmc.org/members/
   RECIPE_EASEL_NAME: "画架"
   RECIPE_CANVAS_NAME: "画布"
   RECIPE_PAINTBUCKET_NAME: "颜料桶"
+  MAP_ID_MISSING: "§c没有地图 ID，分配新的 ID !"
+  RESTORED_SUCCESSFULY: "§6成功保存画作 %s , 地图 ID 为 %s!"
 
   #Menu Buttons
   HELP_GETTING_STARTED:
@@ -372,9 +374,7 @@ mandarin: #Translation provided by Laynooooor [https://www.spigotmc.org/members/
   CONSOLE_HELP:
     - "§3---------------------------------§b[ArtMap] §6控制台命令:§3---------------------------------"
     - "§3/artmap delete <画作名称> §b: §e删除一个画作"
-    - "§3/artmap backup §b: §e对当前所有画作创建一个备份，备份目录 /plugins/ArtMap/backup/"
-    - "§3/artmap restore <备份名称> <世界名称> [-o] §b: §e从指定的备份文件夹中恢复全部画作*"
-    - "  §e * 使用选项 [-o] 启用覆盖同名文件功能"
+    - "§3/artmap restore <画作名称> §b: §e恢复一个已损坏的画作"
 
 dutch: #Translation provided by Sikatsu [https://www.spigotmc.org/members/88844/]
   #Player Messages
@@ -417,6 +417,8 @@ dutch: #Translation provided by Sikatsu [https://www.spigotmc.org/members/88844/
   RESTORE_ERROR: "§cBackup folder '%s' kon niet gevonden worden!"
   INVALID_DATA_TABLES: "§cOngeldige data tabellen, plugin kan niet starten."
   CANNOT_BUILD_DATABASE: "§cFout bij het aanmaken van een MapArt database - plugin word uitgeschakeld."
+  MAP_ID_MISSING: "§cMap id ontbreekt, nieuw id word toegewezen!"
+  RESTORED_SUCCESSFULY: "§6%s is succesvol hersteld met map ID ℅s!"
 #help menu
   #Menu titles
   MENU_RECIPE: "Kies een Recept"
@@ -552,9 +554,8 @@ dutch: #Translation provided by Sikatsu [https://www.spigotmc.org/members/88844/
   CONSOLE_HELP:
   - "§3---------------------------------§b[ArtMap] §6Console Commandos:§3---------------------------------"
   - "§3/artmap delete <title> §b: §eVerwijder een schilderij"
-  - "§3/artmap backup §b: §eMaak een backup van alle huidige schilderijen in /plugins/ArtMap/backup/"
-  - "§3/artmap restore <backupname> <worldname> [-o] §b: §eHerstel alle schilderijen van de backup folder*"
-  - "  §e * Optioneel [-o] flag activeert overschrijvingen."
+  - "§3/artmap restore <title> §b: §eHersteld een corrupt schilderij"
+
 
 russian: #Translation provided by exzotic [https://www.spigotmc.org/members/111714/]
 #Player Messages
@@ -597,6 +598,8 @@ russian: #Translation provided by exzotic [https://www.spigotmc.org/members/1117
   RESTORE_ERROR: "§cПапка для бекапов '%s' не найдена!"
   INVALID_DATA_TABLES: "§cНеизвестная ошибка, плагин не может быть запущен."
   CANNOT_BUILD_DATABASE: "§cОшибка в базе данных MapArt - плагин отключен."
+  MAP_ID_MISSING: "§cID карты отсутствует, к карте привязан новый ID!"
+  RESTORED_SUCCESSFULY: "§6Картина %s успешно восстановлена с ID: %s!"
 
 #help menu
   #Menu titles
@@ -733,9 +736,8 @@ russian: #Translation provided by exzotic [https://www.spigotmc.org/members/1117
   CONSOLE_HELP:
     - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
     - "§3/artmap delete <название> §b: §eУдалить картину"
-    - "§3/artmap backup §b: §eСоздать бэкап текущих картин в /plugins/ArtMap/backup/"
-    - "§3/artmap restore <названиебэкапа> <мир> [-o] §b: §eВосстанавливает все картины из бэкапа*"
-    - "  §e * Необязательный [-o] флаг, включает перезапись картин"
+    - "§3/artmap restore <название> §b: §eВосстановить поврежденную картину"
+
 
 german: #Translation provided by Juyas [https://www.spigotmc.org/members/91627/]
 #Spieler Nachrichten
@@ -913,13 +915,13 @@ german: #Translation provided by Juyas [https://www.spigotmc.org/members/91627/]
     - "§7und einer §aLeinwand §7um Flächen auszufüllen."
     - "§7Rechtsklick um Änderungen rückgängig zu machen."
 
-  CONSOLE_HELP:
-    - "§3---------------------------------§b[ArtMap] §6Konsolen Befehle:§3---------------------------------"
-    - "§3/artmap delete <title> §b: §eLösche ein Kunstwerk"
-    - "§3/artmap backup §b: §eErstellt von allen Kunstwerken ein Backup im Ordner: /plugins/ArtMap/backup/"
-    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eStellt alle Kunstwerke aus dem Backup-Ordner wieder her*"
-    - "  §e * Benutze die Option [-o] um bestehende Kunstwerke durch die Wiederherstellung zu überschreiben."
-    
+#  CONSOLE_HELP:
+#    - "§3---------------------------------§b[ArtMap] §6Konsolen Befehle:§3---------------------------------"
+#    - "§3/artmap delete <title> §b: §eLösche ein Kunstwerk"
+#    - "§3/artmap backup §b: §eErstellt von allen Kunstwerken ein Backup im Ordner: /plugins/ArtMap/backup/"
+#    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eStellt alle Kunstwerke aus dem Backup-Ordner wieder her*"
+#    - "  §e * Benutze die Option [-o] um bestehende Kunstwerke durch die Wiederherstellung zu überschreiben."
+#
 italian: #Translation provided by luminatimc [https://www.spigotmc.org/members/luminatimc.108885/]
 #Player Messages
   COMMAND_SAVE: "salva"
@@ -1096,6 +1098,4 @@ italian: #Translation provided by luminatimc [https://www.spigotmc.org/members/l
   CONSOLE_HELP:
     - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
     - "§3/artmap delete <title> §b: §eCancella un disegno"
-    - "§3/artmap backup §b: §eCrea un Backup di tutti i disegni su /plugins/ArtMap/backup/"
-    - "§3/artmap restore <backupname> <worldname> [-o] §b: §eRipristina tutti i disegni da una cartella di Backup*"
-    - "  §e * Opzionale [-o] flag che abilita la sovrascrizione dei disegni"
+    - "§3/artmap restore <title> §b: §eRipristina un'opera corrotta"

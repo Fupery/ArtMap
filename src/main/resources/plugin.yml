@@ -14,8 +14,7 @@ commands:
         <command> preview <title> : Preview an artwork
         <command> help : Display help
         <command> reload : Reloads the config
-        <command> backup : Create a backup of all current artworks
-        <command> restore <backupname> <worldname> <-o> : Restore a backup folder from plugins/ArtMap/backups
+        <command> restore <title> : Restores a corrupted artwork
 
 permissions:
   artmap.region.member:

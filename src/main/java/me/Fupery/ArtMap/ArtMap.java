@@ -3,7 +3,9 @@ package me.Fupery.ArtMap;
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.IO.ArtDatabase;
+import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.IO.PixelTableManager;
+import me.Fupery.ArtMap.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Protocol.ArtistHandler;
@@ -12,6 +14,7 @@ import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.*;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -38,6 +41,7 @@ public class ArtMap extends JavaPlugin {
     private TaskManager taskManager;
     private ArtDatabase artDatabase;
     private ChannelCacheManager cacheManager;
+    private MapManager mapManager;
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
     private Lang lang;
@@ -93,6 +97,10 @@ public class ArtMap extends JavaPlugin {
         return instance().menuHandler;
     }
 
+    public static MapManager getMapManager() {
+        return instance().mapManager;
+    }
+
     public static Configuration getConfiguration() {
         return instance().config;
     }
@@ -104,20 +112,17 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager();
         config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
-        previewing = new ConcurrentHashMap<>();
+        mapManager = new MapManager(this);
         artistHandler = new ArtistHandler(this);
         bukkitVersion = new VersionHandler();
-        artDatabase = ArtDatabase.buildDatabase();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
+        previewing = new ConcurrentHashMap<>();
+        ConfigurationSection defaultLang = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
-        lang = new Lang(config.LANGUAGE, langFile, config.DISABLE_ACTION_BAR, config.HIDE_PREFIX);
-
-        if (artDatabase == null) {
-            getPluginLoader().disablePlugin(this);
-            getLogger().warning(lang.getMsg("CANNOT_BUILD_DATABASE"));
-            return;
-        }
+        artDatabase = new ArtDatabase(this);
+        new FlatDatabaseConverter(this).convertDatabase();
+        lang = new Lang(defaultLang.getConfigurationSection("english"), langFile, config);
         if (!loadTables()) {
             getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
             getPluginLoader().disablePlugin(this);
@@ -136,7 +141,6 @@ public class ArtMap extends JavaPlugin {
             manager.registerEvents(new ChunkUnloadListener(), this);
             manager.registerEvents(new PlayerCraftListener(), this);
             manager.registerEvents(new InventoryInteractListener(), this);
-            manager.registerEvents(new EaselInteractListener(), this);
             if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
                 manager.registerEvents(new PlayerSwapHandListener(), this);
                 manager.registerEvents(new PlayerDismountListener(), this);
@@ -151,9 +155,10 @@ public class ArtMap extends JavaPlugin {
     public void onDisable() {
         artistHandler.stop();
         menuHandler.closeAll();
+        mapManager.saveKeys();
+
 
         if (previewing.size() > 0) {
-
             for (Player player : previewing.keySet()) {
                 Preview.stop(player);
             }

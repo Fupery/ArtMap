@@ -2,60 +2,49 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.ArtDye;
-import me.Fupery.ArtMap.Utils.Reflection;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class MapArt {
-    public static final byte[] BLANK_MAP = getBlankMap();
-    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private final short mapIDValue;
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private final short id;
     private final String title;
-    private final OfflinePlayer player;
+    private final UUID artist;
     private final String date;
 
-    public MapArt(short mapIDValue, String title, OfflinePlayer player) {
-        this.mapIDValue = mapIDValue;
-        this.title = title;
-        this.player = player;
-        this.date = DATE_FORMAT.format(new Date());
+    public MapArt(short mapIDValue, String title, OfflinePlayer artist) {
+        this(mapIDValue, title, artist, DATE_FORMAT.format(new Date()));
     }
 
-    public MapArt(short mapIDValue, String title, OfflinePlayer player, String date) {
-        this.mapIDValue = mapIDValue;
+    public MapArt(short id, String title, UUID artist, String date) {
+        this.id = id;
         this.title = title;
-        this.player = player;
+        this.artist = artist;
         this.date = date;
     }
 
-    public static MapView cloneArtwork(World world, short mapID) {
-        MapView oldMapView = Bukkit.getServer().getMap(mapID);
-        MapView newMapView = Bukkit.getServer().createMap(world);
-        byte[] oldMap = Reflection.getMap(oldMapView);
-        Reflection.setWorldMap(newMapView, oldMap);
-        return newMapView;
+    public MapArt(short mapIDValue, String title, OfflinePlayer artist, String date) {
+        this.id = mapIDValue;
+        this.title = title;
+        this.artist = artist.getUniqueId();
+        this.date = date;
     }
 
-    private static byte[] getBlankMap() {
-        byte[] mapOutput = new byte[128 * 128];
-
-        for (int i = 0; i < mapOutput.length; i++) {
-            mapOutput[i] = ArtDye.WHITE.getData();
-        }
-        return mapOutput;
+    public OfflinePlayer getArtistPlayer() {
+        return Bukkit.getOfflinePlayer(artist);
     }
 
     public boolean isValid() {
         return title != null && title.length() > 2 && title.length() <= 16
-                && player != null && player.hasPlayedBefore();
+                && getArtistPlayer() != null && getArtistPlayer().hasPlayedBefore();
     }
 
     @Override
@@ -65,31 +54,44 @@ public class MapArt {
 
     public boolean equals(MapArt art, boolean ignoreMapID) {
         return (title.equals(art.title) && date.equals(art.date))
-                && player.getUniqueId().equals(art.player.getUniqueId())
-                && (mapIDValue == art.mapIDValue || ignoreMapID);
+                && artist.equals(art.artist)
+                && (id == art.id || ignoreMapID);
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder builder = new HashCodeBuilder(77, 123);
+        builder.append(title);
+        builder.append(id);
+        return builder.toHashCode();
     }
 
     public ItemStack getMapItem() {
-        return ArtMaterial.getMapArt(mapIDValue, title, player, date);
+        return ArtMaterial.getMapArt(id, title, getArtistPlayer(), date);
     }
 
     public void saveArtwork() {
-        ArtMap.getArtDatabase().addArtwork(this);
+        MapView mapView = Bukkit.getMap(id);
+        ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtwork(this, mapView));
+    }
+
+    public short getMapId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public UUID getArtist() {
+        return artist;
     }
 
     public String getDate() {
         return date;
     }
 
-    public short getMapID() {
-        return mapIDValue;
-    }
-
-    public OfflinePlayer getPlayer() {
-        return player;
-    }
-
-    public String getTitle() {
-        return title;
+    public MapArt updateMapId(short newID) {
+        return new MapArt(newID, title, artist, date);
     }
 }
