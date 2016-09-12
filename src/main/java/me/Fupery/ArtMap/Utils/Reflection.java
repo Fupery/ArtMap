@@ -231,7 +231,7 @@ public class Reflection {
         }
 
         private void logFailure(Exception e) {
-            ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported? Check error.log for info.");
+            ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported?");
         }
     }
 }

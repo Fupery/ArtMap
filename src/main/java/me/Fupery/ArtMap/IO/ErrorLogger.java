@@ -19,7 +19,7 @@ public class ErrorLogger {
     private static WeakReference<File> dataFolder = null;
 
     public static void log(Throwable throwable, String consoleMessage) {
-        ArtMap.instance().getLogger().warning(consoleMessage);
+        ArtMap.instance().getLogger().warning(consoleMessage + " Check /plugins/ArtMap/error.log for details.");
         log(throwable);
     }
 

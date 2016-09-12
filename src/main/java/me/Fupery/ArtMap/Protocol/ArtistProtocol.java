@@ -57,7 +57,7 @@ public abstract class ArtistProtocol {
                 });
             }
         } catch (Exception e) {
-            ErrorLogger.log(e, "Error unbinding player channel! Check /plugins/ArtMap/error.log for info.");
+            ErrorLogger.log(e, "Error unbinding player channel!");
         }
         channelLookup.remove(player.getUniqueId());
     }
@@ -103,7 +103,7 @@ public abstract class ArtistProtocol {
                 msg = onPacketInAsync(player, channel, msg);
 
             } catch (Exception e) {
-                ErrorLogger.log(e, "Error in onPacketInAsync(). Check /plugins/ArtMap/error.log for info.");
+                ErrorLogger.log(e, "Error in onPacketInAsync().");
             }
             if (msg != null) {
                 super.channelRead(context, msg);

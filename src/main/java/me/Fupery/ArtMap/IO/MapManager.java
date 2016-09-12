@@ -41,7 +41,7 @@ public class MapManager {
         try {
             compressed = new f32x32().generateBLOB(map);
         } catch (IOException e) {
-            ErrorLogger.log(e, "Compression error, check error.log for more info!");
+            ErrorLogger.log(e, "Compression error!");
             return new byte[0];
         }
         return compressed;

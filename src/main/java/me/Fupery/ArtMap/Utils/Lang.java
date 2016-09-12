@@ -92,7 +92,7 @@ public class Lang {
                 channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
             } catch (Exception e) {
                 Bukkit.getLogger().info(
-                        "[ArtMap] Error binding player channel! Check /plugins/ArtMap/error.log for info.");
+                        "[ArtMap] Error binding player channel!");
                 channel = null;
             }
             if (channel != null) channel.writeAndFlush(packet);
