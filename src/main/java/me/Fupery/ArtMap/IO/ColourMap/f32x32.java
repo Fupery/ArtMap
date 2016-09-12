@@ -8,23 +8,30 @@ import static me.Fupery.ArtMap.IO.MapManager.MapSize;
  * Compresses 32x32 pixel maps into a byte array to be stored as a SQL BLOB
  */
 public class f32x32 implements MapFormatter {
-    private static byte[] unfoldMap(byte[] mapData, int magnitude) {
-        byte[] unfoldedData = new byte[MapSize.MAX.size()];
-        int dataLength = mapData.length / 4;
-        double increment = 1 / (double) magnitude;
-        double j = 0;
-        for (int i = 0; i < unfoldedData.length && j < dataLength; i++, j += increment) {
-            unfoldedData[i] = mapData[((int) Math.floor(j))];
-        }
-        return unfoldedData;
-    }
-
     private static byte[] foldMap(byte[] mapData, int magnitude) {
         byte[] foldedData = new byte[MapSize.STANDARD.size()];
-        for (int i = 0, j = 0; i < mapData.length && j < foldedData.length; i += magnitude, j++) {
-            foldedData[j] = mapData[i];
+        for (int x = 0; x < 128; x += magnitude) {
+            for (int y = 0; y < 128; y += magnitude) {
+                foldedData[(x / magnitude) + ((y / magnitude) * 32)] = mapData[x + (y * 128)];
+            }
         }
         return foldedData;
+    }
+
+    private static byte[] unfoldMap(byte[] mapData, int magnitude) {
+        byte[] unfoldedData = new byte[MapSize.MAX.size()];
+        for (int x = 0; x < 32; x++) {
+            for (int y = 0; y < 32; y++) {
+                int ix = x * magnitude;
+                int iy = y * magnitude;
+                for (int px = 0; px < magnitude; px++) {
+                    for (int py = 0; py < magnitude; py++) {
+                        unfoldedData[(px + ix) + ((py + iy) * 128)] = mapData[x + (y * 32)];
+                    }
+                }
+            }
+        }
+        return unfoldedData;
     }
 
     @Override
