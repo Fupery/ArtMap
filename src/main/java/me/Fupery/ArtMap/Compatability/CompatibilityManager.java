@@ -14,7 +14,7 @@ public class CompatibilityManager implements RegionHandler {
     private List<RegionHandler> regionHandlers;
     private ReflectionHandler reflectionHandler;
 
-    public CompatibilityManager() {
+    public CompatibilityManager(JavaPlugin plugin) {
         regionHandlers = new ArrayList<>();
         loadRegionHandler(WorldGuardCompat.class);
         loadRegionHandler(FactionsCompat.class);
@@ -23,10 +23,10 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler(LandlordCompat.class);
         reflectionHandler = loadReflectionHandler();
         if (!(reflectionHandler instanceof VanillaReflectionHandler))
-            Bukkit.getLogger().info(String.format("[ArtMap] %s reflection handler enabled.",
+            plugin.getLogger().info(String.format("%s reflection handler enabled.",
                     reflectionHandler.getClass().getSimpleName().replace("Compat", "")));
         for (RegionHandler regionHandler : regionHandlers) {
-            Bukkit.getLogger().info(String.format("[ArtMap] %s hooks enabled.",
+            plugin.getLogger().info(String.format("%s hooks enabled.",
                     regionHandler.getClass().getSimpleName().replace("Compat", "")));
         }
     }

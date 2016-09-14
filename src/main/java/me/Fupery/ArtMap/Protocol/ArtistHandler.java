@@ -1,11 +1,9 @@
 package me.Fupery.ArtMap.Protocol;
 
-import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Protocol.Packet.PacketType;
-import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -20,40 +18,54 @@ public class ArtistHandler {
 
     public final Settings SETTINGS;
     private final ConcurrentHashMap<UUID, ArtSession> artists;
-    private final ArtistProtocol protocol;
+    private final ProtocolHandler protocol;
 
-    public ArtistHandler(ArtMap plugin) {
+    public ArtistHandler(boolean useProtocolLib) {
         artists = new ConcurrentHashMap<>();
         SETTINGS = new Settings(ArtMap.getConfiguration().FORCE_ART_KIT, 16384);
 
-        protocol = new ArtistProtocol() {
-            @Override
-            public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
-                if (artists.containsKey(sender.getUniqueId())) {
-                    ArtistPacket artistPacket = Reflection.getArtistPacket(packet);
-                    if (artistPacket == null) {
-                        return packet;
-                    }
-                    ArtSession session = artists.get(sender.getUniqueId());
-                    PacketType type = artistPacket.getType();
-
-                    if (type == PacketType.LOOK) {
-                        ArtistPacket.PacketLook packetLook = (ArtistPacket.PacketLook) artistPacket;
-                        session.updatePosition(packetLook.getYaw(), packetLook.getPitch());
-                        return packet;
-
-                    } else if (type == PacketType.INTERACT) {
-                        InteractType click = ((ArtistPacket.PacketInteract) artistPacket).getInteraction();
-                        session.paint(sender.getItemInHand(), (click == InteractType.ATTACK)
-                                ? BrushAction.LEFT_CLICK : BrushAction.RIGHT_CLICK);
-                        return null;
-                    }
-                } else {
-                    removePlayer(sender);
+        if (useProtocolLib) {
+            protocol = new ProtocolLibListener(this) {
+                @Override
+                public boolean onPacketPlayIn(Player sender, ArtistPacket packet) {
+                    return handlePacket(sender, packet);
                 }
-                return packet;
+
+            };
+            Bukkit.getLogger().info("[ArtMap] ProtocolLib hooks enabled.");
+        } else {
+            protocol = new ArtMapProtocolListener(this) {
+                @Override
+                public boolean onPacketPlayIn(Player player, ArtistPacket packet) {
+                    return handlePacket(player, packet);
+                }
+            };
+        }
+    }
+
+    private boolean handlePacket(Player sender, ArtistPacket packet) {
+        if (packet == null) {
+            return true;
+        }
+        if (artists.containsKey(sender.getUniqueId())) {
+            ArtSession session = artists.get(sender.getUniqueId());
+            PacketType type = packet.getType();
+
+            if (type == PacketType.LOOK) {
+                ArtistPacket.PacketLook packetLook = (ArtistPacket.PacketLook) packet;
+                session.updatePosition(packetLook.getYaw(), packetLook.getPitch());
+                return true;
+
+            } else if (type == PacketType.INTERACT) {
+                InteractType click = ((ArtistPacket.PacketInteract) packet).getInteraction();
+                session.paint(sender.getItemInHand(), (click == InteractType.ATTACK)
+                        ? BrushAction.LEFT_CLICK : BrushAction.RIGHT_CLICK);
+                return false;
             }
-        };
+        } else {
+            removePlayer(sender);
+        }
+        return true;
     }
 
     public synchronized void addPlayer(final Player player, Easel easel, MapView mapView, int yawOffset) {
