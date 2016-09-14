@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.Fupery</groupId>
     <artifactId>ArtMap</artifactId>
-    <version>2.4</version>
+    <version>2.4.1</version>
     <description>Make pixel art!</description>
     <profiles>
     </profiles>
