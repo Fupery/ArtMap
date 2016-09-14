@@ -109,11 +109,11 @@ public class ArtMap extends JavaPlugin {
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
-        compatManager = new CompatibilityManager();
+        compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
         mapManager = new MapManager(this);
-        artistHandler = new ArtistHandler(this);
+        artistHandler = new ArtistHandler(compatManager.isPluginLoaded("ProtocolLib"));
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);

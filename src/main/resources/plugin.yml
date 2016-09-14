@@ -3,7 +3,7 @@ main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depends: []
-softdepend: [WorldGuard, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise]
+softdepend: [WorldGuard, ProtocolLib, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise]
 author: Fupery
 
 commands:

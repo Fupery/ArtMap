@@ -13,12 +13,18 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class ArtistProtocol {
+public abstract class ArtMapProtocolListener implements ProtocolHandler {
 
     private final Map<UUID, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
     private final String handlerName = "ArtMapHandler";
+    private ArtistHandler artistHandler;
 
+    public ArtMapProtocolListener(ArtistHandler artistHandler) {
+        this.artistHandler = artistHandler;
+    }
+
+    @Override
     public boolean injectPlayer(Player player) {
         Channel channel = getChannel(player);
         if (channel == null) {
@@ -39,6 +45,7 @@ public abstract class ArtistProtocol {
         return true;
     }
 
+    @Override
     public void uninjectPlayer(Player player) {
 
         try {
@@ -78,6 +85,7 @@ public abstract class ArtistProtocol {
         return channel;
     }
 
+    @Override
     public void close() {
 
         if (channelLookup != null && channelLookup.size() > 0) {
@@ -89,7 +97,10 @@ public abstract class ArtistProtocol {
         }
     }
 
-    public abstract Object onPacketInAsync(Player player, Channel channel, Object packet);
+    public Object onPacketInAsync(Player player, Channel channel, Object packet) {
+        if (!artistHandler.containsPlayer(player)) return packet;
+        return onPacketPlayIn(player, Reflection.getArtistPacket(packet)) ? packet : null;
+    }
 
     private final class PacketHandler extends ChannelDuplexHandler {
         private Player player;
