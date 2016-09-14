@@ -963,6 +963,8 @@ italian: #Translation provided by luminatimc [https://www.spigotmc.org/members/l
   RESTORE_ERROR: "§cCartella di Backup '%s' non trovata!"
   INVALID_DATA_TABLES: "§cData tables invalidi, il plugin non può essere inizializzato."
   CANNOT_BUILD_DATABASE: "§cErrore costruendo MapArt database - il plugin sarà disabilitato."
+  MAP_ID_MISSING: "§cMap id mancante, assegnando un nuovo id!"
+  RESTORED_SUCCESSFULY: "§6Ripristino completato con successo %s con map ID %s!"
 
 #help menu
   #Menu titles
