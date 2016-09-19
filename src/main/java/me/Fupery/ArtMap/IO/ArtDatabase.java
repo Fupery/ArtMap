@@ -35,8 +35,9 @@ public class ArtDatabase {
             if (connection != null && !connection.isClosed()) {
                 return connection;
             }
+            Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             connection = null;
             ErrorLogger.log(e, sqlError);
         }
