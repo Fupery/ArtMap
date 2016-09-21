@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Utils;
+package me.Fupery.ArtMap.Painting;
 
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;

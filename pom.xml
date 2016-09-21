@@ -107,8 +107,8 @@
         <!--COMPATABILITY DEPENDENCIES-->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <artifactId>ProtocolLib-API</artifactId>
+            <version>4.1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

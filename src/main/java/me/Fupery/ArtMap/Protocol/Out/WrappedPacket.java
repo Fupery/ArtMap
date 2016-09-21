@@ -1,0 +1,14 @@
+package me.Fupery.ArtMap.Protocol.Out;
+
+import org.bukkit.entity.Player;
+
+public abstract class WrappedPacket {
+
+    protected final Object rawPacket;
+
+    public WrappedPacket(Object packet) {
+        this.rawPacket = packet;
+    }
+
+    abstract void send(Player player);
+}

@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Compatability;
 
 import me.Fupery.ArtMap.Easel.EaselEvent;
+import me.Fupery.ArtMap.Protocol.ProtocolHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -29,6 +30,12 @@ public class CompatibilityManager implements RegionHandler {
             plugin.getLogger().info(String.format("%s hooks enabled.",
                     regionHandler.getClass().getSimpleName().replace("Compat", "")));
         }
+    }
+
+    public ProtocolHandler getProtocolHandler() {
+        boolean protocolLibEnabled = isPluginLoaded("ProtocolLib");
+        if (protocolLibEnabled) Bukkit.getLogger().info("[ArtMap] ProtocolLib hooks enabled.");
+        return new ProtocolHandler(protocolLibEnabled);
     }
 
     public boolean isPluginLoaded(String pluginName) {

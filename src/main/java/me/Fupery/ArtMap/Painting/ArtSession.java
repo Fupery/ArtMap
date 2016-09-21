@@ -1,9 +1,9 @@
-package me.Fupery.ArtMap.Protocol;
+package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Protocol.Brushes.*;
+import me.Fupery.ArtMap.Painting.Brushes.*;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;

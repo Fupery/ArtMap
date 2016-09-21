@@ -1,24 +1,23 @@
-package me.Fupery.ArtMap.Protocol;
+package me.Fupery.ArtMap.Protocol.In;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
-import org.bukkit.entity.Player;
+import me.Fupery.ArtMap.Painting.ArtistHandler;
+import me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static me.Fupery.ArtMap.Protocol.Packet.ArtistPacket.PacketInteract;
-import static me.Fupery.ArtMap.Protocol.Packet.ArtistPacket.PacketInteract.InteractType;
+import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract;
+import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
 
-public abstract class ProtocolLibListener implements ProtocolHandler {
+public class ProtocolLibReciever extends PacketReciever {
 
-    private ArtistHandler handler;
+    private ArtistHandler handler = ArtMap.getArtistHandler();
 
-    public ProtocolLibListener(ArtistHandler handler) {
+    public ProtocolLibReciever() {
         registerListeners(ArtMap.instance());
-        this.handler = handler;
     }
 
     private void registerListeners(JavaPlugin plugin) {
@@ -38,7 +37,7 @@ public abstract class ProtocolLibListener implements ProtocolHandler {
                 if (!handler.containsPlayer(event.getPlayer())) return;
                 ArtistPacket packet = getPacketType(event.getPacket());
                 if (packet == null) return;
-                if (!onPacketPlayIn(event.getPlayer(), packet)) event.setCancelled(true);
+                if (!onPacketPlayIn(handler, event.getPlayer(), packet)) event.setCancelled(true);
             }
         });
     }
@@ -61,15 +60,6 @@ public abstract class ProtocolLibListener implements ProtocolHandler {
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean injectPlayer(Player player) {
-        return true;
-    }
-
-    @Override
-    public void uninjectPlayer(Player player) {
     }
 
     @Override

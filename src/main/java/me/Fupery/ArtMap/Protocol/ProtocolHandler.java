@@ -1,20 +1,24 @@
 package me.Fupery.ArtMap.Protocol;
 
-import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
-import org.bukkit.entity.Player;
+import me.Fupery.ArtMap.Protocol.In.GenericPacketReciever;
+import me.Fupery.ArtMap.Protocol.In.PacketReciever;
+import me.Fupery.ArtMap.Protocol.In.ProtocolLibReciever;
+import me.Fupery.ArtMap.Protocol.Out.GenericPacketSender;
+import me.Fupery.ArtMap.Protocol.Out.PacketSender;
+import me.Fupery.ArtMap.Protocol.Out.ProtocolLibSender;
 
-interface ProtocolHandler {
+public class ProtocolHandler {
 
-    boolean injectPlayer(Player player);
+    public final PacketReciever PACKET_RECIEVER;
+    public final PacketSender PACKET_SENDER;
 
-    void uninjectPlayer(Player player);
-
-    void close();
-
-    /**
-     * @param player
-     * @param packet
-     * @return true if the packet should be passed on, false if the event should be cancelled
-     */
-    boolean onPacketPlayIn(Player player, ArtistPacket packet);
+    public ProtocolHandler(boolean useProtocolLib) {
+        if (useProtocolLib) {
+            PACKET_RECIEVER = new ProtocolLibReciever();
+            PACKET_SENDER = new ProtocolLibSender();
+        } else {
+            PACKET_RECIEVER = new GenericPacketReciever();
+            PACKET_SENDER = new GenericPacketSender();
+        }
+    }
 }

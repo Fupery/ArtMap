@@ -8,8 +8,9 @@ import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
-import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
+import me.Fupery.ArtMap.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.*;
@@ -44,6 +45,7 @@ public class ArtMap extends JavaPlugin {
     private MapManager mapManager;
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
+    private ProtocolHandler protocolHandler;
     private Lang lang;
     private List<String> titleFilter;
     private PixelTableManager pixelTable;
@@ -105,6 +107,10 @@ public class ArtMap extends JavaPlugin {
         return instance().config;
     }
 
+    public static ProtocolHandler getProtocolManager() {
+        return instance().protocolHandler;
+    }
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
@@ -113,7 +119,8 @@ public class ArtMap extends JavaPlugin {
         config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
         mapManager = new MapManager(this);
-        artistHandler = new ArtistHandler(compatManager.isPluginLoaded("ProtocolLib"));
+        protocolHandler = compatManager.getProtocolHandler();
+        artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
@@ -156,7 +163,6 @@ public class ArtMap extends JavaPlugin {
         artistHandler.stop();
         menuHandler.closeAll();
         mapManager.saveKeys();
-
 
         if (previewing.size() > 0) {
             for (Player player : previewing.keySet()) {
