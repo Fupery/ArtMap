@@ -2,11 +2,11 @@ package me.Fupery.ArtMap.Protocol.Out;
 
 import org.bukkit.entity.Player;
 
-public abstract class WrappedPacket {
+public abstract class WrappedPacket<T> {
 
-    protected final Object rawPacket;
+    protected final T rawPacket;
 
-    public WrappedPacket(Object packet) {
+    public WrappedPacket(T packet) {
         this.rawPacket = packet;
     }
 

@@ -1,10 +1,10 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
 import org.bukkit.Material;

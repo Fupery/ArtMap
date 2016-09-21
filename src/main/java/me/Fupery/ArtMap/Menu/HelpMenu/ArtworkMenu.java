@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
@@ -8,7 +9,6 @@ import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;

@@ -1,13 +1,13 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.LinkedButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

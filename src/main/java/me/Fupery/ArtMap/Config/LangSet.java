@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Utils;
+package me.Fupery.ArtMap.Config;
 
 import org.bukkit.command.CommandSender;
 

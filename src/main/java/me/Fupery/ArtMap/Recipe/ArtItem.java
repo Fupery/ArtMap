@@ -1,8 +1,8 @@
 package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Utils.ArtDye;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

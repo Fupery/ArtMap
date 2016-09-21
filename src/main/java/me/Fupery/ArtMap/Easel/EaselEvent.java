@@ -1,11 +1,11 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -102,7 +102,7 @@ public final class EaselEvent {
 
         if (art != null) {
             if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
-                Lang.NO_EDIT_PERM.send(player);
+                Lang.ActionBar.NO_EDIT_PERM.send(player);
                 easel.playEffect(Effect.CRIT);
                 SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                 return;

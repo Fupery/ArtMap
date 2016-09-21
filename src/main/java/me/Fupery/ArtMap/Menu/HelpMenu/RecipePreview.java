@@ -1,10 +1,10 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;

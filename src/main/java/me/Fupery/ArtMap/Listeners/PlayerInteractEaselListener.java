@@ -1,11 +1,11 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;

@@ -1,11 +1,11 @@
 package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.Painting.Brushes.*;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;

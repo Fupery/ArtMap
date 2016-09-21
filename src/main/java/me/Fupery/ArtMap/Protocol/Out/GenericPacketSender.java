@@ -16,18 +16,20 @@ public class GenericPacketSender implements PacketSender {
 
     @Override
     public WrappedPacket buildChatPacket(String message) {
-        return new WrappedPacket(builder.buildActionBarPacket(message)) {
+        return new WrappedPacket<Object>(builder.buildActionBarPacket(message)) {
+            private String rawMessage = message;
+
             @Override
             public void send(Player player) {
                 Channel channel;
                 try {
                     channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
                 } catch (Exception e) {
-                    ErrorLogger.log(e, "Error binding player channel!");
+                    ErrorLogger.log(e, String.format("Error binding player channel for '%s'!", player.getName()));
                     channel = null;
                 }
                 if (channel != null) channel.writeAndFlush(this.rawPacket);
-                else player.sendMessage(message);
+                else player.sendMessage(rawMessage);
             }
         };
     }
