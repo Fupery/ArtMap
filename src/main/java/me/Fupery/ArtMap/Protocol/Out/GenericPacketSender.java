@@ -18,7 +18,7 @@ public class GenericPacketSender implements PacketSender {
     public WrappedPacket buildChatPacket(String message) {
         return new WrappedPacket(builder.buildActionBarPacket(message)) {
             @Override
-            void send(Player player) {
+            public void send(Player player) {
                 Channel channel;
                 try {
                     channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());

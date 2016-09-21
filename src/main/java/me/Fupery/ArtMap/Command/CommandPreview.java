@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -53,13 +54,13 @@ public class CommandPreview extends AsyncCommand {
         MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art == null) {
-            msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
+            msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
             return;
         }
         if (!previewArtwork(player, art)) {
-            msg.message = ArtMap.getLang().getMsg("EMPTY_HAND_PREVIEW");
+            msg.message = Lang.EMPTY_HAND_PREVIEW.get();
             return;
         }
-        msg.message = String.format(ArtMap.getLang().getMsg("PREVIEWING"), args[1]);
+        msg.message = String.format(Lang.PREVIEWING.get(), args[1]);
     }
 }

@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -20,13 +21,13 @@ public class CommandDelete extends AsyncCommand {
         MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art == null) {
-            msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
+            msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
             return;
         }
         if (sender instanceof Player
                 && !(art.getArtistPlayer().getUniqueId().equals(((Player) sender).getUniqueId())
                 || sender.hasPermission("artmap.admin"))) {
-            msg.message = ArtMap.getLang().getMsg("NO_PERM");
+            msg.message = Lang.NO_PERM.get();
             return;
         }
         if (ArtMap.getArtDatabase().deleteArtwork(args[1])) {
@@ -37,9 +38,9 @@ public class CommandDelete extends AsyncCommand {
                     mapView.removeRenderer(renderer);
                 }
             });
-            msg.message = String.format(ArtMap.getLang().getMsg("DELETED"), args[1]);
+            msg.message = String.format(Lang.DELETED.get(), args[1]);
         } else {
-            msg.message = String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]);
+            msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
         }
     }
 }

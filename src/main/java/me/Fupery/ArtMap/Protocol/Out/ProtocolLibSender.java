@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import org.bukkit.entity.Player;
 
@@ -16,13 +17,13 @@ public class ProtocolLibSender implements PacketSender {
     @Override
     public WrappedPacket buildChatPacket(String message) {
 
-        PacketContainer packet = manager.createPacket(PacketType.Play.Client.CHAT);
-        packet.getStrings().write(0, message);
+        PacketContainer packet = manager.createPacket(PacketType.Play.Server.CHAT);
+        packet.getChatComponents().write(0, WrappedChatComponent.fromText(message));
         packet.getBytes().write(0, (byte) 2);
 
         return new WrappedPacket(packet) {
             @Override
-            void send(Player player) {
+            public void send(Player player) {
                 try {
                     manager.sendServerPacket(player, ((PacketContainer) this.rawPacket));
                 } catch (InvocationTargetException e) {

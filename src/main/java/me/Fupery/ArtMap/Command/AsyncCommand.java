@@ -34,10 +34,10 @@ public abstract class AsyncCommand {
             ReturnMessage returnMsg = new ReturnMessage(sender, null);
 
             if (permission != null && !sender.hasPermission(permission)) {
-                returnMsg.message = ArtMap.getLang().getMsg("NO_PERM");
+                returnMsg.message = Lang.NO_PERM.get();
 
             } else if (!consoleAllowed && !(sender instanceof Player)) {
-                returnMsg.message = ArtMap.getLang().getMsg("NO_CONSOLE");
+                returnMsg.message = Lang.NO_CONSOLE.get();
 
             } else if (args.length < minArgs || args.length > maxArgs) {
                 returnMsg.message = Lang.PREFIX + ChatColor.RED + " " + usage;

@@ -129,9 +129,9 @@ public class ArtMap extends JavaPlugin {
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         artDatabase = new ArtDatabase(this);
         new FlatDatabaseConverter(this).convertDatabase();
-        lang = new Lang(defaultLang.getConfigurationSection("english"), langFile, config);
+        Lang.load(defaultLang.getConfigurationSection("english"), langFile, config);
         if (!loadTables()) {
-            getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
+            getLogger().warning(Lang.INVALID_DATA_TABLES.get());
             getPluginLoader().disablePlugin(this);
             return;
         }

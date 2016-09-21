@@ -5,6 +5,7 @@ import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
@@ -76,7 +77,7 @@ public class PlayerInteractListener implements Listener {
         if (!player.hasPermission("artmap.artist")
                 || !compat.checkBuildAllowed(player, baseLocation)
                 || !compat.checkBuildAllowed(player, easelLocation)) {
-            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
+            Lang.ActionBar.NO_PERM_ACTION.send(player);
             notifyFailedPlacement(player, baseLocation);
             return;
         }
@@ -87,7 +88,7 @@ public class PlayerInteractListener implements Listener {
                 || baseLocation.getBlock().getType() != Material.AIR
                 || frameBlock.getBlock().getType() != Material.AIR
                 || Easel.checkForEasel(easelLocation)) {
-            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
+            Lang.ActionBar.INVALID_POS.send(player);
             notifyFailedPlacement(player, baseLocation);
             return;
         }
@@ -98,7 +99,7 @@ public class PlayerInteractListener implements Listener {
         player.getInventory().removeItem(item);
 
         if (easel == null) {
-            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_INVALID_POS.send(player);
+            Lang.ActionBar.INVALID_POS.send(player);
             notifyFailedPlacement(player, baseLocation);
         }
     }

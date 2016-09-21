@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Utils;
 
-import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Protocol.Out.WrappedPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,127 +10,131 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import static me.Fupery.ArtMap.Utils.Reflection.ChatPacketBuilder;
+public enum Lang implements LangSet<String> {
 
-public class Lang {
+    COMMAND_SAVE, COMMAND_DELETE, COMMAND_PREVIEW, COMMAND_RESTORE, COMMAND_BACKUP, HELP, SAVE_USAGE, SAVE_SUCCESS,
+    EASEL_HELP, PAINTING, DELETED, PREVIEWING, BACKUP_SUCCESS, RESTORE_SUCCESS, RESTORE_ALREADY_FOUND, RECIPE_HEADER,
+    NO_CONSOLE, PLAYER_NOT_FOUND, INVALID_POS, NO_PERM, NO_PERM_ACTION, ELSE_USING, NOT_RIDING_EASEL, NEED_CANVAS,
+    NOT_YOUR_EASEL, BREAK_CANVAS, MAP_NOT_FOUND, NO_ARTWORKS, NO_EDIT_PERM, NO_CRAFT_PERM, BAD_TITLE, TITLE_USED,
+    EMPTY_HAND_PREVIEW, MAPDATA_ERROR, BACKUP_ERROR, NO_WORLD, RESTORE_ERROR, INVALID_DATA_TABLES,
+    CANNOT_BUILD_DATABASE, MAP_ID_MISSING, RESTORED_SUCCESSFULY, MENU_RECIPE, MENU_ARTIST, MENU_ARTWORKS, MENU_DYES,
+    MENU_HELP, MENU_TOOLS, BUTTON_CLICK, BUTTON_CLOSE, BUTTON_BACK, RECIPE_BUTTON, ADMIN_RECIPE, RECIPE_HELP,
+    RECIPE_EASEL_NAME, RECIPE_CANVAS_NAME, RECIPE_PAINTBUCKET_NAME;
+
     public static String PREFIX = "§b[ArtMap] ";
-    public final ActionBarHandler ACTION_BAR_MESSAGES;
-    private final ConfigurationSection defaults;
-    private final ConfigurationSection lang;
+    private String message = null;
 
-    public Lang(ConfigurationSection defaultLang, FileConfiguration langFile, Configuration configuration) {
-        String language = configuration.LANGUAGE;
-        if (!langFile.contains(language)) language = "english";
+    @Override
+    public void send(CommandSender sender) {
+        if (message != null) sender.sendMessage(message);
+    }
 
-        if (!language.equals("english")) this.defaults = defaultLang;
-        else this.defaults = null;
+    @Override
+    public String get() {
+        return message;
+    }
 
-        lang = langFile.getConfigurationSection(language);
-        if (configuration.HIDE_PREFIX) PREFIX = "";
-        if (lang == null) {
-            Bukkit.getLogger().warning("Error loading lang.yml!");
-            ACTION_BAR_MESSAGES = null;
-            return;
+    public static void load(ConfigurationSection defaultLang, FileConfiguration langFile, Configuration configuration) {
+        LangLoader loader = new LangLoader(defaultLang, langFile, configuration);// TODO: 21/09/2016
+        //Load basic messages
+        for (Lang key : Lang.values()) {
+            key.message = loader.loadString(key.name());
         }
-        this.ACTION_BAR_MESSAGES = new ActionBarHandler(configuration.DISABLE_ACTION_BAR);
-    }
-
-    private static WrappedActionBarPacket buildPacket(ChatPacketBuilder builder, String message, boolean isError) {
-        String formattedMessage = isError ? "§c§l✷ " + message + " §c§l✷" : "§6✾ " + message + " §6✾";
-        return new WrappedActionBarPacket(message, builder.buildActionBarPacket(formattedMessage));
-    }
-
-    public String getMsg(String key) {
-        if (!lang.contains(key)) {
-            Bukkit.getLogger().warning("Error loading key from lang.yml: '" + key + "'! Default value used.");
-            if (defaults == null || !defaults.contains(key)) return "[" + key + "] NOT FOUND";
-            lang.set(key, defaults.get(key));
+        //Load action bar messages
+        for (ActionBar key : ActionBar.values()) {
+            String messageString = loader.loadString(key.name());
+            if (configuration.DISABLE_ACTION_BAR) {
+                String formattedMessage = PREFIX + messageString.replaceAll("§l", "").replaceAll("§3", "§6")
+                        .replaceAll("§4", "§c").replaceAll("§b", "§6");
+                key.message = new WrappedPacket(key) {
+                    @Override
+                    public void send(Player player) {
+                        player.sendMessage(formattedMessage);
+                    }
+                };
+            } else {
+                String formattedMessage = key.isError ?
+                        "§c§l✷ " + messageString + " §c§l✷" : "§6✾ " + messageString + " §6✾";
+                key.message = ArtMap.getProtocolManager().PACKET_SENDER.buildChatPacket(formattedMessage);
+            }
         }
-        return lang.getString(key);
-    }
-
-    public void sendMsg(String key, CommandSender player) {
-        player.sendMessage(PREFIX + getMsg(key));
-    }
-
-    public String[] getArray(String key) {
-        List<String> msg = lang.getStringList(key);
-        if (msg != null) return msg.toArray(new String[msg.size()]);
-        Bukkit.getLogger().warning("Error loading key from lang.yml: " + key);
-        return null;
-    }
-
-    public void sendArray(String key, CommandSender player) {
-        player.sendMessage(getArray(key));
-    }
-
-    public static class MessageSender {
-        protected final String message;
-
-        private MessageSender(String message) {
-            this.message = PREFIX + message.replaceAll("§l", "")
-                    .replaceAll("§3", "§6").replaceAll("§4", "§c").replaceAll("§b", "§6");
-        }
-
-        public void send(Player player) {
-            player.sendMessage(message);
+        //Load array messages
+        for (Array key : Array.values()) {
+            key.messages = loader.loadArray(key.name());
         }
     }
 
-    public static class WrappedActionBarPacket extends MessageSender {
-        private final Object packet;
+    public enum ActionBar implements LangSet<WrappedPacket> {
+        EASEL_HELP(false), NEED_CANVAS(true), PAINTING(false), SAVE_USAGE(false), ELSE_USING(true),
+        NO_PERM_ACTION(true), NO_EDIT_PERM(true), INVALID_POS(true);
 
-        private WrappedActionBarPacket(String message, Object packet) {
-            super(message);
-            this.packet = packet;
+        private WrappedPacket message = null;
+        private boolean isError;
+
+        ActionBar(boolean isErrorMessage) {
+            isError = false;
         }
 
         @Override
-        public void send(Player player) {
-            Channel channel;
-            try {
-                channel = ArtMap.getCacheManager().getChannel(player.getUniqueId());
-            } catch (Exception e) {
-                Bukkit.getLogger().info(
-                        "[ArtMap] Error binding player channel!");
-                channel = null;
-            }
-            if (channel != null) channel.writeAndFlush(packet);
-            else player.sendMessage(message);
+        public void send(CommandSender sender) {
+            if (message != null && sender instanceof Player)
+                message.send((Player) sender);// FIXME: 21/09/2016 loading, sending
+        }
+
+        @Override
+        public WrappedPacket get() {
+            return message;
         }
     }
 
-    public final class ActionBarHandler {
-        public final MessageSender EASEL_PUNCH,
-                EASEL_NO_CANVAS,
-                EASEL_MOUNT,
-                EASEL_DISMOUNT,
-                EASEL_USED,
-                EASEL_PERMISSION,
-                EASEL_NO_EDIT,
-                EASEL_INVALID_POS;
+    public enum Array implements LangSet<String[]> {
+        HELP_GETTING_STARTED, HELP_RECIPES, HELP_TOOLS, HELP_DYES, HELP_LIST, HELP_CLOSE, INFO_DYES, INFO_RECIPES,
+        INFO_TOOLS, TOOL_DYE, TOOL_PAINTBUCKET, TOOL_COAL, TOOL_FEATHER, TOOL_COMPASS, RECIPE_EASEL, RECIPE_CANVAS,
+        RECIPE_PAINTBUCKET, CONSOLE_HELP;
 
-        private ActionBarHandler(boolean disabled) {
-            if (!disabled) {
-                ChatPacketBuilder packetBuilder = new ChatPacketBuilder();
-                EASEL_PUNCH = buildPacket(packetBuilder, getMsg("EASEL_HELP"), false);
-                EASEL_NO_CANVAS = buildPacket(packetBuilder, getMsg("NEED_CANVAS"), true);
-                EASEL_MOUNT = buildPacket(packetBuilder, getMsg("PAINTING"), false);
-                EASEL_DISMOUNT = buildPacket(packetBuilder, getMsg("SAVE_USAGE"), false);
-                EASEL_USED = buildPacket(packetBuilder, getMsg("ELSE_USING"), true);
-                EASEL_PERMISSION = buildPacket(packetBuilder, getMsg("NO_PERM_ACTION"), true);
-                EASEL_NO_EDIT = buildPacket(packetBuilder, getMsg("NO_EDIT_PERM"), true);
-                EASEL_INVALID_POS = buildPacket(packetBuilder, getMsg("INVALID_POS"), true);
-            } else {
-                EASEL_PUNCH = new MessageSender(getMsg("EASEL_HELP"));
-                EASEL_NO_CANVAS = new MessageSender(getMsg("NEED_CANVAS"));
-                EASEL_MOUNT = new MessageSender(getMsg("PAINTING"));
-                EASEL_DISMOUNT = new MessageSender(getMsg("SAVE_USAGE"));
-                EASEL_USED = new MessageSender(getMsg("ELSE_USING"));
-                EASEL_PERMISSION = new MessageSender(getMsg("NO_PERM_ACTION"));
-                EASEL_NO_EDIT = new MessageSender(getMsg("NO_EDIT_PERM"));
-                EASEL_INVALID_POS = new MessageSender(getMsg("INVALID_POS"));
+        private String[] messages = null;
+
+        @Override
+        public void send(CommandSender sender) {
+            if (messages != null) sender.sendMessage(messages);
+        }
+
+        @Override
+        public String[] get() {
+            return messages;
+        }
+    }
+
+    private static class LangLoader {
+        private ConfigurationSection defaults;
+        private ConfigurationSection lang;
+
+        private LangLoader(ConfigurationSection defaultLang, FileConfiguration langFile, Configuration configuration) {
+            String language = configuration.LANGUAGE;
+            if (!langFile.contains(language)) language = "english";
+
+            if (!language.equals("english")) this.defaults = defaultLang;
+            else this.defaults = null;
+
+            lang = langFile.getConfigurationSection(language);
+            if (configuration.HIDE_PREFIX) PREFIX = "";
+            if (lang == null) Bukkit.getLogger().warning("Error loading lang.yml!");
+        }
+
+        private String loadString(String key) {
+            if (!lang.contains(key)) {
+                Bukkit.getLogger().warning("Error loading key from lang.yml: '" + key + "'! Default value used.");
+                if (defaults == null || !defaults.contains(key)) return "[" + key + "] NOT FOUND";
+                lang.set(key, defaults.get(key));
             }
+            return lang.getString(key);
+        }
+
+        private String[] loadArray(String key) {
+            List<String> msg = lang.getStringList(key);
+            if (msg != null) return msg.toArray(new String[msg.size()]);
+            Bukkit.getLogger().warning("Error loading key from lang.yml: " + key);
+            return null;
         }
     }
 }

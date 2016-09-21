@@ -10,5 +10,5 @@ public abstract class WrappedPacket {
         this.rawPacket = packet;
     }
 
-    abstract void send(Player player);
+    public abstract void send(Player player);
 }

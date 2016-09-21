@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Menu.Button;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
+import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import org.bukkit.event.inventory.ClickType;
 public class CloseButton extends Button {
 
     public CloseButton() {
-        super(Material.BARRIER, ArtMap.getLang().getMsg("BUTTON_CLOSE"));
+        super(Material.BARRIER, Lang.BUTTON_CLOSE.get());
     }
 
     @Override
