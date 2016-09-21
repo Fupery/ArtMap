@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
