@@ -123,7 +123,7 @@ public class ArtMap extends JavaPlugin {
         config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
         mapManager = new MapManager(this);
-        protocolHandler = compatManager.getProtocolHandler();
+        protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
