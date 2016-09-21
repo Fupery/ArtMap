@@ -11,12 +11,9 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
 
 public class ProtocolLibSender implements PacketSender {
-
-    private ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-
     @Override
     public WrappedPacket buildChatPacket(String message) {
-
+        ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         PacketContainer packet = manager.createPacket(PacketType.Play.Server.CHAT);
         packet.getChatComponents().write(0, WrappedChatComponent.fromText(message));
         packet.getBytes().write(0, (byte) 2);

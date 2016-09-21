@@ -6,7 +6,6 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
@@ -20,7 +19,6 @@ public class GenericPacketReciever extends PacketReciever {
     private final Map<UUID, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
     private final String handlerName = "ArtMapHandler";
-    private ArtistHandler artistHandler = ArtMap.getArtistHandler();
 
     @Override
     public boolean injectPlayer(Player player) {
@@ -51,13 +49,9 @@ public class GenericPacketReciever extends PacketReciever {
 
             if (channel.pipeline().get(handlerName) != null) {
 
-                channel.eventLoop().execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (channel.pipeline().get(handlerName) != null) {
-                            channel.pipeline().remove(handlerName);
-                        }
+                channel.eventLoop().execute(() -> {
+                    if (channel.pipeline().get(handlerName) != null) {
+                        channel.pipeline().remove(handlerName);
                     }
                 });
             }
@@ -96,8 +90,8 @@ public class GenericPacketReciever extends PacketReciever {
     }
 
     private Object onPacketInAsync(Player player, Channel channel, Object packet) {
-        if (!artistHandler.containsPlayer(player)) return packet;
-        return artistHandler.handlePacket(player, Reflection.getArtistPacket(packet)) ? packet : null;
+        if (!ArtMap.getArtistHandler().containsPlayer(player)) return packet;
+        return ArtMap.getArtistHandler().handlePacket(player, Reflection.getArtistPacket(packet)) ? packet : null;
     }
 
     private final class PacketHandler extends ChannelDuplexHandler {

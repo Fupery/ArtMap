@@ -14,8 +14,6 @@ import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract.In
 
 public class ProtocolLibReciever extends PacketReciever {
 
-    private ArtistHandler handler = ArtMap.getArtistHandler();
-
     public ProtocolLibReciever() {
         registerListeners(ArtMap.instance());
     }
@@ -34,6 +32,7 @@ public class ProtocolLibReciever extends PacketReciever {
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(options) {
             @Override
             public void onPacketReceiving(PacketEvent event) {
+                ArtistHandler handler = ArtMap.getArtistHandler();
                 if (!handler.containsPlayer(event.getPlayer())) return;
                 ArtistPacket packet = getPacketType(event.getPacket());
                 if (packet == null) return;
