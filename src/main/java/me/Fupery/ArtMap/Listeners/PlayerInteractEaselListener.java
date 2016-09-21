@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
@@ -67,7 +68,7 @@ public class PlayerInteractEaselListener implements Listener {
 
         if (checkSignBreak(event.getBlock(), event)) {
             if (!checkIsPainting(event.getPlayer(), event)) {
-                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PUNCH.send(event.getPlayer());
+                Lang.ActionBar.EASEL_HELP.send(event.getPlayer());
             }
         }
         checkIsPainting(event.getPlayer(), event);
@@ -95,7 +96,7 @@ public class PlayerInteractEaselListener implements Listener {
                 ArtMap.getCompatManager().checkInteractAllowed(player, clicked, click);
 
         if (!interactionAllowed) {
-            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PERMISSION.send(player);
+            Lang.ActionBar.NO_PERM_ACTION.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
             return;

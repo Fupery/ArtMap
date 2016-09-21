@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +23,7 @@ abstract public class ArtItem extends ItemStack {
     public static final String KIT_KEY = "§b§oArtKit Item";
     public static final String PREVIEW_KEY = "§b§oPreview Artwork";
     public static final String COPY_KEY = "§b§oArtwork Copy";
-    public static final String HELP = ArtMap.getLang().getMsg("RECIPE_HELP");
+    public static final String HELP = Lang.RECIPE_HELP.get();
     private static WeakReference<ItemStack[]> kitReference = new WeakReference<>(getKit());
 
     ArtItem(Material material) {
@@ -123,9 +124,9 @@ class ItemEasel extends ArtItem {
     ItemEasel() {
         super(Material.ARMOR_STAND);
         ItemMeta meta = getItemMeta();
-        String itemName = "§e•§6§l" + ArtMap.getLang().getMsg("RECIPE_EASEL_NAME") + "§e•";
+        String itemName = "§e•§6§l" + Lang.RECIPE_EASEL_NAME.get() + "§e•";
         meta.setDisplayName(itemName);
-        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_EASEL")));
+        meta.setLore(getToolTipLore(getLoreID(), Lang.Array.RECIPE_EASEL.get()));
         setItemMeta(meta);
     }
 
@@ -150,9 +151,9 @@ class ItemCanvas extends ArtItem {
     ItemCanvas() {
         super(Material.PAPER);
         ItemMeta meta = getItemMeta();
-        String itemName = "§e•§6§l" + ArtMap.getLang().getMsg("RECIPE_CANVAS_NAME") + "§e•";
+        String itemName = "§e•§6§l" + Lang.RECIPE_CANVAS_NAME.get() + "§e•";
         meta.setDisplayName(itemName);
-        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_CANVAS")));
+        meta.setLore(getToolTipLore(getLoreID(), Lang.Array.RECIPE_CANVAS.get()));
         setItemMeta(meta);
     }
 
@@ -210,9 +211,9 @@ class PaintBucket extends ArtItem {
         this.colour = colour;
         ItemMeta meta = getItemMeta();
         String itemName = "§e•" + colour.getDisplay() + "§l"
-                + ArtMap.getLang().getMsg("RECIPE_PAINTBUCKET_NAME") + "§e•";
+                + Lang.RECIPE_PAINTBUCKET_NAME.get() + "§e•";
         meta.setDisplayName(itemName);
-        meta.setLore(getToolTipLore(getLoreID(), ArtMap.getLang().getArray("RECIPE_PAINTBUCKET")));
+        meta.setLore(getToolTipLore(getLoreID(), Lang.Array.RECIPE_PAINTBUCKET.get()));
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addUnsafeEnchantment(Enchantment.LUCK, 1);
         setItemMeta(meta);

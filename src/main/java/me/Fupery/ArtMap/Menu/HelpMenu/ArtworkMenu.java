@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
@@ -101,7 +102,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
             ItemMeta meta = artwork.getMapItem().getItemMeta();
             List<String> lore = meta.getLore();
             lore.add(HelpMenu.CLICK);
-            if (adminButton) lore.add(lore.size(), ChatColor.GOLD + ArtMap.getLang().getMsg("ADMIN_RECIPE"));
+            if (adminButton) lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
             meta.setLore(lore);
             setItemMeta(meta);
             this.artwork = artwork;
@@ -127,7 +128,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                         player.getInventory().setItemInOffHand(preview);
                         ArtMap.getMenuHandler().openMenu(player, this.artworkMenu);
                     } else {
-                        ArtMap.getLang().sendMsg("EMPTY_HAND_PREVIEW", player);
+                        Lang.EMPTY_HAND_PREVIEW.send(player);
                     }
                 } else {
                     ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
@@ -138,7 +139,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                         }
                         SoundCompat.BLOCK_CLOTH_FALL.play(player);
                         if (player.getItemInHand().getType() != Material.AIR) {
-                            ArtMap.getLang().sendMsg("EMPTY_HAND_PREVIEW", player);
+                            Lang.EMPTY_HAND_PREVIEW.send(player);
                             return;
                         }
                         Preview.artwork(player, artwork);
@@ -152,7 +153,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                     if (leftOver != null) ArtMap.getTaskManager().SYNC.run(() ->
                             player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
                 } else if (adminViewing) {
-                    ArtMap.getLang().sendMsg("NO_PERM", player);
+                    Lang.NO_PERM.send(player);
                 }
             }
         }

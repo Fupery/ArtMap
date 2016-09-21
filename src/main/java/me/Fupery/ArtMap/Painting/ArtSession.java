@@ -1,9 +1,10 @@
-package me.Fupery.ArtMap.Protocol;
+package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Protocol.Brushes.*;
+import me.Fupery.ArtMap.Painting.Brushes.*;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
@@ -55,7 +56,7 @@ public class ArtSession {
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
         TaskManager taskManager = ArtMap.getTaskManager();
         taskManager.SYNC.runLater(() -> {
-            if (player.getVehicle() != null) ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_MOUNT.send(player);
+            if (player.getVehicle() != null) Lang.ActionBar.PAINTING.send(player);
         }, 30);
         if (ArtMap.getArtistHandler().SETTINGS.FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
             addKit(player);

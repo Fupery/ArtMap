@@ -2,17 +2,22 @@ package me.Fupery.ArtMap;
 
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
+import me.Fupery.ArtMap.Config.Configuration;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.ArtDatabase;
 import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.Listeners.*;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
-import me.Fupery.ArtMap.Protocol.ArtistHandler;
+import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Protocol.Channel.ChannelCacheManager;
+import me.Fupery.ArtMap.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.*;
+import me.Fupery.ArtMap.Utils.Preview;
+import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,6 +49,7 @@ public class ArtMap extends JavaPlugin {
     private MapManager mapManager;
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
+    private ProtocolHandler protocolHandler;
     private Lang lang;
     private List<String> titleFilter;
     private PixelTableManager pixelTable;
@@ -105,6 +111,10 @@ public class ArtMap extends JavaPlugin {
         return instance().config;
     }
 
+    public static ProtocolHandler getProtocolManager() {
+        return instance().protocolHandler;
+    }
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
@@ -113,7 +123,8 @@ public class ArtMap extends JavaPlugin {
         config = new Configuration(this, compatManager);
         taskManager = new TaskManager(this);
         mapManager = new MapManager(this);
-        artistHandler = new ArtistHandler(compatManager.isPluginLoaded("ProtocolLib"));
+        protocolHandler = compatManager.getProtocolHandler();
+        artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
@@ -122,9 +133,9 @@ public class ArtMap extends JavaPlugin {
         FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         artDatabase = new ArtDatabase(this);
         new FlatDatabaseConverter(this).convertDatabase();
-        lang = new Lang(defaultLang.getConfigurationSection("english"), langFile, config);
+        Lang.load(defaultLang.getConfigurationSection("english"), langFile, config);
         if (!loadTables()) {
-            getLogger().warning(lang.getMsg("INVALID_DATA_TABLES"));
+            getLogger().warning(Lang.INVALID_DATA_TABLES.get());
             getPluginLoader().disablePlugin(this);
             return;
         }
@@ -156,7 +167,6 @@ public class ArtMap extends JavaPlugin {
         artistHandler.stop();
         menuHandler.closeAll();
         mapManager.saveKeys();
-
 
         if (previewing.size() > 0) {
             for (Player player : previewing.keySet()) {

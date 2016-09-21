@@ -30,9 +30,9 @@ english:
   PAINTING: "§b§lClick the canvas with Dyes or a PaintBucket to paint."
   DELETED: "§6Sucessfully deleted '%s'."
   PREVIEWING: "§6Previewing artwork '%s'."
-  BACKUP_SUCCESS: "§6Succesfully created backup at %s"
-  RESTORE_SUCCESS: "§6Succesfully restored %s artworks from %s"
-  RESTORE_ALREADY_FOUND: "%s artworks were excluded, use -o to enable overwriting."
+  BACKUP_SUCCESS: "§6Succesfully created backup at %s"                              #DEPRECATED
+  RESTORE_SUCCESS: "§6Succesfully restored %s artworks from %s"                     #DEPRECATED
+  RESTORE_ALREADY_FOUND: "%s artworks were excluded, use -o to enable overwriting." #DEPRECATED
   RECIPE_HEADER: "Recipe for §a[%s]"
   NO_CONSOLE: "§cThis command can only be used by players."
   PLAYER_NOT_FOUND: "§cPlayer '%s' could not be found."
@@ -51,10 +51,10 @@ english:
   BAD_TITLE: "§cInvalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
   TITLE_USED: "§cSorry, this title is already being used."
   EMPTY_HAND_PREVIEW: "§cYou need to have an empty hand to preview."
-  MAPDATA_ERROR: "§cError reading mapdata.yml at %s: %s"                  #DEPRECATED
-  BACKUP_ERROR: "§cBackup folder could not be created!"                   #DEPRECATED
-  NO_WORLD: "§cNo world called '%s' could be found"                       #DEPRECATED
-  RESTORE_ERROR: "§cBackup folder '%s' could not be found!"               #DEPRECATED
+  MAPDATA_ERROR: "§cError reading mapdata.yml at %s: %s"                            #DEPRECATED
+  BACKUP_ERROR: "§cBackup folder could not be created!"                             #DEPRECATED
+  NO_WORLD: "§cNo world called '%s' could be found"                                 #DEPRECATED
+  RESTORE_ERROR: "§cBackup folder '%s' could not be found!"                         #DEPRECATED
   INVALID_DATA_TABLES: "§cInvalid data tables, plugin cannot be initialized."
   CANNOT_BUILD_DATABASE: "§cError building MapArt database - plugin will be disabled."
   MAP_ID_MISSING: "§cMap id missing, assigning new id!"

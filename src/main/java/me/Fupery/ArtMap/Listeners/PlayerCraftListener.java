@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,7 +40,7 @@ public class PlayerCraftListener implements Listener {
                     }
 
                 } else {
-                    ArtMap.getLang().sendMsg("NO_CRAFT_PERM", event.getWhoClicked());
+                    Lang.NO_CRAFT_PERM.send(event.getWhoClicked());
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
                 }

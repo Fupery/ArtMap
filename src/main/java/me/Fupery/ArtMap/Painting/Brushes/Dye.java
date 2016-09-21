@@ -1,6 +1,6 @@
-package me.Fupery.ArtMap.Protocol.Brushes;
+package me.Fupery.ArtMap.Painting.Brushes;
 
-import me.Fupery.ArtMap.Protocol.CanvasRenderer;
+import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.inventory.ItemStack;
 

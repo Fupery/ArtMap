@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
@@ -23,14 +24,14 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
     private boolean adminMenu;
 
     public RecipeMenu(boolean adminMenu) {
-        super(ChatColor.DARK_BLUE + ArtMap.getLang().getMsg("MENU_RECIPE"), InventoryType.HOPPER);
+        super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), InventoryType.HOPPER);
         this.adminMenu = adminMenu;
     }
 
     @Override
     public Button[] getButtons() {
         return new Button[]{
-                new StaticButton(Material.SIGN, ArtMap.getLang().getArray("INFO_RECIPES")),
+                new StaticButton(Material.SIGN, Lang.Array.INFO_RECIPES.get()),
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
                 new RecipeButton(ArtMaterial.PAINT_BUCKET),
@@ -53,8 +54,8 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
             this.recipe = recipe;
             ItemMeta meta = recipe.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(lore.size() - 1, ChatColor.GREEN + ArtMap.getLang().getMsg("RECIPE_BUTTON"));
-            if (adminMenu) lore.add(lore.size(), ChatColor.GOLD + ArtMap.getLang().getMsg("ADMIN_RECIPE"));
+            lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.get());
+            if (adminMenu) lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
             meta.setLore(lore);
             setItemMeta(meta);
         }

@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Utils;
+package me.Fupery.ArtMap.Config;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;

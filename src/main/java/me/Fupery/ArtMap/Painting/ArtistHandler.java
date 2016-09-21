@@ -1,9 +1,9 @@
-package me.Fupery.ArtMap.Protocol;
+package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Protocol.Packet.ArtistPacket;
-import me.Fupery.ArtMap.Protocol.Packet.PacketType;
+import me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket;
+import me.Fupery.ArtMap.Protocol.In.Packet.PacketType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -11,39 +11,20 @@ import org.bukkit.map.MapView;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.Fupery.ArtMap.Protocol.Brushes.Brush.BrushAction;
-import static me.Fupery.ArtMap.Protocol.Packet.ArtistPacket.PacketInteract.InteractType;
+import static me.Fupery.ArtMap.Painting.Brushes.Brush.BrushAction;
+import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
 
 public class ArtistHandler {
 
     public final Settings SETTINGS;
     private final ConcurrentHashMap<UUID, ArtSession> artists;
-    private final ProtocolHandler protocol;
 
-    public ArtistHandler(boolean useProtocolLib) {
+    public ArtistHandler() {
         artists = new ConcurrentHashMap<>();
         SETTINGS = new Settings(ArtMap.getConfiguration().FORCE_ART_KIT, 16384);
-
-        if (useProtocolLib) {
-            protocol = new ProtocolLibListener(this) {
-                @Override
-                public boolean onPacketPlayIn(Player sender, ArtistPacket packet) {
-                    return handlePacket(sender, packet);
-                }
-
-            };
-            Bukkit.getLogger().info("[ArtMap] ProtocolLib hooks enabled.");
-        } else {
-            protocol = new ArtMapProtocolListener(this) {
-                @Override
-                public boolean onPacketPlayIn(Player player, ArtistPacket packet) {
-                    return handlePacket(player, packet);
-                }
-            };
-        }
     }
 
-    private boolean handlePacket(Player sender, ArtistPacket packet) {
+    public boolean handlePacket(Player sender, ArtistPacket packet) {
         if (packet == null) {
             return true;
         }
@@ -70,7 +51,7 @@ public class ArtistHandler {
 
     public synchronized void addPlayer(final Player player, Easel easel, MapView mapView, int yawOffset) {
         ArtSession session = new ArtSession(easel, mapView, yawOffset);
-        if (session.start(player) && protocol.injectPlayer(player)) {
+        if (session.start(player) && ArtMap.getProtocolManager().PACKET_RECIEVER.injectPlayer(player)) {
             artists.put(player.getUniqueId(), session);
             session.setActive(true);
         }
@@ -93,7 +74,7 @@ public class ArtistHandler {
         if (!session.isActive()) return;
         artists.remove(player.getUniqueId());
         session.end(player);
-        protocol.uninjectPlayer(player);
+        ArtMap.getProtocolManager().PACKET_RECIEVER.uninjectPlayer(player);
     }
 
     public ArtSession getCurrentSession(Player player) {
@@ -108,7 +89,7 @@ public class ArtistHandler {
 
     public void stop() {
         clearPlayers();
-        protocol.close();
+        ArtMap.getProtocolManager().PACKET_RECIEVER.close();
     }
 
     public static class Settings {

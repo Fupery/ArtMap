@@ -1,12 +1,9 @@
-package me.Fupery.ArtMap.Protocol.Brushes;
+package me.Fupery.ArtMap.Painting.Brushes;
 
-import me.Fupery.ArtMap.Protocol.CanvasRenderer;
+import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * Created by aidenhatcher on 7/07/2016.
- */
 public class Flip extends Brush {
     public Flip(CanvasRenderer canvas) {
         super(canvas);

@@ -1,11 +1,12 @@
-package me.Fupery.ArtMap.Protocol;
+package me.Fupery.ArtMap.Protocol.In;
 
 import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.Utils.Lang;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,16 +14,11 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class ArtMapProtocolListener implements ProtocolHandler {
+public class GenericPacketReciever extends PacketReciever {
 
     private final Map<UUID, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
     private final String handlerName = "ArtMapHandler";
-    private ArtistHandler artistHandler;
-
-    public ArtMapProtocolListener(ArtistHandler artistHandler) {
-        this.artistHandler = artistHandler;
-    }
 
     @Override
     public boolean injectPlayer(Player player) {
@@ -53,13 +49,9 @@ public abstract class ArtMapProtocolListener implements ProtocolHandler {
 
             if (channel.pipeline().get(handlerName) != null) {
 
-                channel.eventLoop().execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (channel.pipeline().get(handlerName) != null) {
-                            channel.pipeline().remove(handlerName);
-                        }
+                channel.eventLoop().execute(() -> {
+                    if (channel.pipeline().get(handlerName) != null) {
+                        channel.pipeline().remove(handlerName);
                     }
                 });
             }
@@ -97,9 +89,9 @@ public abstract class ArtMapProtocolListener implements ProtocolHandler {
         }
     }
 
-    public Object onPacketInAsync(Player player, Channel channel, Object packet) {
-        if (!artistHandler.containsPlayer(player)) return packet;
-        return onPacketPlayIn(player, Reflection.getArtistPacket(packet)) ? packet : null;
+    private Object onPacketInAsync(Player player, Channel channel, Object packet) {
+        if (!ArtMap.getArtistHandler().containsPlayer(player)) return packet;
+        return ArtMap.getArtistHandler().handlePacket(player, Reflection.getArtistPacket(packet)) ? packet : null;
     }
 
     private final class PacketHandler extends ChannelDuplexHandler {

@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
@@ -25,19 +26,19 @@ public class CommandSave extends AsyncCommand {
         final Player player = (Player) sender;
 
         if (!new TitleFilter(title).check()) {
-            msg.message = ArtMap.getLang().getMsg("BAD_TITLE");
+            msg.message = Lang.BAD_TITLE.get();
             return;
         }
 
         MapArt art = ArtMap.getArtDatabase().getArtwork(title);
 
         if (art != null) {
-            msg.message = ArtMap.getLang().getMsg("TITLE_USED");
+            msg.message = Lang.TITLE_USED.get();
             return;
         }
 
         if (!ArtMap.getArtistHandler().containsPlayer(player)) {
-            player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));
+            Lang.NOT_RIDING_EASEL.send(player);
             return;
         }
 
@@ -47,7 +48,7 @@ public class CommandSave extends AsyncCommand {
             easel = ArtMap.getArtistHandler().getEasel(player);
 
             if (easel == null) {
-                player.sendMessage(ArtMap.getLang().getMsg("NOT_RIDING_EASEL"));
+                Lang.NOT_RIDING_EASEL.send(player);
                 return;
             }
             ArtMap.getArtistHandler().removePlayer(player);
@@ -63,7 +64,7 @@ public class CommandSave extends AsyncCommand {
             }
             SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
             easel.playEffect(Effect.HAPPY_VILLAGER);
-            player.sendMessage(String.format(ArtMap.getLang().getMsg("SAVE_SUCCESS"), title));
+            player.sendMessage(String.format(Lang.SAVE_SUCCESS.get(), title));
         });
     }
 }

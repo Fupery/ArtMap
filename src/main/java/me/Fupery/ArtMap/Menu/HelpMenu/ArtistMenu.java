@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
@@ -22,7 +23,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
     private final UUID viewer;
 
     public ArtistMenu(Player viewer) {
-        super(ChatColor.BLUE + ArtMap.getLang().getMsg("MENU_ARTIST"), 0);
+        super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), 0);
         this.viewer = viewer.getUniqueId();
     }
 

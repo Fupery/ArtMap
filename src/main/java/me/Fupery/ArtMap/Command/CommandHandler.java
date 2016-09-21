@@ -1,9 +1,9 @@
 package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
-import me.Fupery.ArtMap.Utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
@@ -36,13 +36,13 @@ public class CommandHandler implements CommandExecutor {
                 if (sender instanceof Player) {
                     ArtMap.getTaskManager().SYNC.run(() -> {
                         if (args.length > 0 & sender.hasPermission("artmap.admin")) {
-                            ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
+                            Lang.Array.CONSOLE_HELP.send(sender);
                         }
                         MenuHandler menuHandler = ArtMap.getMenuHandler();
                         menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                     });
                 } else {
-                    ArtMap.getLang().sendArray("CONSOLE_HELP", sender);
+                    Lang.Array.CONSOLE_HELP.send(sender);
                 }
             }
         });
@@ -62,7 +62,7 @@ public class CommandHandler implements CommandExecutor {
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
                 if (art == null) {
-                    sender.sendMessage(String.format(ArtMap.getLang().getMsg("MAP_NOT_FOUND"), args[1]));
+                    sender.sendMessage(String.format(Lang.MAP_NOT_FOUND.get(), args[1]));
                 } else {
                     byte[] map = ArtMap.getArtDatabase().getMap(art.getTitle());
                     ArtMap.getTaskManager().SYNC.run(() -> {
@@ -73,12 +73,11 @@ public class CommandHandler implements CommandExecutor {
                             ArtMap.getTaskManager().ASYNC.run(() -> {
                                 ArtMap.getArtDatabase().updateMapID(art.updateMapId(finalMapView.getId()));
                             });
-                            sender.sendMessage(ArtMap.getLang().getMsg("MISSING_MAP_ID"));
+                            msg.message = Lang.MAP_ID_MISSING.get();
                         }
                         int id = mapView.getId();
                         ArtMap.getMapManager().overrideMap(mapView, map);
-                        sender.sendMessage(String.format(
-                                ArtMap.getLang().getMsg("RESTORED_SUCCESSFULY"), art.getTitle(), id));
+                        sender.sendMessage(String.format(Lang.RESTORED_SUCCESSFULY.get(), art.getTitle(), id));
                     });
                 }
             }
@@ -94,7 +93,7 @@ public class CommandHandler implements CommandExecutor {
                 commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
 
             } else {
-                sender.sendMessage(ArtMap.getLang().getMsg("HELP"));
+                Lang.HELP.send(sender);
             }
 
         } else {

@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Protocol;
+package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.PixelTableManager;

@@ -1,10 +1,11 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.MapManager;
+import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -33,18 +34,18 @@ public final class EaselEvent {
     public void callEvent() {
         final MapView mapView;
         if (!player.hasPermission("artmap.artist")) {
-            ArtMap.getLang().sendMsg("NO_PERM", player);
+            Lang.NO_PERM.send(player);
             return;
         }
         if (easel.isPainting()) {
-            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_USED.send(player);
+            Lang.ActionBar.ELSE_USING.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
             return;
         }
         switch (click) {
             case LEFT_CLICK:
-                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_PUNCH.send(player);
+                Lang.ActionBar.EASEL_HELP.send(player);
                 return;
             case RIGHT_CLICK:
                 //If the easel has a canvas, player rides the easel
@@ -69,7 +70,7 @@ public final class EaselEvent {
                     ArtMap.getTaskManager().ASYNC.run(() -> editArtwork(player.getItemInHand()));
                     return;
                 }
-                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
+                Lang.ActionBar.NEED_CANVAS.send(player);
                 SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                 easel.playEffect(Effect.CRIT);
                 return;
@@ -101,7 +102,7 @@ public final class EaselEvent {
 
         if (art != null) {
             if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
-                ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_EDIT.send(player);
+                Lang.ActionBar.NO_EDIT_PERM.send(player);
                 easel.playEffect(Effect.CRIT);
                 SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                 return;
@@ -114,7 +115,7 @@ public final class EaselEvent {
             easel.editArtwork(mapView, art.getTitle());
             consumeCurrentItem(player);
         } else {
-            ArtMap.getLang().ACTION_BAR_MESSAGES.EASEL_NO_CANVAS.send(player);
+            Lang.NEED_CANVAS.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
         }

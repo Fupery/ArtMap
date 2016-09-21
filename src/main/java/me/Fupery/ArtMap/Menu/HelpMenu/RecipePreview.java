@@ -1,6 +1,6 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
-import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
@@ -14,7 +14,7 @@ public class RecipePreview extends BasicMenu {
     private final ArtMaterial recipe;
 
     public RecipePreview(ArtMaterial recipe) {
-        super(String.format(ArtMap.getLang().getMsg("RECIPE_HEADER"), recipe.name().toLowerCase()),
+        super(String.format(Lang.RECIPE_HEADER.get(), recipe.name().toLowerCase()),
                 InventoryType.WORKBENCH);
         this.recipe = recipe;
     }
