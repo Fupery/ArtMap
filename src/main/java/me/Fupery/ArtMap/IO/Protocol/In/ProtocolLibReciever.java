@@ -1,16 +1,16 @@
-package me.Fupery.ArtMap.Protocol.In;
+package me.Fupery.ArtMap.IO.Protocol.In;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
-import me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract;
-import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
+import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract;
+import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
 
 public class ProtocolLibReciever extends PacketReciever {
 

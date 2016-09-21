@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Protocol.In;
+package me.Fupery.ArtMap.IO.Protocol.In;
 
 import com.google.common.collect.MapMaker;
 import io.netty.channel.Channel;

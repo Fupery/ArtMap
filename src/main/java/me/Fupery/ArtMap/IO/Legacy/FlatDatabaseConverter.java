@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Legacy;
+package me.Fupery.ArtMap.IO.Legacy;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;

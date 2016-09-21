@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Protocol.Out;
+package me.Fupery.ArtMap.IO.Protocol.Out;
 
 import org.bukkit.entity.Player;
 

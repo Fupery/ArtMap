@@ -1,7 +1,7 @@
-package me.Fupery.ArtMap.Protocol.In;
+package me.Fupery.ArtMap.IO.Protocol.In;
 
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
-import me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket;
 import org.bukkit.entity.Player;
 
 public abstract class PacketReciever {

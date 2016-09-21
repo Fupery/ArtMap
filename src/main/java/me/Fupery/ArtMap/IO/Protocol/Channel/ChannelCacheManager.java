@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Protocol.Channel;
+package me.Fupery.ArtMap.IO.Protocol.Channel;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;

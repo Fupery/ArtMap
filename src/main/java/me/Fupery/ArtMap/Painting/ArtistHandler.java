@@ -2,8 +2,8 @@ package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket;
-import me.Fupery.ArtMap.Protocol.In.Packet.PacketType;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -11,8 +11,8 @@ import org.bukkit.map.MapView;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
 import static me.Fupery.ArtMap.Painting.Brushes.Brush.BrushAction;
-import static me.Fupery.ArtMap.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
 
 public class ArtistHandler {
 

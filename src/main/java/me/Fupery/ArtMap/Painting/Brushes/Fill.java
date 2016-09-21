@@ -2,8 +2,8 @@ package me.Fupery.ArtMap.Painting.Brushes;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
+import me.Fupery.ArtMap.Recipe.ArtDye;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.ArtDye;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

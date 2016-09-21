@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Protocol.In.Packet;
+package me.Fupery.ArtMap.IO.Protocol.In.Packet;
 
 import org.bukkit.Bukkit;
 

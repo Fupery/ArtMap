@@ -3,7 +3,7 @@ package me.Fupery.ArtMap.IO;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
-import me.Fupery.ArtMap.Utils.ArtDye;
+import me.Fupery.ArtMap.Recipe.ArtDye;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;

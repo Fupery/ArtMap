@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Protocol.Out;
+package me.Fupery.ArtMap.IO.Protocol.Out;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

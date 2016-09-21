@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Utils;
+package me.Fupery.ArtMap.Recipe;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Config;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Protocol.Out.WrappedPacket;
+import me.Fupery.ArtMap.IO.Protocol.Out.WrappedPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;

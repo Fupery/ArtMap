@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
-import me.Fupery.ArtMap.Utils.ArtDye;
+import me.Fupery.ArtMap.Recipe.ArtDye;
 import org.bukkit.inventory.ItemStack;
 
 public class Dye extends Brush {
