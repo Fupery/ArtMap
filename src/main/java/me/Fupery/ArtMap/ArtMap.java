@@ -129,11 +129,9 @@ public class ArtMap extends JavaPlugin {
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
         previewing = new ConcurrentHashMap<>();
-        ConfigurationSection defaultLang = YamlConfiguration.loadConfiguration(getTextResource("lang.yml"));
-        FileConfiguration langFile = loadOptionalYAML("customLang", "lang.yml");
         artDatabase = new ArtDatabase(this);
         new FlatDatabaseConverter(this).convertDatabase();
-        Lang.load(defaultLang.getConfigurationSection("english"), langFile, config);
+        Lang.load(this, config);
         if (!loadTables()) {
             getLogger().warning(Lang.INVALID_DATA_TABLES.get());
             getPluginLoader().disablePlugin(this);

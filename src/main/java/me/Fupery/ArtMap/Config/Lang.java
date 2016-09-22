@@ -2,29 +2,23 @@ package me.Fupery.ArtMap.Config;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.Protocol.Out.WrappedPacket;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public enum Lang implements LangSet<String> {
 
-    COMMAND_SAVE, COMMAND_DELETE, COMMAND_PREVIEW, COMMAND_RESTORE, COMMAND_BACKUP, HELP, SAVE_SUCCESS,
-    DELETED, PREVIEWING, BACKUP_SUCCESS, RESTORE_SUCCESS, RESTORE_ALREADY_FOUND, RECIPE_HEADER, NEED_CANVAS,
-    NO_CONSOLE, PLAYER_NOT_FOUND, NO_PERM, NOT_RIDING_EASEL, NOT_YOUR_EASEL, BREAK_CANVAS, MAP_NOT_FOUND, NO_ARTWORKS,
-    NO_CRAFT_PERM, BAD_TITLE, TITLE_USED, EMPTY_HAND_PREVIEW, MAPDATA_ERROR, BACKUP_ERROR, NO_WORLD,
-    RESTORE_ERROR, INVALID_DATA_TABLES, CANNOT_BUILD_DATABASE, MAP_ID_MISSING, RESTORED_SUCCESSFULY, MENU_RECIPE,
-    MENU_ARTIST, MENU_ARTWORKS, MENU_DYES, MENU_HELP, MENU_TOOLS, BUTTON_CLICK, BUTTON_CLOSE, BUTTON_BACK,
-    RECIPE_BUTTON, ADMIN_RECIPE, RECIPE_HELP, RECIPE_EASEL_NAME, RECIPE_CANVAS_NAME, RECIPE_PAINTBUCKET_NAME;
+    COMMAND_SAVE, COMMAND_DELETE, COMMAND_PREVIEW, COMMAND_RESTORE, COMMAND_BACKUP, HELP, SAVE_SUCCESS, DELETED,
+    PREVIEWING, RECIPE_HEADER, NEED_CANVAS, NO_CONSOLE, PLAYER_NOT_FOUND, NO_PERM, NOT_RIDING_EASEL, NOT_YOUR_EASEL,
+    BREAK_CANVAS, MAP_NOT_FOUND, NO_ARTWORKS, NO_CRAFT_PERM, BAD_TITLE, TITLE_USED, EMPTY_HAND_PREVIEW, NO_WORLD,
+    INVALID_DATA_TABLES, CANNOT_BUILD_DATABASE, MAP_ID_MISSING, RESTORED_SUCCESSFULY, MENU_RECIPE, MENU_ARTIST,
+    MENU_ARTWORKS, MENU_DYES, MENU_HELP, MENU_TOOLS, BUTTON_CLICK, BUTTON_CLOSE, BUTTON_BACK, RECIPE_BUTTON,
+    ADMIN_RECIPE, RECIPE_HELP, RECIPE_EASEL_NAME, RECIPE_CANVAS_NAME, RECIPE_PAINTBUCKET_NAME;
 
     public static String PREFIX = "§b[ArtMap] ";
-    private String message = null;
+    private String message = String.format("'%s' NOT FOUND", name());
 
-    public static void load(ConfigurationSection defaultLang, FileConfiguration langFile, Configuration configuration) {
-        LangLoader loader = new LangLoader(defaultLang, langFile, configuration);// TODO: 21/09/2016
+    public static void load(ArtMap plugin, Configuration configuration) {
+        LangLoader loader = new LangLoader(plugin, configuration);// TODO: 21/09/2016
         //Load basic messages
         for (Lang key : Lang.values()) {
             key.message = loader.loadString(key.name());
@@ -71,7 +65,7 @@ public enum Lang implements LangSet<String> {
         private boolean isError;
 
         ActionBar(boolean isErrorMessage) {
-            isError = false;
+            isError = isErrorMessage;
         }
 
         @Override
@@ -104,34 +98,4 @@ public enum Lang implements LangSet<String> {
         }
     }
 
-    private static class LangLoader {
-        private ConfigurationSection defaults;
-        private ConfigurationSection lang;
-
-        private LangLoader(ConfigurationSection defaultLang, FileConfiguration langFile, Configuration configuration) {
-            String language = configuration.LANGUAGE;
-            if (!langFile.contains(language)) language = "english";
-            this.defaults = defaultLang;
-            lang = langFile.getConfigurationSection(language);
-            if (configuration.HIDE_PREFIX) PREFIX = "";
-            if (lang == null) Bukkit.getLogger().warning("Error loading lang.yml!");
-        }
-
-        private String loadString(String key) {
-            if (!lang.contains(key)) {
-                Bukkit.getLogger().warning(String.format(
-                        "[ArtMap] Error loading key from lang.yml: '%s' Default value used.", key));
-                if (defaults == null || !defaults.contains(key)) return "[" + key + "] NOT FOUND";
-                lang.set(key, defaults.get(key));
-            }
-            return lang.getString(key);
-        }
-
-        private String[] loadArray(String key) {
-            List<String> msg = lang.getStringList(key);
-            if (msg != null) return msg.toArray(new String[msg.size()]);
-            Bukkit.getLogger().warning("[ArtMap] Error loading key from lang.yml: " + key);
-            return null;
-        }
-    }
 }

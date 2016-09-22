@@ -1,0 +1,179 @@
+#------------------------------------------#
+#          ArtMap Language File            #
+#------------------------------------------#
+#
+# Replace the strings below
+# It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
+#
+# EXAMPLE: “Replace me with a translation!”
+#
+# Any time you see '%s' - this is a special character that will be replaced with a word.
+# For example, if an artist saves an artwork named "Art", then "Successfully saved '%s'"
+# will become "Successfully saved Art".
+# So any time you see '%s', don't change it! Just change the words around it.
+#
+# Any time you see "/artmap", leave that unchanged as well (this is the help command)
+#
+# Any time you see § next to a number or letter (something like §a or §2), this is a colour code
+
+#Translation provided by Sikatsu [https://www.spigotmc.org/members/88844/]
+#Player Messages
+COMMAND_SAVE: "save"
+COMMAND_DELETE: "delete"
+COMMAND_PREVIEW: "preview"
+COMMAND_RESTORE: "restore"
+COMMAND_BACKUP: "backup"
+HELP: "§6Gebruik /artmap help voor een lijst van commandos."
+SAVE_USAGE: "§6Gebruik §e/artmap save <title> §6om je schilderij op te slaan."
+SAVE_SUCCESS: "§6'%s' is succesvol opgeslagen!"
+EASEL_HELP: "§3§lKlik rechts om te beginnen met schilderen, §b§lklik rechts terwijl je bukt om het te breken."
+PAINTING: "§b§lGebruik kleurstoffen of een verf emmer om te schilderen. Klik links om pixels te tekenen, klik rechts en slepen om lijnen te tekenen."
+DELETED: "§6'%s' is succesvol verwijderd."
+PREVIEWING: "§6Schilderij voorbeeld van '%s'."
+BACKUP_SUCCESS: "§6Backup succesvol aangemaakt om %s"
+RESTORE_SUCCESS: "§6%s schilderijen zijn succesvol hersteld van %s"
+RESTORE_ALREADY_FOUND: "%s schilderijen zijn uitgesloten, gebruik -o om overschrijven te activeren."
+RECIPE_HEADER: "Recept voor §a[%s]"
+NO_CONSOLE: "§cDit commando kan alleen voor spelers gebruikt worden."
+PLAYER_NOT_FOUND: "§cSpeler '%s' kon niet gevonden worden."
+INVALID_POS: "§4§lJe kunt hier geen schildersezel plaatsen."
+NO_PERM: "§cJe hebt hier geen toestemming voor."
+NO_PERM_ACTION: "§4§lJe hebt hier geen toestemming voor."
+ELSE_USING: "§4§lIemand anders gebruikt deze canvas!"
+NOT_RIDING_EASEL: "§cJe moet op je schildersezel zitten om het op te slaan."
+NEED_CANVAS: "§4§lJe moet een canvas op de schildersezel plaatsen om te beginnen. Typ §3§l/artmap §4§lvoor meer info."
+NOT_YOUR_EASEL: "§cJe kunt %s's schilderij niet slopen!"
+BREAK_CANVAS: "Klik rechts terwijl je bukt om de schildersezel te verwijderen."
+MAP_NOT_FOUND: "§cSchilderij '%s' kon niet gevonden worden."
+NO_ARTWORKS: "§cEr zijn momenteel geen opgeslagen schilderijen!"
+NO_EDIT_PERM: "§4§lJe hebt hier geen toestemming voor." ##todo get proper translation
+NO_CRAFT_PERM: "§cJe kunt andere spelers hun schilderijen niet kopieren."
+BAD_TITLE: "§cOngeldige titel. Titels moeten tussen de 3 en 16 tekens bevatten en mogen alleen letters of cijfers bevatten."
+TITLE_USED: "§cSorry, deze titel word al gebruikt."
+EMPTY_HAND_PREVIEW: "§cJe moet een lege hand hebben om een voorbeeld te kunnen zien."
+MAPDATA_ERROR: "§cFout met het lezen van mapdata.yml om %s: %s"
+BACKUP_ERROR: "§cBackup folder kon niet worden aangemaakt!"
+NO_WORLD: "§cGeen wereld met de naam '%s' kon gevonden worden"
+RESTORE_ERROR: "§cBackup folder '%s' kon niet gevonden worden!"
+INVALID_DATA_TABLES: "§cOngeldige data tabellen, plugin kan niet starten."
+CANNOT_BUILD_DATABASE: "§cFout bij het aanmaken van een MapArt database - plugin word uitgeschakeld."
+MAP_ID_MISSING: "§cMap id ontbreekt, nieuw id word toegewezen!"
+RESTORED_SUCCESSFULY: "§6%s is succesvol hersteld met map ID ℅s!"
+#elp menu
+#Menu titles
+MENU_RECIPE: "Kies een Recept"
+MENU_ARTIST: "Kies een Artiest"
+MENU_ARTWORKS: "Spelers schilderijen"
+MENU_DYES: "Kleurstoffen voor schilderen"
+MENU_HELP: "Kies een helpmenu"
+MENU_TOOLS: "Lees voor gebruiksinfo" #Hover over a tool to view how it is used
+BUTTON_CLICK: "Klik om te bekijken"
+BUTTON_CLOSE: "Sluiten" #close the menu
+BUTTON_BACK: "Terug" #go back to previous page
+RECIPE_BUTTON: "Klik links om het Recept te bekijken"
+ADMIN_RECIPE: "Klik rechts om het Item te krijgen"
+RECIPE_HELP: "§a/artmap §2voor hulp"
+RECIPE_EASEL_NAME: "Schildersezel"
+RECIPE_CANVAS_NAME: "Canvas"
+RECIPE_PAINTBUCKET_NAME: "Verf emmer"
+#elp menu
+HELP_GETTING_STARTED:
+  - "                 §6§l⊱§e§lOm te beginnen§6§l⊰"
+  - "                §3❉§b§oWelkom bij ArtMap!§3❉"
+  - ""
+  - "   §a1§2. §7Craft jezelf een §6Schildersezel §7en §6Canvas§7."
+  - "   §a2§2. §7Plaats de Schildersezel en plaats je Canvas."
+  - "   §a3§2. §7Klik op het Canvas met §2Kleurstoffen §7& §3Tools"
+  - "   §7om te schilderen."
+  - "   §a4§2. §7Zodra je klaar bent, gebruik §e/artmap save§7."
+  - ""
+  - "§7§oBekijk de andere tabs in dit menu voor meer"
+  - "§7§oinformatie over Recepten, Tools, en Kleurstoffen."
+  - ""
+  - "    §8░░░░§e❃§lCommandos §r§e⤸§8░░░░░░░░░░░░░"
+  - "§6•§f/artmap save <titel>    §6➯ §7sla je schilderij op"
+  - "§6•§f/artmap delete <titel>  §6➯ §7verwijder je schilderij"
+  - "§6•§f/artmap preview <titel> §6➯ §7schilderijvoorbeeld"
+HELP_RECIPES:
+  - "             §6§l⊱§e§lRecepten§6§l⊰"
+  - "§7Bekijk de crafting recepten voor alle"
+  - "§7items die je nodig hebt om te schilderen."
+  - "          §a✸§2§oKlik om het te bekijken§a✸"
+HELP_TOOLS:
+  - "            §6§l⊱§e§lTools§6§l⊰"
+  - "§7Bekijk alle tools die je kunt"
+  - "§7gebruiken bij het schilderen."
+  - "       §a✸§2§oKlik om het te bekijken§a✸"
+HELP_DYES:
+  - "           §6§l⊱§e§lKleurstoffen§6§l⊰"
+  - "§7Bekijk alle kleurstoffen waarmee"
+  - "§7je kunt schilderen."
+  - "      §a✸§2§oKlik om het te bekijken§a✸"
+HELP_LIST:
+  - "             §6§l⊱§e§lSchilderijen§6§l⊰"
+  - "      §3✺§b§oBekijk spelers hun schilderijen§3✺"
+  - "§7Bekijk je schilderijen of die van andere"
+  - "§7spelers gegroepeerd op de artiest."
+  - "          §a✸§2§oKlik om te verkennen§a✸"
+HELP_CLOSE:
+  - "    §6§l⊱§e§lTerug§6§l⊰"
+  - "§4﴾§cMenu Sluiten§4﴿"
+INFO_DYES:
+  - "              §6§l⊱§e§lKleurstoffen§6§l⊰"
+  - "§7Klik op je Canvas met één van deze"
+  - "§7kleurstoffen om te schilderen."
+  - ""
+  - "   §a• §7§oKlik links om een pixel te tekenen"
+  - "   §a• §7§oKlik rechts en sleep om een lijn te tekenen"
+  - ""
+  - "§7Elke kleurstof kan worden gecraft met een emmer"
+  - "§7om een §6Verf emmer§7 te maken met die kleur."
+  - "           §b§oZweef over de items om de kleur te zien"
+INFO_RECIPES:
+  - "              §6§l⊱§e§lRecepten Hulp§6§l⊰"
+  - "§7Craft een schilderij met een §6blanco map"
+  - "§7om een kopie te maken. Alleen de originele"
+  - "§7auteur van een schilderij kan een kopie maken."
+  - "        §b§oZweef over de opties voor gebruiksinfo"
+INFO_TOOLS:
+  - "              §6§l⊱§e§lTool Hulp§6§l⊰"
+  - "§7Je kunt deze items gebruiken samen met"
+  - "§2kleurstoffen §7om mee te schilderen."
+  - "       §b§oZweef over de opties voor gebruiksinfo"
+TOOL_DYE:
+  - "              §6§l⊱§e§lKleurstoffen§6§l⊰"
+  - " §7Klik links om pixels te tekenen"
+  - " §7Klik rechts en schuif om lijnen te tekenen"
+  - "§a✸§2§oKlik om alle kleuren te bekijken§a✸"
+TOOL_PAINTBUCKET:
+  - "         §6§l⊱§e§lVerf emmer§6§l⊰"
+  - "§7Klik links om een gebied van de canvas"
+  - "§7te vullen. Craft een emmer met een kleurstof"
+  - "§7om de verf emmer's kleur te veranderen."
+  - "§7Klik rechts om het terug te draaien."
+TOOL_COAL:
+  - "              §6§l⊱§e§lKool§6§l⊰"
+  - "§7Klik links om de pixels donkerder te maken."
+  - "§7Klik rechts om de lijnen donkerder te maken."
+TOOL_FEATHER:
+  - "            §6§l⊱§e§lVeer§6§l⊰"
+  - "§7Klik links om pixels lichter te maken."
+  - "§7Klik rechts om lijnen lichter te maken."
+TOOL_COMPASS:
+  - "            §6§l⊱§e§lKompas§6§l⊰"
+  - "§7Klik links om hem horizontaal te draaien."
+  - "§7Klik rechts om hem verticaal te draaien."
+RECIPE_EASEL:
+  - "§7Gebruik om te schilderen"
+  - "§7Klik rechts om te plaatsen"
+RECIPE_CANVAS:
+  - "§7Gebruik op een §aSchildersezel"
+  - "§7om te beginnen met schilderen"
+RECIPE_PAINTBUCKET:
+  - "§7Gebruik met §aSchildersezel §7en"
+  - "§aCanvas §7om kleuren te vullen"
+  - "§7Klik rechts om ongedaan te maken"
+CONSOLE_HELP:
+- "§3---------------------------------§b[ArtMap] §6Console Commandos:§3---------------------------------"
+- "§3/artmap delete <title> §b: §eVerwijder een schilderij"
+- "§3/artmap restore <title> §b: §eHersteld een corrupt schilderij"

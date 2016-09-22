@@ -1,0 +1,178 @@
+#------------------------------------------#
+#          ArtMap Language File            #
+#------------------------------------------#
+#
+# Replace the strings below
+# It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
+#
+# EXAMPLE: “Replace me with a translation!”
+#
+# Any time you see '%s' - this is a special character that will be replaced with a word.
+# For example, if an artist saves an artwork named "Art", then "Successfully saved '%s'"
+# will become "Successfully saved Art".
+# So any time you see '%s', don't change it! Just change the words around it.
+#
+# Any time you see "/artmap", leave that unchanged as well (this is the help command)
+#
+# Any time you see § next to a number or letter (something like §a or §2), this is a colour code
+
+#Translation provided by Laynooooor [https://www.spigotmc.org/members/187394/]
+#Player Messages
+COMMAND_SAVE: "保存"
+COMMAND_DELETE: "删除"
+COMMAND_PREVIEW: "预览"
+COMMAND_RESTORE: "恢复"
+COMMAND_BACKUP: "备份"
+HELP: "§a/artmap §6查看帮助"
+SAVE_USAGE: "§6使用命令 §e/artmap save <画作名称> §6来保存你创作的绘画."
+SAVE_SUCCESS: "§6成功保存画作 %s"
+EASEL_HELP: "§3§l右击画布开始创作, §b§l按住 Shift 并右击移除画架."
+PAINTING: "§b§l使用颜料或颜料桶在画布上创作"
+DELETED: "§6成功删除画作 '%s'."
+PREVIEWING: "§6正在预览画作 '%s'."
+BACKUP_SUCCESS: "§6备份创建成功，存储路径为 %s"
+RESTORE_SUCCESS: "§6从备份中成功恢复了 %s 个画作，备份路径为 %s"
+RESTORE_ALREADY_FOUND: "跳过了 %s 个画作, 使用命令 -o 强制覆盖这些画作."
+RECIPE_HEADER: "%s 的合成表"
+NO_CONSOLE: "§c这个命令只能由玩家使用."
+PLAYER_NOT_FOUND: "§c无法找到玩家 '%s'."
+INVALID_POS: "§4§l你不能在这里放置画架!"
+NO_PERM: "§c你没有权限使用这个命令."
+NO_PERM_ACTION: "§4§l你没有权限使用这个命令."
+ELSE_USING: "§4§l其他人正在使用这块画布!"
+NOT_RIDING_EASEL: "§c你必须坐在画架前面才能保存(右击画布即可)."
+NEED_CANVAS: "§4§l请先在画板上放置画布以进行创作. 使用命令 §3§l/artmap §4§l获取更多帮助."
+NOT_YOUR_EASEL: "§c你不能破坏 %s 的画作!"
+BREAK_CANVAS: "按住Shift + 右击取下画布."
+MAP_NOT_FOUND: "§c无法找到画作 '%s'."
+NO_ARTWORKS: "§c当前没有保存的画作!"
+NO_EDIT_PERM: "§4§l你不能编辑别人的画作"
+NO_CRAFT_PERM: "§c你不能复制别人的画作"
+BAD_TITLE: "§c无效的画作名称. 名称必须是英文或数字，且长度在 3 - 16 个字符之间."
+TITLE_USED: "§c抱歉，这个名称已经有人使用啦."
+EMPTY_HAND_PREVIEW: "§c必须空手才能预览画作."
+MAPDATA_ERROR: "§c画作 '%s' 读取错误，位置 %s: %s"
+BACKUP_ERROR: "§c无法创建备份文件夹!"
+NO_WORLD: "§c无法找到名称为 '%s' 的世界"
+RESTORE_ERROR: "§c无法找到备份文件夹 '%s' !"
+INVALID_DATA_TABLES: "§c无效的数据表，插件无法初始化."
+CANNOT_BUILD_DATABASE: "§c创建数据库 '%s' 失败，插件将自动禁用."
+#elp menu
+#Menu titles
+MENU_RECIPE: "选择一个配方"
+MENU_ARTIST: "点击一个画家"
+MENU_ARTWORKS: "玩家的画作"
+MENU_DYES: "用于绘画的染料"
+MENU_HELP: "选择一个帮助主题"
+MENU_TOOLS: "移到物品上方查看详细用法" #Hover over a tool to view how it is used
+BUTTON_CLICK: "点击查看"
+BUTTON_CLOSE: "关闭" #close the menu
+BUTTON_BACK: "返回" #go back to previous page
+RECIPE_BUTTON: "左击查看合成表"
+ADMIN_RECIPE: "右击获得该物品"
+RECIPE_HELP: "§a/artmap §2查看帮助"
+RECIPE_EASEL_NAME: "画架"
+RECIPE_CANVAS_NAME: "画布"
+RECIPE_PAINTBUCKET_NAME: "颜料桶"
+MAP_ID_MISSING: "§c没有地图 ID，分配新的 ID !"
+RESTORED_SUCCESSFULY: "§6成功保存画作 %s , 地图 ID 为 %s!"
+#Menu Buttons
+HELP_GETTING_STARTED:
+  - "                 §6§l⊱§e§l入门指南§6§l⊰"
+  - "            §3❉§b§o如何创造一幅你自己的画!§3❉"
+  - ""
+  - "   §a1§2. §7合成绘画所需的 §6画板 §7和 §6画布"
+  - "   §a2§2. §7放置你的画板，然后将画布放上去"
+  - "   §a3§2. §7使用 绘画颜料 和 工具 在画布上创作"
+  - "   §a4§2. §7创作完成后，使用 /artmap save 保存你的大作"
+  - ""
+  - "§7§o继续查看菜单中的其他页面，获取有关"
+  - "§7§o合成表、绘画工具和绘画颜料的信息."
+  - ""
+  - "    §8░░░░§e❃§l相关命令 §r§e⤸§8░░░░░░░░░░░░░"
+  - "§6•§f/artmap save <画作标题>    §6➯   §7保存你的画作"
+  - "§6•§f/artmap delete <画作标题>  §6➯ §7删除你的画作"
+  - "§6•§f/artmap preview <画作标题> §6➯  §7预览一个画作"
+HELP_RECIPES:
+  - "             §6§l⊱§e§l合成表§6§l⊰"
+  - "§7查看进行绘画所需物品的合成表"
+  - "§7画架、画布和颜料桶！"
+  - "          §a✸§2§o点击查看详情§a✸"
+HELP_TOOLS:
+  - "            §6§l⊱§e§l艺术工具§6§l⊰"
+  - "§7查看所有可以帮助你绘画的工具"
+  - "§7及其使用说明."
+  - "       §a✸§2§o点击查看详情§a✸"
+HELP_DYES:
+  - "           §6§l⊱§e§l颜料§6§l⊰"
+  - "§7查看所有可用的颜料物品"
+  - "§7及其对应的颜色."
+  - "      §a✸§2§o点击查看详情§a✸"
+HELP_LIST:
+  - "             §6§l⊱§e§l画作§6§l⊰"
+  - "      §3✺§b§o预览画作§3✺"
+  - "§7查看你自己或别的玩家创造的画作"
+  - "§7每一个人都是艺术家."
+  - "          §a✸§2§o点击查看详情§a✸"
+HELP_CLOSE:
+  - "    §6§l⊱§e§l返回§6§l⊰"
+  - "§4﴾§c关闭菜单§4﴿"
+INFO_DYES:
+  - "              §6§l⊱§e§l颜料颜色§6§l⊰"
+  - "§7用任意颜料点击画布"
+  - "§7开始绘画."
+  - ""
+  - "   §a• §7§o左击画像素"
+  - "   §a• §7§o按住并右击画线"
+  - ""
+  - "§7任意颜料 + 空的铁桶"
+  - "§7可以合成这种颜色的颜料桶§7."
+  - "           §b§o鼠标移到染料上以查看颜色"
+INFO_RECIPES:
+  - "              §6§l⊱§e§l合成表帮助§6§l⊰"
+  - "§7如果想要复制一份画作，只需要将原画作"
+  - "§7和一份空地图放入合成台，即可完成复制"
+  - "§7注意：必须是画作的创作者才可以复制画作"
+  - "        §b§o鼠标移到工具上以查看详细信息"
+INFO_TOOLS:
+  - "              §6§l⊱§e§l艺术工具帮助§6§l⊰"
+  - "§7把这些艺术工具和颜料搭配使用，"
+  - "§7一定是你创作的一大利器"
+  - "       §b§o鼠标移到工具上以查看详细使用说明"
+TOOL_DYE:
+  - "              §6§l⊱§e§l颜料§6§l⊰"
+  - " §7左击画像素"
+  - " §7按住并右击画线"
+  - "§a✸§2§o点击查看全部颜色§a✸"
+TOOL_PAINTBUCKET:
+  - "         §6§l⊱§e§l颜料桶§6§l⊰"
+  - "§7左击填充一块区域内的颜色"
+  - "§7空铁桶和颜料一起可以合成该种"
+  - "§7颜料的颜料桶"
+  - "§7右击以撤销上次填充操作."
+TOOL_COAL:
+  - "              §6§l⊱§e§l煤炭§6§l⊰"
+  - "§7左击加深像素颜色."
+  - "§7右击加深该行颜色."
+TOOL_FEATHER:
+  - "            §6§l⊱§e§l羽毛§6§l⊰"
+  - "§7左击减淡像素颜色."
+  - "§7右击减淡该行颜色."
+TOOL_COMPASS:
+  - "            §6§l⊱§e§l指南针§6§l⊰"
+  - "§7左击水平翻转."
+  - "§7右击垂直翻转."
+RECIPE_EASEL:
+  - "§7进行绘画必不可少的物品"
+  - "§7右击放置画架"
+RECIPE_CANVAS:
+  - "§7放置在§a画架"
+  - "§7上以开始绘画"
+RECIPE_PAINTBUCKET:
+  - "§7在§a画架 §7和 §a画布上"
+  - "§7使用以填充颜色"
+  - "§7右击撤销上次操作"
+CONSOLE_HELP:
+  - "§3---------------------------------§b[ArtMap] §6控制台命令:§3---------------------------------"
+  - "§3/artmap delete <画作名称> §b: §e删除一个画作"
+  - "§3/artmap restore <画作名称> §b: §e恢复一个已损坏的画作"
