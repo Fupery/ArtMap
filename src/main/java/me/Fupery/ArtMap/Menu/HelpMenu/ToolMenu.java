@@ -26,7 +26,6 @@ public class ToolMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public Button[] getButtons() {
-        Lang lang = ArtMap.getLang();
         return new Button[]{
                 new StaticButton(Material.SIGN, Lang.Array.INFO_TOOLS.get()),
                 new LinkedButton(ArtMap.getMenuHandler().MENU.DYES, Material.INK_SACK, 1, Lang.Array.TOOL_DYE.get()),

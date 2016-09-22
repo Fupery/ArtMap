@@ -45,6 +45,7 @@ public enum Lang implements LangSet<String> {
         for (Array key : Array.values()) {
             key.messages = loader.loadArray(key.name());
         }
+        Filter.ILLEGAL_EXPRESSIONS.expressions = loader.loadRegex("ILLEGAL_EXPRESSIONS");
     }
 
     @Override
@@ -95,6 +96,22 @@ public enum Lang implements LangSet<String> {
         @Override
         public String[] get() {
             return messages;
+        }
+    }
+
+    public enum Filter implements LangSet<String[]> {
+        ILLEGAL_EXPRESSIONS;
+
+        private String[] expressions = null;
+
+        @Override
+        public void send(CommandSender sender) {
+            //redundant
+        }
+
+        @Override
+        public String[] get() {
+            return expressions;
         }
     }
 

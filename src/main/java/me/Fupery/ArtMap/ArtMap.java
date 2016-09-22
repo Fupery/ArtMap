@@ -19,7 +19,6 @@ import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -50,8 +49,6 @@ public class ArtMap extends JavaPlugin {
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
     private ProtocolHandler protocolHandler;
-    private Lang lang;
-    private List<String> titleFilter;
     private PixelTableManager pixelTable;
     private Configuration config;
     private boolean hasRegisteredListeners = false;
@@ -85,10 +82,6 @@ public class ArtMap extends JavaPlugin {
 
     public static ChannelCacheManager getCacheManager() {
         return instance().cacheManager;
-    }
-
-    public static Lang getLang() {
-        return instance().lang;
     }
 
     public static RecipeLoader getRecipeLoader() {
@@ -137,9 +130,6 @@ public class ArtMap extends JavaPlugin {
             getPluginLoader().disablePlugin(this);
             return;
         }
-        FileConfiguration filter = YamlConfiguration.loadConfiguration(getTextResource("titleFilter.yml"));
-        titleFilter = filter.getStringList("blacklisted");
-
         getCommand("artmap").setExecutor(new CommandHandler());
 
         if (!hasRegisteredListeners) {
@@ -201,10 +191,6 @@ public class ArtMap extends JavaPlugin {
 
     public int getMapResolutionFactor() {
         return mapResolutionFactor;
-    }
-
-    public List<String> getTitleFilter() {
-        return titleFilter;
     }
 
     public PixelTableManager getPixelTable() {

@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Config;
 
 import me.Fupery.ArtMap.ArtMap;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,17 +54,26 @@ class LangLoader {
     String loadString(String key) {
         if (!lang.contains(key)) {
             logLangError(String.format("Error loading key from lang.yml: '%s'", key));
-            if (defaults == null || !defaults.contains(key)) return "[" + key + "] NOT FOUND";
-            lang.set(key, defaults.get(key));
+            if (defaults == null || !defaults.contains(key)) return null;
+            return defaults.getString(key);
         }
         return lang.getString(key);
     }
 
     String[] loadArray(String key) {
+        List<String> messages = lang.getStringList(key);
+        if (messages == null) {
+            logLangError(String.format("Error loading key from lang.yml: '%s'", key));
+            if (defaults == null || !defaults.contains(key)) return new String[]{"[" + key + "] NOT FOUND"};
+            messages = defaults.getStringList(key);
+        }
+        return messages == null ? null : messages.toArray(new String[messages.size()]);
+    }
+
+    String[] loadRegex(String key) {
         List<String> msg = lang.getStringList(key);
         if (msg != null) return msg.toArray(new String[msg.size()]);
-        Bukkit.getLogger().warning("[ArtMap] Error loading key from lang.yml: " + key);
-        return null;
+        return new String[0];
     }
 
     private void logLangError(String reason) {

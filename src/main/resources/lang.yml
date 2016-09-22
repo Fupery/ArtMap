@@ -169,3 +169,19 @@ CONSOLE_HELP:
   - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
   - "§3/artmap delete <title> §b: §eDelete an artwork"
   - "§3/artmap restore <title> §b: §eRestore a corrupted artwork"
+#-------------------------------------[Artwork Title Filter]-------------------------------------#
+#Words in the following list are filtered from artwork titles:
+#
+#You can disable title filtering by setting "swearFilter: false" in your config.yml
+#
+#Filtered words use Regex expressions - you can build and test Regex at [http://regexr.com]
+#You can also add normal words to the list, but note that non-regex words can be easily avoided by players
+ILLEGAL_EXPRESSIONS:
+  - "\\b(f+(\\W|\\d|_)*u+(\\W|\\d|_)*c+(\\W|\\d|_)*k+(\\W|\\d|_)*)"
+  - "\\b(s+(\\W|\\d|_)*h+(\\W|\\d|_)*i+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(c+(\\W|\\d|_)*u+(\\W|\\d|_)*n+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(r+(\\W|\\d|_)*a+(\\W|\\d|_)*p+(\\W|\\d|_)*(((e+(\\W|\\d|_)*))|i+s+t+))"
+  - "\\b(n+(\\W|\\d|_)*i+(\\W|\\d|_)*g+(\\W|\\d|_)*g+(\\W|\\d|_)*(e+(\\W|\\d|_)*r+(\\W|\\d|_)*|a+))"
+  - "\\b(w+(\\W|\\d|_)*h+(\\W|\\d|_)*o+(\\W|\\d|_)*r+(\\W|\\d|_)*e+(\\W|\\d|_)*)"
+  - "\\b(s+(\\W|\\d|_)*l+(\\W|\\d|_)*u+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(f+(\\W|\\d|_)*a+(\\W|\\d|_)*g+(\\W|\\d|_)*g+(\\W|\\d|_)*o+(\\W|\\d|_)*t+(\\W|\\d|_)*)"

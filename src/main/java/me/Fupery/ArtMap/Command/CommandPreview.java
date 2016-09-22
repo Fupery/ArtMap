@@ -9,13 +9,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandPreview extends AsyncCommand {
+class CommandPreview extends AsyncCommand {
 
     CommandPreview() {
         super(null, "/artmap preview <title>", false);
     }
 
-    public static boolean previewArtwork(final Player player, final MapArt art) {
+    private static boolean previewArtwork(final Player player, final MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
             ArtMap.getTaskManager().SYNC.run(() -> {

@@ -12,10 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CommandSave extends AsyncCommand {
+class CommandSave extends AsyncCommand {
+
+    private TitleFilter filter;
 
     CommandSave() {
         super("artmap.artist", "/artmap save <title>", false);
+        this.filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
     }
 
     @Override
@@ -25,7 +28,7 @@ public class CommandSave extends AsyncCommand {
 
         final Player player = (Player) sender;
 
-        if (!new TitleFilter(title).check()) {
+        if (!filter.check(title)) {
             msg.message = Lang.BAD_TITLE.get();
             return;
         }
