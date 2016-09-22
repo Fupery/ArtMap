@@ -21,6 +21,7 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler(GriefPreventionCompat.class);
         loadRegionHandler(RedProtectCompat.class);
         loadRegionHandler(LandlordCompat.class);
+        loadRegionHandler(ASkyBlockCompat.class);
         reflectionHandler = loadReflectionHandler();
         if (!(reflectionHandler instanceof VanillaReflectionHandler))
             plugin.getLogger().info(String.format("%s reflection handler enabled.",
