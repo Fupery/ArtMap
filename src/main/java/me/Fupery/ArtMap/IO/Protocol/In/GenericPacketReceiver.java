@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.UUID;
 
-public class GenericPacketReciever extends PacketReciever {
+public class GenericPacketReceiver extends PacketReceiver {
 
     private final Map<UUID, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 

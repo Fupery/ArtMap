@@ -16,6 +16,9 @@ import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_8;
 import static org.bukkit.entity.EntityType.ARMOR_STAND;
 import static org.bukkit.entity.EntityType.ITEM_FRAME;
 
+/**
+ * Represents a part of an easel object
+ */
 public enum EaselPart {
     STAND(ARMOR_STAND, 0.4, -1, true), FRAME(ITEM_FRAME, 1, 0, false),
     SIGN(ARMOR_STAND, 0, 0, false),

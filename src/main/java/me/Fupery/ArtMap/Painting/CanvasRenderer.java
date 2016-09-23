@@ -23,21 +23,22 @@ public class CanvasRenderer extends MapRenderer {
 
     CanvasRenderer(MapView mapView, int yawOffset) {
         this.mapView = mapView;
-        resolutionFactor = ArtMap.instance().getMapResolutionFactor();
+        PixelTableManager pixelTable = ArtMap.getPixelTable();
+        if (pixelTable == null) {
+            mapView.removeRenderer(this);
+            resolutionFactor = 0;
+            axisLength = 0;
+            maxUpdate = 0;
+            return;
+        }
+        resolutionFactor = pixelTable.getResolutionFactor();
         axisLength = 128 / resolutionFactor;
-        maxUpdate = ArtMap.getArtistHandler().SETTINGS.MAX_PIXELS_UPDATE_TICK;
+        maxUpdate = 16384;// TODO: 22/09/2016 magic value
         clearRenderers();
         mapView.addRenderer(this);
 
         active = true;
         loadMap();
-
-        PixelTableManager pixelTable = ArtMap.instance().getPixelTable();
-
-        if (pixelTable == null) {
-            mapView.removeRenderer(this);
-            return;
-        }
         cursor = new Cursor(yawOffset);
     }
 
@@ -63,17 +64,17 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     //adds pixel at location
-    public void addPixel(int x, int y, byte colour) {
+    void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         dirtyPixels.add(new byte[]{((byte) x), ((byte) y)});
     }
 
-    public byte getPixel(int x, int y) {
+    byte getPixel(int x, int y) {
         return pixelBuffer[x][y];
     }
 
     //finds the corresponding pixel for the yaw & pitch clicked
-    public byte[] getCurrentPixel() {
+    byte[] getCurrentPixel() {
         byte[] pixel = new byte[2];
 
         pixel[0] = ((byte) cursor.getX());
@@ -89,13 +90,9 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     private void clearRenderers() {
-
         cursor = null;
-
         if (mapView.getRenderers() != null) {
-
             for (MapRenderer r : mapView.getRenderers()) {
-
                 if (!(r instanceof CanvasRenderer)) {
                     mapView.removeRenderer(r);
                 }
@@ -103,7 +100,7 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    public void saveMap() {
+    void saveMap() {
 
         byte[] colours = new byte[128 * 128];
 
@@ -152,23 +149,23 @@ public class CanvasRenderer extends MapRenderer {
         cursor = null;
     }
 
-    public boolean isOffCanvas() {
+    boolean isOffCanvas() {
         return cursor.isOffCanvas();
     }
 
-    public byte[][] getPixelBuffer() {
+    byte[][] getPixelBuffer() {
         return pixelBuffer.clone();
     }
 
-    public void setYaw(float yaw) {
+    void setYaw(float yaw) {
         cursor.setYaw(yaw);
     }
 
-    public void setPitch(float pitch) {
+    void setPitch(float pitch) {
         cursor.setPitch(pitch);
     }
 
-    public int getAxisLength() {
+    int getAxisLength() {
         return axisLength;
     }
 }

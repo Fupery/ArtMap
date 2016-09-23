@@ -10,7 +10,7 @@ import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
-import me.Fupery.ArtMap.Listeners.*;
+import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -19,25 +19,16 @@ import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.SoftReference;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
     private static SoftReference<ArtMap> pluginInstance = null;
-    private final int mapResolutionFactor = 4;// TODO: 20/07/2016 consider adding other resolutions
     private MenuHandler menuHandler;
     private ArtistHandler artistHandler;
     private ConcurrentHashMap<Player, Preview> previewing;
@@ -51,7 +42,7 @@ public class ArtMap extends JavaPlugin {
     private ProtocolHandler protocolHandler;
     private PixelTableManager pixelTable;
     private Configuration config;
-    private boolean hasRegisteredListeners = false;
+    private EventManager eventManager;
 
     public static ArtDatabase getArtDatabase() {
         return instance().artDatabase;
@@ -108,6 +99,10 @@ public class ArtMap extends JavaPlugin {
         return instance().protocolHandler;
     }
 
+    public static PixelTableManager getPixelTable() {
+        return instance().pixelTable;
+    }
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
@@ -122,31 +117,17 @@ public class ArtMap extends JavaPlugin {
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
         previewing = new ConcurrentHashMap<>();
-        artDatabase = new ArtDatabase(this);
+        recipeLoader = new RecipeLoader(this, config);
+        artDatabase = ArtDatabase.buildDatabase(this);
+        eventManager = new EventManager(this, bukkitVersion);
         new FlatDatabaseConverter(this).convertDatabase();
         Lang.load(this, config);
-        if (!loadTables()) {
+        if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
             getLogger().warning(Lang.INVALID_DATA_TABLES.get());
             getPluginLoader().disablePlugin(this);
             return;
         }
         getCommand("artmap").setExecutor(new CommandHandler());
-
-        if (!hasRegisteredListeners) {
-            PluginManager manager = getServer().getPluginManager();
-            manager.registerEvents(new PlayerInteractListener(), this);
-            manager.registerEvents(new PlayerInteractEaselListener(), this);
-            manager.registerEvents(new PlayerQuitListener(), this);
-            manager.registerEvents(new ChunkUnloadListener(), this);
-            manager.registerEvents(new PlayerCraftListener(), this);
-            manager.registerEvents(new InventoryInteractListener(), this);
-            if (bukkitVersion.getVersion() != VersionHandler.BukkitVersion.v1_8) {
-                manager.registerEvents(new PlayerSwapHandListener(), this);
-                manager.registerEvents(new PlayerDismountListener(), this);
-            }
-            hasRegisteredListeners = true;
-        }
-        recipeLoader = new RecipeLoader(loadOptionalYAML("customRecipes", "recipe.yml"));
         ArtMaterial.setupRecipes();
     }
 
@@ -154,47 +135,12 @@ public class ArtMap extends JavaPlugin {
     public void onDisable() {
         artistHandler.stop();
         menuHandler.closeAll();
+        eventManager.unregisterAll();
         mapManager.saveKeys();
-
-        if (previewing.size() > 0) {
-            for (Player player : previewing.keySet()) {
-                Preview.stop(player);
-            }
-        }
+        if (previewing.size() > 0) previewing.keySet().forEach(Preview::stop);
         recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;
-    }
-
-    private FileConfiguration loadOptionalYAML(String configOption, String fileName) {
-        FileConfiguration defaultValues = YamlConfiguration.loadConfiguration(getTextResource(fileName));
-        if (!getConfig().getBoolean(configOption)) {
-            return defaultValues;
-        } else {
-            File file = new File(getDataFolder(), fileName);
-            if (!file.exists()) {
-                try {
-                    if (!file.createNewFile()) return defaultValues;
-                    Files.copy(getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    getLogger().info(String.format("Failed to build %s file", fileName));
-                    return defaultValues;
-                }
-            }
-            return YamlConfiguration.loadConfiguration(file);
-        }
-    }
-
-    private boolean loadTables() {
-        return ((pixelTable = PixelTableManager.buildTables(mapResolutionFactor)) != null);
-    }
-
-    public int getMapResolutionFactor() {
-        return mapResolutionFactor;
-    }
-
-    public PixelTableManager getPixelTable() {
-        return pixelTable;
     }
 
     public Reader getTextResourceFile(String fileName) {

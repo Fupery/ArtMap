@@ -4,7 +4,10 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Painting.Brushes.*;
+import me.Fupery.ArtMap.Painting.Brushes.Dye;
+import me.Fupery.ArtMap.Painting.Brushes.Fill;
+import me.Fupery.ArtMap.Painting.Brushes.Flip;
+import me.Fupery.ArtMap.Painting.Brushes.Shade;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
@@ -58,7 +61,7 @@ public class ArtSession {
         taskManager.SYNC.runLater(() -> {
             if (player.getVehicle() != null) Lang.ActionBar.PAINTING.send(player);
         }, 30);
-        if (ArtMap.getArtistHandler().SETTINGS.FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
+        if (ArtMap.getConfiguration().FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
             addKit(player);
         }
         return true;
@@ -135,7 +138,7 @@ public class ArtSession {
         active = false;
     }
 
-    public boolean isActive() {
+    boolean isActive() {
         return active;
     }
 

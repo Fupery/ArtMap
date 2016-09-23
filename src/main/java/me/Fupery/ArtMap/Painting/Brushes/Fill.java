@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Recipe.ArtDye;
 import me.Fupery.ArtMap.Recipe.ArtItem;
@@ -17,7 +18,7 @@ public class Fill extends Brush {
     public Fill(CanvasRenderer renderer) {
         super(renderer);
         lastFill = new ArrayList<>();
-        this.axisLength = renderer.getAxisLength();
+        this.axisLength = getAxisLength();
         cooldownMilli = 350;
     }
 
@@ -46,7 +47,7 @@ public class Fill extends Brush {
 
         } else if (lastFill.size() > 0) {
             for (Pixel pixel : lastFill) {
-                canvas.addPixel(pixel.x, pixel.y, pixel.colour);
+                addPixel(pixel.x, pixel.y, pixel.colour);
             }
         }
     }
@@ -81,12 +82,12 @@ public class Fill extends Brush {
     }
 
     private void fillPixel(byte colour) {
-        final byte[] pixel = canvas.getCurrentPixel();
+        final byte[] pixel = getCurrentPixel();
 
         if (pixel != null) {
 
             final boolean[][] coloured = new boolean[axisLength][axisLength];
-            final byte clickedColour = canvas.getPixelBuffer()[pixel[0]][pixel[1]];
+            final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour;
 
             ArtMap.getTaskManager().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
@@ -105,10 +106,10 @@ public class Fill extends Brush {
             return;
         }
 
-        if (canvas.getPixelBuffer()[x][y] != source) {
+        if (getPixelBuffer()[x][y] != source) {
             return;
         }
-        canvas.addPixel(x, y, target);
+        addPixel(x, y, target);
         coloured[x][y] = true;
         lastFill.add(new Pixel(x, y, source));
 

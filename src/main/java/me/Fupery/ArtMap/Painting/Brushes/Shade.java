@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -38,19 +39,19 @@ public class Shade extends Brush {
     }
 
     private void shadePixel(boolean darken) {
-        byte[] pixel = canvas.getCurrentPixel();
-        byte colour = getPixelShade(darken, canvas.getPixelBuffer()[pixel[0]][pixel[1]]);
-        canvas.addPixel(pixel[0], pixel[1], colour);
+        byte[] pixel = getCurrentPixel();
+        byte colour = getPixelShade(darken, getPixelBuffer()[pixel[0]][pixel[1]]);
+        addPixel(pixel[0], pixel[1], colour);
     }
 
     private void shadePixel(int x, int y, boolean darken) {
-        byte colour = getPixelShade(darken, canvas.getPixelBuffer()[x][y]);
-        canvas.addPixel(x, y, colour);
+        byte colour = getPixelShade(darken, getPixelBuffer()[x][y]);
+        addPixel(x, y, colour);
     }
 
     private void flowShade(boolean darken) {
 
-        byte[] pixel = canvas.getCurrentPixel();
+        byte[] pixel = getCurrentPixel();
 
         if (pixel != null) {
 

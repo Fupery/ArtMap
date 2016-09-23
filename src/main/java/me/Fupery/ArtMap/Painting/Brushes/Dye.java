@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Recipe.ArtDye;
 import org.bukkit.inventory.ItemStack;
@@ -20,16 +21,16 @@ public class Dye extends Brush {
         }
         if (action == BrushAction.LEFT_CLICK) {
             clean();
-            byte[] pixel = canvas.getCurrentPixel();
+            byte[] pixel = getCurrentPixel();
             if (pixel != null) {
-                canvas.addPixel(pixel[0], pixel[1], dye.getData());
+                addPixel(pixel[0], pixel[1], dye.getData());
             }
         } else {
             if (strokeTime > 250) {
                 clean();
             }
             byte colour = dye.getData();
-            byte[] pixel = canvas.getCurrentPixel();
+            byte[] pixel = getCurrentPixel();
 
             if (pixel != null) {
 
@@ -48,7 +49,7 @@ public class Dye extends Brush {
                         return;
                     }
                 }
-                canvas.addPixel(pixel[0], pixel[1], colour);
+                addPixel(pixel[0], pixel[1], colour);
                 lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
             }
         }
@@ -98,7 +99,7 @@ public class Dye extends Brush {
         int numerator = longest >> 1;
 
         for (int i = 0; i <= longest; i++) {
-            canvas.addPixel(x, y, colour);
+            addPixel(x, y, colour);
             numerator += shortest;
 
             if (!(numerator < longest)) {

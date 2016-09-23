@@ -6,12 +6,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class PlayerQuitListener implements Listener {
+class PlayerQuitListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
@@ -51,5 +50,12 @@ public class PlayerQuitListener implements Listener {
                 ArtMap.getArtistHandler().removePlayer(event.getPlayer());
             }
         }
+    }
+
+    @Override
+    public void unregister() {
+        PlayerQuitEvent.getHandlerList().unregister(this);
+        PlayerDeathEvent.getHandlerList().unregister(this);
+        PlayerTeleportEvent.getHandlerList().unregister(this);
     }
 }

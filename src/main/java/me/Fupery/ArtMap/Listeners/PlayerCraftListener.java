@@ -7,13 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
 // Disallows players from copying ArtMap maps in the crafting table
-public class PlayerCraftListener implements Listener {
+class PlayerCraftListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
@@ -66,5 +65,10 @@ public class PlayerCraftListener implements Listener {
         if (leftOver != null && leftOver.getAmount() > 0) {
             player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
         }
+    }
+
+    @Override
+    public void unregister() {
+        CraftItemEvent.getHandlerList().unregister(this);
     }
 }

@@ -176,7 +176,6 @@ class ItemMapArt extends ArtItem {
 
     ItemMapArt(short id, String title, OfflinePlayer player, String date) {
         super(Material.MAP, 1, id);
-        Date d = new Date();
         String name = player != null ? player.getName() : "Player";
 
         ItemMeta meta = getItemMeta();

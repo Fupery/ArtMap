@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -27,7 +26,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-public class PlayerInteractEaselListener implements Listener {
+class PlayerInteractEaselListener implements RegisteredListener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
@@ -141,5 +140,16 @@ public class PlayerInteractEaselListener implements Listener {
             }
         }
         return false;
+    }
+
+    @Override
+    public void unregister() {
+        PlayerInteractAtEntityEvent.getHandlerList().unregister(this);
+        PlayerArmorStandManipulateEvent.getHandlerList().unregister(this);
+        PlayerInteractEntityEvent.getHandlerList().unregister(this);
+        EntityDamageByEntityEvent.getHandlerList().unregister(this);
+        HangingBreakByEntityEvent.getHandlerList().unregister(this);
+        BlockBreakEvent.getHandlerList().unregister(this);
+        BlockPhysicsEvent.getHandlerList().unregister(this);
     }
 }

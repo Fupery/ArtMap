@@ -1,9 +1,12 @@
 package me.Fupery.ArtMap.Recipe;
 
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -11,6 +14,10 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,8 +25,28 @@ import java.util.List;
 public class RecipeLoader {
     private final FileConfiguration recipeFile;
 
-    public RecipeLoader(FileConfiguration recipeFile) {
-        this.recipeFile = recipeFile;
+    public RecipeLoader(ArtMap plugin, Configuration configuration) {
+        this.recipeFile = loadRecipeFile(plugin, configuration.CUSTOM_RECIPES);
+    }
+
+    private static FileConfiguration loadRecipeFile(ArtMap plugin, boolean customRecipes) {
+        String fileName = "recipe.yml";
+        FileConfiguration defaultValues = YamlConfiguration.loadConfiguration(plugin.getTextResourceFile(fileName));
+        if (!customRecipes) {
+            return defaultValues;
+        } else {
+            File file = new File(plugin.getDataFolder(), fileName);
+            if (!file.exists()) {
+                try {
+                    if (!file.createNewFile()) return defaultValues;
+                    Files.copy(plugin.getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    plugin.getLogger().info(String.format("Failed to build %s file", fileName));
+                    return defaultValues;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file);
+        }
     }
 
     public void unloadRecipes() {

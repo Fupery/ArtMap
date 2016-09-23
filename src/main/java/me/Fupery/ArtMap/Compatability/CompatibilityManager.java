@@ -76,8 +76,7 @@ public class CompatibilityManager implements RegionHandler {
         try {
             RegionHandler handler = handlerClass.newInstance();
             if (handler.isLoaded()) regionHandlers.add(handler);
-        } catch (Exception | NoClassDefFoundError e) {
-            return;
+        } catch (Exception | NoClassDefFoundError ignored) {
         }
     }
 

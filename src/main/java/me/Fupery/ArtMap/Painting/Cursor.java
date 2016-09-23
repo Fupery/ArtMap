@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.PixelTableManager;
 
 class Cursor {
 
@@ -15,11 +16,12 @@ class Cursor {
     private boolean pitchOffCanvas;
 
     Cursor(int yawOffset) {
-        yawTable = ArtMap.instance().getPixelTable().getYawBounds();
-        pitchTables = ArtMap.instance().getPixelTable().getPitchBounds();
-        this.yawOffset = yawOffset;
+        PixelTableManager pixelTable = ArtMap.getPixelTable();
 
-        limit = (128 / ArtMap.instance().getMapResolutionFactor()) - 1;
+        yawTable = pixelTable.getYawBounds();
+        pitchTables = pixelTable.getPitchBounds();
+        this.yawOffset = yawOffset;
+        limit = (128 / pixelTable.getResolutionFactor()) - 1;
         yawOffCanvas = false;
         pitchOffCanvas = false;
         int mid = limit / 2;

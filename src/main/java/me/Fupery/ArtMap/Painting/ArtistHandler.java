@@ -12,16 +12,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
-import static me.Fupery.ArtMap.Painting.Brushes.Brush.BrushAction;
+import static me.Fupery.ArtMap.Painting.Brush.BrushAction;
 
 public class ArtistHandler {
 
-    public final Settings SETTINGS;
     private final ConcurrentHashMap<UUID, ArtSession> artists;
 
     public ArtistHandler() {
         artists = new ConcurrentHashMap<>();
-        SETTINGS = new Settings(ArtMap.getConfiguration().FORCE_ART_KIT, 16384);
     }
 
     public boolean handlePacket(Player sender, ArtistPacket packet) {
@@ -90,16 +88,5 @@ public class ArtistHandler {
     public void stop() {
         clearPlayers();
         ArtMap.getProtocolManager().PACKET_RECIEVER.close();
-    }
-
-    public static class Settings {
-        public final boolean FORCE_ART_KIT;
-        public final int MAX_PIXELS_UPDATE_TICK;
-
-        private Settings(boolean forceArtKit, int maxPixelsUpdatedPerTick) {
-            this.FORCE_ART_KIT = forceArtKit;
-            this.MAX_PIXELS_UPDATE_TICK = (maxPixelsUpdatedPerTick > 16384 || maxPixelsUpdatedPerTick <= 0)
-                    ? 16384 : maxPixelsUpdatedPerTick;
-        }
     }
 }

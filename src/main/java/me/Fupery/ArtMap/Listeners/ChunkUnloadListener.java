@@ -4,10 +4,9 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-public class ChunkUnloadListener implements Listener {
+class ChunkUnloadListener implements RegisteredListener {
 
     @EventHandler
     public void onChunkUnload(final ChunkUnloadEvent event) {
@@ -23,5 +22,10 @@ public class ChunkUnloadListener implements Listener {
                 }
             });
         }
+    }
+
+    @Override
+    public void unregister() {
+        ChunkUnloadEvent.getHandlerList().unregister(this);
     }
 }

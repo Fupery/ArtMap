@@ -77,9 +77,6 @@ public final class EaselEvent {
 
             case SHIFT_RIGHT_CLICK:
                 if (easel.hasItem()) {
-                    if (ArtMaterial.MAP_ART.isValidMaterial(easel.getItem())) {
-
-                    }
                     final short id = easel.getItem().getDurability();
                     mapView = Bukkit.getMap(id);
                     for (MapRenderer renderer : mapView.getRenderers()) {

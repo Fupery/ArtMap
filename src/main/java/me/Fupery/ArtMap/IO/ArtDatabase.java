@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.IO;
 
+import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,17 +19,25 @@ public class ArtDatabase {
     private final File dbFile;
     private Connection connection;
 
-    public ArtDatabase(JavaPlugin plugin) {
-        dbFile = new File(plugin.getDataFolder(), "ArtMap.db");
-        initialize();
+    private ArtDatabase(File dbFile) {
+        this.dbFile = dbFile;
+    }
+
+    public static ArtDatabase buildDatabase(JavaPlugin plugin) {
+        ArtDatabase database = new ArtDatabase(new File(plugin.getDataFolder(), "ArtMap.db"));
+        return (database.initialize()) ? database : null;
     }
 
     private Connection getConnection() {
         if (!dbFile.exists()) {
             try {
-                dbFile.createNewFile();
+                if (!dbFile.createNewFile()) {
+                    Bukkit.getLogger().warning("[ArtMap] Could not create ArtMap.db!");
+                    return null;
+                }
             } catch (IOException e) {
                 ErrorLogger.log(e, "File write error: 'ArtMap.db'!");
+                return null;
             }
         }
         try {
@@ -44,8 +53,8 @@ public class ArtDatabase {
         return connection;
     }
 
-    public void initialize() {
-        connection = getConnection();
+    private boolean initialize() {
+        if ((connection = getConnection()) == null) return false;
         Statement buildTableStatement = null;
         try {
             buildTableStatement = connection.createStatement();
@@ -62,6 +71,7 @@ public class ArtDatabase {
             ps.executeQuery();
         } catch (SQLException e) {
             ErrorLogger.log(e, sqlError);
+            return false;
         } finally {
             if (buildTableStatement != null) try {
                 buildTableStatement.close();
@@ -74,6 +84,7 @@ public class ArtDatabase {
                 ErrorLogger.log(e, sqlError);
             }
         }
+        return true;
     }
 
 
