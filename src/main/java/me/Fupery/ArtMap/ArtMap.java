@@ -31,7 +31,6 @@ import java.io.Reader;
 import java.lang.ref.SoftReference;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
