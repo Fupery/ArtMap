@@ -64,6 +64,15 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
     }
 
     @Override
+    public void onMenuCloseEvent(Player viewer, MenuCloseReason reason) {
+        if (reason == MenuCloseReason.SPECIAL) return;
+        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
+            ItemStack offHand = viewer.getInventory().getItemInOffHand();
+            if (isPreviewItem(offHand)) viewer.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        }
+    }
+
+    @Override
     protected Button[] getListItems() {
         OfflinePlayer player = Bukkit.getOfflinePlayer(artist);
         if (player == null || !player.hasPlayedBefore()) return new Button[0];
@@ -81,15 +90,6 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
             buttons = new Button[0];
         }
         return buttons;
-    }
-
-    @Override
-    public void onMenuCloseEvent(Player viewer, MenuCloseReason reason) {
-        if (reason == MenuCloseReason.SPECIAL) return;
-        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-            ItemStack offHand = viewer.getInventory().getItemInOffHand();
-            if (isPreviewItem(offHand)) viewer.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-        }
     }
 
     private class PreviewButton extends Button {

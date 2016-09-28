@@ -108,6 +108,22 @@ public class ArtMap extends JavaPlugin {
     }
 
     @Override
+    public void onDisable() {
+        artistHandler.stop();
+        menuHandler.closeAll();
+        mapManager.saveKeys();
+
+        if (previewing.size() > 0) {
+            for (Player player : previewing.keySet()) {
+                Preview.stop(player);
+            }
+        }
+        recipeLoader.unloadRecipes();
+        reloadConfig();
+        pluginInstance = null;
+    }
+
+    @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
@@ -147,22 +163,6 @@ public class ArtMap extends JavaPlugin {
         }
         recipeLoader = new RecipeLoader(loadOptionalYAML("customRecipes", "recipe.yml"));
         ArtMaterial.setupRecipes();
-    }
-
-    @Override
-    public void onDisable() {
-        artistHandler.stop();
-        menuHandler.closeAll();
-        mapManager.saveKeys();
-
-        if (previewing.size() > 0) {
-            for (Player player : previewing.keySet()) {
-                Preview.stop(player);
-            }
-        }
-        recipeLoader.unloadRecipes();
-        reloadConfig();
-        pluginInstance = null;
     }
 
     private FileConfiguration loadOptionalYAML(String configOption, String fileName) {

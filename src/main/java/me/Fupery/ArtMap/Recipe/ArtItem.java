@@ -218,7 +218,12 @@ class PaintBucket extends ArtItem {
         setItemMeta(meta);
     }
 
-    @Override
+    private org.bukkit.inventory.Recipe getRecipe(ArtDye d) {
+        ShapelessRecipe recipe = new ShapelessRecipe(new PaintBucket(d));
+        recipe.addIngredient(1, Material.BUCKET);
+        recipe.addIngredient(1, d.getRecipeItem());
+        return recipe;
+    }    @Override
     org.bukkit.inventory.Recipe getRecipe() {
         return getRecipe(ArtDye.BLACK);
     }
@@ -228,12 +233,7 @@ class PaintBucket extends ArtItem {
         return PAINT_BUCKET_KEY + " §7[" + colour.name() + "]";
     }
 
-    private org.bukkit.inventory.Recipe getRecipe(ArtDye d) {
-        ShapelessRecipe recipe = new ShapelessRecipe(new PaintBucket(d));
-        recipe.addIngredient(1, Material.BUCKET);
-        recipe.addIngredient(1, d.getRecipeItem());
-        return recipe;
-    }
+
 
     @Override
     void addRecipe(ArtMaterial material) {

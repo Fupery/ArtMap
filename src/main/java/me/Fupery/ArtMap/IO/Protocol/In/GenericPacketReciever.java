@@ -61,6 +61,18 @@ public class GenericPacketReciever extends PacketReciever {
         channelLookup.remove(player.getUniqueId());
     }
 
+    @Override
+    public void close() {
+
+        if (channelLookup != null && channelLookup.size() > 0) {
+
+            for (UUID player : channelLookup.keySet()) {
+                uninjectPlayer(Bukkit.getPlayer(player));
+            }
+            channelLookup.clear();
+        }
+    }
+
     private Channel getChannel(Player player) {
         Channel channel = channelLookup.get(player.getUniqueId());
 
@@ -75,18 +87,6 @@ public class GenericPacketReciever extends PacketReciever {
         }
 
         return channel;
-    }
-
-    @Override
-    public void close() {
-
-        if (channelLookup != null && channelLookup.size() > 0) {
-
-            for (UUID player : channelLookup.keySet()) {
-                uninjectPlayer(Bukkit.getPlayer(player));
-            }
-            channelLookup.clear();
-        }
     }
 
     private Object onPacketInAsync(Player player, Channel channel, Object packet) {

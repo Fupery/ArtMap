@@ -47,11 +47,6 @@ public class MapArt {
                 && getArtistPlayer() != null && getArtistPlayer().hasPlayedBefore();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof MapArt && equals(((MapArt) obj), false);
-    }
-
     public boolean equals(MapArt art, boolean ignoreMapID) {
         return (title.equals(art.title) && date.equals(art.date))
                 && artist.equals(art.artist)
@@ -64,6 +59,11 @@ public class MapArt {
         builder.append(title);
         builder.append(id);
         return builder.toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MapArt && equals(((MapArt) obj), false);
     }
 
     public ItemStack getMapItem() {
