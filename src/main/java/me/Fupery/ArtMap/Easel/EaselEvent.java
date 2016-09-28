@@ -57,13 +57,14 @@ public final class EaselEvent {
                     easel.removeItem();
                     return;
                 }
-                ArtMaterial material = ArtMaterial.getCraftItemType(player.getItemInHand());
+                ItemStack itemInHand = player.getItemInHand();
+                ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 if (material == ArtMaterial.CANVAS) {
                     mapView = ArtMap.getMapManager().generateMapID(player.getWorld());
                     Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
                     easel.mountCanvas(mapView);
-                    consumeCurrentItem(player);
+                    consumeItem(player, itemInHand);
                     return;
 
                 } else if (material == ArtMaterial.MAP_ART) {
@@ -77,9 +78,6 @@ public final class EaselEvent {
 
             case SHIFT_RIGHT_CLICK:
                 if (easel.hasItem()) {
-                    if (ArtMaterial.MAP_ART.isValidMaterial(easel.getItem())) {
-
-                    }
                     final short id = easel.getItem().getDurability();
                     mapView = Bukkit.getMap(id);
                     for (MapRenderer renderer : mapView.getRenderers()) {
@@ -99,30 +97,31 @@ public final class EaselEvent {
 
     private void editArtwork(ItemStack playerMainHandItem) {
         MapArt art = ArtMap.getArtDatabase().getArtwork(playerMainHandItem.getDurability());
-
-        if (art != null) {
-            if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
-                Lang.ActionBar.NO_EDIT_PERM.send(player);
-                easel.playEffect(Effect.CRIT);
+        ArtMap.getTaskManager().SYNC.run(() -> {
+            if (art != null) {
+                if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
+                    Lang.ActionBar.NO_EDIT_PERM.send(player);
+                    easel.playEffect(Effect.CRIT);
+                    SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+                    return;
+                }
+                if (ArtMap.getPreviewing().containsKey(player)) {
+                    ArtMap.getPreviewing().get(player).stopPreviewing();
+                    return;
+                }
+                MapView mapView = MapManager.cloneArtwork(player.getWorld(), art.getMapId());
+                easel.editArtwork(mapView, art.getTitle());
+                consumeItem(player, playerMainHandItem);
+            } else {
+                Lang.NEED_CANVAS.send(player);
                 SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-                return;
+                easel.playEffect(Effect.CRIT);
             }
-            if (ArtMap.getPreviewing().containsKey(player)) {
-                ArtMap.getPreviewing().get(player).stopPreviewing();
-                return;
-            }
-            MapView mapView = MapManager.cloneArtwork(player.getWorld(), art.getMapId());
-            easel.editArtwork(mapView, art.getTitle());
-            consumeCurrentItem(player);
-        } else {
-            Lang.NEED_CANVAS.send(player);
-            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-            easel.playEffect(Effect.CRIT);
-        }
+        });
     }
 
-    private void consumeCurrentItem(Player player) {
-        ItemStack removed = player.getItemInHand().clone();
+    private void consumeItem(Player player, ItemStack item) {
+        ItemStack removed = item.clone();
         removed.setAmount(1);
         player.getInventory().removeItem(removed);
     }
