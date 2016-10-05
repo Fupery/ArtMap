@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -15,6 +16,21 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        if (ArtMap.getArtistHandler().containsPlayer(player)) {
+            ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
+            ArtMap.getArtistHandler().removePlayer(player);
+        }
+        if (ArtMap.getPreviewing().containsKey(player)) {
+            if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
+                Preview.stop(player);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
 
         if (ArtMap.getArtistHandler().containsPlayer(player)) {
