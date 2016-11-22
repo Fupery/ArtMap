@@ -104,6 +104,22 @@ public class ArtMap extends JavaPlugin {
     }
 
     @Override
+    public void onDisable() {
+        artistHandler.stop();
+        menuHandler.closeAll();
+        mapManager.saveKeys();
+
+        if (previewing.size() > 0) {
+            for (Player player : previewing.keySet()) {
+                Preview.stop(player);
+            }
+        }
+        recipeLoader.unloadRecipes();
+        reloadConfig();
+        pluginInstance = null;
+    }
+
+    @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
         saveDefaultConfig();
@@ -131,6 +147,7 @@ public class ArtMap extends JavaPlugin {
         ArtMaterial.setupRecipes();
     }
 
+<<<<<<< HEAD
     @Override
     public void onDisable() {
         artistHandler.stop();
@@ -141,6 +158,37 @@ public class ArtMap extends JavaPlugin {
         recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;
+=======
+    private FileConfiguration loadOptionalYAML(String configOption, String fileName) {
+        FileConfiguration defaultValues = YamlConfiguration.loadConfiguration(getTextResource(fileName));
+        if (!getConfig().getBoolean(configOption)) {
+            return defaultValues;
+        } else {
+            File file = new File(getDataFolder(), fileName);
+            if (!file.exists()) {
+                try {
+                    if (!file.createNewFile()) return defaultValues;
+                    Files.copy(getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    getLogger().info(String.format("Failed to build %s file", fileName));
+                    return defaultValues;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file);
+        }
+    }
+
+    private boolean loadTables() {
+        return ((pixelTable = PixelTableManager.buildTables(mapResolutionFactor)) != null);
+    }
+
+    public int getMapResolutionFactor() {
+        return mapResolutionFactor;
+    }
+
+    public PixelTableManager getPixelTable() {
+        return pixelTable;
+>>>>>>> master
     }
 
     public Reader getTextResourceFile(String fileName) {

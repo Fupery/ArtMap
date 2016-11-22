@@ -30,7 +30,9 @@ public class FlatDatabaseConverter {
         plugin.getLogger().info("(This may take a while, but only needs to run once)");
         HashMap<MapArt, MapView> artworks = readArtworks(databaseFile);
 
-        ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtworks(artworks));
+        if (artworks != null && artworks.size() > 0) {
+            ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtworks(artworks));
+        }
 
         File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
         if (!databaseFile.renameTo(disabledDatabaseFile)) {
@@ -47,6 +49,8 @@ public class FlatDatabaseConverter {
         FileConfiguration database = YamlConfiguration.loadConfiguration(databaseFile);
         ConfigurationSection artworks = database.getConfigurationSection("artworks");
 
+        if (artworks == null) return artworkList;
+
         for (String title : artworks.getKeys(false)) {
             ConfigurationSection map = artworks.getConfigurationSection(title);
             if (map != null) {
@@ -54,12 +58,16 @@ public class FlatDatabaseConverter {
                 OfflinePlayer player = (map.contains("artist")) ?
                         Bukkit.getOfflinePlayer(UUID.fromString(map.getString("artist"))) : null;
                 String date = map.getString("date");
-                MapArt artwork = new MapArt(mapIDValue, title, player, date);
                 MapView mapView = Bukkit.getMap(mapIDValue);
                 if (mapView == null) {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (failed to access map data) ...", title));
                     continue;
                 }
+                if (player == null || !player.hasPlayedBefore()) {
+                    plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
+                    continue;
+                }
+                MapArt artwork = new MapArt(mapIDValue, title, player, date);
                 if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {

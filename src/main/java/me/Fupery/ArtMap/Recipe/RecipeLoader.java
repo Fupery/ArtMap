@@ -98,8 +98,9 @@ public class RecipeLoader {
     private void validateRecipeShape(String recipeName, List<String> shape) throws InvalidRecipeException {
         if (shape.size() != 3) throw new InvalidRecipeException(recipeName, "Recipe shape must have 3 lines");
         for (String line : shape) {
-            if (line.length() != 3)
+            if (line.length() != 3) {
                 throw new InvalidRecipeException(recipeName, "Recipe shape must have 3 characters per line.");
+            }
         }
     }
 
@@ -153,7 +154,7 @@ public class RecipeLoader {
         }
     }
 
-    static class InvalidMaterialKeyException extends InvalidRecipeException {
+    private static class InvalidMaterialKeyException extends InvalidRecipeException {
         private InvalidMaterialKeyException(String recipeName, String key, String message) {
             super(recipeName, String.format("'%s' %s", key, message));
         }

@@ -274,6 +274,23 @@ public class ArtDatabase {
 
     private abstract class QueuedStatement extends QueuedQuery<Boolean> {
 
+        int[] executeBatch(String query) {
+            Connection connection = null;
+            PreparedStatement statement = null;
+            int[] result = new int[0];
+            try {
+                connection = getConnection();
+                statement = connection.prepareStatement(query);
+                prepare(statement);
+                result = statement.executeBatch();
+            } catch (Exception e) {
+                ErrorLogger.log(e, ArtDatabase.sqlError);
+            } finally {
+                close(connection, statement);
+            }
+            return result;
+        }
+
         Boolean read(ResultSet set) throws SQLException {
             return false;//unused
         }
@@ -295,22 +312,7 @@ public class ArtDatabase {
             return result;
         }
 
-        int[] executeBatch(String query) {
-            Connection connection = null;
-            PreparedStatement statement = null;
-            int[] result = new int[0];
-            try {
-                connection = getConnection();
-                statement = connection.prepareStatement(query);
-                prepare(statement);
-                result = statement.executeBatch();
-            } catch (Exception e) {
-                ErrorLogger.log(e, ArtDatabase.sqlError);
-            } finally {
-                close(connection, statement);
-            }
-            return result;
-        }
+
     }
 
     private abstract class QueuedQuery<T> {
@@ -320,13 +322,13 @@ public class ArtDatabase {
         abstract T read(ResultSet set) throws SQLException;
 
         void close(Connection connection, PreparedStatement statement) {
-            if (connection != null) try {
-                connection.close();
+            if (statement != null) try {
+                if (!statement.isClosed()) statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            if (statement != null) try {
-                statement.close();
+            if (connection != null) try {
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

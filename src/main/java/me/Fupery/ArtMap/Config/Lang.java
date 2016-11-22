@@ -53,11 +53,6 @@ public enum Lang implements LangSet<String> {
         if (message != null) sender.sendMessage(message);
     }
 
-    @Override
-    public String get() {
-        return message;
-    }
-
     public enum ActionBar implements LangSet<WrappedPacket> {
         EASEL_HELP(false), NEED_CANVAS(true), PAINTING(false), SAVE_USAGE(false), ELSE_USING(true),
         NO_PERM_ACTION(true), NO_EDIT_PERM(true), INVALID_POS(true);
@@ -79,6 +74,9 @@ public enum Lang implements LangSet<String> {
         public WrappedPacket get() {
             return message;
         }
+    }    @Override
+    public String get() {
+        return message;
     }
 
     public enum Array implements LangSet<String[]> {
@@ -114,5 +112,7 @@ public enum Lang implements LangSet<String> {
             return expressions;
         }
     }
+
+
 
 }
