@@ -19,7 +19,7 @@ public class PixelTableManager {
         try {
             table = DataTables.loadTable(mapResolutionFactor);
             return new PixelTableManager(mapResolutionFactor, table.getYawBounds(), table.getPitchBounds());
-        } catch (Exception | NoClassDefFoundError e) {
+        } catch (Exception | NoClassDefFoundError | DataTables.InvalidResolutionFactorException e) {
             //return null
         }
         return null;

@@ -19,7 +19,7 @@ public class ProtocolHandler {
         boolean useProtocolLib = ArtMap.getCompatManager().isPluginLoaded("ProtocolLib");
         try {
             ProtocolLibrary.getProtocolManager();
-        } catch (Exception e) {
+        } catch (Exception | NoClassDefFoundError e) {
             useProtocolLib = false;
         }
         if (useProtocolLib) {
