@@ -30,7 +30,9 @@ public class FlatDatabaseConverter {
         plugin.getLogger().info("(This may take a while, but only needs to run once)");
         HashMap<MapArt, MapView> artworks = readArtworks(databaseFile);
 
-        ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtworks(artworks));
+        if (artworks != null && artworks.size() > 0) {
+            ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtworks(artworks));
+        }
 
         File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
         if (!databaseFile.renameTo(disabledDatabaseFile)) {
@@ -46,6 +48,8 @@ public class FlatDatabaseConverter {
         HashMap<MapArt, MapView> artworkList = new HashMap<>();
         FileConfiguration database = YamlConfiguration.loadConfiguration(databaseFile);
         ConfigurationSection artworks = database.getConfigurationSection("artworks");
+
+        if (artworks == null) return artworkList;
 
         for (String title : artworks.getKeys(false)) {
             ConfigurationSection map = artworks.getConfigurationSection(title);
