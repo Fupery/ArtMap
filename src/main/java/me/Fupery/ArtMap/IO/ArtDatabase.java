@@ -278,7 +278,9 @@ public class ArtDatabase {
                 close(connection, statement);
             }
             return result;
-        }        Boolean read(ResultSet set) throws SQLException {
+        }
+
+        Boolean read(ResultSet set) throws SQLException {
             return false;//unused
         }
 
@@ -309,13 +311,13 @@ public class ArtDatabase {
         abstract T read(ResultSet set) throws SQLException;
 
         void close(Connection connection, PreparedStatement statement) {
-            if (connection != null) try {
-                connection.close();
+            if (statement != null) try {
+                if (!statement.isClosed()) statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            if (statement != null) try {
-                statement.close();
+            if (connection != null) try {
+                if (!connection.isClosed()) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
