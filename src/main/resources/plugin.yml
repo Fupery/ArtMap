@@ -2,7 +2,7 @@ name: ${project.name}
 main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
-depends: []
+depend: []
 softdepend: [WorldGuard, ProtocolLib, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock]
 author: Fupery
 
