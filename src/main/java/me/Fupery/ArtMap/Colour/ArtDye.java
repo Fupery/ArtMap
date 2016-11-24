@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Recipe;
+package me.Fupery.ArtMap.Colour;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ public class ArtDye {
     /**
      * Durability value of -1 indicates that items of any durability will be accepted
      */
-    ArtDye(String name, int colour, ChatColor chatColor, Material material, int durability) {
+    protected ArtDye(String name, int colour, ChatColor chatColor, Material material, int durability) {
         this.name = name;
         this.colour = (byte) colour;
         this.chatColour = chatColor;
@@ -22,21 +22,12 @@ public class ArtDye {
         this.durability = (short) durability;
     }
 
-    ArtDye(String name, int colour, ChatColor chatColour, Material material) {
+    protected ArtDye(String name, int colour, ChatColor chatColour, Material material) {
         this(name, colour, chatColour, material, -1);
     }
 
     public byte getColour() {
         return colour;
-    }
-
-    void setDyeItem(Material material, int durability) {
-        this.material = material;
-        this.durability = (short) durability;
-    }
-
-    void setDyeItem(Material material) {
-        setDyeItem(material, -1);
     }
 
     public String name() {
@@ -59,7 +50,7 @@ public class ArtDye {
         return durability;
     }
 
-    public ItemStack getItem() {
+    public ItemStack toItem() {
         return new ItemStack(material, 1, getDurability());
     }
 }

@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +18,11 @@ public enum ArtMaterial {
     private CustomItem artItem;
 
     public static void setupRecipes() {
-        EASEL.artItem = new ArtItem.CraftableItem("EASEL", Material.ARMOR_STAND, "§b§oArtMap Easel")
+        EASEL.artItem = new ArtItem.CraftableItem("EASEL", Material.ARMOR_STAND, ArtItem.EASEL_KEY)
                 .name(RECIPE_EASEL_NAME)
                 .tooltip(RECIPE_EASEL);
 
-        CANVAS.artItem = new ArtItem.CraftableItem("CANVAS", Material.PAPER, "§b§oArtMap Canvas")
+        CANVAS.artItem = new ArtItem.CraftableItem("CANVAS", Material.PAPER, ArtItem.CANVAS_KEY)
                 .name(RECIPE_CANVAS_NAME)
                 .tooltip(RECIPE_EASEL);
 

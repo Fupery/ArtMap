@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
@@ -8,7 +9,6 @@ import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.CloseButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.ArtMap.Recipe.ArtDye;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;

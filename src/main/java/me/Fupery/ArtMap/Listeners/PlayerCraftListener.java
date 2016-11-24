@@ -1,13 +1,12 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtDye;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -41,12 +40,26 @@ class PlayerCraftListener implements RegisteredListener {
             }
             //return the old dye from a crafted paintbucket
         } else if (ArtMaterial.PAINT_BUCKET.isValidMaterial(result)) {
+            boolean kitItem = false;
+            //check if any items involved are from an ArtKit - if so, tag the results of the craft
+            for (ItemStack ingredient : event.getInventory().getMatrix()) {
+                if (ItemUtils.hasKey(ingredient, ArtItem.KIT_KEY)) {
+                    kitItem = true;
+                    break;
+                }
+            }
             for (ItemStack ingredient : event.getInventory().getMatrix()) {
                 if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
                     ArtDye dye = ArtItem.DyeBucket.getColour(ArtMap.getColourPalette(), ingredient);
                     if (dye == null) return;
-                    ItemUtils.giveItem((Player) event.getWhoClicked(), dye.getItem());
+                    ItemStack previousDye = dye.toItem();
+                    if (kitItem) previousDye = ItemUtils.addKey(previousDye, ArtItem.KIT_KEY);
+                    ItemUtils.giveItem((Player) event.getWhoClicked(), previousDye);
                 }
+            }
+            if (kitItem) {
+                ItemStack newResult = ItemUtils.addKey(result, ArtItem.KIT_KEY);
+                event.setCurrentItem(newResult);
             }
         }
     }

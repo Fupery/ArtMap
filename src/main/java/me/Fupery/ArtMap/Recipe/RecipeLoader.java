@@ -21,6 +21,10 @@ public class RecipeLoader {
         recipeFile = configuration.CUSTOM_RECIPES ? reader.tryDataFolder() : reader.readFromResources();
     }
 
+    public void loadRecipes() {
+        ArtMaterial.setupRecipes();
+    }
+
     public void unloadRecipes() {
         Iterator<Recipe> i = Bukkit.getServer().recipeIterator();
         while (i.hasNext()) {

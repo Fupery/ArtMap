@@ -125,6 +125,10 @@ public class CustomItem {
         return amount;
     }
 
+    protected String getKey() {
+        return key;
+    }
+
     public boolean checkItem(ItemStack itemStack) {
         if (itemStack != null
                 && itemStack.getType() == material

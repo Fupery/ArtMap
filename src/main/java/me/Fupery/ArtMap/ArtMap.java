@@ -1,5 +1,7 @@
 package me.Fupery.ArtMap;
 
+import me.Fupery.ArtMap.Colour.BasicPalette;
+import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Configuration;
@@ -13,8 +15,6 @@ import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Recipe.Palette;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.TaskManager;
@@ -105,6 +105,10 @@ public class ArtMap extends JavaPlugin {
         return instance().palette;
     }
 
+    public void setColourPalette(Palette palette) {
+        this.palette = palette;
+    }
+
     public static PixelTableManager getPixelTable() {
         return instance().pixelTable;
     }
@@ -115,7 +119,7 @@ public class ArtMap extends JavaPlugin {
         saveDefaultConfig();
         compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
-        palette = new Palette();
+        palette = new BasicPalette();
         taskManager = new TaskManager(this);
         mapManager = new MapManager(this);
         protocolHandler = new ProtocolHandler();
@@ -134,7 +138,7 @@ public class ArtMap extends JavaPlugin {
         }
         getCommand("artmap").setExecutor(new CommandHandler());
         recipeLoader = new RecipeLoader(this, config);
-        ArtMaterial.setupRecipes();
+        recipeLoader.loadRecipes();
         menuHandler = new MenuHandler(this);
     }
 

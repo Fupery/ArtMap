@@ -1,8 +1,10 @@
 package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Config.Lang;
-import org.bukkit.Bukkit;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -23,7 +25,7 @@ public class ArtItem {
     public static final String CANVAS_KEY = "§b§oArtMap Canvas";
     public static final String EASEL_KEY = "§b§oArtMap Easel";
     public static final String PAINT_BUCKET_KEY = "§b§oPaint Bucket";
-    public static final String KIT_KEY = "§b§oArtKit Item";
+    public static final String KIT_KEY = "§8[ArtKit]";
     public static final String PREVIEW_KEY = "§b§oPreview Artwork";
     public static final String COPY_KEY = "§b§oArtwork Copy";
     private static WeakReference<ItemStack[]> kitReference = new WeakReference<>(getArtKit());
@@ -41,7 +43,7 @@ public class ArtItem {
         itemStack[25] = new KitItem(Material.FEATHER, "§lFeather").toItemStack();
         itemStack[26] = new KitItem(Material.COAL, "§7§lCoal").toItemStack();
         itemStack[27] = new KitItem(Material.COMPASS, "§6§lCompass").toItemStack();
-        itemStack[28] = new KitItem(Material.BUCKET, DyeBucket.bucketName(palette.WHITE)).toItemStack();
+        itemStack[28] = ItemUtils.addKey(new DyeBucket(palette.getDefaultColour()).toItemStack(), KIT_KEY);
         kitReference = new WeakReference<>(itemStack);
         return kitReference.get();
     }
@@ -66,7 +68,7 @@ public class ArtItem {
     public static class DyeBucket extends CustomItem {
         DyeBucket(ArtDye dye) {
             super(Material.BUCKET, bucketKey(dye));
-            if (dye == null) dye = ArtMap.getColourPalette().WHITE;
+            if (dye == null) dye = ArtMap.getColourPalette().getDefaultColour();
             name(bucketName(dye));
             tooltip(RECIPE_PAINTBUCKET.get());
             flag(ItemFlag.HIDE_ENCHANTS);
@@ -105,6 +107,17 @@ public class ArtItem {
             String name = player != null ? player.getName() : "Player";
             name(title);
             tooltip(GOLD + "by " + YELLOW + name, DARK_GREEN + "" + ITALIC + date);
+        }
+    }
+
+    public static class KitItem extends CustomItem {
+        KitItem(Material material, String name) {
+            super(material, KIT_KEY, name);
+        }
+
+        KitItem(Material material, int durability, String name) {
+            super(material, KIT_KEY, durability);
+            name(name);
         }
     }
 }

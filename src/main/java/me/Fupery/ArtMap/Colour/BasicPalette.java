@@ -1,11 +1,11 @@
-package me.Fupery.ArtMap.Recipe;
+package me.Fupery.ArtMap.Colour;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import static org.bukkit.Material.*;
 
-public final class Palette {
+public class BasicPalette implements Palette {
     public final ArtDye
             BLACK = new ArtDye("Black", 119, ChatColor.DARK_GRAY, INK_SACK, 0),
             RED = new ArtDye("Red", 17, ChatColor.RED, INK_SACK, 1),
@@ -37,10 +37,7 @@ public final class Palette {
             SILVER, GRAY, PINK, LIME, YELLOW, LIGHT_BLUE, MAGENTA, ORANGE, WHITE,
             CREAM, COFFEE, GRAPHITE, GUNPOWDER, MAROON, AQUA, GRASS, GOLD, VOID};
 
-    /**
-     * @param item The itemstack to check
-     * @return the corresponding dye colour, or null if the item is not a valid dye.
-     */
+    @Override
     public ArtDye getDye(ItemStack item) {
         for (ArtDye dye : dyes) {
             if (item.getType() == dye.getMaterial()) {
@@ -55,8 +52,14 @@ public final class Palette {
         return null;
     }
 
+    @Override
     public ArtDye[] getDyes() {
         return dyes;
+    }
+
+    @Override
+    public ArtDye getDefaultColour() {
+        return WHITE;
     }
 
 }

@@ -48,7 +48,7 @@ public class MapManager {
 
     private static byte[] getBlankMap() {
         byte[] mapOutput = new byte[MapSize.MAX.size];
-        Arrays.fill(mapOutput, ArtMap.getColourPalette().WHITE.getColour());
+        Arrays.fill(mapOutput, ArtMap.getColourPalette().getDefaultColour().getColour());
         return mapOutput;
     }
 

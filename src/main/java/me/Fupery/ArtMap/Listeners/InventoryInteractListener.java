@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -44,10 +45,7 @@ class InventoryInteractListener implements RegisteredListener {
 
     private boolean isKitDrop(Player player, ItemStack itemStack, Cancellable event) {
         if (ArtMap.getArtistHandler().containsPlayer(player)) {
-            if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore()) return false;
-            if (itemStack.getItemMeta().getLore().contains(ArtItem.KIT_KEY)) {
-                return true;
-            }
+            if (ItemUtils.hasKey(itemStack, ArtItem.KIT_KEY)) return true;
         }
         return false;
     }
