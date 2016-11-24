@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -23,11 +24,7 @@ class CommandPreview extends AsyncCommand {
                 player.setItemInHand(art.getMapItem());
 
                 if (currentItem != null) {
-                    ItemStack leftOver = player.getInventory().addItem(currentItem).get(0);
-
-                    if (leftOver != null) {
-                        player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-                    }
+                    ItemUtils.giveItem(player, currentItem);
                 }
             });
 
