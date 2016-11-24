@@ -115,16 +115,14 @@ public class ArtMap extends JavaPlugin {
         saveDefaultConfig();
         compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
+        palette = new Palette();
         taskManager = new TaskManager(this);
         mapManager = new MapManager(this);
         protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
-        menuHandler = new MenuHandler(this);
         previewing = new ConcurrentHashMap<>();
-        palette = new Palette();
-        recipeLoader = new RecipeLoader(this, config);
         artDatabase = ArtDatabase.buildDatabase(this);
         eventManager = new EventManager(this, bukkitVersion);
         new FlatDatabaseConverter(this).convertDatabase();
@@ -135,7 +133,9 @@ public class ArtMap extends JavaPlugin {
             return;
         }
         getCommand("artmap").setExecutor(new CommandHandler());
+        recipeLoader = new RecipeLoader(this, config);
         ArtMaterial.setupRecipes();
+        menuHandler = new MenuHandler(this);
     }
 
     @Override
