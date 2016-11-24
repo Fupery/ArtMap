@@ -7,11 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,7 +28,7 @@ public class RecipeLoader {
         }
     }
 
-    Recipe getRecipe(ItemStack result, String recipeName) throws InvalidRecipeException {
+    SimpleRecipe getRecipe(String recipeName) throws InvalidRecipeException {
         ConfigurationSection recipeData = recipeFile.getConfigurationSection(recipeName);
         if (recipeData == null) return null;
         ConfigurationSection recipeMaterials = recipeData.getConfigurationSection("MATERIALS");
@@ -44,19 +40,19 @@ public class RecipeLoader {
         boolean recipeIsShaped = shape != null && shape.size() != 0;
         HashMap<Character, WrappedMaterial> materials = readRecipeMaterials(recipeName, recipeMaterials);
 
-        Recipe recipe = recipeIsShaped ? new ShapedRecipe(result) : new ShapelessRecipe(result);
+        SimpleRecipe recipe = recipeIsShaped ? new SimpleRecipe.Shaped() : new SimpleRecipe.Shapeless();
 
         if (recipeIsShaped) {
             validateRecipeShape(recipeName, shape);
-            ((ShapedRecipe) recipe).shape(shape.get(0), shape.get(1), shape.get(2));
+            ((SimpleRecipe.Shaped) recipe).shape(shape.get(0), shape.get(1), shape.get(2));
         }
 
         for (Character key : materials.keySet()) {
             WrappedMaterial material = materials.get(key);
             if (recipeIsShaped) {
-                ((ShapedRecipe) recipe).setIngredient(key, material.getData());
+                ((SimpleRecipe.Shaped) recipe).set(key, material);
             } else {
-                ((ShapelessRecipe) recipe).addIngredient(material.amount, material.getData());
+                ((SimpleRecipe.Shapeless) recipe).add(material);
             }
         }
         return recipe;
@@ -93,26 +89,9 @@ public class RecipeLoader {
             }
             if (materialList.contains(key + ".DURABILITY")) durability = materialList.getInt(key + ".DURABILITY");
             if (materialList.contains(key + ".AMOUNT")) amount = materialList.getInt(key + ".AMOUNT");
-            materials.put(key.charAt(0), new WrappedMaterial(material, amount, durability));
+            materials.put(key.charAt(0), new WrappedMaterial(material, durability, amount));
         }
         return materials;
-    }
-
-    private static class WrappedMaterial {
-        private final Material material;
-        private final int amount;
-        private final byte durability;
-
-        private WrappedMaterial(Material material, int amount, int durability) {
-            this.material = material;
-            this.amount = amount;
-            this.durability = (byte) durability;
-        }
-
-        @SuppressWarnings("deprecation")
-        MaterialData getData() {
-            return new MaterialData(material, durability);
-        }
     }
 
     static class InvalidRecipeException extends Exception {

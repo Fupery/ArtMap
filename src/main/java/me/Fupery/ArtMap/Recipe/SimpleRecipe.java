@@ -7,7 +7,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public abstract class SimpleRecipe {
@@ -18,7 +17,7 @@ public abstract class SimpleRecipe {
 
     public static class Shaped extends SimpleRecipe {
 
-        private HashMap<Character, SimpleItem> items = new HashMap<>();
+        private HashMap<Character, WrappedMaterial> items = new HashMap<>();
         private String[] shape;
 
         public Shaped shape(String... rows) {
@@ -29,11 +28,17 @@ public abstract class SimpleRecipe {
         }
 
         public Shaped set(char key, Material material, int durability) {
-            return set(key, material, durability);
+            items.put(key, new WrappedMaterial(material, durability, 1));
+            return this;
         }
 
         public Shaped set(char key, Material material) {
             return set(key, material, -1);
+        }
+
+        public Shaped set(char key, WrappedMaterial material) {
+            items.put(key, material);
+            return this;
         }
 
         @Override
@@ -41,15 +46,15 @@ public abstract class SimpleRecipe {
             ShapedRecipe recipe = new ShapedRecipe(result);
             recipe.shape(shape);
             for (Character c : items.keySet()) {
-                SimpleItem item = items.get(c);
-                recipe.setIngredient(c, item.material, item.durability);
+                WrappedMaterial item = items.get(c);
+                recipe.setIngredient(c, item.getMaterial(), item.getDurability());
             }
             return recipe;
         }
 
         @Override
         public ItemStack[] getPreview() {
-            ItemStack[] preview = emptyCraftingTable();
+            ItemStack[] preview = new ItemStack[9];
             int i = 0;
             for (String s : shape) {
                 for (char c : s.toCharArray()) {
@@ -63,10 +68,10 @@ public abstract class SimpleRecipe {
 
     public static class Shapeless extends SimpleRecipe {
 
-        private ArrayList<SimpleItem> items = new ArrayList<>();
+        private ArrayList<WrappedMaterial> items = new ArrayList<>();
 
-        public Shapeless add(Material material, int durability, int count) {
-            items.add(new SimpleItem(material, durability, count));
+        public Shapeless add(Material material, int durability, int amount) {
+            items.add(new WrappedMaterial(material, durability, amount));
             return this;
         }
 
@@ -78,20 +83,24 @@ public abstract class SimpleRecipe {
             return add(material, -1, 1);
         }
 
+        public Shapeless add(WrappedMaterial material) {
+            return add(material.getMaterial(), material.getDurability(), material.getAmount());
+        }
+
         @Override
         public Recipe toBukkitRecipe(ItemStack result) {
             ShapelessRecipe recipe = new ShapelessRecipe(result);
-            for (SimpleItem item : items) {
-                recipe.addIngredient(item.count, item.material, item.durability);
+            for (WrappedMaterial item : items) {
+                recipe.addIngredient(item.getAmount(), item.getMaterial(), item.getDurability());
             }
             return recipe;
         }
 
         @Override
         public ItemStack[] getPreview() {
-            ItemStack[] preview = emptyCraftingTable();
-            for (int i = 0; i < 9; i++) {
-                SimpleItem item = items.get(i);
+            ItemStack[] preview = new ItemStack[9];
+            for (int i = 0; i < 9 && i < items.size(); i++) {
+                WrappedMaterial item = items.get(i);
                 preview[i] = item.toItemStack();
             }
             return preview;
@@ -101,27 +110,6 @@ public abstract class SimpleRecipe {
     private class RecipeException extends RuntimeException {
         private RecipeException(String message) {
             super(message);
-        }
-    }
-    private static ItemStack[] emptyCraftingTable() {
-        ItemStack[] preview = new ItemStack[9];
-        Arrays.fill(preview, Material.AIR);
-        return preview;
-    }
-
-    private static class SimpleItem {
-        private final Material material;
-        private final short durability;
-        private final int count;
-
-        SimpleItem(Material material, int durability, int count) {
-            this.material = material;
-            this.durability = (short) durability;
-            this.count = count;
-        }
-
-        ItemStack toItemStack() {
-            return new ItemStack(material, count, durability);
         }
     }
 

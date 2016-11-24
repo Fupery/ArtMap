@@ -1,21 +1,25 @@
-package me.Fupery.ArtMap.Utils.Item;
+package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Recipe.SimpleRecipe;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class CustomItem {
-    private String name = null;
     private final String key;
     private final Material material;
-    private short durability = 0;
+    private String name = null;
+    private short durability = -1;
     private String[] tooltip = new String[0];
     private ItemFlag[] itemFlags = new ItemFlag[0];
     private HashMap<Enchantment, Integer> enchants = new HashMap<>();
@@ -98,7 +102,7 @@ public class CustomItem {
     }
 
     public Recipe getBukkitRecipe() {
-        return recipe.toBukkitRecipe(toItemStack());
+        return getRecipe().toBukkitRecipe(toItemStack());
     }
 
     public SimpleRecipe getRecipe() {
@@ -106,7 +110,7 @@ public class CustomItem {
     }
 
     public void addRecipe() {
-        if (recipe != null) Bukkit.addRecipe(getBukkitRecipe());
+        if (getRecipe() != null) Bukkit.addRecipe(getBukkitRecipe());
     }
 
     public Material getMaterial() {
@@ -124,8 +128,8 @@ public class CustomItem {
     public boolean checkItem(ItemStack itemStack) {
         if (itemStack != null
                 && itemStack.getType() == material
-                && itemStack.getDurability() == durability
-                && itemStack.hasItemMeta()) {
+                && itemStack.hasItemMeta()
+                && (durability == -1 || itemStack.getDurability() == durability)) {
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta.hasLore() && itemMeta.getLore().get(0).contains(key)) {
                 return true;

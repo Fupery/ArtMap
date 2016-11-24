@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.Utils.Item.CustomItem;
 import org.bukkit.Material;
 
 public class KitItem extends CustomItem {

@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Painting.Brushes;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
+import me.Fupery.ArtMap.Recipe.ArtDye;
 import me.Fupery.ArtMap.Recipe.Palette;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,7 +18,7 @@ public class Dye extends Brush {
 
     @Override
     public void paint(BrushAction action, ItemStack brush, long strokeTime) {
-        Palette.Dye dye = palette.getDye(brush);
+        ArtDye dye = palette.getDye(brush);
         if (dye == null) {
             return;
         }
