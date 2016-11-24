@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 class ColourModifier implements Modifier {
 
-    private HashMap<Character, ChatColor> boundColours = new HashMap<>();
     private final ChatColor baseColour;
+    private HashMap<Character, ChatColor> boundColours = new HashMap<>();
 
     public ColourModifier(ChatColor baseColour) {
         this.baseColour = baseColour;

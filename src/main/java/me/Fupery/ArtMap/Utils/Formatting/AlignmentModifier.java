@@ -12,6 +12,22 @@ public class AlignmentModifier implements Modifier {
         this.lineLength = lineLength;
     }
 
+    private static int cumulativeLength(String[] strings) {
+        int minimumLength = 0;
+        for (String word : strings) minimumLength += word.length();
+        return minimumLength;
+    }
+
+    private static String whitespace(int length) {
+        return String.valueOf(repeatChar('_', length));
+    }
+
+    private static char[] repeatChar(char c, int times) {
+        char[] chars = new char[times];
+        Arrays.fill(chars, c);
+        return chars;
+    }
+
     @Override
     public String apply(String rawString) {
         String string = rawString.trim();
@@ -39,22 +55,6 @@ public class AlignmentModifier implements Modifier {
             default:
                 return rawString;
         }
-    }
-
-    private static int cumulativeLength(String[] strings) {
-        int minimumLength = 0;
-        for (String word : strings) minimumLength += word.length();
-        return minimumLength;
-    }
-
-    private static String whitespace(int length) {
-        return String.valueOf(repeatChar('_', length));
-    }
-
-    private static char[] repeatChar(char c, int times) {
-        char[] chars = new char[times];
-        Arrays.fill(chars, c);
-        return chars;
     }
 
     private enum Alignment {

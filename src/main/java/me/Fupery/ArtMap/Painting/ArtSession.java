@@ -103,10 +103,10 @@ public class ArtSession {
             inventory.setItemInOffHand(new ItemStack(Material.AIR));
             if (leftOver != null) player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
             this.inventory = inventory.getStorageContents().clone();
-            inventory.setStorageContents(ArtItem.getKit());
+            inventory.setStorageContents(ArtItem.getArtKit());
         } else {
             this.inventory = inventory.getContents();
-            inventory.setContents(ArtItem.getKit());
+            inventory.setContents(ArtItem.getArtKit());
         }
     }
 

@@ -14,6 +14,7 @@ import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Recipe.Palette;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.TaskManager;
@@ -31,7 +32,7 @@ public class ArtMap extends JavaPlugin {
     private static SoftReference<ArtMap> pluginInstance = null;
     private MenuHandler menuHandler;
     private ArtistHandler artistHandler;
-    private ConcurrentHashMap<Player, Preview> previewing;
+    private ConcurrentHashMap<Player, Preview> previewing; //todo why is this here?
     private VersionHandler bukkitVersion;
     private TaskManager taskManager;
     private ArtDatabase artDatabase;
@@ -43,6 +44,7 @@ public class ArtMap extends JavaPlugin {
     private PixelTableManager pixelTable;
     private Configuration config;
     private EventManager eventManager;
+    private Palette palette;
 
     public static ArtDatabase getArtDatabase() {
         return instance().artDatabase;
@@ -99,24 +101,12 @@ public class ArtMap extends JavaPlugin {
         return instance().protocolHandler;
     }
 
-    public static PixelTableManager getPixelTable() {
-        return instance().pixelTable;
+    public static Palette getColourPalette() {
+        return instance().palette;
     }
 
-    @Override
-    public void onDisable() {
-        artistHandler.stop();
-        menuHandler.closeAll();
-        mapManager.saveKeys();
-
-        if (previewing.size() > 0) {
-            for (Player player : previewing.keySet()) {
-                Preview.stop(player);
-            }
-        }
-        recipeLoader.unloadRecipes();
-        reloadConfig();
-        pluginInstance = null;
+    public static PixelTableManager getPixelTable() {
+        return instance().pixelTable;
     }
 
     @Override
@@ -133,6 +123,7 @@ public class ArtMap extends JavaPlugin {
         cacheManager = new ChannelCacheManager();
         menuHandler = new MenuHandler(this);
         previewing = new ConcurrentHashMap<>();
+        palette = new Palette();
         recipeLoader = new RecipeLoader(this, config);
         artDatabase = ArtDatabase.buildDatabase(this);
         eventManager = new EventManager(this, bukkitVersion);
@@ -147,7 +138,6 @@ public class ArtMap extends JavaPlugin {
         ArtMaterial.setupRecipes();
     }
 
-<<<<<<< HEAD
     @Override
     public void onDisable() {
         artistHandler.stop();
@@ -158,37 +148,6 @@ public class ArtMap extends JavaPlugin {
         recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;
-=======
-    private FileConfiguration loadOptionalYAML(String configOption, String fileName) {
-        FileConfiguration defaultValues = YamlConfiguration.loadConfiguration(getTextResource(fileName));
-        if (!getConfig().getBoolean(configOption)) {
-            return defaultValues;
-        } else {
-            File file = new File(getDataFolder(), fileName);
-            if (!file.exists()) {
-                try {
-                    if (!file.createNewFile()) return defaultValues;
-                    Files.copy(getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    getLogger().info(String.format("Failed to build %s file", fileName));
-                    return defaultValues;
-                }
-            }
-            return YamlConfiguration.loadConfiguration(file);
-        }
-    }
-
-    private boolean loadTables() {
-        return ((pixelTable = PixelTableManager.buildTables(mapResolutionFactor)) != null);
-    }
-
-    public int getMapResolutionFactor() {
-        return mapResolutionFactor;
-    }
-
-    public PixelTableManager getPixelTable() {
-        return pixelTable;
->>>>>>> master
     }
 
     public Reader getTextResourceFile(String fileName) {

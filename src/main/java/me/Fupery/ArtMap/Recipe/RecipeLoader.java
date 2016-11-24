@@ -2,22 +2,17 @@ package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Configuration;
+import me.Fupery.ArtMap.IO.YamlReader;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,42 +21,14 @@ public class RecipeLoader {
     private final FileConfiguration recipeFile;
 
     public RecipeLoader(ArtMap plugin, Configuration configuration) {
-        this.recipeFile = loadRecipeFile(plugin, configuration.CUSTOM_RECIPES);
-    }
-
-    private static FileConfiguration loadRecipeFile(ArtMap plugin, boolean customRecipes) {
-        String fileName = "recipe.yml";
-        FileConfiguration defaultValues = YamlConfiguration.loadConfiguration(plugin.getTextResourceFile(fileName));
-        if (!customRecipes) {
-            return defaultValues;
-        } else {
-            File file = new File(plugin.getDataFolder(), fileName);
-            if (!file.exists()) {
-                try {
-                    if (!file.createNewFile()) return defaultValues;
-                    Files.copy(plugin.getResource(fileName), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    plugin.getLogger().info(String.format("Failed to build %s file", fileName));
-                    return defaultValues;
-                }
-            }
-            return YamlConfiguration.loadConfiguration(file);
-        }
+        YamlReader reader = new YamlReader(plugin, "recipe.yml");
+        recipeFile = configuration.CUSTOM_RECIPES ? reader.tryDataFolder() : reader.readFromResources();
     }
 
     public void unloadRecipes() {
         Iterator<Recipe> i = Bukkit.getServer().recipeIterator();
         while (i.hasNext()) {
-            Recipe recipe = i.next();
-            ItemStack result = recipe.getResult();
-            ItemMeta meta = result.getItemMeta();
-            if (meta == null || !meta.hasLore()) continue;
-            List<String> lore = meta.getLore();
-            for (String string : new String[]{ArtItem.CANVAS_KEY, ArtItem.EASEL_KEY, ArtItem.PAINT_BUCKET_KEY}) {
-                if (lore.get(0).equals(string)) {
-                    i.remove();
-                }
-            }
+            if (ArtMaterial.getCraftItemType(i.next().getResult()) != null) i.remove();
         }
     }
 
@@ -74,19 +41,19 @@ public class RecipeLoader {
             throw new InvalidRecipeException(recipeName, "Recipe cannot have less than two materials");
 
         List<String> shape = recipeData.getStringList("SHAPE");
-        boolean hasShape = shape != null && shape.size() != 0;
+        boolean recipeIsShaped = shape != null && shape.size() != 0;
         HashMap<Character, WrappedMaterial> materials = readRecipeMaterials(recipeName, recipeMaterials);
 
-        Recipe recipe = hasShape ? new ShapedRecipe(result) : new ShapelessRecipe(result);
+        Recipe recipe = recipeIsShaped ? new ShapedRecipe(result) : new ShapelessRecipe(result);
 
-        if (hasShape) {
+        if (recipeIsShaped) {
             validateRecipeShape(recipeName, shape);
             ((ShapedRecipe) recipe).shape(shape.get(0), shape.get(1), shape.get(2));
         }
 
         for (Character key : materials.keySet()) {
             WrappedMaterial material = materials.get(key);
-            if (hasShape) {
+            if (recipeIsShaped) {
                 ((ShapedRecipe) recipe).setIngredient(key, material.getData());
             } else {
                 ((ShapelessRecipe) recipe).addIngredient(material.amount, material.getData());

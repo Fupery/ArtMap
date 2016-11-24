@@ -49,10 +49,10 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
 
         final ArtMaterial recipe;
 
-        public RecipeButton(ArtMaterial recipe) {
-            super(recipe.getItem().getType());
-            this.recipe = recipe;
-            ItemMeta meta = recipe.getItem().getItemMeta();
+        public RecipeButton(ArtMaterial material) {
+            super(material.getType());
+            this.recipe = material;
+            ItemMeta meta = material.getItem().getItemMeta();
             List<String> lore = meta.getLore();
             lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.get());
             if (adminMenu) lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());

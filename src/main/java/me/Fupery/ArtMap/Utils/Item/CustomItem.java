@@ -1,17 +1,15 @@
 package me.Fupery.ArtMap.Utils.Item;
 
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Recipe.SimpleRecipe;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CustomItem {
     private String name = null;
@@ -20,12 +18,19 @@ public class CustomItem {
     private short durability = 0;
     private String[] tooltip = new String[0];
     private ItemFlag[] itemFlags = new ItemFlag[0];
+    private HashMap<Enchantment, Integer> enchants = new HashMap<>();
     private int amount = 1;
-    private Recipe recipe = null;
+    private SimpleRecipe recipe = null;
 
     public CustomItem(Material material, String uniqueKey) {
         this.material = material;
         this.key = uniqueKey;
+    }
+
+    public CustomItem(Material material, String uniqueKey, int durability) {
+        this.material = material;
+        this.key = uniqueKey;
+        this.durability = (short) durability;
     }
 
     public CustomItem(Material material, String key, String name) {
@@ -77,29 +82,59 @@ public class CustomItem {
         return this;
     }
 
+    public CustomItem enchant(Enchantment enchantment, int level) {
+        enchants.put(enchantment, level);
+        return this;
+    }
+
     public CustomItem flag(ItemFlag... itemFlags) {
         this.itemFlags = itemFlags;
         return this;
     }
 
-    public CustomItem recipe(Recipe recipe) {
+    public CustomItem recipe(SimpleRecipe recipe) {
         this.recipe = recipe;
         return this;
     }
 
-    public Recipe getRecipe() {
+    public Recipe getBukkitRecipe() {
+        return recipe.toBukkitRecipe(toItemStack());
+    }
+
+    public SimpleRecipe getRecipe() {
         return recipe;
     }
 
     public void addRecipe() {
-        if (recipe != null) Bukkit.addRecipe(recipe);
+        if (recipe != null) Bukkit.addRecipe(getBukkitRecipe());
     }
 
-    public boolean isCraftable() {
-        return recipe != null;
+    public Material getMaterial() {
+        return material;
     }
 
-    public ItemStack toItem() {
+    public short getDurability() {
+        return durability;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public boolean checkItem(ItemStack itemStack) {
+        if (itemStack != null
+                && itemStack.getType() == material
+                && itemStack.getDurability() == durability
+                && itemStack.hasItemMeta()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta.hasLore() && itemMeta.getLore().get(0).contains(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ItemStack toItemStack() {
         ItemStack item = new ItemStack(material, amount, durability);
         ItemMeta meta = item.getItemMeta();
         if (name != null) meta.setDisplayName(name);
@@ -108,6 +143,9 @@ public class CustomItem {
         if (tooltip.length > 0) Collections.addAll(lore, tooltip);
         meta.setLore(lore);
         if (itemFlags.length > 0) meta.addItemFlags(itemFlags);
+        if (enchants.size() > 0) {
+            for (Enchantment e : enchants.keySet()) meta.addEnchant(e, enchants.get(e), true);
+        }
         item.setItemMeta(meta);
         return item;
     }

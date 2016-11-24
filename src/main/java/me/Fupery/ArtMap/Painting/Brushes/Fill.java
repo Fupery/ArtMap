@@ -3,8 +3,8 @@ package me.Fupery.ArtMap.Painting.Brushes;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
-import me.Fupery.ArtMap.Recipe.ArtDye;
 import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.Palette;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Fill extends Brush {
     private final ArrayList<Pixel> lastFill;
     private int axisLength;
+    private Palette palette = ArtMap.getColourPalette();
 
     public Fill(CanvasRenderer renderer) {
         super(renderer);
@@ -23,26 +24,19 @@ public class Fill extends Brush {
     }
 
     @Override
-    public void paint(BrushAction action, ItemStack brush, long strokeTime) {
+    public void paint(BrushAction action, ItemStack bucket, long strokeTime) {
 
         if (action == BrushAction.LEFT_CLICK) {
-            ItemMeta meta = brush.getItemMeta();
+            ItemMeta meta = bucket.getItemMeta();
 
             if (!meta.hasLore()) {
                 return;
             }
-            ArtDye colour = null;
-            String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
+            Palette.Dye colour = ArtItem.DyeBucket.getColour(palette, bucket);
 
-            for (ArtDye dye : ArtDye.values()) {
-                if (lore[0].equals(ArtItem.PAINT_BUCKET_KEY + " §7[" + dye.name() + "]")) {
-                    colour = dye;
-                    break;
-                }
-            }
             if (colour != null) {
                 clean();
-                fillPixel(colour.getData());
+                fillPixel(colour.getColour());
             }
 
         } else if (lastFill.size() > 0) {
@@ -53,27 +47,8 @@ public class Fill extends Brush {
     }
 
     @Override
-    public boolean checkMaterial(ItemStack brush) {
-        if (brush.getType() == Material.BUCKET && brush.hasItemMeta()) {
-
-            ItemMeta meta = brush.getItemMeta();
-
-            if (meta.hasLore()) {
-                ArtDye colour = null;
-                String[] lore = meta.getLore().toArray(new String[meta.getLore().size()]);
-
-                for (ArtDye dye : ArtDye.values()) {
-
-                    if (lore[0].equals(ArtItem.PAINT_BUCKET_KEY + " §7[" + dye.name() + "]")) {
-                        colour = dye;
-                        break;
-                    }
-                }
-
-                return colour != null;
-            }
-        }
-        return false;
+    public boolean checkMaterial(ItemStack bucket) {
+        return ArtItem.DyeBucket.getColour(palette, bucket) != null;
     }
 
     @Override

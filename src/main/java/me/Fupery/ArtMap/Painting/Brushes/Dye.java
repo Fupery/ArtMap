@@ -1,12 +1,14 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
-import me.Fupery.ArtMap.Recipe.ArtDye;
+import me.Fupery.ArtMap.Recipe.Palette;
 import org.bukkit.inventory.ItemStack;
 
 public class Dye extends Brush {
     private byte[] lastFlowPixel;
+    private Palette palette = ArtMap.getColourPalette();
 
     public Dye(CanvasRenderer renderer) {
         super(renderer);
@@ -15,7 +17,7 @@ public class Dye extends Brush {
 
     @Override
     public void paint(BrushAction action, ItemStack brush, long strokeTime) {
-        ArtDye dye = ArtDye.getArtDye(brush);
+        Palette.Dye dye = palette.getDye(brush);
         if (dye == null) {
             return;
         }
@@ -23,13 +25,13 @@ public class Dye extends Brush {
             clean();
             byte[] pixel = getCurrentPixel();
             if (pixel != null) {
-                addPixel(pixel[0], pixel[1], dye.getData());
+                addPixel(pixel[0], pixel[1], dye.getColour());
             }
         } else {
             if (strokeTime > 250) {
                 clean();
             }
-            byte colour = dye.getData();
+            byte colour = dye.getColour();
             byte[] pixel = getCurrentPixel();
 
             if (pixel != null) {
@@ -57,7 +59,7 @@ public class Dye extends Brush {
 
     @Override
     public boolean checkMaterial(ItemStack brush) {
-        return ArtDye.getArtDye(brush) != null;
+        return palette.getDye(brush) != null;
     }
 
     @Override

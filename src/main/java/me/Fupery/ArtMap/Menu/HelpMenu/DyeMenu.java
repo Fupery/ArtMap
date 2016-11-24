@@ -8,7 +8,7 @@ import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.CloseButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.ArtMap.Recipe.ArtDye;
+import me.Fupery.ArtMap.Recipe.Palette;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -22,16 +22,14 @@ public class DyeMenu extends BasicMenu implements ChildMenu {
     @Override
     public Button[] getButtons() {
         Button[] buttons = new Button[27];
-        ArtDye[] dyes = ArtDye.values();
+        Palette.Dye[] dyes = ArtMap.getColourPalette().getDyes();
         buttons[0] = new StaticButton(Material.SIGN, Lang.Array.INFO_DYES.get());
         buttons[26] = new CloseButton();
 
         for (int i = 1; i < 26; i++) {
-            ArtDye dye = dyes[i - 1];
-            Material displayMaterial = dye.getRecipeItem().getItemType();
-            String displayName = dye.getDisplay() + dye.name().toLowerCase();
-            buttons[i] = new StaticButton(displayMaterial, "", new String[]{displayName});
-            buttons[i].setDurability(dye.getRecipeItem().getData());
+            Palette.Dye dye = dyes[i - 1];
+            buttons[i] = new StaticButton(dye.getMaterial(), "", new String[]{dye.name()});
+            buttons[i].setDurability(dye.getDurability());
         }
         return buttons;
     }
