@@ -27,4 +27,15 @@ public class Version implements Comparable<Version> {
     public boolean isLessThan(int... numbers) {
         return compareTo(new Version(numbers)) == -1;
     }
+
+    @Override
+    public String toString() {
+        if (numbers.length == 0) return "0";
+        String ver = "";
+        for (int i = 0; i < numbers.length; i++) {
+            ver += numbers[i];
+            if (i < numbers.length - 1) ver += ".";
+        }
+        return ver;
+    }
 }
