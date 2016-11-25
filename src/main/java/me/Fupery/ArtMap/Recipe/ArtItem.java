@@ -75,7 +75,7 @@ public class ArtItem {
             enchant(Enchantment.LUCK, 1);
             recipe(new SimpleRecipe.Shapeless()
                     .add(Material.BUCKET)
-                    .add(dye.getMaterial(), dye.getDurability()));
+                    .add(new Ingredient.WrappedItem(dye.toItem())));
         }
 
         public static ArtDye getColour(Palette palette, ItemStack bucket) {

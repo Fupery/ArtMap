@@ -17,7 +17,7 @@ public abstract class SimpleRecipe {
 
     public static class Shaped extends SimpleRecipe {
 
-        private HashMap<Character, WrappedMaterial> items = new HashMap<>();
+        private HashMap<Character, Ingredient> items = new HashMap<>();
         private String[] shape;
 
         public Shaped shape(String... rows) {
@@ -28,7 +28,7 @@ public abstract class SimpleRecipe {
         }
 
         public Shaped set(char key, Material material, int durability) {
-            items.put(key, new WrappedMaterial(material, durability, 1));
+            items.put(key, new Ingredient.WrappedMaterial(material, durability, 1));
             return this;
         }
 
@@ -36,8 +36,8 @@ public abstract class SimpleRecipe {
             return set(key, material, -1);
         }
 
-        public Shaped set(char key, WrappedMaterial material) {
-            items.put(key, material);
+        public Shaped set(char key, Ingredient ingredient) {
+            items.put(key, ingredient);
             return this;
         }
 
@@ -46,7 +46,7 @@ public abstract class SimpleRecipe {
             ShapedRecipe recipe = new ShapedRecipe(result);
             recipe.shape(shape);
             for (Character c : items.keySet()) {
-                WrappedMaterial item = items.get(c);
+                Ingredient item = items.get(c);
                 recipe.setIngredient(c, item.getMaterial(), item.getDurability());
             }
             return recipe;
@@ -68,10 +68,10 @@ public abstract class SimpleRecipe {
 
     public static class Shapeless extends SimpleRecipe {
 
-        private ArrayList<WrappedMaterial> items = new ArrayList<>();
+        private ArrayList<Ingredient> items = new ArrayList<>();
 
         public Shapeless add(Material material, int durability, int amount) {
-            items.add(new WrappedMaterial(material, durability, amount));
+            items.add(new Ingredient.WrappedMaterial(material, durability, amount));
             return this;
         }
 
@@ -83,14 +83,14 @@ public abstract class SimpleRecipe {
             return add(material, -1, 1);
         }
 
-        public Shapeless add(WrappedMaterial material) {
-            return add(material.getMaterial(), material.getDurability(), material.getAmount());
+        public Shapeless add(Ingredient ingredient) {
+            return add(ingredient.getMaterial(), ingredient.getDurability(), ingredient.getAmount());
         }
 
         @Override
         public Recipe toBukkitRecipe(ItemStack result) {
             ShapelessRecipe recipe = new ShapelessRecipe(result);
-            for (WrappedMaterial item : items) {
+            for (Ingredient item : items) {
                 recipe.addIngredient(item.getAmount(), item.getMaterial(), item.getDurability());
             }
             return recipe;
@@ -100,7 +100,7 @@ public abstract class SimpleRecipe {
         public ItemStack[] getPreview() {
             ItemStack[] preview = new ItemStack[9];
             for (int i = 0; i < 9 && i < items.size(); i++) {
-                WrappedMaterial item = items.get(i);
+                Ingredient item = items.get(i);
                 preview[i] = item.toItemStack();
             }
             return preview;

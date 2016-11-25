@@ -42,7 +42,7 @@ public class RecipeLoader {
 
         List<String> shape = recipeData.getStringList("SHAPE");
         boolean recipeIsShaped = shape != null && shape.size() != 0;
-        HashMap<Character, WrappedMaterial> materials = readRecipeMaterials(recipeName, recipeMaterials);
+        HashMap<Character, Ingredient> materials = readRecipeMaterials(recipeName, recipeMaterials);
 
         SimpleRecipe recipe = recipeIsShaped ? new SimpleRecipe.Shaped() : new SimpleRecipe.Shapeless();
 
@@ -52,7 +52,7 @@ public class RecipeLoader {
         }
 
         for (Character key : materials.keySet()) {
-            WrappedMaterial material = materials.get(key);
+            Ingredient material = materials.get(key);
             if (recipeIsShaped) {
                 ((SimpleRecipe.Shaped) recipe).set(key, material);
             } else {
@@ -71,9 +71,9 @@ public class RecipeLoader {
         }
     }
 
-    private HashMap<Character, WrappedMaterial> readRecipeMaterials(String recipeName, ConfigurationSection materialList)
+    private HashMap<Character, Ingredient> readRecipeMaterials(String recipeName, ConfigurationSection materialList)
             throws InvalidRecipeException {
-        HashMap<Character, WrappedMaterial> materials = new HashMap<>();
+        HashMap<Character, Ingredient> materials = new HashMap<>();
         for (String key : materialList.getKeys(false)) {
             if (key.length() > 1)
                 throw new InvalidMaterialKeyException(recipeName, key, "is not a valid material key");
@@ -93,7 +93,7 @@ public class RecipeLoader {
             }
             if (materialList.contains(key + ".DURABILITY")) durability = materialList.getInt(key + ".DURABILITY");
             if (materialList.contains(key + ".AMOUNT")) amount = materialList.getInt(key + ".AMOUNT");
-            materials.put(key.charAt(0), new WrappedMaterial(material, durability, amount));
+            materials.put(key.charAt(0), new Ingredient.WrappedMaterial(material, durability, amount));
         }
         return materials;
     }
