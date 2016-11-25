@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
 import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import org.bukkit.Bukkit;
@@ -40,10 +39,10 @@ public class CommandHandler implements CommandExecutor {
                         if (args.length > 0 & sender.hasPermission("artmap.admin")) {
                             Lang.Array.CONSOLE_HELP.send(sender);
                         }
-                        MenuHandler menuHandler = ArtMap.getMenuHandler();
-                        menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                         PlayerOpenMenuEvent event = new PlayerOpenMenuEvent((Player) sender);
                         Bukkit.getServer().getPluginManager().callEvent(event);
+                        MenuHandler menuHandler = ArtMap.getMenuHandler();
+                        menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                     });
                 } else {
                     Lang.Array.CONSOLE_HELP.send(sender);
