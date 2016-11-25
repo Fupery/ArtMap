@@ -30,10 +30,9 @@ public class CommandHandler implements CommandExecutor {
         commands.put("restore", new CommandRestore());
 
         //convenience commands
-        commands.put("help", new AsyncCommand(null, "/artmap [help]", true) {
+        commands.put("help", new AsyncCommand("artmap.menu", "/artmap [help]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-
                 if (sender instanceof Player) {
                     ArtMap.getTaskManager().SYNC.run(() -> {
                         if (args.length > 0 & sender.hasPermission("artmap.admin")) {

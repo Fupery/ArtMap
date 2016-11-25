@@ -21,6 +21,10 @@ permissions:
     description: Allows players to place/break easels in regions that they are a member of, but DO NOT own.
     default: op
 
+  artmap.menu:
+    description: Allows players to open the ArtMap menu
+    default: true
+
   artmap.artist:
     description: Allows players to paint, and place/break easels in any region they own, or are a member of.
     children:

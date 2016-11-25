@@ -64,7 +64,7 @@ class CommandSave extends AsyncCommand {
             ItemUtils.giveItem(player, art1.getMapItem());
             SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
             easel.playEffect(Effect.HAPPY_VILLAGER);
-            player.sendMessage(String.format(Lang.SAVE_SUCCESS.get(), title));
+            player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
         });
     }
 }

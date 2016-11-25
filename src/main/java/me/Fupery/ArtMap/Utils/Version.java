@@ -32,6 +32,10 @@ public class Version implements Comparable<Version> {
         return 0;
     }
 
+    public boolean isEqualTo(int... numbers) {
+        return compareTo(new Version(numbers)) == 1;
+    }
+
     public boolean isGreaterThan(int... numbers) {
         return compareTo(new Version(numbers)) == 1;
     }
