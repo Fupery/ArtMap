@@ -72,32 +72,4 @@ public class VersionHandler {
 
     }
 
-    static class Version implements Comparable<Version> {
-        final int[] numbers;
-
-        Version(int... numbers) {
-            this.numbers = numbers;
-        }
-
-        @Override
-        public int compareTo(Version ver) {
-            int len = (ver.numbers.length > numbers.length) ? ver.numbers.length : numbers.length;
-            for (int i = 0; i < len; i++) {
-                int a = i < numbers.length ? numbers[i] : 0;
-                int b = i < ver.numbers.length ? ver.numbers[i] : 0;
-                if (a != b) {
-                    return (a > b) ? 1 : -1;
-                }
-            }
-            return 0;
-        }
-
-        boolean isGreaterThan(int... numbers) {
-            return compareTo(new Version(numbers)) == 1;
-        }
-
-        boolean isLessThan(int... numbers) {
-            return compareTo(new Version(numbers)) == -1;
-        }
-    }
 }
