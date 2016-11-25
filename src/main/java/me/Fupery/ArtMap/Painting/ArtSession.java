@@ -4,6 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselPart;
+import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
 import me.Fupery.ArtMap.Painting.Brushes.Dye;
 import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
@@ -12,6 +13,7 @@ import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -46,6 +48,10 @@ public class ArtSession {
     }
 
     boolean start(Player player) {
+        PlayerMountEaselEvent event = new PlayerMountEaselEvent(player, easel);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
         Location location = easel.getLocation();
         seat = (ArmorStand) EaselPart.SEAT.spawn(location, easel.getFacing());
         marker = (ArmorStand) EaselPart.MARKER.spawn(easel.getLocation(), easel.getFacing());

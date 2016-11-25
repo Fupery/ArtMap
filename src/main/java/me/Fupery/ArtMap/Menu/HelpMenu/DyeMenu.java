@@ -28,8 +28,7 @@ public class DyeMenu extends BasicMenu implements ChildMenu {
 
         for (int i = 1; i < 26; i++) {
             ArtDye dye = dyes[i - 1];
-            buttons[i] = new StaticButton(dye.getMaterial(), "", new String[]{dye.name()});
-            buttons[i].setDurability(dye.getDurability());
+            buttons[i] = new StaticButton(dye.toItem());
         }
         return buttons;
     }

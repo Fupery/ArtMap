@@ -38,7 +38,7 @@ public class ArtItem {
 
         for (int i = 0; i < 25; i++) {
             ArtDye dye = palette.getDyes()[i];
-            itemStack[i] = new KitItem(dye.getMaterial(), dye.getDurability(), dye.name()).toItemStack();
+            itemStack[i] = ItemUtils.addKey(dye.toItem(), KIT_KEY);
         }
         itemStack[25] = new KitItem(Material.FEATHER, "§lFeather").toItemStack();
         itemStack[26] = new KitItem(Material.COAL, "§7§lCoal").toItemStack();
