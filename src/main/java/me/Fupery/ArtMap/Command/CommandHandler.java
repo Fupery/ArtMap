@@ -2,7 +2,10 @@ package me.Fupery.ArtMap.Command;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
+import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,6 +42,8 @@ public class CommandHandler implements CommandExecutor {
                         }
                         MenuHandler menuHandler = ArtMap.getMenuHandler();
                         menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
+                        PlayerOpenMenuEvent event = new PlayerOpenMenuEvent((Player) sender);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
                     });
                 } else {
                     Lang.Array.CONSOLE_HELP.send(sender);
