@@ -84,7 +84,8 @@ public abstract class SimpleRecipe {
         }
 
         public Shapeless add(Ingredient ingredient) {
-            return add(ingredient.getMaterial(), ingredient.getDurability(), ingredient.getAmount());
+            items.add(ingredient);
+            return this;
         }
 
         @Override
