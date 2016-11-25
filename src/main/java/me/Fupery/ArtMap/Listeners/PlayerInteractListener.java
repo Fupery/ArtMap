@@ -16,7 +16,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -24,7 +23,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class PlayerInteractListener implements Listener {
+class PlayerInteractListener implements RegisteredListener {
 
     private static BlockFace getFacing(Player player) {
         int yaw = ((int) player.getLocation().getYaw()) % 360;
@@ -128,5 +127,11 @@ public class PlayerInteractListener implements Listener {
                 }
             }
         });
+    }
+
+    @Override
+    public void unregister() {
+        PlayerInteractEvent.getHandlerList().unregister(this);
+        InventoryCreativeEvent.getHandlerList().unregister(this);
     }
 }

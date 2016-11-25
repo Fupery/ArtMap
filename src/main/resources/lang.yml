@@ -169,6 +169,7 @@ CONSOLE_HELP:
   - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
   - "§3/artmap delete <title> §b: §eDelete an artwork"
   - "§3/artmap restore <title> §b: §eRestore a corrupted artwork"
+
 #-------------------------------------[Artwork Title Filter]-------------------------------------#
 #Words in the following list are filtered from artwork titles:
 #

@@ -1,11 +1,15 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.Palette;
+import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
-import me.Fupery.ArtMap.Recipe.ArtDye;
 import org.bukkit.inventory.ItemStack;
 
 public class Dye extends Brush {
     private byte[] lastFlowPixel;
+    private Palette palette = ArtMap.getColourPalette();
 
     public Dye(CanvasRenderer renderer) {
         super(renderer);
@@ -14,22 +18,22 @@ public class Dye extends Brush {
 
     @Override
     public void paint(BrushAction action, ItemStack brush, long strokeTime) {
-        ArtDye dye = ArtDye.getArtDye(brush);
+        ArtDye dye = palette.getDye(brush);
         if (dye == null) {
             return;
         }
         if (action == BrushAction.LEFT_CLICK) {
             clean();
-            byte[] pixel = canvas.getCurrentPixel();
+            byte[] pixel = getCurrentPixel();
             if (pixel != null) {
-                canvas.addPixel(pixel[0], pixel[1], dye.getData());
+                addPixel(pixel[0], pixel[1], dye.getColour());
             }
         } else {
             if (strokeTime > 250) {
                 clean();
             }
-            byte colour = dye.getData();
-            byte[] pixel = canvas.getCurrentPixel();
+            byte colour = dye.getColour();
+            byte[] pixel = getCurrentPixel();
 
             if (pixel != null) {
 
@@ -48,7 +52,7 @@ public class Dye extends Brush {
                         return;
                     }
                 }
-                canvas.addPixel(pixel[0], pixel[1], colour);
+                addPixel(pixel[0], pixel[1], colour);
                 lastFlowPixel = new byte[]{pixel[0], pixel[1], colour};
             }
         }
@@ -56,7 +60,7 @@ public class Dye extends Brush {
 
     @Override
     public boolean checkMaterial(ItemStack brush) {
-        return ArtDye.getArtDye(brush) != null;
+        return palette.getDye(brush) != null;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class Dye extends Brush {
         int numerator = longest >> 1;
 
         for (int i = 0; i <= longest; i++) {
-            canvas.addPixel(x, y, colour);
+            addPixel(x, y, colour);
             numerator += shortest;
 
             if (!(numerator < longest)) {

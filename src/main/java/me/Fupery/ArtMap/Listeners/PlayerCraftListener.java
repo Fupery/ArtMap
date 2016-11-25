@@ -1,49 +1,65 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
-// Disallows players from copying ArtMap maps in the crafting table
-public class PlayerCraftListener implements Listener {
+class PlayerCraftListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
-
         ItemStack result = event.getCurrentItem();
-
-        if (result.getType() == Material.MAP && result.hasItemMeta()) {
-
+        // Disallow players from copying ArtMap maps in the crafting table
+        if (result.getType() == Material.MAP) {
             MapArt art = ArtMap.getArtDatabase().getArtwork(result.getDurability());
-
             if (art != null) {
-
                 if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
-
                     Player player = (Player) event.getWhoClicked();
-
                     ItemStack artworkItem = art.getMapItem();
-
                     if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         onShiftClick(artworkItem, player, event);
-
                     } else {
                         result.setItemMeta(artworkItem.getItemMeta());
                     }
-
                 } else {
                     Lang.NO_CRAFT_PERM.send(event.getWhoClicked());
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
                 }
+            }
+            //return the old dye from a crafted paintbucket
+        } else if (ArtMaterial.PAINT_BUCKET.isValidMaterial(result)) {
+            boolean kitItem = false;
+            //check if any items involved are from an ArtKit - if so, tag the results of the craft
+            for (ItemStack ingredient : event.getInventory().getMatrix()) {
+                if (ItemUtils.hasKey(ingredient, ArtItem.KIT_KEY)) {
+                    kitItem = true;
+                    break;
+                }
+            }
+            for (ItemStack ingredient : event.getInventory().getMatrix()) {
+                if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
+                    ArtDye dye = ArtItem.DyeBucket.getColour(ArtMap.getColourPalette(), ingredient);
+                    if (dye == null) return;
+                    ItemStack previousDye = dye.toItem();
+                    if (kitItem) previousDye = ItemUtils.addKey(previousDye, ArtItem.KIT_KEY);
+                    ItemUtils.giveItem((Player) event.getWhoClicked(), previousDye);
+                }
+            }
+            if (kitItem) {
+                ItemStack newResult = ItemUtils.addKey(result, ArtItem.KIT_KEY);
+                event.setCurrentItem(newResult);
             }
         }
     }
@@ -61,10 +77,11 @@ public class PlayerCraftListener implements Listener {
         }
         event.getInventory().setMatrix(new ItemStack[items.length]);
         artworkItem.setAmount(i);
-        ItemStack leftOver = player.getInventory().addItem(artworkItem).get(0);
+        ItemUtils.giveItem(player, artworkItem);
+    }
 
-        if (leftOver != null && leftOver.getAmount() > 0) {
-            player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-        }
+    @Override
+    public void unregister() {
+        CraftItemEvent.getHandlerList().unregister(this);
     }
 }

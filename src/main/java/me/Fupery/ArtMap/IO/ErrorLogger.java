@@ -65,7 +65,6 @@ public class ErrorLogger {
                 logger.close();
             } catch (IOException e) {
                 throwable.printStackTrace();
-                return;
             }
         });
     }

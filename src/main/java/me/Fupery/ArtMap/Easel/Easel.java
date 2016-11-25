@@ -37,7 +37,13 @@ public class Easel {
         exists = new AtomicBoolean(false);
     }
 
-    //Spawns an easel at the location provided, facing the direction provided
+    /**
+     * Attempts to spawn an easel at the location provided, facing the direction provided.
+     *
+     * @param location The location where the easel will be spawned.
+     * @param facing   The direction the easel will face. Valid directions are NORTH, SOUTH, EAST and WEST.
+     * @return A reference to the spawned easel if it was spawned successfully, or null if the area is obstructed.
+     */
     public static Easel spawnEasel(Location location, BlockFace facing) {
         EaselPart.SIGN.spawn(location, facing);
         ArmorStand stand = ((ArmorStand) EaselPart.STAND.spawn(location, facing));
@@ -59,7 +65,13 @@ public class Easel {
         }
     }
 
-    //Attempts to get an easel at the location provided
+    /**
+     * Attempts to get an easel from one of its parts.
+     *
+     * @param partLocation The location of the easel part.
+     * @param part         The easel part being used to find an easel.
+     * @return A reference to the part's easel, or null if none can be found.
+     */
     public static Easel getEasel(Location partLocation, EaselPart part) {
         Location easelLocation =
                 part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
@@ -88,6 +100,12 @@ public class Easel {
         return null;
     }
 
+    /**
+     * Attempts to find an easel at the location provided.
+     *
+     * @param location The location at which to check for an easel.
+     * @return True if an easel exists at this location, or false if not.
+     */
     public static boolean checkForEasel(Location location) {
         Easel easel = new Easel(location);
         Collection<Entity> entities = easel.getNearbyEntities();
@@ -168,12 +186,23 @@ public class Easel {
         return null;
     }
 
+    /**
+     * Mounts a canvas on the easel, with an id defined by the MapView provided.
+     *
+     * @param mapView The MapView of the map that will be edited on the easel.
+     */
     public void mountCanvas(MapView mapView) {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
         getFrame().setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
         playEffect(Effect.POTION_SWIRL_TRANSPARENT);
     }
 
+    /**
+     * Edits an already existing artwork on the easel.
+     *
+     * @param mapView  The MapView of the original artwork.
+     * @param original The title of the original artwork.
+     */
     void editArtwork(MapView mapView, String original) {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
         ItemStack item = new ItemStack(Material.MAP, 1, mapView.getId());
@@ -184,11 +213,21 @@ public class Easel {
         playEffect(Effect.POTION_SWIRL_TRANSPARENT);
     }
 
+    /**
+     * Sits a player at the easel, and allows them to paint.
+     *
+     * @param player The player to sit at the easel.
+     */
     public void rideEasel(Player player) {
         MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
         ArtMap.getArtistHandler().addPlayer(player, this, mapView, EaselPart.getYawOffset(getFacing()));
     }
 
+    /**
+     * Removes the current item mounted on the easel.
+     * If the item is an unsaved canvas, a canvas will be dropped at the easel.
+     * If the item is an edited artwork, a copy of the original artwork wil be dropped.
+     */
     public void removeItem() {
         ItemStack item = getItem();
         if (isACopy(item)) {
@@ -215,6 +254,9 @@ public class Easel {
                 && map.getItemMeta().getLore().get(0).equals(ArtItem.COPY_KEY));
     }
 
+    /**
+     * Breaks the easel, dropping it along with any mounted items.
+     */
     public void breakEasel() {
         if (!exists.getAndSet(false)) return;
         EaselEvent.easels.remove(location);
@@ -238,11 +280,19 @@ public class Easel {
         });
     }
 
+    /**
+     * @return The direction this easel is facing.
+     */
     public BlockFace getFacing() {
         ItemFrame frame = getFrame();
         return (frame != null) ? frame.getFacing() : null;
     }
 
+    /**
+     * Plays an effect at the easel.
+     *
+     * @param effect The effect to play.
+     */
     public void playEffect(Effect effect) {
         BlockFace facing = getFacing();
         Location loc = (facing == null) ? location :
@@ -266,18 +316,30 @@ public class Easel {
         return location.getWorld().getNearbyEntities(location, 2, 2, 2);
     }
 
+    /**
+     * @return The entity reference for the stand part of the easel.
+     */
     public ArmorStand getStand() {
         return getStand(null);
     }
 
+    /**
+     * @return The entity reference for the frame part of the easel.
+     */
     public ItemFrame getFrame() {
         return getFrame(null);
     }
 
+    /**
+     * @return The item currently mounted on the easel, or null if there is none.
+     */
     public ItemStack getItem() {
         return (getFrame() != null) ? getFrame().getItem() : null;
     }
 
+    /**
+     * @return True if an item is currently mounted on the easel.
+     */
     public boolean hasItem() {
         return getFrame() != null && getFrame().getItem().getType() != Material.AIR;
     }

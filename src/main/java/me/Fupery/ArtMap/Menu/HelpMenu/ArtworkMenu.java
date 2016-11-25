@@ -9,6 +9,7 @@ import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
@@ -149,9 +150,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
             } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                    ItemStack leftOver = player.getInventory().addItem(artwork.getMapItem()).get(0);
-                    if (leftOver != null) ArtMap.getTaskManager().SYNC.run(() ->
-                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
+                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
                 } else if (adminViewing) {
                     Lang.NO_PERM.send(player);
                 }

@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ public class Flip extends Brush {
 
     @Override
     public void paint(BrushAction action, ItemStack brush, long strokeTime) {
-        byte[][] buffer = canvas.getPixelBuffer();
+        byte[][] buffer = getPixelBuffer();
 
         byte[][] matrix = new byte[buffer.length][];
         for (int i = 0; i < buffer.length; i++) {
@@ -25,13 +26,13 @@ public class Flip extends Brush {
         if (action == BrushAction.LEFT_CLICK) {
             for (int x = 0; x < matrix.length; x++) {
                 for (int y = 0; y < matrix[0].length; y++) {
-                    canvas.addPixel(matrix.length - 1 - x, y, matrix[x][y]);
+                    addPixel(matrix.length - 1 - x, y, matrix[x][y]);
                 }
             }
         } else {
             for (int x = 0; x < matrix.length; x++) {
                 for (int y = 0; y < matrix[0].length; y++) {
-                    canvas.addPixel(x, matrix[0].length - 1 - y, matrix[x][y]);
+                    addPixel(x, matrix[0].length - 1 - y, matrix[x][y]);
                 }
             }
         }

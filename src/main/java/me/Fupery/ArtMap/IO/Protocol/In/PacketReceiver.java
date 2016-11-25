@@ -4,7 +4,7 @@ import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
 import org.bukkit.entity.Player;
 
-public abstract class PacketReciever {
+public abstract class PacketReceiver {
 
     public boolean injectPlayer(Player player) {
         return true;

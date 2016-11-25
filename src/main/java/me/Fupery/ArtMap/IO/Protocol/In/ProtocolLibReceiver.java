@@ -12,9 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract;
 import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
 
-public class ProtocolLibReciever extends PacketReciever {
+public class ProtocolLibReceiver extends PacketReceiver {
 
-    public ProtocolLibReciever() {
+    public ProtocolLibReceiver() {
         registerListeners(ArtMap.instance());
     }
 

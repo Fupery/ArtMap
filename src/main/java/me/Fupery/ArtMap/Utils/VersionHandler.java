@@ -1,7 +1,5 @@
 package me.Fupery.ArtMap.Utils;
 
-import org.bukkit.Bukkit;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -14,13 +12,7 @@ public class VersionHandler {
     }
 
     private static BukkitVersion checkVersion() {
-        String bukkit = Bukkit.getBukkitVersion();
-        String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
-        int[] verNumbers = new int[ver.length];
-        for (int i = 0; i < ver.length; i++) {
-            verNumbers[i] = Integer.parseInt(ver[i]);
-        }
-        Version version = new Version(verNumbers);
+        Version version = Version.getBukkitVersion();
         if (version.isLessThan(1, 9)) return BukkitVersion.v1_8;
         else if (version.isLessThan(1, 10)) return BukkitVersion.v1_9;
         else return BukkitVersion.v1_10;
@@ -72,32 +64,4 @@ public class VersionHandler {
 
     }
 
-    static class Version implements Comparable<Version> {
-        final int[] numbers;
-
-        Version(int... numbers) {
-            this.numbers = numbers;
-        }
-
-        @Override
-        public int compareTo(Version ver) {
-            int len = (ver.numbers.length > numbers.length) ? ver.numbers.length : numbers.length;
-            for (int i = 0; i < len; i++) {
-                int a = i < numbers.length ? numbers[i] : 0;
-                int b = i < ver.numbers.length ? ver.numbers[i] : 0;
-                if (a != b) {
-                    return (a > b) ? 1 : -1;
-                }
-            }
-            return 0;
-        }
-
-        boolean isGreaterThan(int... numbers) {
-            return compareTo(new Version(numbers)) == 1;
-        }
-
-        boolean isLessThan(int... numbers) {
-            return compareTo(new Version(numbers)) == -1;
-        }
-    }
 }

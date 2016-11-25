@@ -2,7 +2,7 @@ name: ${project.name}
 main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
-depends: []
+depend: []
 softdepend: [WorldGuard, ProtocolLib, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock]
 author: Fupery
 
@@ -20,6 +20,10 @@ permissions:
   artmap.region.member:
     description: Allows players to place/break easels in regions that they are a member of, but DO NOT own.
     default: op
+
+  artmap.menu:
+    description: Allows players to open the ArtMap menu
+    default: true
 
   artmap.artist:
     description: Allows players to paint, and place/break easels in any region they own, or are a member of.

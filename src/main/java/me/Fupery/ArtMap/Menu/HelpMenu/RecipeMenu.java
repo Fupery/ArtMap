@@ -9,12 +9,12 @@ import me.Fupery.ArtMap.Menu.Button.CloseButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -49,10 +49,10 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
 
         final ArtMaterial recipe;
 
-        public RecipeButton(ArtMaterial recipe) {
-            super(recipe.getItem().getType());
-            this.recipe = recipe;
-            ItemMeta meta = recipe.getItem().getItemMeta();
+        public RecipeButton(ArtMaterial material) {
+            super(material.getType());
+            this.recipe = material;
+            ItemMeta meta = material.getItem().getItemMeta();
             List<String> lore = meta.getLore();
             lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.get());
             if (adminMenu) lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
@@ -66,9 +66,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
                 if (clickType == ClickType.LEFT) {
                     ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
                 } else if (clickType == ClickType.RIGHT) {
-                    ItemStack leftOver = player.getInventory().addItem(recipe.getItem()).get(0);
-                    if (leftOver != null) ArtMap.getTaskManager().SYNC.run(() ->
-                            player.getWorld().dropItemNaturally(player.getLocation(), leftOver));
+                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
                 }
             } else {
                 ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));

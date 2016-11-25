@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class PixelTableManager {
     private int resolutionFactor;
@@ -14,15 +15,15 @@ public class PixelTableManager {
         this.pitchBounds = pitchBounds;
     }
 
-    public static PixelTableManager buildTables(int mapResolutionFactor) {
+    public static PixelTableManager buildTables(JavaPlugin plugin) {
         PixelTable table;
+        int mapResolutionFactor = 4;// TODO: 22/09/2016
         try {
             table = DataTables.loadTable(mapResolutionFactor);
             return new PixelTableManager(mapResolutionFactor, table.getYawBounds(), table.getPitchBounds());
         } catch (Exception | NoClassDefFoundError | DataTables.InvalidResolutionFactorException e) {
-            //return null
+            return null;
         }
-        return null;
     }
 
     public float[] getYawBounds() {
@@ -31,5 +32,9 @@ public class PixelTableManager {
 
     public Object[] getPitchBounds() {
         return pitchBounds;
+    }
+
+    public int getResolutionFactor() {
+        return resolutionFactor;
     }
 }

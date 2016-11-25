@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -67,7 +67,7 @@ public class MapArt {
     }
 
     public ItemStack getMapItem() {
-        return ArtMaterial.getMapArt(id, title, getArtistPlayer(), date);
+        return new ArtItem.ArtworkItem(id, title, getArtistPlayer(), date).toItemStack();
     }
 
     public void saveArtwork() {
