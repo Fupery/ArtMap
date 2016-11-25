@@ -41,7 +41,7 @@ public class ArtDatabase {
             }
         }
         try {
-            if (connection != null && !connection.isClosed()) {
+            if (connection != null && !connection.isClosed()) {//todo
                 return connection;
             }
             Class.forName("org.sqlite.JDBC");
@@ -323,12 +323,12 @@ public class ArtDatabase {
 
         void close(Connection connection, PreparedStatement statement) {
             if (statement != null) try {
-                if (!statement.isClosed()) statement.close();
+                statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             if (connection != null) try {
-                if (!connection.isClosed()) connection.close();
+                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
