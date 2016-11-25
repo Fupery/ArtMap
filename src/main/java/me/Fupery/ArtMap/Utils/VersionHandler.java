@@ -1,7 +1,5 @@
 package me.Fupery.ArtMap.Utils;
 
-import org.bukkit.Bukkit;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -14,13 +12,7 @@ public class VersionHandler {
     }
 
     private static BukkitVersion checkVersion() {
-        String bukkit = Bukkit.getBukkitVersion();
-        String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
-        int[] verNumbers = new int[ver.length];
-        for (int i = 0; i < ver.length; i++) {
-            verNumbers[i] = Integer.parseInt(ver[i]);
-        }
-        Version version = new Version(verNumbers);
+        Version version = Version.getBukkitVersion();
         if (version.isLessThan(1, 9)) return BukkitVersion.v1_8;
         else if (version.isLessThan(1, 10)) return BukkitVersion.v1_9;
         else return BukkitVersion.v1_10;
