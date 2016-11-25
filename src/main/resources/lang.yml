@@ -62,7 +62,7 @@ MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
 BUTTON_CLICK: "Click to View"
 BUTTON_CLOSE: "Close" #close the menu
 BUTTON_BACK: "Back" #go back to previous page
-RECIPE_BUTTON: "$3{Left-Click} to view Recipe"
+RECIPE_BUTTON: "Left-Click to view Recipe"
 ADMIN_RECIPE: "Right-Click to get Item"
 RECIPE_HELP: "§a/artmap §2for help"
 RECIPE_EASEL_NAME: "Easel"
