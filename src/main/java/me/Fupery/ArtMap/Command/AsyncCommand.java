@@ -11,7 +11,7 @@ abstract class AsyncCommand {
 
     private final String permission;
     private final boolean consoleAllowed;
-    private final String usage;
+    protected final String usage;
     private int minArgs;
     private int maxArgs;
 

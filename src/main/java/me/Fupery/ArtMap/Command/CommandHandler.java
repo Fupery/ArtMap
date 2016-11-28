@@ -4,11 +4,14 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -28,6 +31,30 @@ public class CommandHandler implements CommandExecutor {
         commands.put("preview", new CommandPreview());
 
         commands.put("restore", new CommandRestore());
+
+        commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas> [amount]", true) {
+            @Override
+            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+                Player player = Bukkit.getPlayer(args[1]);
+                if (player != null) {
+                    ArtMaterial material;
+                    if (args[2].equalsIgnoreCase("easel")) material = ArtMaterial.EASEL;
+                    else if (args[2].equalsIgnoreCase("canvas")) material = ArtMaterial.CANVAS;
+                    else {
+                        sender.sendMessage(Lang.PREFIX + ChatColor.RED + this.usage);
+                        return;
+                    }
+                    ItemStack item = material.getItem();
+                    if (args.length > 3) {
+                        int amount = Integer.parseInt(args[3]);
+                        if (amount > 1) item.setAmount(amount);
+                    }
+                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, item));
+                    return;
+                }
+                sender.sendMessage(String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
+            }
+        });
 
         //convenience commands
         commands.put("help", new AsyncCommand("artmap.menu", "/artmap [help]", true) {
