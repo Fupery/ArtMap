@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 abstract class AsyncCommand {
 
+    protected final String usage;
     private final String permission;
     private final boolean consoleAllowed;
-    protected final String usage;
     private int minArgs;
     private int maxArgs;
 

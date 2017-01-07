@@ -29,16 +29,7 @@ public class ProtocolLibReceiver extends PacketReceiver {
                 PacketType.Play.Client.LOOK,
                 PacketType.Play.Client.USE_ENTITY
         );
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(options) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                ArtistHandler handler = ArtMap.getArtistHandler();
-                if (!handler.containsPlayer(event.getPlayer())) return;
-                ArtistPacket packet = getPacketType(event.getPacket());
-                if (packet == null) return;
-                if (!onPacketPlayIn(handler, event.getPlayer(), packet)) event.setCancelled(true);
-            }
-        });
+        ProtocolLibrary.getProtocolManager().addPacketListener(new DefaultPacketAdapter(options));
     }
 
     private ArtistPacket getPacketType(PacketContainer packet) {
@@ -64,5 +55,20 @@ public class ProtocolLibReceiver extends PacketReceiver {
     @Override
     public void close() {
         ProtocolLibrary.getProtocolManager().removePacketListeners(ArtMap.instance());
+    }
+
+    class DefaultPacketAdapter extends PacketAdapter {
+        DefaultPacketAdapter(AdapterParameteters options) {
+            super(options);
+        }
+
+        @Override
+        public void onPacketReceiving(PacketEvent event) {
+            ArtistHandler handler = ArtMap.getArtistHandler();
+            if (!handler.containsPlayer(event.getPlayer())) return;
+            ArtistPacket packet = getPacketType(event.getPacket());
+            if (packet == null) return;
+            if (!onPacketPlayIn(handler, event.getPlayer(), packet)) event.setCancelled(true);
+        }
     }
 }
