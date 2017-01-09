@@ -151,4 +151,10 @@ public class ArtSession {
     void setActive(boolean active) {
         this.active = active;
     }
+
+    void sendMap(Player player) {
+        ArtMap.getTaskManager().SYNC.run(() -> {
+            player.sendMap(canvas.getMapView());
+        });
+    }
 }

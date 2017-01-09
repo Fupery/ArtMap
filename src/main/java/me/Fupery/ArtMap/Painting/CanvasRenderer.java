@@ -168,4 +168,8 @@ public class CanvasRenderer extends MapRenderer {
     int getAxisLength() {
         return axisLength;
     }
+
+    MapView getMapView() {
+        return mapView;
+    }
 }

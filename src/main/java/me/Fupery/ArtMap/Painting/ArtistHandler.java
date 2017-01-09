@@ -39,6 +39,7 @@ public class ArtistHandler {
                 InteractType click = ((ArtistPacket.PacketInteract) packet).getInteraction();
                 session.paint(sender.getItemInHand(), (click == InteractType.ATTACK)
                         ? BrushAction.LEFT_CLICK : BrushAction.RIGHT_CLICK);
+                session.sendMap(sender);
                 return false;
             }
         } else {
