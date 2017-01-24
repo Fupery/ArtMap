@@ -44,13 +44,6 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        Player player = event.getPlayer();
-        callEaselEvent(player, event.getRightClicked(), event, isSneaking(player));
-        checkPreviewing(player, event);
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         callEaselEvent(event.getDamager(), event.getEntity(), event, ClickType.LEFT_CLICK);
     }

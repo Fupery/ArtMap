@@ -12,8 +12,8 @@ public class PlayerCraftArtMaterialEvent extends PlayerEvent implements Cancella
     private static final HandlerList handlers = new HandlerList();
     private final ArtMaterial material;
     private final ItemStack[] ingredients;
-    private boolean cancelled = false;
     private final CraftItemEvent event;
+    private boolean cancelled = false;
 
     public PlayerCraftArtMaterialEvent(CraftItemEvent event, ArtMaterial material) {
         super(((Player) event.getWhoClicked()));
