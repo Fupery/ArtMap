@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.Fupery</groupId>
     <artifactId>ArtMap</artifactId>
-    <version>2.5.3</version>
+    <version>2.5.4</version>
     <description>Make pixel art!</description>
     <profiles>
     </profiles>
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>com.bekvon</groupId>
             <artifactId>Residence</artifactId>
-            <version>4.5.7.7</version>
+            <version>4.5.13.4</version>
         </dependency>
     </dependencies>
 </project>
