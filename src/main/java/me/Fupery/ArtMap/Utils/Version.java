@@ -1,9 +1,19 @@
 package me.Fupery.ArtMap.Utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Version implements Comparable<Version> {
     private final int[] numbers;
+
+    public Version(JavaPlugin plugin) {
+        String[] strings = plugin.getDescription().getVersion().split("\\.");
+        int[] numbers = new int[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            numbers[i] = Integer.parseInt(strings[i]);
+        }
+        this.numbers = numbers;
+    }
 
     public Version(int... numbers) {
         this.numbers = numbers;
