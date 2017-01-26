@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
+import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
@@ -32,27 +33,39 @@ public class CommandHandler implements CommandExecutor {
 
         commands.put("restore", new CommandRestore());
 
-        commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas> [amount]", true) {
+        commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas|artwork:<title>> [amount]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 Player player = Bukkit.getPlayer(args[1]);
                 if (player != null) {
-                    ArtMaterial material;
-                    if (args[2].equalsIgnoreCase("easel")) material = ArtMaterial.EASEL;
-                    else if (args[2].equalsIgnoreCase("canvas")) material = ArtMaterial.CANVAS;
-                    else {
+                    ItemStack item = null;
+                    if (args[2].equalsIgnoreCase("easel")) item = ArtMaterial.EASEL.getItem();
+                    else if (args[2].equalsIgnoreCase("canvas")) item = ArtMaterial.CANVAS.getItem();
+                    else if (args[2].contains("artwork:")) {
+                        String[] strings = args[2].split(":");
+                        if (strings.length > 1) {
+                            String title = strings[1];
+                            MapArt art = ArtMap.getArtDatabase().getArtwork(title);
+                            if (art == null) {
+                                sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
+                                return;
+                            }
+                            item = art.getMapItem();
+                        }
+                    }
+                    if (item == null) {
                         sender.sendMessage(Lang.PREFIX + ChatColor.RED + this.usage);
                         return;
                     }
-                    ItemStack item = material.getItem();
                     if (args.length > 3) {
                         int amount = Integer.parseInt(args[3]);
                         if (amount > 1) item.setAmount(amount);
                     }
-                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, item));
+                    ItemStack finalItem = item;
+                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
                     return;
                 }
-                sender.sendMessage(String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
+                sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
             }
         });
 
