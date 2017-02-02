@@ -1,8 +1,10 @@
 package me.Fupery.ArtMap.Colour;
 
+import me.Fupery.ArtMap.Recipe.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class ArtDye {
     private final String name;
@@ -51,6 +53,10 @@ public class ArtDye {
     }
 
     public ItemStack toItem() {
-        return new ItemStack(material, 1, getDurability());
+        ItemStack item = new ItemStack(material, 1, getDurability());
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(chatColour + name);
+        item.setItemMeta(meta);
+        return item;
     }
 }
