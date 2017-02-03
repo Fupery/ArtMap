@@ -40,8 +40,15 @@ class PlayerInteractEaselListener implements RegisteredListener {
         Player player = event.getPlayer();
         callEaselEvent(player, event.getRightClicked(), event, ClickType.LEFT_CLICK);
         checkPreviewing(player, event);
-
     }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        callEaselEvent(null, event.getRightClicked(), event, isSneaking(player));
+        checkPreviewing(player, event);
+    }
+
 
     @EventHandler(priority = EventPriority.LOW)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -74,14 +81,13 @@ class PlayerInteractEaselListener implements RegisteredListener {
     private void callEaselEvent(Entity clicker, Entity clicked, Cancellable event, ClickType click) {
         EaselPart part = EaselPart.getPartType(clicked);
         if (part == null || part == EaselPart.SEAT || part == EaselPart.MARKER) return;
-
         Easel easel = Easel.getEasel(clicked.getLocation(), part);
         if (easel == null) return;
 
-        if (!(clicker instanceof Player)) return;
-        Player player = (Player) clicker;
-
         event.setCancelled(true);
+
+        if (clicker == null || !(clicker instanceof Player)) return;
+        Player player = (Player) clicker;
 
         boolean interactionAllowed = (click == ClickType.SHIFT_RIGHT_CLICK) ?
                 ArtMap.getCompatManager().checkBuildAllowed(player, clicked.getLocation()) :
