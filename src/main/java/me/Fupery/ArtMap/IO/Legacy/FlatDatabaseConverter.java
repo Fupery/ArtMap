@@ -31,7 +31,7 @@ public class FlatDatabaseConverter {
         HashMap<MapArt, MapView> artworks = readArtworks(databaseFile);
 
         if (artworks != null && artworks.size() > 0) {
-            ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtworks(artworks));
+            ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().getArtTable().addArtworks(artworks));
         }
 
         File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
@@ -68,7 +68,7 @@ public class FlatDatabaseConverter {
                     continue;
                 }
                 MapArt artwork = new MapArt(mapIDValue, title, player, date);
-                if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
+                if (ArtMap.getArtDatabase().getArtTable().containsArtwork(artwork, true)) {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {
                     plugin.getLogger().info(String.format("    Converting '%s' ...", title));

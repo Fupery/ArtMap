@@ -6,7 +6,7 @@ import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.IO.ArtDatabase;
+import me.Fupery.ArtMap.IO.Database.Database;
 import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.IO.PixelTableManager;
@@ -35,7 +35,7 @@ public class ArtMap extends JavaPlugin {
     private ConcurrentHashMap<Player, Preview> previewing; //todo why is this here?
     private VersionHandler bukkitVersion;
     private TaskManager taskManager;
-    private ArtDatabase artDatabase;
+    private Database database;
     private ChannelCacheManager cacheManager;
     private MapManager mapManager;
     private RecipeLoader recipeLoader;
@@ -46,8 +46,8 @@ public class ArtMap extends JavaPlugin {
     private EventManager eventManager;
     private Palette palette;
 
-    public static ArtDatabase getArtDatabase() {
-        return instance().artDatabase;
+    public static Database getArtDatabase() {
+        return instance().database;
     }
 
     public static ArtMap instance() {
@@ -127,7 +127,10 @@ public class ArtMap extends JavaPlugin {
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         previewing = new ConcurrentHashMap<>();
-        artDatabase = ArtDatabase.buildDatabase(this);
+        if ((database = Database.build(this)) == null) {
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
         eventManager = new EventManager(this, bukkitVersion);
         new FlatDatabaseConverter(this).convertDatabase();
         Lang.load(this, config);
@@ -147,7 +150,7 @@ public class ArtMap extends JavaPlugin {
         artistHandler.stop();
         menuHandler.closeAll();
         eventManager.unregisterAll();
-        mapManager.saveKeys();
+        mapManager.stop();
         if (previewing.size() > 0) previewing.keySet().forEach(Preview::stop);
         recipeLoader.unloadRecipes();
         reloadConfig();

@@ -6,6 +6,12 @@
 #Set language to "custom" and reload to generate a customizable lang.yml in your /plugins/ArtMap folder
 language: english
 
+#The name of the world where your players are using ArtMap
+world: world
+
+#The number of seconds between each time in-progress artworks are auto-saved to memory
+artworkAutoSave: 300
+
 #If true, prevents players from using obvious english swear words in artwork titles.
 swearFilter: true
 

@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Colour;
 
-import me.Fupery.ArtMap.Recipe.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

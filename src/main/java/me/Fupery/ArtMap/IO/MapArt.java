@@ -1,12 +1,10 @@
 package me.Fupery.ArtMap.IO;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -68,11 +66,6 @@ public class MapArt {
 
     public ItemStack getMapItem() {
         return new ArtItem.ArtworkItem(id, title, getArtistPlayer(), date).toItemStack();
-    }
-
-    public void saveArtwork() {
-        MapView mapView = Bukkit.getMap(id);
-        ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtwork(this, mapView));
     }
 
     public short getMapId() {

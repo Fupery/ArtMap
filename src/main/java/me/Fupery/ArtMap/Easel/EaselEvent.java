@@ -2,19 +2,15 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.IO.Map;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.MapManager;
-import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,8 +57,7 @@ public final class EaselEvent {
                 ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 if (material == ArtMaterial.CANVAS) {
-                    mapView = ArtMap.getMapManager().generateMapID(player.getWorld());
-                    Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
+                    mapView = ArtMap.getMapManager().createMap();
                     easel.mountCanvas(mapView);
                     consumeItem(player, itemInHand);
                     return;
@@ -79,15 +74,7 @@ public final class EaselEvent {
             case SHIFT_RIGHT_CLICK:
                 if (easel.hasItem()) {
                     final short id = easel.getItem().getDurability();
-                    mapView = Bukkit.getMap(id);
-                    for (MapRenderer renderer : mapView.getRenderers()) {
-                        mapView.removeRenderer(renderer);
-                    }
-                    mapView.addRenderer(new GenericMapRenderer(MapManager.BLANK_MAP));
-                    ArtMap.getTaskManager().ASYNC.run(() -> {
-                        Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
-                        ArtMap.getMapManager().recycleID(id);
-                    });
+                    ArtMap.getMapManager().recycleMap(id);
                     easel.removeItem();
                 }
                 easel.breakEasel();
@@ -109,8 +96,8 @@ public final class EaselEvent {
                     ArtMap.getPreviewing().get(player).stopPreviewing();
                     return;
                 }
-                MapView mapView = MapManager.cloneArtwork(player.getWorld(), art.getMapId());
-                easel.editArtwork(mapView, art.getTitle());
+                Map map = ArtMap.getMapManager().cloneArtwork(player.getWorld(), art.getMapId());
+                easel.editArtwork(map, art.getTitle());
                 consumeItem(player, playerMainHandItem);
             } else {
                 Lang.NEED_CANVAS.send(player);

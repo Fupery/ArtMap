@@ -1,12 +1,12 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -200,12 +200,12 @@ public class Easel {
     /**
      * Edits an already existing artwork on the easel.
      *
-     * @param mapView  The MapView of the original artwork.
+     * @param map      The id of the original artwork.
      * @param original The title of the original artwork.
      */
-    void editArtwork(MapView mapView, String original) {
+    void editArtwork(Map map, String original) {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        ItemStack item = new ItemStack(Material.MAP, 1, mapView.getId());
+        ItemStack item = new ItemStack(Material.MAP, 1, map.getId());
         ItemMeta meta = item.getItemMeta();
         meta.setLore(Arrays.asList(ArtItem.COPY_KEY, original));
         item.setItemMeta(meta);
@@ -219,8 +219,8 @@ public class Easel {
      * @param player The player to sit at the easel.
      */
     public void rideEasel(Player player) {
-        MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
-        ArtMap.getArtistHandler().addPlayer(player, this, mapView, EaselPart.getYawOffset(getFacing()));
+        ArtMap.getArtistHandler().addPlayer(player, this,
+                new Map(getFrame().getItem().getDurability()), EaselPart.getYawOffset(getFacing()));
     }
 
     /**

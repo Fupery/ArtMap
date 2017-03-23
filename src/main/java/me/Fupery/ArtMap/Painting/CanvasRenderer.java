@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.Map;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.entity.Player;
@@ -9,6 +10,7 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CanvasRenderer extends MapRenderer {
 
@@ -18,11 +20,11 @@ public class CanvasRenderer extends MapRenderer {
     private final MapView mapView;
     private byte[][] pixelBuffer;
     private ConcurrentLinkedQueue<byte[]> dirtyPixels;
-    private boolean active;
+    private AtomicBoolean active;
     private Cursor cursor;
 
-    CanvasRenderer(MapView mapView, int yawOffset) {
-        this.mapView = mapView;
+    CanvasRenderer(Map map, int yawOffset) {
+        this.mapView = map.getMapView();
         PixelTableManager pixelTable = ArtMap.getPixelTable();
         if (pixelTable == null) {
             mapView.removeRenderer(this);
@@ -37,7 +39,7 @@ public class CanvasRenderer extends MapRenderer {
         clearRenderers();
         mapView.addRenderer(this);
 
-        active = true;
+        active = new AtomicBoolean(true);
         loadMap();
         cursor = new Cursor(yawOffset);
     }
@@ -45,7 +47,7 @@ public class CanvasRenderer extends MapRenderer {
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
-        if (!active || dirtyPixels == null || dirtyPixels.peek() == null || pixelBuffer == null) {
+        if (!active.get() || dirtyPixels == null || dirtyPixels.peek() == null || pixelBuffer == null) {
             return;
         }
         for (int i = 0; i < maxUpdate; i++) {
@@ -55,7 +57,6 @@ public class CanvasRenderer extends MapRenderer {
             int py = pixel[1] * resolutionFactor;
 
             for (int x = 0; x < resolutionFactor; x++) {
-
                 for (int y = 0; y < resolutionFactor; y++) {
                     canvas.setPixel(px + x, py + y, pixelBuffer[pixel[0]][pixel[1]]);
                 }
@@ -89,7 +90,7 @@ public class CanvasRenderer extends MapRenderer {
         return pixel;
     }
 
-    private void clearRenderers() {
+    void clearRenderers() {
         cursor = null;
         if (mapView.getRenderers() != null) {
             for (MapRenderer r : mapView.getRenderers()) {
@@ -100,29 +101,24 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    void saveMap() {
-
+    byte[] getMap() {
         byte[] colours = new byte[128 * 128];
-
+        boolean wasActive = active.compareAndSet(true, false);
         for (int x = 0; x < (axisLength); x++) {
-
             for (int y = 0; y < (axisLength); y++) {
 
                 int ix = x * resolutionFactor;
                 int iy = y * resolutionFactor;
 
                 for (int px = 0; px < resolutionFactor; px++) {
-
                     for (int py = 0; py < resolutionFactor; py++) {
-
                         colours[(px + ix) + ((py + iy) * 128)] = pixelBuffer[x][y];
                     }
                 }
             }
         }
-        Reflection.setWorldMap(mapView, colours);
-        clearRenderers();
-        active = false;
+        if (wasActive) active.set(true);
+        return colours;
     }
 
     private void loadMap() {
@@ -144,7 +140,7 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     void stop() {
-        active = false;
+        active.set(false);
         dirtyPixels.clear();
         cursor = null;
     }

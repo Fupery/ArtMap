@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
+import me.Fupery.ArtMap.IO.Database.MapTable;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
@@ -10,31 +11,44 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class MapManager {
 
     public static final byte[] BLANK_MAP = getBlankMap();
     private static final String RECYCLED_KEYS_TAG = "recycled_keys";
     private final File file;
+    private final BukkitRunnable AUTOSAVE = new BukkitRunnable() {
+        @Override
+        public void run() {
+            for (UUID uuid : ArtMap.getArtistHandler().getArtists()) {
+                ArtMap.getArtistHandler().getCurrentSession(uuid).persistMap();
+            }
+        }
+    };
     private PriorityQueue<Short> queue = new PriorityQueue<>();
 
     public MapManager(ArtMap plugin) {
         file = new File(plugin.getDataFolder(), "keys.yml");
         loadKeys();
+        int delay = ArtMap.getConfiguration().ARTWORK_AUTO_SAVE;
+        AUTOSAVE.runTaskTimerAsynchronously(plugin, delay, delay);
     }
 
-    static byte[] decompressMap(byte[] mapData) {
+    public void stop() {
+        saveKeys();
+        AUTOSAVE.cancel();
+    }
+
+    public static byte[] decompressMap(byte[] mapData) {
         return mapData == null ? new byte[MapSize.MAX.size] : new f32x32().readBLOB(mapData);
     }
 
-    static byte[] compressMap(MapView mapView) {
+    public static byte[] compressMap(MapView mapView) {
         byte[] map = Reflection.getMap(mapView);
         byte[] compressed;
         try {
@@ -46,39 +60,97 @@ public class MapManager {
         return compressed;
     }
 
+    public static CompressedMap compressMap(short mapId, byte[] map) {
+        byte[] compressed;
+        try {
+            compressed = new f32x32().generateBLOB(map);
+        } catch (IOException e) {
+            ErrorLogger.log(e, "Compression error!");
+            return null;
+        }
+        return new CompressedMap(mapId, Arrays.hashCode(map), compressed);
+    }
+
     private static byte[] getBlankMap() {
         byte[] mapOutput = new byte[MapSize.MAX.size];
         Arrays.fill(mapOutput, ArtMap.getColourPalette().getDefaultColour().getColour());
         return mapOutput;
     }
 
-    public static MapView cloneArtwork(World world, short mapID) {
-        MapView oldMapView = Bukkit.getServer().getMap(mapID);
+    public byte[] readMap(short mapId) {
+        return Reflection.getMap(getMap(mapId));
+    }
+
+    public Map cloneArtwork(World world, short mapID) {
+        MapView oldMapView = getMap(mapID);
         MapView newMapView = Bukkit.getServer().createMap(world);
         byte[] oldMap = Reflection.getMap(oldMapView);
         Reflection.setWorldMap(newMapView, oldMap);
-        return newMapView;
+        return new Map(mapID, newMapView);
     }
 
-    public void overrideMap(MapView mapView, byte[] map) {
+    public void setMap(MapView mapView, byte[] map) {
         Reflection.setWorldMap(mapView, map);
-        for (MapRenderer renderer : mapView.getRenderers()) {
-            mapView.removeRenderer(renderer);
-        }
-        mapView.addRenderer(new GenericMapRenderer(map));
+        setRenderer(mapView, new GenericMapRenderer(map));//todo sync?
     }
 
-    public void recycleID(short id) {
-        queue.offer(id);
+    private void setRenderer(MapView mapView, MapRenderer renderer) {
+        mapView.getRenderers().forEach(mapView::removeRenderer);
+        if (renderer != null) mapView.addRenderer(renderer);
     }
 
-    public MapView generateMapID(World world) {
+    public MapView createMap() {
         Short id = queue.poll();
+        MapView mapView;
         if (id != null && ArtMap.getArtDatabase().getArtwork(id) == null) {
-            return Bukkit.getMap(id);
+            mapView = getMap(id);
         } else {
-            return Bukkit.createMap(world);
+            mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
         }
+        Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
+        return mapView;
+    }
+
+    public void cacheMap(short mapId, byte[] map) {
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            MapTable table = ArtMap.getArtDatabase().getMapTable();
+            CompressedMap compressedMap = compressMap(mapId, map);
+            if (table.containsMap(mapId)) table.updateMap(compressedMap);
+            else table.addMap(compressedMap);
+        });
+    }
+
+    public void restoreMap(short mapId) {
+        MapView mapView = getMap(mapId);
+        byte[] oldMap = readMap(mapId);
+        int oldMapHash = Arrays.hashCode(oldMap);
+        MapTable mapTable = ArtMap.getArtDatabase().getMapTable();
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            if (mapTable.containsMap(mapId) && mapTable.getHash(mapId) != oldMapHash) {
+                CompressedMap map = mapTable.getMap(mapId);
+                setMap(mapView, map.decompressMap());
+            }
+        });
+    }
+
+    public void deleteMap(short mapId) {
+        MapView mapView = getMap(mapId);
+        Reflection.setWorldMap(mapView, new byte[MapSize.MAX.size]);
+        setRenderer(mapView, null);
+    }
+
+    public void recycleMap(short mapId) {
+        MapView mapView = getMap(mapId);
+        setRenderer(mapView, new GenericMapRenderer(MapManager.BLANK_MAP));
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            ArtMap.getArtDatabase().getMapTable().deleteMap(mapId);
+            Reflection.setWorldMap(mapView, MapManager.BLANK_MAP);
+            queue.offer(mapId);
+        });
+    }
+
+    public MapView getMap(short mapId) {
+        return Bukkit.getMap(mapId);
     }
 
     private void loadKeys() {
@@ -91,7 +163,7 @@ public class MapManager {
         yaml.set(RECYCLED_KEYS_TAG, null);
     }
 
-    public void saveKeys() {
+    private void saveKeys() {
         validateFile();
         FileConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         List<Short> shortList = new ArrayList<>();
@@ -116,7 +188,7 @@ public class MapManager {
 
     public enum MapSize {
         MAX(128 * 128), STANDARD(32 * 32);
-        private final int size;
+        final int size;
 
         MapSize(int length) {
             this.size = length;

@@ -2,12 +2,13 @@ package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.IO.Map;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.map.MapView;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,8 +49,8 @@ public class ArtistHandler {
         return true;
     }
 
-    public synchronized void addPlayer(final Player player, Easel easel, MapView mapView, int yawOffset) {
-        ArtSession session = new ArtSession(easel, mapView, yawOffset);
+    public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset) {
+        ArtSession session = new ArtSession(easel, map, yawOffset);
         if (session.start(player) && ArtMap.getProtocolManager().PACKET_RECIEVER.injectPlayer(player)) {
             artists.put(player.getUniqueId(), session);
             session.setActive(true);
@@ -80,10 +81,18 @@ public class ArtistHandler {
         return artists.get(player.getUniqueId());
     }
 
+    public ArtSession getCurrentSession(UUID player) {
+        return artists.get(player);
+    }
+
     private synchronized void clearPlayers() {
         for (UUID uuid : artists.keySet()) {
             removePlayer(Bukkit.getPlayer(uuid));
         }
+    }
+
+    public Set<UUID> getArtists() {
+        return artists.keySet();
     }
 
     public void stop() {
