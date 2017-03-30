@@ -8,42 +8,38 @@ import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.Database.Database;
 import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
-import me.Fupery.ArtMap.IO.MapManager;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
+import me.Fupery.ArtMap.Preview.PreviewManager;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.Reader;
 import java.lang.ref.SoftReference;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ArtMap extends JavaPlugin {
 
     private static SoftReference<ArtMap> pluginInstance = null;
     private MenuHandler menuHandler;
     private ArtistHandler artistHandler;
-    private ConcurrentHashMap<Player, Preview> previewing; //todo why is this here?
     private VersionHandler bukkitVersion;
     private TaskManager taskManager;
     private Database database;
     private ChannelCacheManager cacheManager;
-    private MapManager mapManager;
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
     private ProtocolHandler protocolHandler;
     private PixelTableManager pixelTable;
     private Configuration config;
     private EventManager eventManager;
+    private PreviewManager previewManager;
     private Palette palette;
 
     public static Database getArtDatabase() {
@@ -63,10 +59,6 @@ public class ArtMap extends JavaPlugin {
 
     public static ArtistHandler getArtistHandler() {
         return instance().artistHandler;
-    }
-
-    public static ConcurrentHashMap<Player, Preview> getPreviewing() {
-        return instance().previewing;
     }
 
     public static VersionHandler getBukkitVersion() {
@@ -89,10 +81,6 @@ public class ArtMap extends JavaPlugin {
         return instance().menuHandler;
     }
 
-    public static MapManager getMapManager() {
-        return instance().mapManager;
-    }
-
     public static Configuration getConfiguration() {
         return instance().config;
     }
@@ -109,6 +97,10 @@ public class ArtMap extends JavaPlugin {
         this.palette = palette;
     }
 
+    public static PreviewManager getPreviewManager() {
+        return instance().previewManager;
+    }
+
     public static PixelTableManager getPixelTable() {
         return instance().pixelTable;
     }
@@ -121,12 +113,10 @@ public class ArtMap extends JavaPlugin {
         config = new Configuration(this, compatManager);
         palette = new BasicPalette();
         taskManager = new TaskManager(this);
-        mapManager = new MapManager(this);
         protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
-        previewing = new ConcurrentHashMap<>();
         if ((database = Database.build(this)) == null) {
             getPluginLoader().disablePlugin(this);
             return;
@@ -139,19 +129,20 @@ public class ArtMap extends JavaPlugin {
             getPluginLoader().disablePlugin(this);
             return;
         }
-        getCommand("artmap").setExecutor(new CommandHandler());
         recipeLoader = new RecipeLoader(this, config);
         recipeLoader.loadRecipes();
+        previewManager = new PreviewManager();
         menuHandler = new MenuHandler(this);
+        getCommand("artmap").setExecutor(new CommandHandler());
     }
 
     @Override
     public void onDisable() {
+        previewManager.endAllPreviews();
         artistHandler.stop();
         menuHandler.closeAll();
         eventManager.unregisterAll();
-        mapManager.stop();
-        if (previewing.size() > 0) previewing.keySet().forEach(Preview::stop);
+        database.close();
         recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;

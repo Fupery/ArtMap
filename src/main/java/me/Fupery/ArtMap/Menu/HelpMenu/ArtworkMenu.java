@@ -8,9 +8,9 @@ import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import me.Fupery.ArtMap.Preview.ArtPreview;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -135,15 +135,13 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                     ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
 
                     ArtMap.getTaskManager().SYNC.run(() -> {
-                        if (ArtMap.getPreviewing().containsKey(player)) {
-                            ArtMap.getPreviewing().get(player).stopPreviewing();
-                        }
+                        ArtMap.getPreviewManager().endPreview(player);
                         SoundCompat.BLOCK_CLOTH_FALL.play(player);
                         if (player.getItemInHand().getType() != Material.AIR) {
                             Lang.EMPTY_HAND_PREVIEW.send(player);
                             return;
                         }
-                        Preview.artwork(player, artwork);
+                        ArtMap.getPreviewManager().startPreview(player, new ArtPreview(artwork));
                     });
 
                 }

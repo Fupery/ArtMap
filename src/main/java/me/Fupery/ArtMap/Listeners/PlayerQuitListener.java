@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -21,9 +20,9 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
             ArtMap.getArtistHandler().removePlayer(player);
         }
-        if (ArtMap.getPreviewing().containsKey(player)) {
+        if (ArtMap.getPreviewManager().isPreviewing(player)) {
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
-                Preview.stop(player);
+                ArtMap.getPreviewManager().endPreview(player);
             }
         }
     }
@@ -36,9 +35,9 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
             ArtMap.getArtistHandler().removePlayer(player);
         }
-        if (ArtMap.getPreviewing().containsKey(player)) {
+        if (ArtMap.getPreviewManager().isPreviewing(player)) {
             if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
-                Preview.stop(player);
+                ArtMap.getPreviewManager().endPreview(player);
             }
         }
     }
@@ -54,9 +53,7 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
             ArtMap.getArtistHandler().removePlayer(player);
         }
-        if (ArtMap.getPreviewing().containsKey(player)) {
-            Preview.stop(player);
-        }
+        ArtMap.getPreviewManager().endPreview(player);
     }
 
     @EventHandler

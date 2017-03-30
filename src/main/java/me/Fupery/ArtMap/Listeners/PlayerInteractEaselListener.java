@@ -6,7 +6,6 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -117,11 +116,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     private void checkPreviewing(Player player, Cancellable event) {
-
-        if (ArtMap.getPreviewing().containsKey(player)) {
-            Preview.stop(player);
-            event.setCancelled(true);
-        }
+        if (ArtMap.getPreviewManager().endPreview(player)) event.setCancelled(true);
     }
 
     private boolean checkSignBreak(Block block, Cancellable event) {
