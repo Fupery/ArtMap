@@ -9,29 +9,44 @@ import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public final class Database {
     private final ArtTable artworks;
     private final MapTable maps;
     private final SQLiteDatabase database;
+    private final MapIDQueue idQueue;
+    private final BukkitRunnable AUTO_SAVE = new BukkitRunnable() {
+        @Override
+        public void run() {
+            for (UUID uuid : ArtMap.getArtistHandler().getArtists()) {
+                ArtMap.getArtistHandler().getCurrentSession(uuid).persistMap();
+            }
+        }
+    };
 
-    public Database(SQLiteDatabase database, ArtTable artworks, MapTable maps) {
+    public Database(JavaPlugin plugin, SQLiteDatabase database, ArtTable artworks, MapTable maps) {
         this.database = database;
         this.artworks = artworks;
         this.maps = maps;
+        idQueue = new MapIDQueue(plugin);
+        int delay = ArtMap.getConfiguration().ARTWORK_AUTO_SAVE;
+        AUTO_SAVE.runTaskTimerAsynchronously(plugin, delay, delay);
+        idQueue.loadIds();
     }
 
     public static Database build(JavaPlugin plugin) {
         SQLiteDatabase database;
         ArtTable artworks;
         MapTable maps;
-        database = new SQLiteDatabase(new File(plugin.getDataFolder(), "ArtMap.db"));
+        database = new SQLiteDatabase(new File(plugin.getDataFolder(), "Art.db"));
         if (!database.initialize(artworks = new ArtTable(database), maps = new MapTable(database))) return null;
-        Database db = new Database(database, artworks, maps);
+        Database db = new Database(plugin, database, artworks, maps);
         try {
             db.loadArtworks();
         } catch (Exception e) {
@@ -50,7 +65,7 @@ public final class Database {
     }
 
     public boolean saveArtwork(MapArt art) {
-        MapView mapView = ArtMap.getMapManager().getMap(art.getMapId());
+        MapView mapView = getMap(art.getMapId());
         ArtMap.getTaskManager().ASYNC.run(() -> {
             artworks.addArtwork(art);
             CompressedMap map = CompressedMap.compress(mapView);
@@ -63,7 +78,7 @@ public final class Database {
     public boolean deleteArtwork(MapArt art) {
         if (artworks.deleteArtwork(art.getTitle())) {
             maps.deleteMap(art.getMapId());
-            ArtMap.getTaskManager().SYNC.run(() -> ArtMap.getMapManager().deleteMap(art.getMapId()));
+            ArtMap.getTaskManager().SYNC.run(() -> art.getMap().setMap(new byte[Map.Size.MAX.value]));
             return true;
         } else return false;
     }
@@ -71,30 +86,26 @@ public final class Database {
     private void loadArtworks() {
         assert Bukkit.isPrimaryThread(); //todo error logging etc.
         List<MapId> ids = maps.getMapIds();
-        for (MapId map : ids) {
-            MapView mapView = ArtMap.getMapManager().getMap(map.getId());
-            if (mapView != null) {
-                byte[] storedMap = Reflection.getMap(mapView);
-                if (!(Arrays.hashCode(storedMap) == map.getHash())) {
-                    fixMap(map.getId(), mapView); //todo logging
+        for (MapId mapId : ids) {
+            Map map = new Map(mapId.getId());
+            if (map.exists()) {
+                byte[] storedMap = map.getData();
+                if (!(Arrays.hashCode(storedMap) == mapId.getHash())) {
+                    map.setMap(maps.getMap(mapId.getId()).decompressMap());
                 }
             } else {//map doesn't exist!
                 //todo spicier magic may be needed here to bring the map from the dead
 
+                //create new blank map in map folder
+
                 //if less than max
                 //
 //                mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD)); //todo lmao
-//                short newMapID = mapView.getId();
-//                fixMap(map.getId(), mapView);
-//                maps.updateMapId(map.getId(), newMapID);
+//                short newMapID = mapView.getMapId();
+//                fixMap(map.getMapId(), mapView);
+//                maps.updateMapId(map.getMapId(), newMapID);
             }
         }
-    }
-
-    private void fixMap(short mapId, MapView mapView) {
-        CompressedMap map = maps.getMap(mapId);
-        byte[] mapData = map.decompressMap();
-        ArtMap.getMapManager().setMap(mapView, mapData);
     }
 
     public ArtTable getArtTable() {
@@ -103,5 +114,52 @@ public final class Database {
 
     public MapTable getMapTable() {
         return maps;
+    }
+
+    public void close() {
+        idQueue.saveIds();
+        AUTO_SAVE.cancel();
+    }
+
+    public MapView createMap() {
+        Short id = idQueue.poll();
+        MapView mapView;
+        if (id != null && getArtwork(id) == null) {
+            mapView = getMap(id);
+        } else {
+            mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
+        }
+        Reflection.setWorldMap(mapView, Map.BLANK_MAP);
+        return mapView;
+    }
+
+    public void cacheMap(Map map, byte[] data) {
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            CompressedMap compressedMap = CompressedMap.compress(map.getMap(), data);
+            if (maps.containsMap(map.getMapId())) maps.updateMap(compressedMap);
+            else maps.addMap(compressedMap);
+        });
+    }
+
+    public void restoreMap(Map map) {
+        int oldMapHash = Arrays.hashCode(map.getData());
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            if (maps.containsMap(map.getMapId())
+                    && maps.getHash(map.getMapId()) != oldMapHash) {
+                map.setMap(map.getData());
+            }
+        });
+    }
+
+    public void recycleMap(Map map) {
+        map.setMap(Map.BLANK_MAP);
+        ArtMap.getTaskManager().ASYNC.run(() -> {
+            maps.deleteMap(map.getMapId());
+            idQueue.offer(map.getMapId());
+        });
+    }
+
+    public MapView getMap(short mapId) {
+        return Bukkit.getMap(mapId);
     }
 }

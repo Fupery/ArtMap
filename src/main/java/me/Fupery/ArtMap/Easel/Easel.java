@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Map;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -205,7 +205,7 @@ public class Easel {
      */
     void editArtwork(Map map, String original) {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        ItemStack item = new ItemStack(Material.MAP, 1, map.getId());
+        ItemStack item = new ItemStack(Material.MAP, 1, map.getMapId());
         ItemMeta meta = item.getItemMeta();
         meta.setLore(Arrays.asList(ArtItem.COPY_KEY, original));
         item.setItemMeta(meta);

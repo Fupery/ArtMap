@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.map.MapView;
 
@@ -16,7 +17,10 @@ public class CompressedMap extends MapId {
     }
 
     public static CompressedMap compress(MapView mapView) {
-        byte[] map = Reflection.getMap(mapView);
+        return compress(mapView, Reflection.getMap(mapView));
+    }
+
+    public static CompressedMap compress(MapView mapView, byte[] map) {
         byte[] compressed;
         try {
             compressed = new f32x32().generateBLOB(map);
@@ -32,6 +36,6 @@ public class CompressedMap extends MapId {
     }
 
     public byte[] decompressMap() {
-        return compressedMap == null ? new byte[MapManager.MapSize.MAX.size] : new f32x32().readBLOB(compressedMap);
+        return compressedMap == null ? new byte[Map.Size.MAX.value] : new f32x32().readBLOB(compressedMap);
     }
 }

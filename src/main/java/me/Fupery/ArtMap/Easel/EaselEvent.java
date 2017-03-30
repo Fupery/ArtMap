@@ -2,7 +2,7 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.IO.Map;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
@@ -57,7 +57,7 @@ public final class EaselEvent {
                 ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 if (material == ArtMaterial.CANVAS) {
-                    mapView = ArtMap.getMapManager().createMap();
+                    mapView = ArtMap.getArtDatabase().createMap();
                     easel.mountCanvas(mapView);
                     consumeItem(player, itemInHand);
                     return;
@@ -73,8 +73,7 @@ public final class EaselEvent {
 
             case SHIFT_RIGHT_CLICK:
                 if (easel.hasItem()) {
-                    final short id = easel.getItem().getDurability();
-                    ArtMap.getMapManager().recycleMap(id);
+                    ArtMap.getArtDatabase().recycleMap(new Map(easel.getItem().getDurability()));
                     easel.removeItem();
                 }
                 easel.breakEasel();
@@ -92,11 +91,8 @@ public final class EaselEvent {
                     SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                     return;
                 }
-                if (ArtMap.getPreviewing().containsKey(player)) {
-                    ArtMap.getPreviewing().get(player).stopPreviewing();
-                    return;
-                }
-                Map map = ArtMap.getMapManager().cloneArtwork(player.getWorld(), art.getMapId());
+                if (ArtMap.getPreviewManager().endPreview(player)) return;
+                Map map = art.getMap().cloneArtwork();
                 easel.editArtwork(map, art.getTitle());
                 consumeItem(player, playerMainHandItem);
             } else {

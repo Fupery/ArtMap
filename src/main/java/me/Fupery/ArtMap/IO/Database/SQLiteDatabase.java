@@ -19,7 +19,7 @@ public class SQLiteDatabase {
         this.dbFile = dbFile;
     }
 
-    Connection getConnection() {
+    protected Connection getConnection() {
         if (!dbFile.exists()) {
             try {
                 if (!dbFile.createNewFile()) {

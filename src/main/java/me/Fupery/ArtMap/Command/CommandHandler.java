@@ -31,8 +31,6 @@ public class CommandHandler implements CommandExecutor {
 
         commands.put("preview", new CommandPreview());
 
-        commands.put("restore", new CommandRestore());
-
         commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas|artwork:<title>> [amount]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {

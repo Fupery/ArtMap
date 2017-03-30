@@ -11,13 +11,13 @@ public class SQLiteTable {
     protected final String TABLE;
     protected final String creationSQL;
 
-    public SQLiteTable(SQLiteDatabase database, String TABLE, String creationSQL) {
+    protected SQLiteTable(SQLiteDatabase database, String TABLE, String creationSQL) {
         this.manager = database;
         this.TABLE = TABLE;
         this.creationSQL = creationSQL;
     }
 
-    boolean create() {
+    protected boolean create() {
         Connection connection = null;
         Statement buildTableStatement = null;
 
@@ -49,7 +49,7 @@ public class SQLiteTable {
 
     protected abstract class QueuedStatement extends ArtTable.QueuedQuery<Boolean> {
 
-        int[] executeBatch(String query) {
+        protected int[] executeBatch(String query) {
             Connection connection = null;
             PreparedStatement statement = null;
             int[] result = new int[0];
@@ -69,11 +69,11 @@ public class SQLiteTable {
             return result;
         }
 
-        Boolean read(ResultSet set) throws SQLException {
+        protected Boolean read(ResultSet set) throws SQLException {
             return false;//unused
         }
 
-        Boolean execute(String query) {
+        public Boolean execute(String query) {
             Connection connection = null;
             PreparedStatement statement = null;
             boolean result = false;
@@ -96,11 +96,11 @@ public class SQLiteTable {
 
     protected abstract class QueuedQuery<T> {
 
-        abstract void prepare(PreparedStatement statement) throws SQLException;
+        protected abstract void prepare(PreparedStatement statement) throws SQLException;
 
-        abstract T read(ResultSet set) throws SQLException;
+        protected abstract T read(ResultSet set) throws SQLException;
 
-        void close(Connection connection, PreparedStatement statement) {
+        protected void close(Connection connection, PreparedStatement statement) {
             if (statement != null) try {
                 statement.close();
             } catch (SQLException e) {
@@ -113,7 +113,7 @@ public class SQLiteTable {
             }
         }
 
-        T execute(String query) {
+        public T execute(String query) {
             Connection connection = null;
             PreparedStatement statement = null;
             T result = null;

@@ -1,41 +1,44 @@
 package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+import static org.bukkit.Bukkit.getScheduler;
+import static org.bukkit.Bukkit.isPrimaryThread;
 
 public class TaskManager {
     private final ArtMap plugin;
     public final TaskScheduler SYNC = new TaskScheduler() {
         @Override
-        public void run(Runnable runnable) {
-            Bukkit.getScheduler().runTask(plugin, runnable);
+        public BukkitTask run(Runnable runnable) {
+            return getScheduler().runTask(plugin, runnable);
         }
 
         @Override
-        public void runLater(Runnable runnable, int delay) {
-            Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
+        public BukkitTask runLater(Runnable runnable, int delay) {
+            return getScheduler().runTaskLater(plugin, runnable, delay);
         }
 
         @Override
-        public void runTimer(Runnable runnable, int startDelay, int period) {
-            Bukkit.getScheduler().runTaskTimer(plugin, runnable, startDelay, period);
+        public BukkitTask runTimer(Runnable runnable, int startDelay, int period) {
+            return getScheduler().runTaskTimer(plugin, runnable, startDelay, period);
         }
     };
     public final TaskScheduler ASYNC = new TaskScheduler() {
         @Override
-        public void run(Runnable runnable) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+        public BukkitTask run(Runnable runnable) {
+            return getScheduler().runTaskAsynchronously(plugin, runnable);
         }
 
         @Override
-        public void runLater(Runnable runnable, int delay) {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
+        public BukkitTask runLater(Runnable runnable, int delay) {
+            return getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
         }
 
         @Override
-        public void runTimer(Runnable runnable, int startDelay, int period) {
-            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, period);
+        public BukkitTask runTimer(Runnable runnable, int startDelay, int period) {
+            return getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, period);
         }
     };
 
@@ -47,12 +50,20 @@ public class TaskManager {
         return new TaskHandler(runnable);
     }
 
+    public void runSafely(Runnable runnable) {
+        if (!isPrimaryThread()) {
+            SYNC.run(runnable);
+        } else {
+            runnable.run();
+        }
+    }
+
     public interface TaskScheduler {
-        void run(Runnable runnable);
+        BukkitTask run(Runnable runnable);
 
-        void runLater(Runnable runnable, int delay);
+        BukkitTask runLater(Runnable runnable, int delay);
 
-        void runTimer(Runnable runnable, int startDelay, int period);
+        BukkitTask runTimer(Runnable runnable, int startDelay, int period);
     }
 
     public class TaskHandler {
@@ -77,4 +88,5 @@ public class TaskManager {
             else runnable.runTaskTimer(plugin, startDelay, period);
         }
     }
+
 }

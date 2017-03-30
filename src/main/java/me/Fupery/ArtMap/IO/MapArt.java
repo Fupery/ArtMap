@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.IO;
 
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -86,5 +87,9 @@ public class MapArt {
 
     public MapArt updateMapId(short newID) {
         return new MapArt(newID, title, artist, date);
+    }
+
+    public Map getMap() {
+        return new Map(id);
     }
 }

@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.IO.Database;
 
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.MapManager;
 import org.bukkit.map.MapView;
 
 import java.sql.PreparedStatement;
@@ -150,20 +149,6 @@ public final class ArtTable extends SQLiteTable {
         }.execute("UPDATE " + TABLE + " SET id=? WHERE title=?;");
     }
 
-    public byte[] getMap(String title) {
-        return new QueuedQuery<byte[]>() {
-            void prepare(PreparedStatement statement) throws SQLException {
-                statement.setString(1, title);
-            }
-
-            byte[] read(ResultSet set) throws SQLException {
-                byte[] blob = set.getBytes("map");
-                return MapManager.decompressMap(blob);
-            }
-        }.execute("SELECT map FROM " + TABLE + " WHERE title=?;");
-    }
-
-
     public void addArtwork(MapArt art) {
         new QueuedStatement() {
             void prepare(PreparedStatement statement) throws SQLException {
@@ -186,7 +171,6 @@ public final class ArtTable extends SQLiteTable {
                         statement.setInt(2, art.getMapId());
                         statement.setString(3, art.getArtist().toString());
                         statement.setString(4, art.getDate());
-                        statement.setBytes(5, MapManager.compressMap(artworks.get(art)));
                     } catch (Exception e) {
                         ErrorLogger.log(e, String.format("Error writing %s to database!", art.getTitle()));
                         continue;

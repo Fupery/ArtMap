@@ -2,7 +2,7 @@ package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.IO.Map;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
 import org.bukkit.Bukkit;
@@ -18,6 +18,7 @@ import static me.Fupery.ArtMap.Painting.Brush.BrushAction;
 public class ArtistHandler {
 
     private final ConcurrentHashMap<UUID, ArtSession> artists;
+    //todo replaced synchronised methods with read/write lock
 
     public ArtistHandler() {
         artists = new ConcurrentHashMap<>();
