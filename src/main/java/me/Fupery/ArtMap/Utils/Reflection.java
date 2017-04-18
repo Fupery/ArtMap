@@ -6,10 +6,12 @@ import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
+import net.minecraft.server.v1_11_R1.NBTCompressedStreamTools;
 import net.minecraft.server.v1_11_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
 
 public class Reflection {
 
@@ -94,8 +97,12 @@ public class Reflection {
     public static Object invokeMethod(Object obj, String methodName, Object... parameters)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method;
+        Class[] parameterTypes = new Class[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            parameterTypes[i] = parameters[i].getClass();
+        }
         try {
-            method = obj.getClass().getDeclaredMethod(methodName);
+            method = obj.getClass().getDeclaredMethod(methodName, parameterTypes);
             method.setAccessible(true);
         } catch (NoSuchMethodException e) {
             throw new NoSuchMethodException(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
@@ -104,18 +111,22 @@ public class Reflection {
         return method.invoke(obj, parameters);
     }
 
-    public static Object invokeStaticMethod(String className, String methodName, Object... parameters)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
-        Object obj = Class.forName(NMS + className);
+    public static Object invokeStaticMethod(String className, String methodName, Object... params)
+            throws Exception {
+        Class obj = Class.forName(NMS + "." + className);
+
+        Class[] paramTypes = new Class[params.length];
+        for (int i = 0; i < params.length; i++) paramTypes[i] = params[i].getClass();
+
         Method method;
         try {
-            method = obj.getClass().getDeclaredMethod(methodName);
+            method = obj.getDeclaredMethod(methodName, paramTypes);
             method.setAccessible(true);
         } catch (NoSuchMethodException e) {
-            throw new NoSuchMethodException(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
-                    methodName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredMethods())));
+            throw new Exception(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
+                    methodName, obj.getName(), Arrays.asList(obj.getMethods())), e);
         }
-        return method.invoke(obj, parameters);
+        return method.invoke(null, params);
     }
 
     public static ArtistPacket getArtistPacket(Object packet) {
@@ -189,25 +200,6 @@ public class Reflection {
             return new byte[128 * 128];
         }
         return colors;
-    }
-
-    public static short getNextMapId() {
-        Short id = -1;
-        File idFile = new File(Map.getMapDataFolder(), "idcounts.dat");
-        if (idFile.exists()) {
-            Object tagCompound;
-            try {
-                FileInputStream fileinputstream = new FileInputStream(idFile);
-                tagCompound = invokeStaticMethod("NBTCompressedStreamTools", "a", fileinputstream);
-                fileinputstream.close();
-                id = (Short) invokeMethod(tagCompound, "getShort", "map");
-            } catch (IOException | NoSuchMethodException | IllegalAccessException
-                    | InvocationTargetException | ClassNotFoundException e) {
-                e.printStackTrace();
-                return -1;
-            }
-        }
-        return id;
     }
 
     public static boolean isMapArt(MapView mapView) {

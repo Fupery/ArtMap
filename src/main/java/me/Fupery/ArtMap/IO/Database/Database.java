@@ -28,7 +28,7 @@ public final class Database {
         @Override
         public void run() {
             for (UUID uuid : ArtMap.getArtistHandler().getArtists()) {
-                ArtMap.getArtistHandler().getCurrentSession(uuid).persistMap();
+                ArtMap.getArtistHandler().getCurrentSession(uuid).persistMap(false);
             }
         }
     };
@@ -86,6 +86,10 @@ public final class Database {
         } else return false;
     }
 
+    public void persistMap(Map map) {
+
+    }
+
     private void loadArtworks(JavaPlugin plugin) {
         assert Bukkit.isPrimaryThread(); //todo error logging etc.
         List<MapId> ids = maps.getMapIds();
@@ -98,8 +102,10 @@ public final class Database {
                 }
             } else {//this map file doesn't exist!
                 //spicy map necromancy
-                short topMapId = Reflection.getNextMapId();
-                if (topMapId == -1 || topMapId > mapId.getId()) continue;
+                Bukkit.getLogger().info("Map id:" + map.getMapId() + "is corrupted! Restoring map...");//TODO remove logging
+
+                short topMapId = Map.getNextMapId();
+                if (topMapId == -1 || topMapId < mapId.getId()) continue;
                 File mapFile = new File(Map.getMapDataFolder(), "map_" + mapId.getId() + ".dat");
                 if (!mapFile.exists()) try {
                     if (mapFile.createNewFile()) Files.copy(plugin.getResource("blank.dat"),

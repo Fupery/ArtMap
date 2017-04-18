@@ -2,6 +2,8 @@ package me.Fupery.ArtMap.IO.Database;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.CompressedMap;
+import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.BukkitGetter;
 import me.Fupery.ArtMap.Utils.Reflection;
@@ -10,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.io.File;
+import java.io.*;
 import java.util.Arrays;
 
 public class Map {
@@ -37,11 +39,27 @@ public class Map {
     }
 
     public static File getMapDataFolder() {
-        return new File(ArtMap.instance()
-                .getDataFolder().getParentFile().getParentFile().getParent() //Navigate to the server root folder
-                + File.separator + ArtMap.getConfiguration().WORLD           //Navigate to the correct world
-                + File.separator + "data"                                    //Navigate to this world's data folder
-        );
+        String pluginDir = ArtMap.instance().getDataFolder().getParentFile().getAbsolutePath();
+        String rootDir = pluginDir.substring(0, pluginDir.lastIndexOf(File.separator));
+        return new File(rootDir + File.separator + ArtMap.getConfiguration().WORLD + File.separator + "data");                               //Navigate to this world's data folder);
+    }
+
+    public static short getNextMapId() {
+        short nextMapId = -1;
+        File file = new File(getMapDataFolder(), "idcounts.dat");
+        if (file.exists()) {
+            byte[] data = new byte[((int) file.length())];
+            try {
+                FileInputStream inputStream = new FileInputStream(file);
+                inputStream.read(data);
+                inputStream.close();
+            } catch (IOException e) {
+                ErrorLogger.log(e, "Error reading idcounts.dat.");
+                return -1;
+            }
+            nextMapId = (short) (data[9]<<8 | data[10] & 0xFF);//The short is stored at index 9-10
+        }
+        return nextMapId;
     }
 
     public CompressedMap compress() {
@@ -70,9 +88,13 @@ public class Map {
     }
 
     public void setMap(byte[] map) {
+        setMap(map, true);
+    }
+
+    public void setMap(byte[] map, boolean updateRenderer) {
         MapView mapView = getMapView();
         Reflection.setWorldMap(mapView, map);
-        setRenderer(new GenericMapRenderer(map));//todo sync?
+        if (updateRenderer) setRenderer(new GenericMapRenderer(map));//todo sync?
     }
 
     public boolean exists() {
