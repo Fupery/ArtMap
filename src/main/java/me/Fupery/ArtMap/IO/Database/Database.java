@@ -102,7 +102,7 @@ public final class Database {
                 }
             } else {//this map file doesn't exist!
                 //spicy map necromancy
-                Bukkit.getLogger().info("Map id:" + map.getMapId() + "is corrupted! Restoring map...");//TODO remove logging
+                Bukkit.getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring...");//TODO remove logging
 
                 short topMapId = Map.getNextMapId();
                 if (topMapId == -1 || topMapId < mapId.getId()) continue;

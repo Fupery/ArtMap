@@ -2,26 +2,20 @@ package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
-import net.minecraft.server.v1_11_R1.NBTCompressedStreamTools;
 import net.minecraft.server.v1_11_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.zip.GZIPInputStream;
 
 public class Reflection {
 
