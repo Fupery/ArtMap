@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class Map {
@@ -33,6 +34,14 @@ public class Map {
         byte[] mapOutput = new byte[Size.MAX.value];
         Arrays.fill(mapOutput, ArtMap.getColourPalette().getDefaultColour().getColour());
         return mapOutput;
+    }
+
+    public static File getMapDataFolder() {
+        return new File(ArtMap.instance()
+                .getDataFolder().getParentFile().getParentFile().getParent() //Navigate to the server root folder
+                + File.separator + ArtMap.getConfiguration().WORLD           //Navigate to the correct world
+                + File.separator + "data"                                    //Navigate to this world's data folder
+        );
     }
 
     public CompressedMap compress() {

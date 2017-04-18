@@ -2,13 +2,18 @@ package me.Fupery.ArtMap.Utils;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -86,6 +91,33 @@ public class Reflection {
         return method.invoke(obj);
     }
 
+    public static Object invokeMethod(Object obj, String methodName, Object... parameters)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method;
+        try {
+            method = obj.getClass().getDeclaredMethod(methodName);
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodException(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
+                    methodName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredMethods())));
+        }
+        return method.invoke(obj, parameters);
+    }
+
+    public static Object invokeStaticMethod(String className, String methodName, Object... parameters)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        Object obj = Class.forName(NMS + className);
+        Method method;
+        try {
+            method = obj.getClass().getDeclaredMethod(methodName);
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodException(String.format("Method '%s' could not be found in '%s'. Methods found: [%s]",
+                    methodName, obj.getClass().getName(), Arrays.asList(obj.getClass().getDeclaredMethods())));
+        }
+        return method.invoke(obj, parameters);
+    }
+
     public static ArtistPacket getArtistPacket(Object packet) {
         PacketType type = PacketType.getPacketType(packet);
 
@@ -157,6 +189,25 @@ public class Reflection {
             return new byte[128 * 128];
         }
         return colors;
+    }
+
+    public static short getNextMapId() {
+        Short id = -1;
+        File idFile = new File(Map.getMapDataFolder(), "idcounts.dat");
+        if (idFile.exists()) {
+            Object tagCompound;
+            try {
+                FileInputStream fileinputstream = new FileInputStream(idFile);
+                tagCompound = invokeStaticMethod("NBTCompressedStreamTools", "a", fileinputstream);
+                fileinputstream.close();
+                id = (Short) invokeMethod(tagCompound, "getShort", "map");
+            } catch (IOException | NoSuchMethodException | IllegalAccessException
+                    | InvocationTargetException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+        return id;
     }
 
     public static boolean isMapArt(MapView mapView) {
@@ -233,5 +284,27 @@ public class Reflection {
         private void logFailure(Exception e) {
             ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported?");
         }
+    }
+
+    public class NBTStorageFile {
+
+        // the file to use
+        private final File file;
+        // the TagCompound containing the files content
+        private NBTTagCompound tagCompound;
+
+        public NBTStorageFile(File file) {
+            this.file = file;
+        }
+
+        // two optional constructors:
+        public NBTStorageFile(String folder, String name) {
+            this(new File(folder, name + ".dat"));
+        }
+
+        public NBTStorageFile(String path) {
+            this(new File(path));
+        }
+
     }
 }

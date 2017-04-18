@@ -8,6 +8,7 @@ import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.Database.Database;
 import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
+import me.Fupery.ArtMap.IO.Legacy.OldDatabaseConverter;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
@@ -123,6 +124,7 @@ public class ArtMap extends JavaPlugin {
         }
         eventManager = new EventManager(this, bukkitVersion);
         new FlatDatabaseConverter(this).convertDatabase();
+        new OldDatabaseConverter(this).convertDatabase();
         Lang.load(this, config);
         if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
             getLogger().warning(Lang.INVALID_DATA_TABLES.get());

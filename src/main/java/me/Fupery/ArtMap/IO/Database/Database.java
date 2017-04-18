@@ -12,6 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +51,7 @@ public final class Database {
         if (!database.initialize(artworks = new ArtTable(database), maps = new MapTable(database))) return null;
         Database db = new Database(plugin, database, artworks, maps);
         try {
-            db.loadArtworks();
+            db.loadArtworks(plugin);
         } catch (Exception e) {
             ErrorLogger.log(e, "Error Loading ArtMap Database");
             return null;
@@ -83,7 +86,7 @@ public final class Database {
         } else return false;
     }
 
-    private void loadArtworks() {
+    private void loadArtworks(JavaPlugin plugin) {
         assert Bukkit.isPrimaryThread(); //todo error logging etc.
         List<MapId> ids = maps.getMapIds();
         for (MapId mapId : ids) {
@@ -93,9 +96,18 @@ public final class Database {
                 if (!(Arrays.hashCode(storedMap) == mapId.getHash())) {
                     map.setMap(maps.getMap(mapId.getId()).decompressMap());
                 }
-            } else {//map doesn't exist!
-                //todo spicier magic may be needed here to bring the map from the dead
-
+            } else {//this map file doesn't exist!
+                //spicy map necromancy
+                short topMapId = Reflection.getNextMapId();
+                if (topMapId == -1 || topMapId > mapId.getId()) continue;
+                File mapFile = new File(Map.getMapDataFolder(), "map_" + mapId.getId() + ".dat");
+                if (!mapFile.exists()) try {
+                    if (mapFile.createNewFile()) Files.copy(plugin.getResource("blank.dat"),
+                            mapFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                map.setMap(maps.getMap(mapId.getId()).decompressMap());
                 //create new blank map in map folder
 
                 //if less than max
@@ -135,7 +147,7 @@ public final class Database {
 
     public void cacheMap(Map map, byte[] data) {
         ArtMap.getTaskManager().ASYNC.run(() -> {
-            CompressedMap compressedMap = CompressedMap.compress(map.getMap(), data);
+            CompressedMap compressedMap = CompressedMap.compress(map.getMapId(), data);
             if (maps.containsMap(map.getMapId())) maps.updateMap(compressedMap);
             else maps.addMap(compressedMap);
         });
