@@ -17,10 +17,10 @@ public class CompressedMap extends MapId {
     }
 
     public static CompressedMap compress(MapView mapView) {
-        return compress(mapView, Reflection.getMap(mapView));
+        return compress(mapView.getId(), Reflection.getMap(mapView));
     }
 
-    public static CompressedMap compress(MapView mapView, byte[] map) {
+    public static CompressedMap compress(short mapId, byte[] map) {
         byte[] compressed;
         try {
             compressed = new f32x32().generateBLOB(map);
@@ -28,7 +28,7 @@ public class CompressedMap extends MapId {
             ErrorLogger.log(e, "Compression error!");
             return null;
         }
-        return new CompressedMap(mapView.getId(), Arrays.hashCode(map), compressed);
+        return new CompressedMap(mapId, Arrays.hashCode(map), compressed);
     }
 
     public byte[] getCompressedMap() {

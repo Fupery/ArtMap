@@ -1,15 +1,13 @@
 package me.Fupery.ArtMap.IO.Legacy;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.ColourMap.f32x32;
+import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.Database.SQLiteDatabase;
 import me.Fupery.ArtMap.IO.Database.SQLiteTable;
 import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -17,7 +15,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class OldDatabaseConverter {
@@ -29,100 +28,135 @@ public class OldDatabaseConverter {
     }
 
     public boolean convertDatabase() {
-        SQLiteDatabase database = new OldDatabase(plugin);
-
-
-        String dbFileName = "mapList.yml";
+        String dbFileName = "ArtMap.db";
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
         if (!databaseFile.exists()) return false;
-        plugin.getLogger().info("Old 'mapList.yml' database found! Converting to new format ...");
-        plugin.getLogger().info("(This may take a while, but only needs to run once)");
-        HashMap<MapArt, MapView> artworks = readArtworks(databaseFile);
 
-        if (artworks != null && artworks.size() > 0) {
-            ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().getArtTable().addArtworks(artworks));
-        }
+        ArtList artList = readArtworks();
+        if (artList == null) return false;
 
-        File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
-        if (!databaseFile.renameTo(disabledDatabaseFile)) {
-            plugin.getLogger().info("Error disabling mapList.yml! Delete this file manually.");
-            return false;
+        artList.addArtworks();
+
+        if (!databaseFile.renameTo(new File(plugin.getDataFolder(), dbFileName + ".off"))) {
+            plugin.getLogger().info("Error disabling ArtMap.db! Delete this file manually.");
+            return true;
         }
         plugin.getLogger().info(String.format("Conversion completed! %s artworks converted. " +
-                "mapList.yml has been disabled.", artworks.size()));
+                "ArtMap.db has been disabled.", artList.getArtworks().size()));
         return true;
     }
 
-    public HashMap<MapArt, MapView> readArtworks(File databaseFile) {
-        HashMap<MapArt, MapView> artworkList = new HashMap<>();
-        FileConfiguration database = YamlConfiguration.loadConfiguration(databaseFile);
-        ConfigurationSection artworks = database.getConfigurationSection("artworks");
+    private ArtList readArtworks() {
+        ArtList artList = new ArtList();
+        OldDatabase database = new OldDatabase(plugin);
+        OldDatabaseTable table = new OldDatabaseTable(database);
+        if (database.initialize(table)) return null;
 
-        if (artworks == null) return artworkList;
+        plugin.getLogger().info("Old 'ArtMap.db' database found! Converting to new format ...");
+        plugin.getLogger().info("(This may take a while, but only needs to run once)");
 
-        for (String title : artworks.getKeys(false)) {
-            ConfigurationSection map = artworks.getConfigurationSection(title);
-            if (map != null) {
-                short mapIDValue = (short) map.getInt("mapID");
-                OfflinePlayer player = (map.contains("artist")) ?
-                        Bukkit.getOfflinePlayer(UUID.fromString(map.getString("artist"))) : null;
-                String date = map.getString("date");
-                MapView mapView = Bukkit.getMap(mapIDValue);
-                if (mapView == null) {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (failed to access map data) ...", title));
-                    continue;
-                }
-                if (player == null || !player.hasPlayedBefore()) {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
-                    continue;
-                }
-                MapArt artwork = new MapArt(mapIDValue, title, player, date);
-                if (ArtMap.getArtDatabase().getArtTable().containsArtwork(artwork, true)) {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
-                } else {
-                    plugin.getLogger().info(String.format("    Converting '%s' ...", title));
-                    artworkList.put(artwork, mapView);
-                }
+        for (RichMapArt artwork : table.readArtworks()) {
+            String title = artwork.getArt().getTitle();
+            if (Bukkit.getMap(artwork.getArt().getMapId()) == null) {
+                plugin.getLogger().info(String.format("    Ignoring '%s' (failed to access map data) ...", title));
+                continue;
             }
+            OfflinePlayer player = artwork.getArt().getArtistPlayer();
+            if (player == null || !player.hasPlayedBefore()) {
+                plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
+                continue;
+            }
+            if (ArtMap.getArtDatabase().getArtTable().containsArtwork(artwork.getArt(), true)) {
+                plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
+                continue;
+            }
+            plugin.getLogger().info(String.format("    Converting '%s' ...", title));
+            artList.getArtworks().add(artwork.getArt());
+            artList.getMaps().add(artwork.getMap());
         }
-        return artworkList;
+        return artList;
     }
 
-    class OldDatabase extends SQLiteDatabase {
+    private static class RichMapArt {
+        private final MapArt art;
+        private final CompressedMap mapData;
 
-        public OldDatabase(JavaPlugin plugin) {
+        RichMapArt(MapArt art, CompressedMap mapData) {
+            this.art = art;
+            this.mapData = mapData;
+        }
+
+        public MapArt getArt() {
+            return art;
+        }
+
+        public CompressedMap getMap() {
+            return mapData;
+        }
+    }
+
+    private class OldDatabase extends SQLiteDatabase {
+
+        OldDatabase(JavaPlugin plugin) {
             super(new File(plugin.getDataFolder(), "ArtMap.db"));
         }
 
-        boolean connect() {
-            OldDatabaseTable table = new OldDatabaseTable(this);
-            if (!initialize(table)) return false;
+        private boolean initialize(OldDatabaseTable table) {
+            return super.initialize(table);
         }
 
         @Override
         protected Connection getConnection() {
             return super.getConnection();
         }
+    }
 
-        class OldDatabaseTable extends SQLiteTable {
-            protected OldDatabaseTable(SQLiteDatabase database) {
-                super(database, "artworks", "SELECT * FROM artworks");
-            }
+    private class OldDatabaseTable extends SQLiteTable {
 
-            @Override
-            protected boolean create() {
-                return new QueuedQuery<Boolean>() {
-                    @Override
-                    protected void prepare(PreparedStatement statement) throws SQLException {
+        OldDatabaseTable(SQLiteDatabase database) {
+            super(database, "artworks", "SELECT * FROM artworks");
+        }
 
+        List<RichMapArt> readArtworks() {
+            return new QueuedQuery<List<RichMapArt>>() {
+
+                protected void prepare(PreparedStatement statement) throws SQLException {
+                }
+
+                protected List<RichMapArt> read(ResultSet set) throws SQLException {
+                    List<RichMapArt> artList = new ArrayList<>();
+                    while (set.next()) {
+                        artList.add(readArtwork(set));
                     }
+                    return artList;
+                }
+            }.execute("SELECT * FROM artworks");
+        }
 
-                    @Override
-                    protected Boolean read(ResultSet set) throws SQLException {
-                        return set.next();
-                    }
-                }.execute("SELECT * FROM artworks LIMIT 1");
-            }
+        private RichMapArt readArtwork(ResultSet set) throws SQLException {
+            String title = set.getString("title");
+            short id = (short) set.getInt("id");
+            UUID artist = UUID.fromString(set.getString("artist"));
+            String date = set.getString("date");
+            MapArt art = new MapArt(id, title, artist, date);
+            byte[] map = new f32x32().readBLOB(set.getBytes("map"));
+            CompressedMap data = CompressedMap.compress(id, map);
+            return new RichMapArt(art, data);
+        }
+
+        @Override
+        protected boolean create() {
+            return new QueuedQuery<Boolean>() {
+                @Override
+                protected void prepare(PreparedStatement statement) throws SQLException {
+
+                }
+
+                @Override
+                protected Boolean read(ResultSet set) throws SQLException {
+                    return set.next();
+                }
+            }.execute("SELECT * FROM artworks LIMIT 1");
         }
     }
 }
