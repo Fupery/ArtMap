@@ -236,7 +236,11 @@ public class Easel {
             ArtMap.getTaskManager().ASYNC.run(() -> {
                 MapArt original = ArtMap.getArtDatabase().getArtwork(originalName);
                 ArtMap.getTaskManager().SYNC.run(() -> {
-                    location.getWorld().dropItemNaturally(location, original.getMapItem());
+                    if (original != null) {
+                        location.getWorld().dropItemNaturally(location, original.getMapItem());
+                    } else {
+                        location.getWorld().dropItemNaturally(location, ArtMaterial.CANVAS.getItem());
+                    }
                 });
             });
         } else {
