@@ -26,7 +26,6 @@ public class CanvasRenderer extends MapRenderer {
         this.map = map;
         PixelTableManager pixelTable = ArtMap.getPixelTable();
         if (pixelTable == null) {
-            this.map.setRenderer(null);
             resolutionFactor = 0;
             axisLength = 0;
             maxUpdate = 0;
@@ -36,7 +35,6 @@ public class CanvasRenderer extends MapRenderer {
         axisLength = 128 / resolutionFactor;
         maxUpdate = 16384;// TODO: 22/09/2016 magic value
         loadMap();
-        this.map.setRenderer(this);
         cursor = new Cursor(yawOffset);
         active = new AtomicBoolean(true);
     }

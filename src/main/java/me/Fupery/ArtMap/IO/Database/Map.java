@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.IO.Database;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.BukkitGetter;
 import me.Fupery.ArtMap.Utils.Reflection;
@@ -12,7 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Map {
@@ -57,7 +58,7 @@ public class Map {
                 ErrorLogger.log(e, "Error reading idcounts.dat.");
                 return -1;
             }
-            nextMapId = (short) (data[9]<<8 | data[10] & 0xFF);//The short is stored at index 9-10
+            nextMapId = (short) (data[9] << 8 | data[10] & 0xFF);//The short is stored at index 9-10
         }
         return nextMapId;
     }
@@ -79,7 +80,9 @@ public class Map {
     public Map cloneArtwork() {
         MapView newMapView = Bukkit.getServer().createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
         Map newMap = new Map(newMapView);
-        newMap.setMap(getData());
+        byte[] mapData = getData();
+        newMap.setMap(mapData);
+        ArtMap.getArtDatabase().cacheMap(newMap, mapData);
         return newMap;
     }
 

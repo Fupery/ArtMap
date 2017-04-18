@@ -36,7 +36,7 @@ public class ArtSession {
     private ArmorStand seat;
     private ItemStack[] inventory;
     private boolean active = false;
-    private boolean dirty = false;
+    private boolean dirty = true;
 
     ArtSession(Easel easel, Map map, int yawOffset) {
         this.easel = easel;
@@ -74,6 +74,8 @@ public class ArtSession {
         if (ArtMap.getConfiguration().FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
             addKit(player);
         }
+        map.setRenderer(canvas);
+        persistMap(false);
         return true;
     }
 
@@ -145,15 +147,15 @@ public class ArtSession {
         easel.setIsPainting(false);
         SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         canvas.stop();
-        persistMap();
+        persistMap(true);
         active = false;
         //todo map renderer getting killed after save
     }
 
-    public void persistMap() {
+    public void persistMap(boolean resetRenderer) {
         if (!dirty) return; //no caching required
         byte[] mapData = canvas.getMap();
-        map.setMap(mapData);
+        map.setMap(mapData, resetRenderer);
         ArtMap.getArtDatabase().cacheMap(this.map, mapData);
         dirty = false;
     }
@@ -164,6 +166,10 @@ public class ArtSession {
 
     void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     void sendMap(Player player) {
