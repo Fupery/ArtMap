@@ -75,7 +75,7 @@ public class CommandHandler implements CommandExecutor {
                     ArtMap.getScheduler().SYNC.run(() -> {
                         if (args.length > 0 & sender.hasPermission("artmap.admin")) {
                             Lang.Array.CONSOLE_HELP.send(sender);
-                        }
+                        }//todo fix formatting here
                         PlayerOpenMenuEvent event = new PlayerOpenMenuEvent((Player) sender);
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         MenuHandler menuHandler = ArtMap.getMenuHandler();

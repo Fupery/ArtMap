@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.IO.Legacy;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Bukkit;
@@ -13,7 +12,6 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class FlatDatabaseConverter {
