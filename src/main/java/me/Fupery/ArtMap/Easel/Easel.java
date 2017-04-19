@@ -20,18 +20,21 @@ import org.bukkit.map.MapView;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Easel {
 
     private final Location location;
     private boolean isPainting;
+    private UUID user;
     private WeakReference<ArmorStand> stand;
     private WeakReference<ItemFrame> frame;
     private AtomicBoolean exists;
 
     private Easel(Location location) {
         this.location = location;
+        user = null;
         stand = new WeakReference<>(null);
         frame = new WeakReference<>(null);
         exists = new AtomicBoolean(false);
@@ -51,7 +54,7 @@ public class Easel {
         SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
 
         Easel easel = new Easel(location);
-        EaselEvent.easels.put(location, easel);
+        ArtMap.getEasels().put(easel);
 
         if (stand == null || frame == null) {
             easel.breakEasel();
@@ -76,9 +79,9 @@ public class Easel {
         Location easelLocation =
                 part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
-        if (EaselEvent.easels.containsKey(easelLocation)) {
+        if (ArtMap.getEasels().contains(easelLocation)) {
 
-            return EaselEvent.easels.get(easelLocation);
+            return ArtMap.getEasels().get(easelLocation);
 
         } else {
 
@@ -92,7 +95,7 @@ public class Easel {
                 easel.stand = new WeakReference<>(stand);
                 easel.frame = new WeakReference<>(frame);
 
-                EaselEvent.easels.put(easel.location, easel);
+                ArtMap.getEasels().put(easel);
                 easel.exists.set(true);
                 return easel;
             }
@@ -117,8 +120,8 @@ public class Easel {
 
         } else {
 
-            if (EaselEvent.easels.containsKey(location)) {
-                EaselEvent.easels.remove(location);
+            if (ArtMap.getEasels().contains(location)) {
+                ArtMap.getEasels().remove(location);
             }
             return false;
         }
@@ -233,9 +236,9 @@ public class Easel {
         if (isACopy(item)) {
             final String originalName = item.getItemMeta().getLore().get(1);
             getFrame().setItem(new ItemStack(Material.AIR));
-            ArtMap.getTaskManager().ASYNC.run(() -> {
+            ArtMap.getScheduler().ASYNC.run(() -> {
                 MapArt original = ArtMap.getArtDatabase().getArtwork(originalName);
-                ArtMap.getTaskManager().SYNC.run(() -> {
+                ArtMap.getScheduler().SYNC.run(() -> {
                     if (original != null) {
                         location.getWorld().dropItemNaturally(location, original.getMapItem());
                     } else {
@@ -263,12 +266,12 @@ public class Easel {
      */
     public void breakEasel() {
         if (!exists.getAndSet(false)) return;
-        EaselEvent.easels.remove(location);
+        ArtMap.getEasels().remove(location);
         final Collection<Entity> entities = getNearbyEntities();
         final ArmorStand stand = getStand(entities);
         final ItemFrame frame = getFrame(entities);
 
-        ArtMap.getTaskManager().SYNC.run(() -> {
+        ArtMap.getScheduler().SYNC.run(() -> {
             location.getBlock().setType(Material.AIR);
             SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
 
@@ -309,6 +312,7 @@ public class Easel {
     }
 
     public boolean isPainting() {
+//        if (!isPainting) return false;
         return isPainting;
     }
 

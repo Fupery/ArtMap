@@ -126,7 +126,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
             if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
 
-                if (EaselEvent.easels.containsKey(block.getLocation())
+                if (ArtMap.getEasels().contains(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {
                     event.setCancelled(true);
                     return true;

@@ -6,8 +6,9 @@ import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Easel.EaselMap;
 import me.Fupery.ArtMap.IO.Database.Database;
-import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
+import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.Legacy.OldDatabaseConverter;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
@@ -17,13 +18,17 @@ import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Preview.PreviewManager;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.Scheduler;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.SoftReference;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class ArtMap extends JavaPlugin {
 
@@ -31,7 +36,7 @@ public class ArtMap extends JavaPlugin {
     private MenuHandler menuHandler;
     private ArtistHandler artistHandler;
     private VersionHandler bukkitVersion;
-    private TaskManager taskManager;
+    private Scheduler scheduler;
     private Database database;
     private ChannelCacheManager cacheManager;
     private RecipeLoader recipeLoader;
@@ -41,6 +46,7 @@ public class ArtMap extends JavaPlugin {
     private Configuration config;
     private EventManager eventManager;
     private PreviewManager previewManager;
+    private EaselMap easels;
     private Palette palette;
 
     public static Database getArtDatabase() {
@@ -54,8 +60,8 @@ public class ArtMap extends JavaPlugin {
         return pluginInstance.get();
     }
 
-    public static TaskManager getTaskManager() {
-        return instance().taskManager;
+    public static Scheduler getScheduler() {
+        return instance().scheduler;
     }
 
     public static ArtistHandler getArtistHandler() {
@@ -102,6 +108,10 @@ public class ArtMap extends JavaPlugin {
         return instance().previewManager;
     }
 
+    public static EaselMap getEasels() {
+        return instance().easels;
+    }
+
     public static PixelTableManager getPixelTable() {
         return instance().pixelTable;
     }
@@ -113,7 +123,7 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
         palette = new BasicPalette();
-        taskManager = new TaskManager(this);
+        scheduler = new Scheduler(this);
         protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
@@ -122,8 +132,6 @@ public class ArtMap extends JavaPlugin {
             getPluginLoader().disablePlugin(this);
             return;
         }
-        eventManager = new EventManager(this, bukkitVersion);
-        new FlatDatabaseConverter(this).convertDatabase();
         new OldDatabaseConverter(this).convertDatabase();
         Lang.load(this, config);
         if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
@@ -133,6 +141,8 @@ public class ArtMap extends JavaPlugin {
         }
         recipeLoader = new RecipeLoader(this, config);
         recipeLoader.loadRecipes();
+        easels = new EaselMap();
+        eventManager = new EventManager(this, bukkitVersion);
         previewManager = new PreviewManager();
         menuHandler = new MenuHandler(this);
         getCommand("artmap").setExecutor(new CommandHandler());
@@ -148,6 +158,22 @@ public class ArtMap extends JavaPlugin {
         recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;
+    }
+
+    public boolean writeResource(String resourcePath, File destination) {
+        String writeError = String.format("Cannot write resource '%s' to destination '%s'.",
+                resourcePath, destination.getAbsolutePath());
+        if (!destination.exists()) try {
+            if (destination.createNewFile()) {
+                Files.copy(getResource(resourcePath), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                getLogger().warning(writeError + " Error: Destination cannot be created.");
+            }
+        } catch (IOException e) {
+            ErrorLogger.log(e, writeError);
+            return false;
+        }
+        return true;
     }
 
     public Reader getTextResourceFile(String fileName) {

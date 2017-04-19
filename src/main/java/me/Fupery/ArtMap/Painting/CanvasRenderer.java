@@ -106,7 +106,7 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     private void loadMap() {
-        byte[] colours = map.getData();
+        byte[] colours = map.readData();
 
         pixelBuffer = new byte[axisLength][axisLength];
         dirtyPixels = new ConcurrentLinkedQueue<>();

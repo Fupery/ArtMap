@@ -7,16 +7,12 @@ import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 public final class EaselEvent {
-    public static final ConcurrentHashMap<Location, Easel> easels = new ConcurrentHashMap<>();// FIXME: 25/07/2016 why static?
     private final Easel easel;
     private final ClickType click;
     private final Player player;
@@ -63,7 +59,7 @@ public final class EaselEvent {
                     return;
 
                 } else if (material == ArtMaterial.MAP_ART) {
-                    ArtMap.getTaskManager().ASYNC.run(() -> editArtwork(player.getItemInHand()));
+                    ArtMap.getScheduler().ASYNC.run(() -> editArtwork(player.getItemInHand()));
                     return;
                 }
                 Lang.ActionBar.NEED_CANVAS.send(player);
@@ -83,7 +79,7 @@ public final class EaselEvent {
 
     private void editArtwork(ItemStack playerMainHandItem) {
         MapArt art = ArtMap.getArtDatabase().getArtwork(playerMainHandItem.getDurability());
-        ArtMap.getTaskManager().SYNC.run(() -> {
+        ArtMap.getScheduler().SYNC.run(() -> {
             if (art != null) {
                 if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
                     Lang.ActionBar.NO_EDIT_PERM.send(player);
