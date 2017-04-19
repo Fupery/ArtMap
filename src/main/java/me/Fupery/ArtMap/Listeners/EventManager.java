@@ -19,6 +19,7 @@ public class EventManager {
         listeners.add(new ChunkUnloadListener());
         listeners.add(new PlayerCraftListener());
         listeners.add(new InventoryInteractListener());
+//        listeners.add(new MapInitializeListener());
         if (version.getVersion() != VersionHandler.BukkitVersion.v1_8) {
             listeners.add(new PlayerSwapHandListener());
             listeners.add(new PlayerDismountListener());
