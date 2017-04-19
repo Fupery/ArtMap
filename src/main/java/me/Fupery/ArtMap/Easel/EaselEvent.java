@@ -29,7 +29,7 @@ public final class EaselEvent {
             Lang.NO_PERM.send(player);
             return;
         }
-        if (easel.isPainting()) {
+        if (easel.isBeingUsed()) {
             Lang.ActionBar.ELSE_USING.send(player);
             SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
             easel.playEffect(Effect.CRIT);
@@ -42,7 +42,8 @@ public final class EaselEvent {
             case RIGHT_CLICK:
                 //If the easel has a canvas, player rides the easel
                 if (easel.getItem().getType() == Material.MAP) {
-                    easel.rideEasel(player);
+                    ArtMap.getArtistHandler().addPlayer(player, easel,
+                            new Map(easel.getItem().getDurability()), EaselPart.getYawOffset(easel.getFacing()));
                     return;
                     //remove items that were added while instance is unloaded etc.
                 } else if (easel.getItem().getType() != Material.AIR) {
@@ -92,7 +93,7 @@ public final class EaselEvent {
                 easel.editArtwork(map, art.getTitle());
                 consumeItem(player, playerMainHandItem);
             } else {
-                Lang.NEED_CANVAS.send(player);
+                Lang.ActionBar.NEED_CANVAS.send(player);
                 SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
                 easel.playEffect(Effect.CRIT);
             }

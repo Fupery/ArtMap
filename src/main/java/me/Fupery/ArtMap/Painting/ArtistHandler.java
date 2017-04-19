@@ -69,8 +69,12 @@ public class ArtistHandler {
         return (artists.containsKey(player.getUniqueId()));
     }
 
+    public boolean containsPlayer(UUID player) {
+        return artists.containsKey(player);
+    }
+
     public synchronized void removePlayer(final Player player) {
-        if (!artists.containsKey(player.getUniqueId())) return;//just for safety :)
+        if (!containsPlayer(player)) return;//just for safety :)
         ArtSession session = artists.get(player.getUniqueId());
         if (!session.isActive()) return;
         artists.remove(player.getUniqueId());

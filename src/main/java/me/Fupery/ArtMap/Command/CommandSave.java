@@ -60,7 +60,7 @@ class CommandSave extends AsyncCommand {
             MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
             ArtMap.getArtDatabase().saveArtwork(art1);
 
-            easel.getFrame().setItem(new ItemStack(Material.AIR));
+            easel.setItem(new ItemStack(Material.AIR));
             ItemUtils.giveItem(player, art1.getMapItem());
             SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
             easel.playEffect(Effect.HAPPY_VILLAGER);

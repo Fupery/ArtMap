@@ -11,7 +11,6 @@ import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
 import me.Fupery.ArtMap.Painting.Brushes.Shade;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.Scheduler;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -32,8 +31,6 @@ public class ArtSession {
     private final Map map;
     private Brush currentBrush;
     private long lastStroke;
-    private ArmorStand marker;
-    private ArmorStand seat;
     private ItemStack[] inventory;
     private boolean active = false;
     private boolean dirty = true;
@@ -56,19 +53,11 @@ public class ArtSession {
         if (event.isCancelled()) return false;
 
         Location location = easel.getLocation();
-        seat = (ArmorStand) EaselPart.SEAT.spawn(location, easel.getFacing());
-        marker = (ArmorStand) EaselPart.MARKER.spawn(easel.getLocation(), easel.getFacing());
-
-        seat.setPassenger(player);
-        if (seat == null || seat.getPassenger() == null || marker == null) {
-            return false;
-        }
-        easel.setIsPainting(true);
+        easel.seatUser(player);
         //Run tasks
         ArtMap.getArtDatabase().restoreMap(map);
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
-        Scheduler scheduler = ArtMap.getScheduler();
-        scheduler.SYNC.runLater(() -> {
+        ArtMap.getScheduler().SYNC.runLater(() -> {
             if (player.getVehicle() != null) Lang.ActionBar.PAINTING.send(player);
         }, 30);
         if (ArtMap.getConfiguration().FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
@@ -142,9 +131,7 @@ public class ArtSession {
     void end(Player player) {
         player.leaveVehicle();
         removeKit(player);
-        if (marker != null) marker.remove();
-        if (seat != null) seat.remove();
-        easel.setIsPainting(false);
+        easel.removeUser();
         SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         canvas.stop();
         persistMap(true);
