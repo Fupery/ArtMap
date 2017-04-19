@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public final class Database {
@@ -89,10 +88,8 @@ public final class Database {
 
     private void loadArtworks() {
         assert Bukkit.isPrimaryThread(); //todo error logging etc.
-        List<MapId> ids = maps.getMapIds();
-        for (MapId mapId : ids) {
-            restoreMap(mapId);
-        }
+        maps.getMapIds().forEach(this::restoreMap);
+
     }
 
     public ArtTable getArtTable() {
@@ -140,7 +137,7 @@ public final class Database {
     }
 
     private void restoreMap(MapId mapId) {
-        boolean needsRestore = false;
+        boolean needsRestore;
         Map map = new Map(mapId.getId());
         if (!map.exists()) {
             //spicy map necromancy
@@ -148,15 +145,19 @@ public final class Database {
 
             short topMapId = Map.getNextMapId();
             if (topMapId == -1) {
-                ArtMap.instance().getLogger().info("    Id could not be restored");
+                ArtMap.instance().getLogger().warning("Id could not be restored");
                 return;
             }
             ArtMap.instance().writeResource("blank.dat", map.getDataFile());
+            needsRestore = true;
         } else {
             byte[] storedMap = map.readData();
             needsRestore = Arrays.hashCode(storedMap) != mapId.getHash();
         }
-        if (!needsRestore) map.setMap(maps.getMap(mapId.getId()).decompressMap());
+        if (needsRestore) {
+            map.setMap(maps.getMap(mapId.getId()).decompressMap());
+            ArtMap.instance().getLogger().info(String.format("Id '%s' was restored!", mapId.getId()));
+        }
     }
 
     public void recycleMap(Map map) {
