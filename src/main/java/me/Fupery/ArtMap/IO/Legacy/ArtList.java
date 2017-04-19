@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ArtList {
-    private List<MapArt> artworks = new ArrayList<>();
-    private List<CompressedMap> maps = new ArrayList<>();
+    private final List<MapArt> artworks = new ArrayList<>();
+    private final List<CompressedMap> maps = new ArrayList<>();
 
     List<MapArt> getArtworks() {
         return artworks;

@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.IO.Legacy;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.CompressedMap;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -18,20 +20,20 @@ public class FlatDatabaseConverter {
 
     private JavaPlugin plugin;
 
-    public FlatDatabaseConverter(JavaPlugin plugin) {
+    FlatDatabaseConverter(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public boolean convertDatabase() {
+    boolean convertDatabase() {
         String dbFileName = "mapList.yml";
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
         if (!databaseFile.exists()) return false;
         plugin.getLogger().info("Old 'mapList.yml' database found! Converting to new format ...");
         plugin.getLogger().info("(This may take a while, but only needs to run once)");
-        HashMap<MapArt, MapView> artworks = readArtworks(databaseFile);
+        ArtList artworks = readArtworks(databaseFile);
 
-        if (artworks != null && artworks.size() > 0) {
-            ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().getArtTable().addArtworks(artworks));
+        if (!artworks.isEmpty()) {
+            ArtMap.getScheduler().ASYNC.run(artworks::addArtworks);
         }
 
         File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
@@ -40,16 +42,16 @@ public class FlatDatabaseConverter {
             return false;
         }
         plugin.getLogger().info(String.format("Conversion completed! %s artworks converted. " +
-                "mapList.yml has been disabled.", artworks.size()));
+                "mapList.yml has been disabled.", artworks.getArtworks().size()));
         return true;
     }
 
-    public HashMap<MapArt, MapView> readArtworks(File databaseFile) {
-        HashMap<MapArt, MapView> artworkList = new HashMap<>();
+    private ArtList readArtworks(File databaseFile) {
+        ArtList artList = new ArtList();
         FileConfiguration database = YamlConfiguration.loadConfiguration(databaseFile);
         ConfigurationSection artworks = database.getConfigurationSection("artworks");
 
-        if (artworks == null) return artworkList;
+        if (artworks == null) return artList;
 
         for (String title : artworks.getKeys(false)) {
             ConfigurationSection map = artworks.getConfigurationSection(title);
@@ -72,10 +74,11 @@ public class FlatDatabaseConverter {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {
                     plugin.getLogger().info(String.format("    Converting '%s' ...", title));
-                    artworkList.put(artwork, mapView);
+                    artList.getArtworks().add(artwork);
+                    artList.getMaps().add(new Map(mapView).compress());
                 }
             }
         }
-        return artworkList;
+        return artList;
     }
 }

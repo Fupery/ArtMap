@@ -28,6 +28,7 @@ public class OldDatabaseConverter {
     }
 
     public boolean convertDatabase() {
+        if (new FlatDatabaseConverter(plugin).convertDatabase()) return true;
         String dbFileName = "ArtMap.db";
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
         if (!databaseFile.exists()) return false;
