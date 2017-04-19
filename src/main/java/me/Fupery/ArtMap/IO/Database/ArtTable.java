@@ -191,7 +191,7 @@ public final class ArtTable extends SQLiteTable {
                     statement.addBatch();
                 }
             }
-        }.executeBatch("INSERT INTO " + TABLE + " (title, id, artist, date, map) VALUES(?,?,?,?,?);");
+        }.executeBatch("INSERT INTO " + TABLE + " (title, id, artist, date) VALUES(?,?,?,?);");
         return failed;
     }
 

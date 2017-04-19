@@ -33,6 +33,9 @@ public class OldDatabaseConverter {
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
         if (!databaseFile.exists()) return false;
 
+        plugin.getLogger().info("Old 'ArtMap.db' database found! Converting to new format ...");
+        plugin.getLogger().info("(This may take a while, but only needs to run once)");
+
         ArtList artList = readArtworks();
         if (artList == null) return false;
 
@@ -51,10 +54,7 @@ public class OldDatabaseConverter {
         ArtList artList = new ArtList();
         OldDatabase database = new OldDatabase(plugin);
         OldDatabaseTable table = new OldDatabaseTable(database);
-        if (database.initialize(table)) return null;
-
-        plugin.getLogger().info("Old 'ArtMap.db' database found! Converting to new format ...");
-        plugin.getLogger().info("(This may take a while, but only needs to run once)");
+        if (!database.initialize(table)) return null;
 
         for (RichMapArt artwork : table.readArtworks()) {
             String title = artwork.getArt().getTitle();
@@ -127,7 +127,10 @@ public class OldDatabaseConverter {
                 protected List<RichMapArt> read(ResultSet set) throws SQLException {
                     List<RichMapArt> artList = new ArrayList<>();
                     while (set.next()) {
-                        artList.add(readArtwork(set));
+                        try {
+                            artList.add(readArtwork(set));
+                        } catch (Exception ignored) {
+                        }
                     }
                     return artList;
                 }
