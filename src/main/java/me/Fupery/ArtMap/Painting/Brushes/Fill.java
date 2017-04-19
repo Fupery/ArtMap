@@ -65,7 +65,7 @@ public class Fill extends Brush {
             final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour;
 
-            ArtMap.getTaskManager().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
+            ArtMap.getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
     }
 

@@ -108,7 +108,7 @@ class PlayerInteractListener implements RegisteredListener {
             return;
         }
 
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
 
             ItemMeta meta = item.getItemMeta();
 

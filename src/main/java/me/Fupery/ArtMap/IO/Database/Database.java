@@ -12,9 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +48,7 @@ public final class Database {
         if (!database.initialize(artworks = new ArtTable(database), maps = new MapTable(database))) return null;
         Database db = new Database(plugin, database, artworks, maps);
         try {
-            db.loadArtworks(plugin);
+            db.loadArtworks();
         } catch (Exception e) {
             ErrorLogger.log(e, "Error Loading ArtMap Database");
             return null;
@@ -69,7 +66,7 @@ public final class Database {
 
     public boolean saveArtwork(MapArt art) {
         MapView mapView = getMap(art.getMapId());
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
             artworks.addArtwork(art);
             CompressedMap map = CompressedMap.compress(mapView);
             if (maps.containsMap(art.getMapId())) maps.updateMap(map);
@@ -81,7 +78,7 @@ public final class Database {
     public boolean deleteArtwork(MapArt art) {
         if (artworks.deleteArtwork(art.getTitle())) {
             maps.deleteMap(art.getMapId());
-            ArtMap.getTaskManager().SYNC.run(() -> art.getMap().setMap(new byte[Map.Size.MAX.value]));
+            ArtMap.getScheduler().SYNC.run(() -> art.getMap().setMap(new byte[Map.Size.MAX.value]));
             return true;
         } else return false;
     }
@@ -90,39 +87,11 @@ public final class Database {
 
     }
 
-    private void loadArtworks(JavaPlugin plugin) {
+    private void loadArtworks() {
         assert Bukkit.isPrimaryThread(); //todo error logging etc.
         List<MapId> ids = maps.getMapIds();
         for (MapId mapId : ids) {
-            Map map = new Map(mapId.getId());
-            if (map.exists()) {
-                byte[] storedMap = map.getData();
-                if (!(Arrays.hashCode(storedMap) == mapId.getHash())) {
-                    map.setMap(maps.getMap(mapId.getId()).decompressMap());
-                }
-            } else {//this map file doesn't exist!
-                //spicy map necromancy
-                Bukkit.getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring...");//TODO remove logging
-
-                short topMapId = Map.getNextMapId();
-                if (topMapId == -1 || topMapId < mapId.getId()) continue;
-                File mapFile = new File(Map.getMapDataFolder(), "map_" + mapId.getId() + ".dat");
-                if (!mapFile.exists()) try {
-                    if (mapFile.createNewFile()) Files.copy(plugin.getResource("blank.dat"),
-                            mapFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                map.setMap(maps.getMap(mapId.getId()).decompressMap());
-                //create new blank map in map folder
-
-                //if less than max
-                //
-//                mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD)); //todo lmao
-//                short newMapID = mapView.getMapId();
-//                fixMap(map.getMapId(), mapView);
-//                maps.updateMapId(map.getMapId(), newMapID);
-            }
+            restoreMap(mapId);
         }
     }
 
@@ -152,7 +121,7 @@ public final class Database {
     }
 
     public void cacheMap(Map map, byte[] data) {
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
             CompressedMap compressedMap = CompressedMap.compress(map.getMapId(), data);
             if (maps.containsMap(map.getMapId())) maps.updateMap(compressedMap);
             else maps.addMap(compressedMap);
@@ -160,18 +129,39 @@ public final class Database {
     }
 
     public void restoreMap(Map map) {
-        int oldMapHash = Arrays.hashCode(map.getData());
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        byte[] data = map.readData();
+        ArtMap.getScheduler().ASYNC.run(() -> {
+            int oldMapHash = Arrays.hashCode(data);
             if (maps.containsMap(map.getMapId())
                     && maps.getHash(map.getMapId()) != oldMapHash) {
-                map.setMap(map.getData());
+                map.setMap(data);
             }
         });
     }
 
+    private void restoreMap(MapId mapId) {
+        boolean needsRestore = false;
+        Map map = new Map(mapId.getId());
+        if (!map.exists()) {
+            //spicy map necromancy
+            ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring...");
+
+            short topMapId = Map.getNextMapId();
+            if (topMapId == -1) {
+                ArtMap.instance().getLogger().info("    Id could not be restored");
+                return;
+            }
+            ArtMap.instance().writeResource("blank.dat", map.getDataFile());
+        } else {
+            byte[] storedMap = map.readData();
+            needsRestore = Arrays.hashCode(storedMap) != mapId.getHash();
+        }
+        if (!needsRestore) map.setMap(maps.getMap(mapId.getId()).decompressMap());
+    }
+
     public void recycleMap(Map map) {
         map.setMap(Map.BLANK_MAP);
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
             maps.deleteMap(map.getMapId());
             idQueue.offer(map.getMapId());
         });

@@ -4,7 +4,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
-import me.Fupery.ArtMap.Utils.BukkitGetter;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,7 +27,7 @@ public class Map {
         this.mapView = null;
     }
 
-    Map(MapView mapView) {
+    public Map(MapView mapView) {
         this.mapId = mapView.getId();
         this.mapView = mapView;
     }
@@ -67,7 +66,7 @@ public class Map {
         return CompressedMap.compress(getMap());
     }
 
-    public byte[] getData() {
+    public byte[] readData() {
         return Reflection.getMap(getMap());
     }
 
@@ -80,7 +79,7 @@ public class Map {
     public Map cloneArtwork() {
         MapView newMapView = Bukkit.getServer().createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
         Map newMap = new Map(newMapView);
-        byte[] mapData = getData();
+        byte[] mapData = readData();
         newMap.setMap(mapData);
         ArtMap.getArtDatabase().cacheMap(newMap, mapData);
         return newMap;
@@ -104,8 +103,12 @@ public class Map {
         return getMap() != null;
     }
 
+    public File getDataFile() {
+        return new File(getMapDataFolder(), "map_" + mapId + ".dat");
+    }
+
     public void update(Player player) {
-        ArtMap.getTaskManager().runSafely(() -> player.sendMap(getMap()));
+        ArtMap.getScheduler().runSafely(() -> player.sendMap(getMap()));
     }
 
     public short getMapId() {
@@ -115,7 +118,7 @@ public class Map {
     private MapView getMapView() {
         //todo We probably don't need sophisticated mapView caching right now
         return (mapView != null) ? mapView :
-                (mapView = new BukkitGetter<>(() -> Bukkit.getMap(mapId)).get());
+                (mapView = ArtMap.getScheduler().callSync(() -> Bukkit.getMap(mapId)));
     }
 
     public enum Size {

@@ -11,7 +11,7 @@ import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
 import me.Fupery.ArtMap.Painting.Brushes.Shade;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.Scheduler;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -67,8 +67,8 @@ public class ArtSession {
         //Run tasks
         ArtMap.getArtDatabase().restoreMap(map);
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
-        TaskManager taskManager = ArtMap.getTaskManager();
-        taskManager.SYNC.runLater(() -> {
+        Scheduler scheduler = ArtMap.getScheduler();
+        scheduler.SYNC.runLater(() -> {
             if (player.getVehicle() != null) Lang.ActionBar.PAINTING.send(player);
         }, 30);
         if (ArtMap.getConfiguration().FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {

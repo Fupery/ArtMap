@@ -19,7 +19,7 @@ class CommandPreview extends AsyncCommand {
     private static boolean previewArtwork(final Player player, final MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
-            ArtMap.getTaskManager().SYNC.run(() -> {
+            ArtMap.getScheduler().SYNC.run(() -> {
                 ItemStack currentItem = player.getItemInHand();
                 player.setItemInHand(art.getMapItem());
 

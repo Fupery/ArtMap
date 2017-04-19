@@ -60,7 +60,7 @@ public class CommandHandler implements CommandExecutor {
                         if (amount > 1) item.setAmount(amount);
                     }
                     ItemStack finalItem = item;
-                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
+                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
                     return;
                 }
                 sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
@@ -72,7 +72,7 @@ public class CommandHandler implements CommandExecutor {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 if (sender instanceof Player) {
-                    ArtMap.getTaskManager().SYNC.run(() -> {
+                    ArtMap.getScheduler().SYNC.run(() -> {
                         if (args.length > 0 & sender.hasPermission("artmap.admin")) {
                             Lang.Array.CONSOLE_HELP.send(sender);
                         }
@@ -89,7 +89,7 @@ public class CommandHandler implements CommandExecutor {
         commands.put("reload", new AsyncCommand("artmap.admin", "/artmap reload", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ArtMap.getTaskManager().SYNC.run(() -> {
+                ArtMap.getScheduler().SYNC.run(() -> {
                     JavaPlugin plugin = ArtMap.instance();
                     plugin.onDisable();
                     plugin.onEnable();

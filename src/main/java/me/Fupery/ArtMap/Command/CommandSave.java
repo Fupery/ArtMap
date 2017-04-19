@@ -47,7 +47,7 @@ class CommandSave extends AsyncCommand {
         }
 
 
-        ArtMap.getTaskManager().SYNC.run(() -> {
+        ArtMap.getScheduler().SYNC.run(() -> {
             Easel easel = null;
             easel = ArtMap.getArtistHandler().getEasel(player);
 

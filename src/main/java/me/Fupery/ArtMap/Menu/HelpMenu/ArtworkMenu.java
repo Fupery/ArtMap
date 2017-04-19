@@ -134,7 +134,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                 } else {
                     ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
 
-                    ArtMap.getTaskManager().SYNC.run(() -> {
+                    ArtMap.getScheduler().SYNC.run(() -> {
                         ArtMap.getPreviewManager().endPreview(player);
                         SoundCompat.BLOCK_CLOTH_FALL.play(player);
                         if (player.getItemInHand().getType() != Material.AIR) {
@@ -148,7 +148,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
             } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
+                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
                 } else if (adminViewing) {
                     Lang.NO_PERM.send(player);
                 }

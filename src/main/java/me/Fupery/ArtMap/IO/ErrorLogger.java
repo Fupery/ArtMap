@@ -25,7 +25,7 @@ public class ErrorLogger {
 
     public static void log(Throwable throwable) {
         File dataFolder = getDataFolder();
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
             File file = new File(dataFolder, log);
             if (!file.exists()) {
                 try {

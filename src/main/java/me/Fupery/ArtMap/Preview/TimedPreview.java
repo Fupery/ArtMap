@@ -11,7 +11,7 @@ abstract class TimedPreview implements Preview {
 
     @Override
     public boolean start(Player player) {
-        ArtMap.getTaskManager().getTaskHandler(timeout = new Timeout(player.getUniqueId())).runLater(false, 300);
+        ArtMap.getScheduler().getTaskHandler(timeout = new Timeout(player.getUniqueId())).runLater(false, 300);
         return true;
     }
 
