@@ -39,19 +39,10 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
 
     private static String processTitle(UUID artist) {
         String name = Bukkit.getOfflinePlayer(artist).getName();
-        String processedName;
-        String title = "§1%s's art";
-
-        if (name.length() >= 22) {
-            processedName = name.substring(0, 21);
-
-        } else if (name.length() >= 14) {
-            processedName = name;
-
-        } else {
-            processedName = String.format(title, name);
-        }
-        return processedName;
+        String title = "§1" + Lang.MENU_ARTWORKS.get();
+        String processedName = String.format(title, name);
+        if (processedName.length() <= 32) return processedName;
+        else return (name.length() <= 30) ? "§1" + name : "§1" + name.substring(0, 29);
     }
 
     public static boolean isPreviewItem(ItemStack item) {

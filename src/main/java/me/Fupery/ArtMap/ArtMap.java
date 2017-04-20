@@ -122,18 +122,18 @@ public class ArtMap extends JavaPlugin {
         saveDefaultConfig();
         compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
-        palette = new BasicPalette();
         scheduler = new Scheduler(this);
         protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
+        Lang.load(this, config);
+        palette = new BasicPalette();
         if ((database = Database.build(this)) == null) {
             getPluginLoader().disablePlugin(this);
             return;
         }
         new OldDatabaseConverter(this).convertDatabase();
-        Lang.load(this, config);
         if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
             getLogger().warning(Lang.INVALID_DATA_TABLES.get());
             getPluginLoader().disablePlugin(this);

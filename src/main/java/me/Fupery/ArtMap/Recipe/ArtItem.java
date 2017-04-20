@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 import static me.Fupery.ArtMap.Config.Lang.Array.RECIPE_PAINTBUCKET;
+import static me.Fupery.ArtMap.Config.Lang.RECIPE_ARTWORK_ARTIST;
 import static me.Fupery.ArtMap.Config.Lang.RECIPE_PAINTBUCKET_NAME;
 import static org.bukkit.ChatColor.*;
 
@@ -106,7 +107,8 @@ public class ArtItem {
             super(Material.MAP, ARTWORK_TAG, id);
             String name = player != null ? player.getName() : "Player";
             name(title);
-            tooltip(GOLD + "by " + YELLOW + name, DARK_GREEN + "" + ITALIC + date);
+            String artist = GOLD + String.format(RECIPE_ARTWORK_ARTIST.get(), (YELLOW + name));
+            tooltip(artist, DARK_GREEN + "" + ITALIC + date);
         }
     }
 

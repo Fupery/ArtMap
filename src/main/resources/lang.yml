@@ -55,7 +55,7 @@ RESTORED_SUCCESSFULY: "§6Successfully restored %s with map ID %s!" #The first %
 #Menu titles
 MENU_RECIPE: "Choose a Recipe"
 MENU_ARTIST: "Click an Artist"
-MENU_ARTWORKS: "Player ArtTable"
+MENU_ARTWORKS: "%s's Art" # '%s' will be replaced by the player's name
 MENU_DYES: "Dyes for painting"
 MENU_HELP: "Choose a help topic"
 MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
@@ -68,6 +68,7 @@ RECIPE_HELP: "§a/artmap §2for help"
 RECIPE_EASEL_NAME: "Easel"
 RECIPE_CANVAS_NAME: "Canvas"
 RECIPE_PAINTBUCKET_NAME: "PaintBucket"
+RECIPE_ARTWORK_ARTIST: "by %s" # '%s' is replaced with the name of the artist who created this artwork
 #---------------------------------------[Menu Buttons]---------------------------------------#
 HELP_GETTING_STARTED:
   - "                 §6§l⊱§e§lGetting Started§6§l⊰"
@@ -102,7 +103,7 @@ HELP_DYES:
   - "      §a✸§2§oClick to View§a✸"
 HELP_LIST:
   - "             §6§l⊱§e§lArtworks§6§l⊰"
-  - "      §3✺§b§oView Player ArtTable§3✺"
+  - "      §3✺§b§oView Player Art§3✺"
   - "§7View your artwork or view other"
   - "§7players' work grouped by artist."
   - "          §a✸§2§oClick to browse§a✸"
@@ -169,6 +170,33 @@ CONSOLE_HELP:
   - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
   - "§3/artmap delete <title> §b: §eDelete an artwork"
   - "§3/artmap restore <title> §b: §eRestore a corrupted artwork"
+
+#-------------------------------------------[Dye Names]-------------------------------------------#
+DYE_BLACK: "Black"
+DYE_RED: "Red"
+DYE_GREEN: "Green"
+DYE_BROWN: "Brown"
+DYE_BLUE: "Blue"
+DYE_PURPLE: "Purple"
+DYE_CYAN: "Cyan"
+DYE_SILVER: "Silver"
+DYE_GRAY: "Gray"
+DYE_PINK: "Pink"
+DYE_LIME: "Lime"
+DYE_YELLOW: "Yellow"
+DYE_LIGHT_BLUE: "Light Blue"
+DYE_MAGENTA: "Magenta"
+DYE_ORANGE: "Orange"
+DYE_WHITE: "White"
+DYE_CREAM: "Cream"
+DYE_COFFEE: "Coffee"
+DYE_GRAPHITE: "Graphite"
+DYE_GUNPOWDER: "Gunpowder"
+DYE_MAROON: "Maroon"
+DYE_AQUA: "Aqua"
+DYE_GRASS: "Grass"
+DYE_GOLD: "Gold"
+DYE_VOID: "Transparent"
 
 #-------------------------------------[Artwork Title Filter]-------------------------------------#
 #Words in the following list are filtered from artwork titles:
