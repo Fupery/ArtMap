@@ -54,6 +54,7 @@ class CommandSave extends AsyncCommand {
                 Lang.NOT_RIDING_EASEL.send(player);
                 return;
             }
+            easel.playEffect(EaselEffect.SAVE_ARTWORK);
             ArtMap.getArtistHandler().removePlayer(player);
 
             MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
@@ -61,7 +62,6 @@ class CommandSave extends AsyncCommand {
 
             easel.setItem(new ItemStack(Material.AIR));
             ItemUtils.giveItem(player, art1.getMapItem());
-            easel.playEffect(EaselEffect.SAVE_ARTWORK);
             player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
         });
     }
