@@ -3,11 +3,10 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -94,8 +93,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
         if (!interactionAllowed) {
             Lang.ActionBar.NO_PERM_ACTION.send(player);
-            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-            easel.playEffect(Effect.CRIT);
+            easel.playEffect(EaselEffect.USE_DENIED);
             return;
         }
 

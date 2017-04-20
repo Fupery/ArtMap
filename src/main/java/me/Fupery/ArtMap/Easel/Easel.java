@@ -1,27 +1,20 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Database.Map;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,7 +27,6 @@ public class Easel {
     private final WeakEntity<ArmorStand> seat = new WeakEntity<>(EaselPart.SEAT);
     private final WeakEntity<ArmorStand> marker = new WeakEntity<>(EaselPart.MARKER);
     private final AtomicBoolean spawned;
-    private boolean isPainting;
     private UUID user;
 
     private Easel(Location location, boolean hasBeenSpawned) {
@@ -53,7 +45,7 @@ public class Easel {
     public static Easel spawnEasel(Location location, BlockFace facing) {
         Easel easel = new Easel(location, false);
         easel.place(location, facing);
-        SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
+        EaselEffect.SPAWN.playEffect(location);
 
         if (easel.exists()) {
             ArtMap.getEasels().put(easel);
@@ -127,39 +119,21 @@ public class Easel {
     }
 
     private boolean hasSign() {
-        if (location.getBlock().getType() == Material.WALL_SIGN
-                && location.getBlock().getState() instanceof Sign) {
-            Sign sign = ((Sign) location.getBlock().getState());
-            return sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID);
-        }
-        return false;
+        BlockState state = location.getBlock().getState();
+        return (location.getBlock().getType() == Material.WALL_SIGN
+                && state instanceof Sign
+                && ((Sign) state).getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID));
     }
 
     /**
-     * Mounts a canvas on the easel, with an id defined by the MapView provided.
+     * Mounts a canvas on the easel, with an id defined by the canvas provided.
      *
-     * @param mapView The MapView of the map that will be edited on the easel.
+     * @param canvas The canvas that will be placed on the easel.
      */
-    public void mountCanvas(MapView mapView) {
-        SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
-        playEffect(Effect.POTION_SWIRL_TRANSPARENT);
-    }
-
-    /**
-     * Edits an already existing artwork on the easel.
-     *
-     * @param map      The id of the original artwork.
-     * @param original The title of the original artwork.
-     */
-    void editArtwork(Map map, String original) {
-        SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        ItemStack item = new ItemStack(Material.MAP, 1, map.getMapId());
-        ItemMeta meta = item.getItemMeta();
-        meta.setLore(Arrays.asList(ArtItem.COPY_KEY, original));
-        item.setItemMeta(meta);
-        setItem(item);
-        playEffect(Effect.POTION_SWIRL_TRANSPARENT);
+    public void mountCanvas(Canvas canvas) {
+        if (getItem() != null) removeItem();
+        setItem(canvas.getEaselItem());
+        EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
     }
 
     /**
@@ -168,33 +142,16 @@ public class Easel {
      * If the item is an edited artwork, a copy of the original artwork wil be dropped.
      */
     public void removeItem() {
-        ItemStack item = getItem();
-        if (isACopy(item)) {
-            final String originalName = item.getItemMeta().getLore().get(1);
-            setItem(new ItemStack(Material.AIR));
-            ArtMap.getScheduler().ASYNC.run(() -> {
-                MapArt original = ArtMap.getArtDatabase().getArtwork(originalName);
-                ArtMap.getScheduler().SYNC.run(() -> {
-                    if (original != null) {
-                        location.getWorld().dropItemNaturally(location, original.getMapItem());
-                    } else {
-                        location.getWorld().dropItemNaturally(location, ArtMaterial.CANVAS.getItem());
-                    }
-                });
-            });
-        } else {
-            ItemStack drop = (item.getType() == Material.MAP) ? ArtMaterial.CANVAS.getItem() : item.clone();
-            if (drop.getType() != Material.AIR) {
-                setItem(new ItemStack(Material.AIR));
-                location.getWorld().dropItemNaturally(location, drop);
-            }
-        }
-    }
+        ItemStack item = getItem().clone();
+        Canvas canvas = Canvas.getCanvas(item);
 
-    private boolean isACopy(ItemStack map) {
-        return (map != null && map.getType() == Material.MAP &&
-                map.hasItemMeta() && map.getItemMeta().hasLore()
-                && map.getItemMeta().getLore().get(0).equals(ArtItem.COPY_KEY));
+        setItem(new ItemStack(Material.AIR));
+        if (canvas != null) {
+            canvas.dropItem(location);
+        } else {
+            if (item != null && item.getType() != Material.AIR)
+                location.getWorld().dropItemNaturally(location, item);
+        }
     }
 
     /**
@@ -207,7 +164,7 @@ public class Easel {
 
         ArtMap.getScheduler().SYNC.run(() -> {
             location.getBlock().setType(Material.AIR);
-            SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
+            EaselEffect.BREAK.playEffect(getCentreLocation());
             if (stand.remove(entities)) location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
             if (frame.exists(entities)) {
                 removeItem();
@@ -227,13 +184,16 @@ public class Easel {
     /**
      * Plays an effect at the easel.
      *
-     * @param effect The effect to play.
+     * @param interactionType the type of interaction.
      */
-    public void playEffect(Effect effect) {
+    public void playEffect(EaselEffect interactionType) {
+        interactionType.playEffect(getCentreLocation());
+    }
+
+    private Location getCentreLocation() {
+        Location location = this.location.clone();
         BlockFace facing = getFacing();
-        Location loc = (facing == null) ? location :
-                new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
-        loc.getWorld().spigot().playEffect(loc, effect, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
+        return (facing == null) ? location : new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
     }
 
     public Location getLocation() {
@@ -249,6 +209,7 @@ public class Easel {
         if (seat.getPassenger() == null) return false;
 
         this.user = user.getUniqueId();
+        playEffect(EaselEffect.START_RIDING);
         return true;
     }
 
@@ -267,10 +228,7 @@ public class Easel {
         seat.remove(entities);
         marker.remove(entities);
         this.user = null;
-    }
-
-    public void setIsPainting(boolean isPainting) {
-        this.isPainting = isPainting;
+        playEffect(EaselEffect.STOP_RIDING);
     }
 
     private Collection<Entity> getNearbyEntities() {

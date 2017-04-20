@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.Painting;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Painting.Brushes.Dye;
@@ -12,11 +11,9 @@ import me.Fupery.ArtMap.Painting.Brushes.Flip;
 import me.Fupery.ArtMap.Painting.Brushes.Shade;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.VersionHandler;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -56,7 +53,6 @@ public class ArtSession {
         easel.seatUser(player);
         //Run tasks
         ArtMap.getArtDatabase().restoreMap(map);
-        SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
         ArtMap.getScheduler().SYNC.runLater(() -> {
             if (player.getVehicle() != null) Lang.ActionBar.PAINTING.send(player);
         }, 30);
@@ -132,7 +128,6 @@ public class ArtSession {
         player.leaveVehicle();
         removeKit(player);
         easel.removeUser();
-        SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
         canvas.stop();
         persistMap(true);
         active = false;

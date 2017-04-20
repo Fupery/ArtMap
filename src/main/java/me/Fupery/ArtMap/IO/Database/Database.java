@@ -105,7 +105,7 @@ public final class Database {
         AUTO_SAVE.cancel();
     }
 
-    public MapView createMap() {
+    public Map createMap() {
         Short id = idQueue.poll();
         MapView mapView;
         if (id != null && getArtwork(id) == null) {
@@ -114,7 +114,7 @@ public final class Database {
             mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
         }
         Reflection.setWorldMap(mapView, Map.BLANK_MAP);
-        return mapView;
+        return new Map(mapView);
     }
 
     public void cacheMap(Map map, byte[] data) {

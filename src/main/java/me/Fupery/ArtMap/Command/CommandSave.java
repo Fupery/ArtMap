@@ -3,11 +3,10 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -62,8 +61,7 @@ class CommandSave extends AsyncCommand {
 
             easel.setItem(new ItemStack(Material.AIR));
             ItemUtils.giveItem(player, art1.getMapItem());
-            SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
-            easel.playEffect(Effect.HAPPY_VILLAGER);
+            easel.playEffect(EaselEffect.SAVE_ARTWORK);
             player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
         });
     }

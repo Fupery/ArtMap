@@ -5,12 +5,9 @@ import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapView;
 
 public final class EaselEvent {
     private final Easel easel;
@@ -24,15 +21,13 @@ public final class EaselEvent {
     }
 
     public void callEvent() {
-        final MapView mapView;
         if (!player.hasPermission("artmap.artist")) {
             Lang.NO_PERM.send(player);
             return;
         }
         if (easel.isBeingUsed()) {
             Lang.ActionBar.ELSE_USING.send(player);
-            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-            easel.playEffect(Effect.CRIT);
+            easel.playEffect(EaselEffect.USE_DENIED);
             return;
         }
         switch (click) {
@@ -54,8 +49,8 @@ public final class EaselEvent {
                 ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 if (material == ArtMaterial.CANVAS) {
-                    mapView = ArtMap.getArtDatabase().createMap();
-                    easel.mountCanvas(mapView);
+                    Map map = ArtMap.getArtDatabase().createMap();
+                    easel.mountCanvas(new Canvas(map));
                     consumeItem(player, itemInHand);
                     return;
 
@@ -64,8 +59,7 @@ public final class EaselEvent {
                     return;
                 }
                 Lang.ActionBar.NEED_CANVAS.send(player);
-                SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-                easel.playEffect(Effect.CRIT);
+                easel.playEffect(EaselEffect.USE_DENIED);
                 return;
 
             case SHIFT_RIGHT_CLICK:
@@ -74,7 +68,6 @@ public final class EaselEvent {
                     easel.removeItem();
                 }
                 easel.breakEasel();
-                easel.playEffect(Effect.CLOUD);
         }
     }
 
@@ -84,18 +77,16 @@ public final class EaselEvent {
             if (art != null) {
                 if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
                     Lang.ActionBar.NO_EDIT_PERM.send(player);
-                    easel.playEffect(Effect.CRIT);
-                    SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
+                    easel.playEffect(EaselEffect.USE_DENIED);
                     return;
                 }
                 if (ArtMap.getPreviewManager().endPreview(player)) return;
                 Map map = art.getMap().cloneArtwork();
-                easel.editArtwork(map, art.getTitle());
+                easel.mountCanvas(new Canvas.CanvasCopy(map, art.getTitle()));
                 consumeItem(player, playerMainHandItem);
             } else {
                 Lang.ActionBar.NEED_CANVAS.send(player);
-                SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-                easel.playEffect(Effect.CRIT);
+                easel.playEffect(EaselEffect.USE_DENIED);
             }
         });
     }
