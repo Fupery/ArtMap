@@ -15,7 +15,6 @@ commands:
         <command> help : Display help
         <command> reload : Reloads the config
         <command> give <player> <easel|canvas|artwork:<title>> <amount> : Give a player ArtMap item(s)
-        <command> restore <title> : Restores a corrupted artwork
 
 permissions:
   artmap.region.member:

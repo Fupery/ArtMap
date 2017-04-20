@@ -6,48 +6,51 @@ import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.IO.ArtDatabase;
-import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
-import me.Fupery.ArtMap.IO.MapManager;
+import me.Fupery.ArtMap.Easel.EaselMap;
+import me.Fupery.ArtMap.IO.Database.Database;
+import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.IO.Legacy.OldDatabaseConverter;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
+import me.Fupery.ArtMap.Preview.PreviewManager;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.ArtMap.Utils.TaskManager;
+import me.Fupery.ArtMap.Utils.Scheduler;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.lang.ref.SoftReference;
-import java.util.concurrent.ConcurrentHashMap;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class ArtMap extends JavaPlugin {
 
     private static SoftReference<ArtMap> pluginInstance = null;
     private MenuHandler menuHandler;
     private ArtistHandler artistHandler;
-    private ConcurrentHashMap<Player, Preview> previewing; //todo why is this here?
     private VersionHandler bukkitVersion;
-    private TaskManager taskManager;
-    private ArtDatabase artDatabase;
+    private Scheduler scheduler;
+    private Database database;
     private ChannelCacheManager cacheManager;
-    private MapManager mapManager;
     private RecipeLoader recipeLoader;
     private CompatibilityManager compatManager;
     private ProtocolHandler protocolHandler;
     private PixelTableManager pixelTable;
     private Configuration config;
     private EventManager eventManager;
+    private PreviewManager previewManager;
+    private EaselMap easels;
     private Palette palette;
 
-    public static ArtDatabase getArtDatabase() {
-        return instance().artDatabase;
+    public static Database getArtDatabase() {
+        return instance().database;
     }
 
     public static ArtMap instance() {
@@ -57,16 +60,12 @@ public class ArtMap extends JavaPlugin {
         return pluginInstance.get();
     }
 
-    public static TaskManager getTaskManager() {
-        return instance().taskManager;
+    public static Scheduler getScheduler() {
+        return instance().scheduler;
     }
 
     public static ArtistHandler getArtistHandler() {
         return instance().artistHandler;
-    }
-
-    public static ConcurrentHashMap<Player, Preview> getPreviewing() {
-        return instance().previewing;
     }
 
     public static VersionHandler getBukkitVersion() {
@@ -89,10 +88,6 @@ public class ArtMap extends JavaPlugin {
         return instance().menuHandler;
     }
 
-    public static MapManager getMapManager() {
-        return instance().mapManager;
-    }
-
     public static Configuration getConfiguration() {
         return instance().config;
     }
@@ -109,6 +104,14 @@ public class ArtMap extends JavaPlugin {
         this.palette = palette;
     }
 
+    public static PreviewManager getPreviewManager() {
+        return instance().previewManager;
+    }
+
+    public static EaselMap getEasels() {
+        return instance().easels;
+    }
+
     public static PixelTableManager getPixelTable() {
         return instance().pixelTable;
     }
@@ -120,38 +123,57 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
         palette = new BasicPalette();
-        taskManager = new TaskManager(this);
-        mapManager = new MapManager(this);
+        scheduler = new Scheduler(this);
         protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
         bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
-        previewing = new ConcurrentHashMap<>();
-        artDatabase = ArtDatabase.buildDatabase(this);
-        eventManager = new EventManager(this, bukkitVersion);
-        new FlatDatabaseConverter(this).convertDatabase();
+        if ((database = Database.build(this)) == null) {
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
+        new OldDatabaseConverter(this).convertDatabase();
         Lang.load(this, config);
         if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
             getLogger().warning(Lang.INVALID_DATA_TABLES.get());
             getPluginLoader().disablePlugin(this);
             return;
         }
-        getCommand("artmap").setExecutor(new CommandHandler());
         recipeLoader = new RecipeLoader(this, config);
         recipeLoader.loadRecipes();
+        easels = new EaselMap();
+        eventManager = new EventManager(this, bukkitVersion);
+        previewManager = new PreviewManager();
         menuHandler = new MenuHandler(this);
+        getCommand("artmap").setExecutor(new CommandHandler());
     }
 
     @Override
     public void onDisable() {
+        previewManager.endAllPreviews();
         artistHandler.stop();
         menuHandler.closeAll();
         eventManager.unregisterAll();
-        mapManager.saveKeys();
-        if (previewing.size() > 0) previewing.keySet().forEach(Preview::stop);
+        database.close();
         recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;
+    }
+
+    public boolean writeResource(String resourcePath, File destination) {
+        String writeError = String.format("Cannot write resource '%s' to destination '%s'.",
+                resourcePath, destination.getAbsolutePath());
+        if (!destination.exists()) try {
+            if (destination.createNewFile()) {
+                Files.copy(getResource(resourcePath), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                getLogger().warning(writeError + " Error: Destination cannot be created.");
+            }
+        } catch (IOException e) {
+            ErrorLogger.log(e, writeError);
+            return false;
+        }
+        return true;
     }
 
     public Reader getTextResourceFile(String fileName) {

@@ -1,12 +1,11 @@
 package me.Fupery.ArtMap.IO;
 
-import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -70,11 +69,6 @@ public class MapArt {
         return new ArtItem.ArtworkItem(id, title, getArtistPlayer(), date).toItemStack();
     }
 
-    public void saveArtwork() {
-        MapView mapView = Bukkit.getMap(id);
-        ArtMap.getTaskManager().ASYNC.run(() -> ArtMap.getArtDatabase().addArtwork(this, mapView));
-    }
-
     public short getMapId() {
         return id;
     }
@@ -93,5 +87,9 @@ public class MapArt {
 
     public MapArt updateMapId(short newID) {
         return new MapArt(newID, title, artist, date);
+    }
+
+    public Map getMap() {
+        return new Map(id);
     }
 }

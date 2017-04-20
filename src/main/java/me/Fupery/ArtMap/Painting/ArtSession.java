@@ -3,24 +3,20 @@ package me.Fupery.ArtMap.Painting;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.EaselPart;
 import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Painting.Brushes.Dye;
 import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
 import me.Fupery.ArtMap.Painting.Brushes.Shade;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.TaskManager;
 import me.Fupery.ArtMap.Utils.VersionHandler;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.map.MapView;
 
 public class ArtSession {
     private final CanvasRenderer canvas;
@@ -29,22 +25,23 @@ public class ArtSession {
     private final Brush SHADE;
     private final Brush FLIP;
     private final Easel easel;
+    private final Map map;
     private Brush currentBrush;
     private long lastStroke;
-    private ArmorStand marker;
-    private ArmorStand seat;
     private ItemStack[] inventory;
     private boolean active = false;
+    private boolean dirty = true;
 
-    ArtSession(Easel easel, MapView mapView, int yawOffset) {
+    ArtSession(Easel easel, Map map, int yawOffset) {
         this.easel = easel;
-        canvas = new CanvasRenderer(mapView, yawOffset);
+        canvas = new CanvasRenderer(map, yawOffset);
         currentBrush = null;
         lastStroke = System.currentTimeMillis();
         DYE = new Dye(canvas);
         FILL = new Fill(canvas);
         SHADE = new Shade(canvas);
         FLIP = new Flip(canvas);
+        this.map = map;
     }
 
     boolean start(Player player) {
@@ -53,27 +50,22 @@ public class ArtSession {
         if (event.isCancelled()) return false;
 
         Location location = easel.getLocation();
-        seat = (ArmorStand) EaselPart.SEAT.spawn(location, easel.getFacing());
-        marker = (ArmorStand) EaselPart.MARKER.spawn(easel.getLocation(), easel.getFacing());
-
-        seat.setPassenger(player);
-        if (seat == null || seat.getPassenger() == null || marker == null) {
-            return false;
-        }
-        easel.setIsPainting(true);
+        easel.seatUser(player);
         //Run tasks
-        SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
-        TaskManager taskManager = ArtMap.getTaskManager();
-        taskManager.SYNC.runLater(() -> {
+        ArtMap.getArtDatabase().restoreMap(map);
+        ArtMap.getScheduler().SYNC.runLater(() -> {
             if (player.getVehicle() != null) Lang.ActionBar.PAINTING.send(player);
         }, 30);
         if (ArtMap.getConfiguration().FORCE_ART_KIT && player.hasPermission("artmap.artkit")) {
             addKit(player);
         }
+        map.setRenderer(canvas);
+        persistMap(false);
         return true;
     }
 
     void paint(ItemStack brush, Brush.BrushAction action) {
+        if (!dirty) dirty = true;
         if (currentBrush == null || !currentBrush.checkMaterial(brush)) {
             if (currentBrush != null) currentBrush.clean();
             currentBrush = getBrushType(brush);
@@ -135,13 +127,19 @@ public class ArtSession {
     void end(Player player) {
         player.leaveVehicle();
         removeKit(player);
-        if (marker != null) marker.remove();
-        if (seat != null) seat.remove();
-        easel.setIsPainting(false);
-        SoundCompat.BLOCK_LADDER_STEP.play(player.getLocation(), 1, -3);
+        easel.removeUser();
         canvas.stop();
-        canvas.saveMap();
+        persistMap(true);
         active = false;
+        //todo map renderer getting killed after save
+    }
+
+    public void persistMap(boolean resetRenderer) {
+        if (!dirty) return; //no caching required
+        byte[] mapData = canvas.getMap();
+        map.setMap(mapData, resetRenderer);
+        ArtMap.getArtDatabase().cacheMap(this.map, mapData);
+        dirty = false;
     }
 
     boolean isActive() {
@@ -152,9 +150,11 @@ public class ArtSession {
         this.active = active;
     }
 
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     void sendMap(Player player) {
-        ArtMap.getTaskManager().SYNC.run(() -> {
-            player.sendMap(canvas.getMapView());
-        });
+        if (dirty) map.update(player);
     }
 }

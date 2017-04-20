@@ -1,40 +1,38 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Easel {
 
     private final Location location;
-    private boolean isPainting;
-    private WeakReference<ArmorStand> stand;
-    private WeakReference<ItemFrame> frame;
-    private AtomicBoolean exists;
+    private final WeakEntity<ArmorStand> stand = new WeakEntity<>(EaselPart.STAND);
+    private final WeakEntity<ItemFrame> frame = new WeakEntity<>(EaselPart.FRAME);
+    private final WeakEntity<ArmorStand> seat = new WeakEntity<>(EaselPart.SEAT);
+    private final WeakEntity<ArmorStand> marker = new WeakEntity<>(EaselPart.MARKER);
+    private final AtomicBoolean spawned;
+    private UUID user;
 
-    private Easel(Location location) {
+    private Easel(Location location, boolean hasBeenSpawned) {
         this.location = location;
-        stand = new WeakReference<>(null);
-        frame = new WeakReference<>(null);
-        exists = new AtomicBoolean(false);
+        user = null;
+        spawned = new AtomicBoolean(hasBeenSpawned);
     }
 
     /**
@@ -45,23 +43,17 @@ public class Easel {
      * @return A reference to the spawned easel if it was spawned successfully, or null if the area is obstructed.
      */
     public static Easel spawnEasel(Location location, BlockFace facing) {
-        EaselPart.SIGN.spawn(location, facing);
-        ArmorStand stand = ((ArmorStand) EaselPart.STAND.spawn(location, facing));
-        ItemFrame frame = (ItemFrame) EaselPart.FRAME.spawn(location, facing);
-        SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
+        Easel easel = new Easel(location, false);
+        easel.place(location, facing);
+        EaselEffect.SPAWN.playEffect(location);
 
-        Easel easel = new Easel(location);
-        EaselEvent.easels.put(location, easel);
-
-        if (stand == null || frame == null) {
+        if (easel.exists()) {
+            ArtMap.getEasels().put(easel);
+            easel.spawned.set(true);
+            return easel;
+        } else {
             easel.breakEasel();
             return null;
-
-        } else {
-            easel.stand = new WeakReference<>(stand);
-            easel.frame = new WeakReference<>(frame);
-            easel.exists.set(true);
-            return easel;
         }
     }
 
@@ -73,27 +65,16 @@ public class Easel {
      * @return A reference to the part's easel, or null if none can be found.
      */
     public static Easel getEasel(Location partLocation, EaselPart part) {
-        Location easelLocation =
-                part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
+        Location easelLocation = part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
-        if (EaselEvent.easels.containsKey(easelLocation)) {
-
-            return EaselEvent.easels.get(easelLocation);
-
+        if (ArtMap.getEasels().contains(easelLocation)) {
+            return ArtMap.getEasels().get(easelLocation);
         } else {
-
-            Easel easel = new Easel(easelLocation);
-            Collection<Entity> entities = easelLocation.getWorld().getNearbyEntities(easelLocation, 2, 2, 2);
-            ArmorStand stand = easel.getStand(entities);
-            ItemFrame frame = easel.getFrame(entities);
-
-            if (easel.hasSign() && stand != null && frame != null) {
-
-                easel.stand = new WeakReference<>(stand);
-                easel.frame = new WeakReference<>(frame);
-
-                EaselEvent.easels.put(easel.location, easel);
-                easel.exists.set(true);
+            Easel easel = new Easel(easelLocation, true);
+            easel.spawned.set(true);
+            if (easel.hasSign() && easel.exists()) {
+                ArtMap.getEasels().put(easel);
+                easel.spawned.set(true);
                 return easel;
             }
         }
@@ -104,123 +85,55 @@ public class Easel {
      * Attempts to find an easel at the location provided.
      *
      * @param location The location at which to check for an easel.
-     * @return True if an easel exists at this location, or false if not.
+     * @return True if an easel spawned at this location, or false if not.
      */
     public static boolean checkForEasel(Location location) {
-        Easel easel = new Easel(location);
-        Collection<Entity> entities = easel.getNearbyEntities();
-        ArmorStand stand = easel.getStand(entities);
-        ItemFrame frame = easel.getFrame(entities);
-
-        if (frame != null && stand != null) {
+        if (new Easel(location, true).exists()) {
             return true;
-
         } else {
 
-            if (EaselEvent.easels.containsKey(location)) {
-                EaselEvent.easels.remove(location);
+            if (ArtMap.getEasels().contains(location)) {
+                ArtMap.getEasels().remove(location);
             }
             return false;
         }
     }
 
+    private void place(Location location, BlockFace facing) {
+        if (exists()) breakEasel();
+        EaselPart.SIGN.spawn(location, facing);
+        stand.spawn(location, facing);
+        frame.spawn(location, facing);
+        spawned.set(true);
+    }
+
+    private boolean exists() {
+        if (!spawned.get()) return false;
+        Collection<Entity> entities = getNearbyEntities();
+        if (stand.exists(entities) && frame.exists(entities)) {
+            return true;
+        } else {
+            spawned.set(false);
+            return false;
+        }
+    }
+
     private boolean hasSign() {
-        if (location.getBlock().getType() == Material.WALL_SIGN
-                && location.getBlock().getState() instanceof Sign) {
-            Sign sign = ((Sign) location.getBlock().getState());
-            return sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID);
-        }
-        return false;
-    }
-
-    private ArmorStand getStand(Collection<Entity> entities) {
-        ArmorStand stand = this.stand.get();
-        if (stand != null && stand.isValid()) {
-            return stand;
-        }
-        if (entities == null) {
-            entities = getNearbyEntities();
-        }
-
-        for (Entity entity : entities) {
-
-            BlockFace facing = EaselPart.getFacing(entity.getLocation().getYaw());
-
-            if (entity.getType() == EntityType.ARMOR_STAND) {
-                stand = (ArmorStand) entity;
-
-                //Check if entity is a stand
-
-//                if (stand.isCustomNameVisible() && stand.getCustomName().equals(EaselPart.easelID)) {
-                if (EaselPart.STAND.getEaselPos(stand.getLocation(), facing).equals(location)) {
-                    return stand;
-                }
-//               }
-            }
-        }
-        return null;
-    }
-
-    private ItemFrame getFrame(Collection<Entity> entities) {
-        ItemFrame frame = this.frame.get();
-        if (frame != null && frame.isValid()) {
-            return frame;
-        }
-        if (entities == null) {
-            entities = getNearbyEntities();
-        }
-
-        for (Entity entity : entities) {
-
-            BlockFace facing = EaselPart.getFacing(entity.getLocation().getYaw());
-
-            if (entity.getType() == EntityType.ITEM_FRAME) {
-                frame = (ItemFrame) entity;
-
-                //check if entity is a frame
-                if (EaselPart.FRAME.getEaselPos(frame.getLocation(), facing).equals(location)) {
-                    return frame;
-                }
-            }
-        }
-        return null;
+        BlockState state = location.getBlock().getState();
+        return (location.getBlock().getType() == Material.WALL_SIGN
+                && state instanceof Sign
+                && ((Sign) state).getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID));
     }
 
     /**
-     * Mounts a canvas on the easel, with an id defined by the MapView provided.
+     * Mounts a canvas on the easel, with an id defined by the canvas provided.
      *
-     * @param mapView The MapView of the map that will be edited on the easel.
+     * @param canvas The canvas that will be placed on the easel.
      */
-    public void mountCanvas(MapView mapView) {
-        SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        getFrame().setItem(new ItemStack(Material.MAP, 1, mapView.getId()));
-        playEffect(Effect.POTION_SWIRL_TRANSPARENT);
-    }
-
-    /**
-     * Edits an already existing artwork on the easel.
-     *
-     * @param mapView  The MapView of the original artwork.
-     * @param original The title of the original artwork.
-     */
-    void editArtwork(MapView mapView, String original) {
-        SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        ItemStack item = new ItemStack(Material.MAP, 1, mapView.getId());
-        ItemMeta meta = item.getItemMeta();
-        meta.setLore(Arrays.asList(ArtItem.COPY_KEY, original));
-        item.setItemMeta(meta);
-        getFrame().setItem(item);
-        playEffect(Effect.POTION_SWIRL_TRANSPARENT);
-    }
-
-    /**
-     * Sits a player at the easel, and allows them to paint.
-     *
-     * @param player The player to sit at the easel.
-     */
-    public void rideEasel(Player player) {
-        MapView mapView = Bukkit.getMap(getFrame().getItem().getDurability());
-        ArtMap.getArtistHandler().addPlayer(player, this, mapView, EaselPart.getYawOffset(getFacing()));
+    public void mountCanvas(Canvas canvas) {
+        if (getItem() != null) removeItem();
+        setItem(canvas.getEaselItem());
+        EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
     }
 
     /**
@@ -229,53 +142,33 @@ public class Easel {
      * If the item is an edited artwork, a copy of the original artwork wil be dropped.
      */
     public void removeItem() {
-        ItemStack item = getItem();
-        if (isACopy(item)) {
-            final String originalName = item.getItemMeta().getLore().get(1);
-            getFrame().setItem(new ItemStack(Material.AIR));
-            ArtMap.getTaskManager().ASYNC.run(() -> {
-                MapArt original = ArtMap.getArtDatabase().getArtwork(originalName);
-                ArtMap.getTaskManager().SYNC.run(() -> {
-                    location.getWorld().dropItemNaturally(location, original.getMapItem());
-                });
-            });
-        } else {
-            ItemStack drop = (item.getType() == Material.MAP) ? ArtMaterial.CANVAS.getItem() : item.clone();
-            if (drop.getType() != Material.AIR) {
-                getFrame().setItem(new ItemStack(Material.AIR));
-                location.getWorld().dropItemNaturally(location, drop);
-            }
-        }
-    }
+        ItemStack item = getItem().clone();
+        Canvas canvas = Canvas.getCanvas(item);
 
-    private boolean isACopy(ItemStack map) {
-        return (map != null && map.getType() == Material.MAP &&
-                map.hasItemMeta() && map.getItemMeta().hasLore()
-                && map.getItemMeta().getLore().get(0).equals(ArtItem.COPY_KEY));
+        setItem(new ItemStack(Material.AIR));
+        if (canvas != null) {
+            canvas.dropItem(location);
+        } else {
+            if (item != null && item.getType() != Material.AIR)
+                location.getWorld().dropItemNaturally(location, item);
+        }
     }
 
     /**
      * Breaks the easel, dropping it along with any mounted items.
      */
     public void breakEasel() {
-        if (!exists.getAndSet(false)) return;
-        EaselEvent.easels.remove(location);
+        if (!spawned.getAndSet(false)) return;
+        ArtMap.getEasels().remove(location);
         final Collection<Entity> entities = getNearbyEntities();
-        final ArmorStand stand = getStand(entities);
-        final ItemFrame frame = getFrame(entities);
 
-        ArtMap.getTaskManager().SYNC.run(() -> {
+        ArtMap.getScheduler().SYNC.run(() -> {
             location.getBlock().setType(Material.AIR);
-            SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
-
-            if (stand != null && stand.isValid()) {
-                stand.remove();
-                location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
-            }
-
-            if (frame != null && frame.isValid()) {
+            EaselEffect.BREAK.playEffect(getCentreLocation());
+            if (stand.remove(entities)) location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
+            if (frame.exists(entities)) {
                 removeItem();
-                frame.remove();
+                frame.remove(entities);
             }
         });
     }
@@ -284,32 +177,58 @@ public class Easel {
      * @return The direction this easel is facing.
      */
     public BlockFace getFacing() {
-        ItemFrame frame = getFrame();
+        ItemFrame frame = this.frame.get();
         return (frame != null) ? frame.getFacing() : null;
     }
 
     /**
      * Plays an effect at the easel.
      *
-     * @param effect The effect to play.
+     * @param interactionType the type of interaction.
      */
-    public void playEffect(Effect effect) {
+    public void playEffect(EaselEffect interactionType) {
+        interactionType.playEffect(getCentreLocation());
+    }
+
+    private Location getCentreLocation() {
+        Location location = this.location.clone();
         BlockFace facing = getFacing();
-        Location loc = (facing == null) ? location :
-                new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
-        loc.getWorld().spigot().playEffect(loc, effect, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
+        return (facing == null) ? location : new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public boolean isPainting() {
-        return isPainting;
+    public boolean seatUser(Player user) {
+        ArmorStand seat = this.seat.spawn(location, getFacing());
+        ArmorStand marker = this.marker.spawn(location, getFacing());
+
+        if (seat == null || marker == null) return false;
+        seat.setPassenger(user);
+        if (seat.getPassenger() == null) return false;
+
+        this.user = user.getUniqueId();
+        playEffect(EaselEffect.START_RIDING);
+        return true;
     }
 
-    public void setIsPainting(boolean isPainting) {
-        this.isPainting = isPainting;
+    public boolean isBeingUsed() {
+        return getUser() != null;
+    }
+
+    private UUID getUser() {
+        if (user == null) return null;
+        if (!ArtMap.getArtistHandler().containsPlayer(user)) removeUser();
+        return user;
+    }
+
+    public void removeUser() {
+        Collection<Entity> entities = getNearbyEntities();
+        seat.remove(entities);
+        marker.remove(entities);
+        this.user = null;
+        playEffect(EaselEffect.STOP_RIDING);
     }
 
     private Collection<Entity> getNearbyEntities() {
@@ -317,30 +236,81 @@ public class Easel {
     }
 
     /**
-     * @return The entity reference for the stand part of the easel.
-     */
-    public ArmorStand getStand() {
-        return getStand(null);
-    }
-
-    /**
-     * @return The entity reference for the frame part of the easel.
-     */
-    public ItemFrame getFrame() {
-        return getFrame(null);
-    }
-
-    /**
      * @return The item currently mounted on the easel, or null if there is none.
      */
     public ItemStack getItem() {
-        return (getFrame() != null) ? getFrame().getItem() : null;
+        return (frame.get() != null) ? frame.get().getItem() : null;
+    }
+
+    public void setItem(ItemStack itemStack) {
+        frame.get().setItem(itemStack);
     }
 
     /**
      * @return True if an item is currently mounted on the easel.
      */
     public boolean hasItem() {
-        return getFrame() != null && getFrame().getItem().getType() != Material.AIR;
+        return frame.get() != null && frame.get().getItem().getType() != Material.AIR;
+    }
+
+    class WeakEntity<T extends Entity> {
+        private final EaselPart type;
+        private WeakReference<T> entityRef;
+
+        WeakEntity(EaselPart type) {
+            this.type = type;
+            entityRef = new WeakReference<>(null);
+        }
+
+        WeakEntity(EaselPart type, T entity) {
+            this.type = type;
+            this.entityRef = new WeakReference<>(entity);
+        }
+
+        T spawn(Location location, BlockFace facing) {
+            if (exists(getNearbyEntities())) remove();
+            T entity = (T) type.spawn(location, facing);
+            entityRef = new WeakReference<>(entity);
+            return entity;
+        }
+
+        boolean remove(Collection<Entity> entities) {
+            Entity entity = get(entities);
+            if (entity != null && entity.isValid()) entity.remove();
+            else return false;
+            entityRef = new WeakReference<T>(null);
+            return true;
+        }
+
+        boolean remove() {
+            return remove(getNearbyEntities());
+        }
+
+        boolean exists(Collection<Entity> entities) {
+            return get(entities) != null;
+        }
+
+        T get(Collection<Entity> entities) {
+            T entity = entityRef.get();
+            if (entity != null && entity.isValid()) {
+                return entity;
+            }
+            if (entities == null) entities = getNearbyEntities();
+
+            for (Entity e : entities) {
+                if (EaselPart.getPartType(e) == type) {
+                    BlockFace facing = EaselPart.getFacing(e.getLocation().getYaw());
+                    if (type.getEaselPos(e.getLocation(), facing).equals(location)) {
+                        entityRef = new WeakReference<>((T) e);
+                        return entityRef.get();
+                    }
+                }
+            }
+            return null;
+        }
+
+        T get() {
+            return get(getNearbyEntities());
+        }
     }
 }

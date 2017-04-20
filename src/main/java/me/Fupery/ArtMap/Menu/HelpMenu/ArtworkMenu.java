@@ -8,9 +8,9 @@ import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import me.Fupery.ArtMap.Preview.ArtPreview;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.Preview;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
@@ -77,7 +77,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
     protected Button[] getListItems() {
         OfflinePlayer player = Bukkit.getOfflinePlayer(artist);
         if (player == null || !player.hasPlayedBefore()) return new Button[0];
-        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getUniqueId());
+        MapArt[] artworks = ArtMap.getArtDatabase().getArtTable().listMapArt(player.getUniqueId());
         Button[] buttons;
 
         if (artworks != null && artworks.length > 0) {
@@ -134,23 +134,21 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                 } else {
                     ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
 
-                    ArtMap.getTaskManager().SYNC.run(() -> {
-                        if (ArtMap.getPreviewing().containsKey(player)) {
-                            ArtMap.getPreviewing().get(player).stopPreviewing();
-                        }
+                    ArtMap.getScheduler().SYNC.run(() -> {
+                        ArtMap.getPreviewManager().endPreview(player);
                         SoundCompat.BLOCK_CLOTH_FALL.play(player);
                         if (player.getItemInHand().getType() != Material.AIR) {
                             Lang.EMPTY_HAND_PREVIEW.send(player);
                             return;
                         }
-                        Preview.artwork(player, artwork);
+                        ArtMap.getPreviewManager().startPreview(player, new ArtPreview(artwork));
                     });
 
                 }
             } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
+                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
                 } else if (adminViewing) {
                     Lang.NO_PERM.send(player);
                 }

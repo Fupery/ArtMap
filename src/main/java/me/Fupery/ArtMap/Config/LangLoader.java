@@ -27,12 +27,7 @@ class LangLoader {
         if (language.equalsIgnoreCase("custom")) {
             File customLang = new File(plugin.getDataFolder(), "lang.yml");
             if (!customLang.exists()) {
-                try {
-                    if (customLang.createNewFile()) Files.copy(plugin.getResource("lang.yml"),
-                            customLang.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    logLangError("Failed to build plugins/ArtMap/lang.yml file!");
-                }
+                ArtMap.instance().writeResource("lang.yml", customLang);
             }
             lang = YamlConfiguration.loadConfiguration(customLang);
 

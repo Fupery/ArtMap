@@ -34,7 +34,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 
     @Override
     protected Button[] getListItems() {
-        UUID[] artists = ArtMap.getArtDatabase().listArtists(viewer);
+        UUID[] artists = ArtMap.getArtDatabase().getArtTable().listArtists(viewer);
         Button[] buttons;
 
         if (artists != null && artists.length > 0) {

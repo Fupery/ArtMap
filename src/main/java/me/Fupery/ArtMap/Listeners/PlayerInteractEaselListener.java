@@ -3,12 +3,10 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
 import me.Fupery.ArtMap.Easel.EaselPart;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -95,8 +93,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
         if (!interactionAllowed) {
             Lang.ActionBar.NO_PERM_ACTION.send(player);
-            SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-            easel.playEffect(Effect.CRIT);
+            easel.playEffect(EaselEffect.USE_DENIED);
             return;
         }
 
@@ -117,11 +114,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     private void checkPreviewing(Player player, Cancellable event) {
-
-        if (ArtMap.getPreviewing().containsKey(player)) {
-            Preview.stop(player);
-            event.setCancelled(true);
-        }
+        if (ArtMap.getPreviewManager().endPreview(player)) event.setCancelled(true);
     }
 
     private boolean checkSignBreak(Block block, Cancellable event) {
@@ -131,7 +124,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
             if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
 
-                if (EaselEvent.easels.containsKey(block.getLocation())
+                if (ArtMap.getEasels().contains(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {
                     event.setCancelled(true);
                     return true;

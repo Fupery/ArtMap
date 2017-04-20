@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.Listeners;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -27,20 +26,14 @@ class InventoryInteractListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (ArtMap.getPreviewing().containsKey(event.getPlayer())) {
-            event.getItemDrop().remove();
-            Preview.stop(event.getPlayer());
-        }
+        if (ArtMap.getPreviewManager().endPreview(event.getPlayer())) event.getItemDrop().remove();
         if (isKitDrop(event.getPlayer(), event.getItemDrop().getItemStack(), event)) {
             event.getItemDrop().remove();
         }
     }
 
     private void checkPreviewing(Player player, Cancellable event) {
-        if (ArtMap.getPreviewing().containsKey(player)) {
-            event.setCancelled(true);
-            Preview.stop(player);
-        }
+        if (ArtMap.getPreviewManager().endPreview(player)) event.setCancelled(true);
     }
 
     private boolean isKitDrop(Player player, ItemStack itemStack, Cancellable event) {

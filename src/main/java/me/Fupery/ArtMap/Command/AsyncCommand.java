@@ -30,7 +30,7 @@ abstract class AsyncCommand {
 
     void runPlayerCommand(final CommandSender sender, final String args[]) {
 
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
             ReturnMessage returnMsg = new ReturnMessage(sender, null);
 
             if (permission != null && !sender.hasPermission(permission)) {
@@ -47,7 +47,7 @@ abstract class AsyncCommand {
             }
 
             if (returnMsg.message != null) {
-                ArtMap.getTaskManager().SYNC.run(returnMsg);
+                ArtMap.getScheduler().SYNC.run(returnMsg);
             }
         });
     }

@@ -35,7 +35,7 @@ public class ChannelCacheManager {
 
     private class CleanupThread extends BukkitRunnable {
         CleanupThread() {
-            ArtMap.getTaskManager().getTaskHandler(this).runTimer(true, 300, 300); //15 seconds
+            ArtMap.getScheduler().getTaskHandler(this).runTimer(true, 300, 300); //15 seconds
         }
 
         @Override

@@ -4,12 +4,10 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
-import me.Fupery.ArtMap.Utils.Preview;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -47,18 +45,10 @@ class PlayerInteractListener implements RegisteredListener {
         } else return BlockFace.NORTH;
     }
 
-    private static void notifyFailedPlacement(Player player, Location location) {
-        location.getWorld().spigot().playEffect(location, Effect.CRIT, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
-        SoundCompat.ENTITY_ARMORSTAND_BREAK.play(player);
-    }
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
-        if (ArtMap.getPreviewing().containsKey(event.getPlayer())) {
-            event.setCancelled(true);
-            Preview.stop(event.getPlayer());
-        }
+        if (ArtMap.getPreviewManager().endPreview(event.getPlayer())) event.setCancelled(true);
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
                 || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
@@ -77,7 +67,7 @@ class PlayerInteractListener implements RegisteredListener {
                 || !compat.checkBuildAllowed(player, baseLocation)
                 || !compat.checkBuildAllowed(player, easelLocation)) {
             Lang.ActionBar.NO_PERM_ACTION.send(player);
-            notifyFailedPlacement(player, baseLocation);
+            EaselEffect.USE_DENIED.playEffect(baseLocation);
             return;
         }
         BlockFace facing = getFacing(player);
@@ -88,7 +78,7 @@ class PlayerInteractListener implements RegisteredListener {
                 || frameBlock.getBlock().getType() != Material.AIR
                 || Easel.checkForEasel(easelLocation)) {
             Lang.ActionBar.INVALID_POS.send(player);
-            notifyFailedPlacement(player, baseLocation);
+            EaselEffect.USE_DENIED.playEffect(baseLocation);
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
@@ -99,7 +89,7 @@ class PlayerInteractListener implements RegisteredListener {
 
         if (easel == null) {
             Lang.ActionBar.INVALID_POS.send(player);
-            notifyFailedPlacement(player, baseLocation);
+            EaselEffect.USE_DENIED.playEffect(baseLocation);
         }
     }
 
@@ -112,7 +102,7 @@ class PlayerInteractListener implements RegisteredListener {
             return;
         }
 
-        ArtMap.getTaskManager().ASYNC.run(() -> {
+        ArtMap.getScheduler().ASYNC.run(() -> {
 
             ItemMeta meta = item.getItemMeta();
 

@@ -66,7 +66,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
                 if (clickType == ClickType.LEFT) {
                     ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
                 } else if (clickType == ClickType.RIGHT) {
-                    ArtMap.getTaskManager().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
+                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
                 }
             } else {
                 ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));

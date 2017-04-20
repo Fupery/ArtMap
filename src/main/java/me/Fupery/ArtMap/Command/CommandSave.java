@@ -3,11 +3,10 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,7 +46,7 @@ class CommandSave extends AsyncCommand {
         }
 
 
-        ArtMap.getTaskManager().SYNC.run(() -> {
+        ArtMap.getScheduler().SYNC.run(() -> {
             Easel easel = null;
             easel = ArtMap.getArtistHandler().getEasel(player);
 
@@ -55,15 +54,14 @@ class CommandSave extends AsyncCommand {
                 Lang.NOT_RIDING_EASEL.send(player);
                 return;
             }
+            easel.playEffect(EaselEffect.SAVE_ARTWORK);
             ArtMap.getArtistHandler().removePlayer(player);
 
             MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
-            art1.saveArtwork();
+            ArtMap.getArtDatabase().saveArtwork(art1);
 
-            easel.getFrame().setItem(new ItemStack(Material.AIR));
+            easel.setItem(new ItemStack(Material.AIR));
             ItemUtils.giveItem(player, art1.getMapItem());
-            SoundCompat.ENTITY_EXPERIENCE_ORB_TOUCH.play(player, 1, 0);
-            easel.playEffect(Effect.HAPPY_VILLAGER);
             player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
         });
     }

@@ -3,8 +3,8 @@ package me.Fupery.ArtMap.Command;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Preview.ArtPreview;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.Preview;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ class CommandPreview extends AsyncCommand {
     private static boolean previewArtwork(final Player player, final MapArt art) {
 
         if (player.hasPermission("artmap.admin")) {
-            ArtMap.getTaskManager().SYNC.run(() -> {
+            ArtMap.getScheduler().SYNC.run(() -> {
                 ItemStack currentItem = player.getItemInHand();
                 player.setItemInHand(art.getMapItem());
 
@@ -30,15 +30,13 @@ class CommandPreview extends AsyncCommand {
 
         } else {
 
-            if (ArtMap.getPreviewing().containsKey(player)) {
-                ArtMap.getPreviewing().get(player).stopPreviewing();
-            }
+            ArtMap.getPreviewManager().endPreview(player);
 
             if (player.getItemInHand().getType() != Material.AIR) {
                 return false;
             }
 
-            Preview.artwork(player, art);
+            ArtMap.getPreviewManager().startPreview(player, new ArtPreview(art));
         }
         return true;
     }

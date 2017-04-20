@@ -2,12 +2,13 @@ package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.map.MapView;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +18,7 @@ import static me.Fupery.ArtMap.Painting.Brush.BrushAction;
 public class ArtistHandler {
 
     private final ConcurrentHashMap<UUID, ArtSession> artists;
+    //todo replaced synchronised methods with read/write lock
 
     public ArtistHandler() {
         artists = new ConcurrentHashMap<>();
@@ -48,8 +50,8 @@ public class ArtistHandler {
         return true;
     }
 
-    public synchronized void addPlayer(final Player player, Easel easel, MapView mapView, int yawOffset) {
-        ArtSession session = new ArtSession(easel, mapView, yawOffset);
+    public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset) {
+        ArtSession session = new ArtSession(easel, map, yawOffset);
         if (session.start(player) && ArtMap.getProtocolManager().PACKET_RECIEVER.injectPlayer(player)) {
             artists.put(player.getUniqueId(), session);
             session.setActive(true);
@@ -67,8 +69,12 @@ public class ArtistHandler {
         return (artists.containsKey(player.getUniqueId()));
     }
 
+    public boolean containsPlayer(UUID player) {
+        return artists.containsKey(player);
+    }
+
     public synchronized void removePlayer(final Player player) {
-        if (!artists.containsKey(player.getUniqueId())) return;//just for safety :)
+        if (!containsPlayer(player)) return;//just for safety :)
         ArtSession session = artists.get(player.getUniqueId());
         if (!session.isActive()) return;
         artists.remove(player.getUniqueId());
@@ -80,10 +86,18 @@ public class ArtistHandler {
         return artists.get(player.getUniqueId());
     }
 
+    public ArtSession getCurrentSession(UUID player) {
+        return artists.get(player);
+    }
+
     private synchronized void clearPlayers() {
         for (UUID uuid : artists.keySet()) {
             removePlayer(Bukkit.getPlayer(uuid));
         }
+    }
+
+    public Set<UUID> getArtists() {
+        return artists.keySet();
     }
 
     public void stop() {

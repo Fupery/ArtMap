@@ -1,15 +1,15 @@
 package me.Fupery.ArtMap.IO.ColourMap;
 
-import java.io.IOException;
+import me.Fupery.ArtMap.IO.Database.Map;
 
-import static me.Fupery.ArtMap.IO.MapManager.MapSize;
+import java.io.IOException;
 
 /**
  * Compresses 32x32 pixel maps into a byte array to be stored as a SQL BLOB
  */
 public class f32x32 implements MapFormatter {
     private static byte[] foldMap(byte[] mapData, int magnitude) {
-        byte[] foldedData = new byte[MapSize.STANDARD.size()];
+        byte[] foldedData = new byte[Map.Size.STANDARD.value];
         for (int x = 0; x < 128; x += magnitude) {
             for (int y = 0; y < 128; y += magnitude) {
                 foldedData[(x / magnitude) + ((y / magnitude) * 32)] = mapData[x + (y * 128)];
@@ -19,7 +19,7 @@ public class f32x32 implements MapFormatter {
     }
 
     private static byte[] unfoldMap(byte[] mapData, int magnitude) {
-        byte[] unfoldedData = new byte[MapSize.MAX.size()];
+        byte[] unfoldedData = new byte[Map.Size.MAX.value];
         for (int x = 0; x < 32; x++) {
             for (int y = 0; y < 32; y++) {
                 int ix = x * magnitude;
@@ -37,9 +37,9 @@ public class f32x32 implements MapFormatter {
     @Override
     public byte[] generateBLOB(byte[] mapData) throws IOException {
         byte[] compressedData;
-        if (mapData.length == MapSize.STANDARD.size()) {
+        if (mapData.length == Map.Size.STANDARD.value) {
             compressedData = Compressor.compress(mapData);
-        } else if (mapData.length == MapSize.MAX.size()) {
+        } else if (mapData.length == Map.Size.MAX.value) {
             compressedData = Compressor.compress(foldMap(mapData, 4));
         } else {
             throw new IOException("Invalid MapData!");

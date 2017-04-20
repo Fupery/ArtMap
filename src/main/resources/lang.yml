@@ -55,7 +55,7 @@ RESTORED_SUCCESSFULY: "§6Successfully restored %s with map ID %s!" #The first %
 #Menu titles
 MENU_RECIPE: "Choose a Recipe"
 MENU_ARTIST: "Click an Artist"
-MENU_ARTWORKS: "Player Artworks"
+MENU_ARTWORKS: "Player ArtTable"
 MENU_DYES: "Dyes for painting"
 MENU_HELP: "Choose a help topic"
 MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
@@ -102,7 +102,7 @@ HELP_DYES:
   - "      §a✸§2§oClick to View§a✸"
 HELP_LIST:
   - "             §6§l⊱§e§lArtworks§6§l⊰"
-  - "      §3✺§b§oView Player Artworks§3✺"
+  - "      §3✺§b§oView Player ArtTable§3✺"
   - "§7View your artwork or view other"
   - "§7players' work grouped by artist."
   - "          §a✸§2§oClick to browse§a✸"
