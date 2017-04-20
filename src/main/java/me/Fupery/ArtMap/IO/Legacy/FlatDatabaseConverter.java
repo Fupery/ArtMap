@@ -68,7 +68,7 @@ public class FlatDatabaseConverter {
                     continue;
                 }
                 MapArt artwork = new MapArt(mapIDValue, title, player, date);
-                if (ArtMap.getArtDatabase().getArtTable().containsArtwork(artwork, true)) {
+                if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {
                     plugin.getLogger().info(String.format("    Converting '%s' ...", title));

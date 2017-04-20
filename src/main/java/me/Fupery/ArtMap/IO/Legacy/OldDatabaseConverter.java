@@ -67,7 +67,7 @@ public class OldDatabaseConverter {
                 plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
                 continue;
             }
-            if (ArtMap.getArtDatabase().getArtTable().containsArtwork(artwork.getArt(), true)) {
+            if (ArtMap.getArtDatabase().containsArtwork(artwork.getArt(), true)) {
                 plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 continue;
             }

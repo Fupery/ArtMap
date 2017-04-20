@@ -65,7 +65,7 @@ public final class Database {
 
     public boolean saveArtwork(MapArt art) {
         MapView mapView = getMap(art.getMapId());
-        ArtMap.getScheduler().ASYNC.run(() -> {
+        accessSQL(() -> {
             artworks.addArtwork(art);
             CompressedMap map = CompressedMap.compress(mapView);
             if (maps.containsMap(art.getMapId())) maps.updateMap(map);
@@ -82,9 +82,35 @@ public final class Database {
         } else return false;
     }
 
+    public boolean containsArtwork(MapArt artwork, boolean ignoreMapId) {
+        return artworks.containsArtwork(artwork, ignoreMapId);
+    }
+
+    public MapArt[] listMapArt(UUID artist) {
+        MapArt[] art;
+        try {
+            art = artworks.listMapArt(artist);
+        } catch (Exception e) {
+            ErrorLogger.log(e, "Error accessing database!");
+            art = new MapArt[0];
+        }
+        return art;
+    }
+
+    public UUID[] listArtists(UUID player) {
+        UUID[] art;
+        try {
+            art = artworks.listArtists(player);
+        } catch (Exception e) {
+            ErrorLogger.log(e, "Error accessing database!");
+            art = new UUID[0];
+        }
+        return art;
+    }
+
+
     private void loadArtworks() {
-        assert Bukkit.isPrimaryThread(); //todo error logging etc.
-        maps.getMapIds().forEach(this::restoreMap);
+        ArtMap.getScheduler().runSafely(() -> maps.getMapIds().forEach(this::restoreMap));
     }
 
     public ArtTable getArtTable() {
@@ -113,7 +139,7 @@ public final class Database {
     }
 
     public void cacheMap(Map map, byte[] data) {
-        ArtMap.getScheduler().ASYNC.run(() -> {
+        accessSQL(() -> {
             CompressedMap compressedMap = CompressedMap.compress(map.getMapId(), data);
             if (maps.containsMap(map.getMapId())) maps.updateMap(compressedMap);
             else maps.addMap(compressedMap);
@@ -122,7 +148,7 @@ public final class Database {
 
     public void restoreMap(Map map) {
         byte[] data = map.readData();
-        ArtMap.getScheduler().ASYNC.run(() -> {
+        accessSQL(() -> {
             int oldMapHash = Arrays.hashCode(data);
             if (maps.containsMap(map.getMapId())
                     && maps.getHash(map.getMapId()) != oldMapHash) {
@@ -156,9 +182,18 @@ public final class Database {
         }
     }
 
+    private void accessSQL(Runnable runnable) {
+        SQLAccessor accessor = new SQLAccessor(runnable);
+        if (Bukkit.isPrimaryThread()) {
+            ArtMap.getScheduler().ASYNC.run(accessor);
+        } else {
+            accessor.run();
+        }
+    }
+
     public void recycleMap(Map map) {
         map.setMap(Map.BLANK_MAP);
-        ArtMap.getScheduler().ASYNC.run(() -> {
+        accessSQL(() -> {
             maps.deleteMap(map.getMapId());
             idQueue.offer(map.getMapId());
         });
@@ -166,5 +201,23 @@ public final class Database {
 
     public MapView getMap(short mapId) {
         return Bukkit.getMap(mapId);
+    }
+
+    private class SQLAccessor implements Runnable {
+
+        private Runnable accessor;
+
+        private SQLAccessor(Runnable accessor) {
+            this.accessor = accessor;
+        }
+
+        @Override
+        public void run() {
+            try {
+                accessor.run();
+            } catch (Exception e) {
+                ErrorLogger.log(e, "Error accessing database!");
+            }
+        }
     }
 }
