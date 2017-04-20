@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public final class Database {
+    private final String DATABASE_ACCESS_ERROR = "Error accessing database, try using /artmap reload.";
     private final ArtTable artworks;
     private final MapTable maps;
     private final SQLiteDatabase database;
@@ -91,7 +92,7 @@ public final class Database {
         try {
             art = artworks.listMapArt(artist);
         } catch (Exception e) {
-            ErrorLogger.log(e, "Error accessing database!");
+            ErrorLogger.log(e, DATABASE_ACCESS_ERROR);
             art = new MapArt[0];
         }
         return art;
@@ -102,8 +103,8 @@ public final class Database {
         try {
             art = artworks.listArtists(player);
         } catch (Exception e) {
-            ErrorLogger.log(e, "Error accessing database!");
-            art = new UUID[0];
+            ErrorLogger.log(e, DATABASE_ACCESS_ERROR);
+            art = new UUID[]{player};
         }
         return art;
     }
@@ -216,7 +217,7 @@ public final class Database {
             try {
                 accessor.run();
             } catch (Exception e) {
-                ErrorLogger.log(e, "Error accessing database!");
+                ErrorLogger.log(e, DATABASE_ACCESS_ERROR);
             }
         }
     }
