@@ -49,7 +49,8 @@ public class PreviewManager {
 
     public boolean endPreview(Player player) {
         if (!isPreviewing(player.getUniqueId())) return false;
+        Preview preview = getPreview(player);
         activePreviews.remove(player.getUniqueId());
-        return getPreview(player).end(player);
+        return preview.end(player);
     }
 }
