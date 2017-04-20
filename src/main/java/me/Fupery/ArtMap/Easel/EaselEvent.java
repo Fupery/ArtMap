@@ -30,18 +30,20 @@ public final class EaselEvent {
             easel.playEffect(EaselEffect.USE_DENIED);
             return;
         }
+        if (ArtMap.getPreviewManager().endPreview(player)) return;
+
         switch (click) {
             case LEFT_CLICK:
                 Lang.ActionBar.EASEL_HELP.send(player);
                 return;
             case RIGHT_CLICK:
-                //If the easel has a canvas, player rides the easel
                 if (easel.getItem().getType() == Material.MAP) {
+                    //If the easel has a canvas, player rides the easel
                     ArtMap.getArtistHandler().addPlayer(player, easel,
                             new Map(easel.getItem().getDurability()), EaselPart.getYawOffset(easel.getFacing()));
                     return;
-                    //remove items that were added while instance is unloaded etc.
                 } else if (easel.getItem().getType() != Material.AIR) {
+                    //remove items that were added while instance is unloaded etc.
                     easel.removeItem();
                     return;
                 }
@@ -49,17 +51,34 @@ public final class EaselEvent {
                 ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
                 if (material == ArtMaterial.CANVAS) {
+                    //Mount a canvas on the easel
                     Map map = ArtMap.getArtDatabase().createMap();
-                    easel.mountCanvas(new Canvas(map));
-                    consumeItem(player, itemInHand);
-                    return;
+                    map.update(player);
+                    mountCanvas(itemInHand, new Canvas(map));
 
                 } else if (material == ArtMaterial.MAP_ART) {
-                    ArtMap.getScheduler().ASYNC.run(() -> editArtwork(player.getItemInHand()));
-                    return;
+                    //Edit an artwork on the easel
+                    ArtMap.getScheduler().ASYNC.run(() -> {
+                        MapArt art = ArtMap.getArtDatabase().getArtwork(itemInHand.getDurability());
+                        ArtMap.getScheduler().SYNC.run(() -> {
+                            if (art != null) {
+                                if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
+                                    Lang.ActionBar.NO_EDIT_PERM.send(player);
+                                    easel.playEffect(EaselEffect.USE_DENIED);
+                                    return;
+                                }
+                                Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art.getTitle());
+                                mountCanvas(itemInHand, canvas);
+                            } else {
+                                Lang.ActionBar.NEED_CANVAS.send(player);
+                                easel.playEffect(EaselEffect.USE_DENIED);
+                            }
+                        });
+                    });
+                } else {
+                    Lang.ActionBar.NEED_CANVAS.send(player);
+                    easel.playEffect(EaselEffect.USE_DENIED);
                 }
-                Lang.ActionBar.NEED_CANVAS.send(player);
-                easel.playEffect(EaselEffect.USE_DENIED);
                 return;
 
             case SHIFT_RIGHT_CLICK:
@@ -71,28 +90,9 @@ public final class EaselEvent {
         }
     }
 
-    private void editArtwork(ItemStack playerMainHandItem) {
-        MapArt art = ArtMap.getArtDatabase().getArtwork(playerMainHandItem.getDurability());
-        ArtMap.getScheduler().SYNC.run(() -> {
-            if (art != null) {
-                if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
-                    Lang.ActionBar.NO_EDIT_PERM.send(player);
-                    easel.playEffect(EaselEffect.USE_DENIED);
-                    return;
-                }
-                if (ArtMap.getPreviewManager().endPreview(player)) return;
-                Map map = art.getMap().cloneArtwork();
-                easel.mountCanvas(new Canvas.CanvasCopy(map, art.getTitle()));
-                consumeItem(player, playerMainHandItem);
-            } else {
-                Lang.ActionBar.NEED_CANVAS.send(player);
-                easel.playEffect(EaselEffect.USE_DENIED);
-            }
-        });
-    }
-
-    private void consumeItem(Player player, ItemStack item) {
-        ItemStack removed = item.clone();
+    private void mountCanvas(ItemStack itemInHand, Canvas canvas) {
+        easel.mountCanvas(canvas);
+        ItemStack removed = itemInHand.clone();
         removed.setAmount(1);
         player.getInventory().removeItem(removed);
     }

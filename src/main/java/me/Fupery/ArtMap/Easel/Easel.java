@@ -45,7 +45,6 @@ public class Easel {
     public static Easel spawnEasel(Location location, BlockFace facing) {
         Easel easel = new Easel(location, false);
         easel.place(location, facing);
-        EaselEffect.SPAWN.playEffect(location);
 
         if (easel.exists()) {
             ArtMap.getEasels().put(easel);
@@ -205,11 +204,12 @@ public class Easel {
         ArmorStand marker = this.marker.spawn(location, getFacing());
 
         if (seat == null || marker == null) return false;
+        Location location = user.getEyeLocation();
+        EaselEffect.START_RIDING.playEffect(location);
         seat.setPassenger(user);
         if (seat.getPassenger() == null) return false;
 
         this.user = user.getUniqueId();
-        playEffect(EaselEffect.START_RIDING);
         return true;
     }
 

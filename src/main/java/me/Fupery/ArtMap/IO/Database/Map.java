@@ -76,7 +76,7 @@ public class Map {
         if (renderer != null) mapView.addRenderer(renderer);
     }
 
-    public Map cloneArtwork() {
+    public Map cloneMap() {
         MapView newMapView = Bukkit.getServer().createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
         Map newMap = new Map(newMapView);
         byte[] mapData = readData();

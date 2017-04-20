@@ -90,6 +90,8 @@ class PlayerInteractListener implements RegisteredListener {
         if (easel == null) {
             Lang.ActionBar.INVALID_POS.send(player);
             EaselEffect.USE_DENIED.playEffect(baseLocation);
+        } else {
+            EaselEffect.SPAWN.playEffect(new LocationHelper(baseLocation).shiftTowards(facing, .5));
         }
     }
 

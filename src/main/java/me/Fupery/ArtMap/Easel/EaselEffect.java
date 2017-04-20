@@ -1,12 +1,20 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Utils.LocationHelper;
 import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 public enum EaselEffect {
-    SPAWN(location -> SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0)),
+    SPAWN(location -> {
+        SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
+        Block floorBlock = new LocationHelper(location).shiftTowards(BlockFace.DOWN).getBlock();
+        location.getWorld().spigot().playEffect(location, Effect.TILE_DUST,
+                floorBlock.getTypeId(), floorBlock.getData(), 0.10f, 0.15f, 0.10f, 0.08f, 4, 10);
+    }),
     BREAK(location -> {
         SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
         playEffect(location, Effect.CLOUD);
@@ -18,7 +26,6 @@ public enum EaselEffect {
     SAVE_ARTWORK(location -> {
         playEffect(location, Effect.HAPPY_VILLAGER);
         SoundCompat.ENTITY_EXPERIENCE_ORB_PICKUP.play(location, 1, 0);
-
     }),
     MOUNT_CANVAS(location -> {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
