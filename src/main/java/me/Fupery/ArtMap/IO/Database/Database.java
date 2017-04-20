@@ -82,14 +82,9 @@ public final class Database {
         } else return false;
     }
 
-    public void persistMap(Map map) {
-
-    }
-
     private void loadArtworks() {
         assert Bukkit.isPrimaryThread(); //todo error logging etc.
         maps.getMapIds().forEach(this::restoreMap);
-
     }
 
     public ArtTable getArtTable() {
@@ -141,11 +136,12 @@ public final class Database {
         Map map = new Map(mapId.getId());
         if (!map.exists()) {
             //spicy map necromancy
-            ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring...");
+            ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
 
             short topMapId = Map.getNextMapId();
-            if (topMapId == -1) {
-                ArtMap.instance().getLogger().warning("Id could not be restored");
+            if (topMapId == -1 || topMapId < mapId.getId()) {
+                ArtMap.instance().getLogger().warning(
+                        "Id could not be restored: the current maximum valid mapId is " + topMapId);
                 return;
             }
             ArtMap.instance().writeResource("blank.dat", map.getDataFile());
