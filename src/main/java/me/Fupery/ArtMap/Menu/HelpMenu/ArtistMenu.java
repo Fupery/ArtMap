@@ -2,11 +2,12 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import com.github.Fupery.InvMenu.API.Button.Button;
+import com.github.Fupery.InvMenu.API.Handler.CacheableMenu;
+import com.github.Fupery.InvMenu.API.Handler.MenuHandler;
+import com.github.Fupery.InvMenu.API.Templates.ChildMenu;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,14 +23,14 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 
     private final UUID viewer;
 
-    public ArtistMenu(Player viewer) {
-        super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), 0);
+    public ArtistMenu(MenuHandler handler, Player viewer) {
+        super(handler, ChatColor.BLUE + Lang.MENU_ARTIST.get(), 0);
         this.viewer = viewer.getUniqueId();
     }
 
     @Override
     public CacheableMenu getParent(Player viewer) {
-        return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
+        return ArtMap.getMenus().MENU.HELP.get(viewer);
     }
 
     @Override
@@ -81,8 +82,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
         @Override
         public void onClick(Player player, ClickType clickType) {
             SoundCompat.UI_BUTTON_CLICK.play(player);
-            ArtMap.getMenuHandler().openMenu(player,
-                    new ArtworkMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
+            getHandler().openMenu(player, new ArtworkMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
         }
     }
 }

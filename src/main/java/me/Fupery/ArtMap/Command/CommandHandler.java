@@ -4,7 +4,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.Menus;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Bukkit;
@@ -78,8 +78,8 @@ public class CommandHandler implements CommandExecutor {
                         }//todo fix formatting here
                         PlayerOpenMenuEvent event = new PlayerOpenMenuEvent((Player) sender);
                         Bukkit.getServer().getPluginManager().callEvent(event);
-                        MenuHandler menuHandler = ArtMap.getMenuHandler();
-                        menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
+                        Menus menus = ArtMap.getMenus();
+                        menus.openMenu(((Player) sender), menus.MENU.HELP.get(((Player) sender)));
                     });
                 } else {
                     Lang.Array.CONSOLE_HELP.send(sender);

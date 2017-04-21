@@ -2,14 +2,15 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Menu.API.BasicMenu;
-import me.Fupery.ArtMap.Menu.API.ChildMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Button.CloseButton;
-import me.Fupery.ArtMap.Menu.Button.StaticButton;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import me.Fupery.ArtMap.Menu.API.CloseButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
+import com.github.Fupery.InvMenu.API.Button.Button;
+import com.github.Fupery.InvMenu.API.Button.StaticButton;
+import com.github.Fupery.InvMenu.API.Handler.CacheableMenu;
+import com.github.Fupery.InvMenu.API.Handler.MenuHandler;
+import com.github.Fupery.InvMenu.API.Templates.BasicMenu;
+import com.github.Fupery.InvMenu.API.Templates.ChildMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,8 +24,8 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
 
     private boolean adminMenu;
 
-    public RecipeMenu(boolean adminMenu) {
-        super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), InventoryType.HOPPER);
+    public RecipeMenu(MenuHandler handler, boolean adminMenu) {
+        super(handler, ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), InventoryType.HOPPER);
         this.adminMenu = adminMenu;
     }
 
@@ -35,13 +36,13 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
                 new RecipeButton(ArtMaterial.PAINT_BUCKET),
-                new CloseButton()
+                new CloseButton(this)
         };
     }
 
     @Override
     public CacheableMenu getParent(Player viewer) {
-        return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
+        return ArtMap.getMenus().MENU.HELP.get(viewer);
     }
 
 
@@ -64,12 +65,12 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
         public void onClick(Player player, ClickType clickType) {
             if (adminMenu) {
                 if (clickType == ClickType.LEFT) {
-                    ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
+                    getHandler().openMenu(player, new RecipePreview(getHandler(), recipe));
                 } else if (clickType == ClickType.RIGHT) {
                     ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
                 }
             } else {
-                ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
+                getHandler().openMenu(player, new RecipePreview(getHandler(), recipe));
             }
         }
     }

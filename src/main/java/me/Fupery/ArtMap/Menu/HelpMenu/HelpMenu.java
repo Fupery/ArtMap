@@ -2,11 +2,12 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Menu.API.BasicMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Button.LinkedButton;
-import me.Fupery.ArtMap.Menu.Button.StaticButton;
-import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.Menus;
+import com.github.Fupery.InvMenu.API.Button.Button;
+import com.github.Fupery.InvMenu.API.Button.LinkedButton;
+import com.github.Fupery.InvMenu.API.Button.StaticButton;
+import com.github.Fupery.InvMenu.API.Handler.MenuHandler;
+import com.github.Fupery.InvMenu.API.Templates.BasicMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryType;
 
@@ -16,13 +17,13 @@ public class HelpMenu extends BasicMenu {
 
     public static final String CLICK = ChatColor.GREEN + Lang.BUTTON_CLICK.get();
 
-    public HelpMenu() {
-        super(ChatColor.DARK_BLUE + Lang.MENU_HELP.get(), InventoryType.HOPPER);
+    public HelpMenu(MenuHandler handler) {
+        super(handler, ChatColor.DARK_BLUE + Lang.MENU_HELP.get(), InventoryType.HOPPER);
     }
 
     @Override
     public Button[] getButtons() {
-        MenuHandler.MenuList list = ArtMap.getMenuHandler().MENU;
+        Menus.MenuList list = ArtMap.getMenus().MENU;
         return new Button[]{
                 new StaticButton(SIGN, Lang.Array.HELP_GETTING_STARTED.get()),
                 new LinkedButton(list.RECIPE, WORKBENCH, Lang.Array.HELP_RECIPES.get()),

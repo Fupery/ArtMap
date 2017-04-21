@@ -1,10 +1,11 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Menu.API.BasicMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import com.github.Fupery.InvMenu.API.Button.Button;
+import com.github.Fupery.InvMenu.API.Button.StaticButton;
+import com.github.Fupery.InvMenu.API.Handler.MenuHandler;
+import com.github.Fupery.InvMenu.API.Templates.BasicMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -13,8 +14,8 @@ public class RecipePreview extends BasicMenu {
 
     private final ArtMaterial recipe;
 
-    public RecipePreview(ArtMaterial recipe) {
-        super(String.format(Lang.RECIPE_HEADER.get(), recipe.name().toLowerCase()),
+    public RecipePreview(MenuHandler handler, ArtMaterial recipe) {
+        super(handler, String.format(Lang.RECIPE_HEADER.get(), recipe.name().toLowerCase()),
                 InventoryType.WORKBENCH);
         this.recipe = recipe;
     }

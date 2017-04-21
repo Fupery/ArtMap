@@ -2,7 +2,7 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.LocationHelper;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

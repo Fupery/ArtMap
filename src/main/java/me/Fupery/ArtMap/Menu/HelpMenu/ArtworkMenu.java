@@ -3,16 +3,16 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Preview.ArtPreview;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.Utils.VersionHandler;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import com.github.Fupery.InvMenu.API.Button.Button;
+import com.github.Fupery.InvMenu.API.Event.MenuCloseReason;
+import com.github.Fupery.InvMenu.API.Handler.CacheableMenu;
+import com.github.Fupery.InvMenu.API.Templates.ChildMenu;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,7 +31,7 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
     private boolean adminViewing;
 
     public ArtworkMenu(ArtistMenu parent, UUID artist, boolean adminViewing, int page) {
-        super(processTitle(artist), page);
+        super(parent.getHandler(), processTitle(artist), page);
         this.parent = parent;
         this.adminViewing = adminViewing;
         this.artist = artist;
@@ -116,14 +116,14 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
                         lore.set(0, ArtItem.PREVIEW_KEY);
                         meta.setLore(lore);
                         preview.setItemMeta(meta);
-                        ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.SPECIAL);
+                        getHandler().closeMenu(player, MenuCloseReason.SPECIAL);
                         player.getInventory().setItemInOffHand(preview);
-                        ArtMap.getMenuHandler().openMenu(player, this.artworkMenu);
+                        getHandler().openMenu(player, this.artworkMenu);
                     } else {
                         Lang.EMPTY_HAND_PREVIEW.send(player);
                     }
                 } else {
-                    ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
+                    getHandler().closeMenu(player, MenuCloseReason.DONE);
 
                     ArtMap.getScheduler().SYNC.run(() -> {
                         ArtMap.getPreviewManager().endPreview(player);

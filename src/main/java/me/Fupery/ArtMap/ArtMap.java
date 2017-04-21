@@ -14,7 +14,7 @@ import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.Listeners.EventManager;
-import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Menu.Handler.Menus;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
 import me.Fupery.ArtMap.Preview.PreviewManager;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
@@ -33,7 +33,7 @@ import java.nio.file.StandardCopyOption;
 public class ArtMap extends JavaPlugin {
 
     private static SoftReference<ArtMap> pluginInstance = null;
-    private MenuHandler menuHandler;
+    private Menus menuHandler;
     private ArtistHandler artistHandler;
     private VersionHandler bukkitVersion;
     private Scheduler scheduler;
@@ -84,7 +84,7 @@ public class ArtMap extends JavaPlugin {
         return instance().compatManager;
     }
 
-    public static MenuHandler getMenuHandler() {
+    public static Menus getMenus() {
         return instance().menuHandler;
     }
 
@@ -144,7 +144,7 @@ public class ArtMap extends JavaPlugin {
         easels = new EaselMap();
         eventManager = new EventManager(this, bukkitVersion);
         previewManager = new PreviewManager();
-        menuHandler = new MenuHandler(this);
+        menuHandler = new Menus(this);
         getCommand("artmap").setExecutor(new CommandHandler());
     }
 

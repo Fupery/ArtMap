@@ -1,10 +1,10 @@
 package me.Fupery.ArtMap.Menu.API;
 
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Button.CloseButton;
-import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import com.github.Fupery.InvMenu.API.Button.Button;
+import com.github.Fupery.InvMenu.API.Event.MenuCloseReason;
+import com.github.Fupery.InvMenu.API.Handler.CacheableMenu;
+import com.github.Fupery.InvMenu.API.Handler.MenuHandler;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -15,8 +15,8 @@ public abstract class ListMenu extends CacheableMenu {
     private final String heading;
     protected int page;
 
-    public ListMenu(String heading, int page) {
-        super(heading, InventoryType.CHEST);
+    public ListMenu(MenuHandler handler, String heading, int page) {
+        super(handler, heading, InventoryType.CHEST);
         this.heading = heading;
         this.page = page;
     }
@@ -44,7 +44,7 @@ public abstract class ListMenu extends CacheableMenu {
         Button[] buttons = new Button[maxButtons + 2];
 
         if (page < 1) {
-            buttons[0] = new CloseButton();
+            buttons[0] = new CloseButton(this);
 
         } else {
             buttons[0] = new PageButton(false);
@@ -102,3 +102,4 @@ public abstract class ListMenu extends CacheableMenu {
         }
     }
 }
+
