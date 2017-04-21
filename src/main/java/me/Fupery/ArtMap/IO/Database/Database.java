@@ -111,7 +111,14 @@ public final class Database {
 
 
     private void loadArtworks() {
-        ArtMap.getScheduler().runSafely(() -> maps.getMapIds().forEach(this::restoreMap));
+        ArtMap.getScheduler().runSafely(() -> {
+            int artworksRestored = 0;
+            for (MapId mapId : maps.getMapIds()) {
+                if (restoreMap(mapId)) artworksRestored++;
+            }
+            if (artworksRestored > 0)
+                ArtMap.instance().getLogger().info(artworksRestored + "%s corrupted artworks were restored.");
+        });
     }
 
     public ArtTable getArtTable() {
@@ -158,18 +165,19 @@ public final class Database {
         });
     }
 
-    private void restoreMap(MapId mapId) {
+    private boolean restoreMap(MapId mapId) {
         boolean needsRestore;
         Map map = new Map(mapId.getId());
         if (!map.exists()) {
             //spicy map necromancy
-            ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
+//            ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
 
             short topMapId = Map.getNextMapId();
             if (topMapId == -1 || topMapId < mapId.getId()) {
-                ArtMap.instance().getLogger().warning(
-                        "Id could not be restored: the current maximum valid mapId is " + topMapId);
-                return;
+                ArtMap.instance().getLogger().warning(String.format(
+                        "Map Id %s could not be restored: the current maximum valid mapId is: %s.",
+                        mapId.getId(), topMapId));
+                return false;
             }
             ArtMap.instance().writeResource("blank.dat", map.getDataFile());
             needsRestore = true;
@@ -179,8 +187,10 @@ public final class Database {
         }
         if (needsRestore) {
             map.setMap(maps.getMap(mapId.getId()).decompressMap());
-            ArtMap.instance().getLogger().info(String.format("Id '%s' was restored!", mapId.getId()));
+//            ArtMap.instance().getLogger().info(String.format("Id '%s' was restored!", mapId.getId()));
+            return true;
         }
+        return false;
     }
 
     private void accessSQL(Runnable runnable) {
