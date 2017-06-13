@@ -48,6 +48,7 @@ public class ArtMap extends JavaPlugin {
     private PreviewManager previewManager;
     private EaselMap easels;
     private Palette palette;
+    private boolean recipesLoaded = false;
 
     public static Database getArtDatabase() {
         return instance().database;
@@ -139,8 +140,11 @@ public class ArtMap extends JavaPlugin {
             getPluginLoader().disablePlugin(this);
             return;
         }
-        recipeLoader = new RecipeLoader(this, config);
-        recipeLoader.loadRecipes();
+        if (!recipesLoaded) {
+            recipeLoader = new RecipeLoader(this, config);
+            recipeLoader.loadRecipes();
+            recipesLoaded = true;
+        }
         easels = new EaselMap();
         eventManager = new EventManager(this, bukkitVersion);
         previewManager = new PreviewManager();
@@ -155,7 +159,7 @@ public class ArtMap extends JavaPlugin {
         menuHandler.closeAll();
         eventManager.unregisterAll();
         database.close();
-        recipeLoader.unloadRecipes();
+//        recipeLoader.unloadRecipes();
         reloadConfig();
         pluginInstance = null;
     }

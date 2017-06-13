@@ -101,11 +101,6 @@ public class GenericPacketSender implements PacketSender {
                 chatSerializerClass = Class.forName(chatSerializerName);
                 Class chatTypeClass = Class.forName(chatTypeClassName);
 
-                Bukkit.getLogger().info(chatTypeClass.getName());//TODO remove logging
-                for (Field field : chatTypeClass.getFields()) {
-                    Bukkit.getLogger().info(field.getName());//TODO remove logging
-                }
-
                 packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, chatTypeClass);
                 chatSerializer = chatSerializerClass.getDeclaredMethod("a", String.class);
                 Field chatTypeField = chatTypeClass.getDeclaredField("GAME_INFO");
