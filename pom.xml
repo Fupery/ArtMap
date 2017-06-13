@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.Fupery</groupId>
     <artifactId>ArtMap</artifactId>
-    <version>2.6.3</version>
+    <version>2.6.4</version>
     <description>Make pixel art!</description>
     <profiles>
     </profiles>
@@ -72,6 +72,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>http://repo.dmulloy2.net/content/groups/public/</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -108,7 +112,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib-API</artifactId>
-            <version>4.2.0-SNAPSHOT</version>
+            <version>4.3.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
