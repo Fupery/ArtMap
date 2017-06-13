@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Utils.Reflection;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
@@ -16,8 +15,8 @@ import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
 
 public class GenericPacketSender implements PacketSender {
 
-    private ChatPacketBuilder builder = ArtMap.getBukkitVersion().getVersion().isGreaterOrEqualTo(v1_12)
-            ? new ChatPacketBuilder() : new ChatPacketBuilderLegacy();
+    private PacketBuilder builder = ArtMap.getBukkitVersion().getVersion().isGreaterOrEqualTo(v1_12)
+            ? new ChatPacketBuilder(Reflection.NMS) : new ChatPacketBuilderLegacy(Reflection.NMS);
 
     private static void logFailure(Exception e) {
         ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported?");
@@ -25,7 +24,7 @@ public class GenericPacketSender implements PacketSender {
 
     @Override
     public WrappedPacket buildChatPacket(String message) {
-        return new WrappedPacket<Object>(builder.buildActionBarPacket(message)) {
+        return new WrappedPacket<Object>(builder.buildChatPacket(message)) {
             private String rawMessage = message;
 
             @Override
@@ -43,11 +42,14 @@ public class GenericPacketSender implements PacketSender {
         };
     }
 
-    private static class ChatPacketBuilderLegacy extends ChatPacketBuilder {
-        public ChatPacketBuilderLegacy() {
-            this(Reflection.NMS);
-        }
+    interface PacketBuilder {
+        Object buildChatPacket(String message);
+    }
 
+    private static class ChatPacketBuilderLegacy implements PacketBuilder {
+        protected Constructor packetCons;
+        protected Method chatSerializer;
+        protected Class chatSerializerClass;
 
         public ChatPacketBuilderLegacy(String NMS_Prefix) {
             String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
@@ -68,7 +70,7 @@ public class GenericPacketSender implements PacketSender {
         }
 
         @Override
-        public Object buildActionBarPacket(String message) {
+        public Object buildChatPacket(String message) {
             try {
                 Object chatComponent = chatSerializer.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}");
                 return packetCons.newInstance(chatComponent, (byte) 2);
@@ -79,15 +81,11 @@ public class GenericPacketSender implements PacketSender {
         }
     }
 
-    private static class ChatPacketBuilder {
+    private static class ChatPacketBuilder implements PacketBuilder {
         protected Constructor packetCons;
         protected Method chatSerializer;
         protected Class chatSerializerClass;
         protected Object chatType;
-
-        public ChatPacketBuilder() {
-            this(Reflection.NMS);
-        }
 
         public ChatPacketBuilder(String NMS_Prefix) {
             String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
@@ -112,7 +110,8 @@ public class GenericPacketSender implements PacketSender {
             }
         }
 
-        public Object buildActionBarPacket(String message) {
+        @Override
+        public Object buildChatPacket(String message) {
             try {
                 Object chatComponent = chatSerializer.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}");
                 return packetCons.newInstance(chatComponent, chatType);
