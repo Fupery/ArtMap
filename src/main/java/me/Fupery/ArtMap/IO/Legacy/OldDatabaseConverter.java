@@ -37,8 +37,6 @@ public class OldDatabaseConverter {
         plugin.getLogger().info("(This may take a while, but only needs to run once)");
 
         ArtList artList = readArtworks();
-        if (artList == null) return false;
-
         artList.addArtworks();
 
         if (!databaseFile.renameTo(new File(plugin.getDataFolder(), dbFileName + ".off"))) {
@@ -47,6 +45,7 @@ public class OldDatabaseConverter {
         }
         plugin.getLogger().info(String.format("Conversion completed! %s artworks converted. " +
                 "ArtMap.db has been disabled.", artList.getArtworks().size()));
+
         return true;
     }
 
@@ -54,7 +53,7 @@ public class OldDatabaseConverter {
         ArtList artList = new ArtList();
         OldDatabase database = new OldDatabase(plugin);
         OldDatabaseTable table = new OldDatabaseTable(database);
-        if (!database.initialize(table)) return null;
+        if (!database.initialize(table)) return artList;
 
         for (RichMapArt artwork : table.readArtworks()) {
             String title = artwork.getArt().getTitle();
