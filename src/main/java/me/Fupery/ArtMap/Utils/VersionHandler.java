@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 public class VersionHandler {
 
+
     private final BukkitVersion version;
 
     public VersionHandler() {
@@ -15,7 +16,9 @@ public class VersionHandler {
         Version version = Version.getBukkitVersion();
         if (version.isLessThan(1, 9)) return BukkitVersion.v1_8;
         else if (version.isLessThan(1, 10)) return BukkitVersion.v1_9;
-        else return BukkitVersion.v1_10;
+        else if (version.isLessThan(1, 11)) return BukkitVersion.v1_10;
+        else if (version.isLessThan(1, 12)) return BukkitVersion.v1_11;
+        else return BukkitVersion.v1_12;
     }
 
     public static BukkitVersion getLatest() {
@@ -28,7 +31,27 @@ public class VersionHandler {
     }
 
     public enum BukkitVersion {
-        UNKNOWN, v1_8, v1_9, v1_10;
+        UNKNOWN, v1_8, v1_9, v1_10, v1_11, v1_12;
+
+        public boolean isGreaterThan(BukkitVersion version) {
+            return ordinal() > version.ordinal();
+        }
+
+        public boolean isGreaterOrEqualTo(BukkitVersion version) {
+            return ordinal() >= version.ordinal();
+        }
+
+        public boolean isEqualTo(BukkitVersion version) {
+            return ordinal() == version.ordinal();
+        }
+
+        public boolean isLessOrEqualTo(BukkitVersion version) {
+            return ordinal() <= version.ordinal();
+        }
+
+        public boolean isLessThan(BukkitVersion version) {
+            return ordinal() < version.ordinal();
+        }
 
         public float getEulerValue(Object packet, String methodName) throws NoSuchMethodException,
                 InvocationTargetException, IllegalAccessException {

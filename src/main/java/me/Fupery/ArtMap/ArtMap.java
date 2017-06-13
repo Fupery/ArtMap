@@ -123,9 +123,9 @@ public class ArtMap extends JavaPlugin {
         compatManager = new CompatibilityManager(this);
         config = new Configuration(this, compatManager);
         scheduler = new Scheduler(this);
+        bukkitVersion = new VersionHandler();
         protocolHandler = new ProtocolHandler();
         artistHandler = new ArtistHandler();
-        bukkitVersion = new VersionHandler();
         cacheManager = new ChannelCacheManager();
         Lang.load(this, config);
         palette = new BasicPalette();

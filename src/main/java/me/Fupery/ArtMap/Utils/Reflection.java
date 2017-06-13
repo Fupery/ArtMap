@@ -5,12 +5,10 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -271,26 +269,26 @@ public class Reflection {
             ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported?");
         }
     }
-
-    public class NBTStorageFile {
-
-        // the file to use
-        private final File file;
-        // the TagCompound containing the files content
-        private NBTTagCompound tagCompound;
-
-        public NBTStorageFile(File file) {
-            this.file = file;
-        }
-
-        // two optional constructors:
-        public NBTStorageFile(String folder, String name) {
-            this(new File(folder, name + ".dat"));
-        }
-
-        public NBTStorageFile(String path) {
-            this(new File(path));
-        }
-
-    }
+//
+//    public class NBTStorageFile {
+//
+//        // the file to use
+//        private final File file;
+//        // the TagCompound containing the files content
+//        private NBTTagCompound tagCompound;
+//
+//        public NBTStorageFile(File file) {
+//            this.file = file;
+//        }
+//
+//        // two optional constructors:
+//        public NBTStorageFile(String folder, String name) {
+//            this(new File(folder, name + ".dat"));
+//        }
+//
+//        public NBTStorageFile(String path) {
+//            this(new File(path));
+//        }
+//
+//    }
 }
