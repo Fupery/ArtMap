@@ -9,7 +9,7 @@ User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
 * List & preview system to view artworks
 
 ### Supported Versions:
-* Spigot 1.8.8 - 1.10.2
+* Spigot 1.8.8 - 1.12
 
 ### Permissions Nodes
 * artmap.artist - allows players to use artmap
