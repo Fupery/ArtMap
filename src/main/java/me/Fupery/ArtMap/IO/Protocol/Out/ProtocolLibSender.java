@@ -18,6 +18,20 @@ public class ProtocolLibSender implements PacketSender {
     private PacketBuilder builder = ArtMap.getBukkitVersion().getVersion().isGreaterOrEqualTo(v1_12)
             ? new ChatPacketBuilder() : new ChatPacketBuilderLegacy();
 
+    @Override
+    public WrappedPacket buildChatPacket(String message) {
+        return new WrappedPacket<PacketContainer>(builder.buildChatPacket(message)) {
+            @Override
+            public void send(Player player) {
+                try {
+                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, this.rawPacket);
+                } catch (InvocationTargetException e) {
+                    ErrorLogger.log(e);
+                }
+            }
+        };
+    }
+
     interface PacketBuilder {
         PacketContainer buildChatPacket(String message);
     }
@@ -40,19 +54,5 @@ public class ProtocolLibSender implements PacketSender {
             packet.getChatTypes().write(0, EnumWrappers.ChatType.GAME_INFO);
             return packet;
         }
-    }
-
-    @Override
-    public WrappedPacket buildChatPacket(String message) {
-        return new WrappedPacket<PacketContainer>(builder.buildChatPacket(message)) {
-            @Override
-            public void send(Player player) {
-                try {
-                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, this.rawPacket);
-                } catch (InvocationTargetException e) {
-                    ErrorLogger.log(e);
-                }
-            }
-        };
     }
 }

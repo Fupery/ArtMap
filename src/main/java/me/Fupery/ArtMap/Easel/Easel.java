@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ChunkLocation;
 import me.Fupery.ArtMap.Utils.LocationHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Easel {
 
     private final Location location;
+    private final ChunkLocation chunk;
     private final WeakEntity<ArmorStand> stand = new WeakEntity<>(EaselPart.STAND);
     private final WeakEntity<ItemFrame> frame = new WeakEntity<>(EaselPart.FRAME);
     private final WeakEntity<ArmorStand> seat = new WeakEntity<>(EaselPart.SEAT);
@@ -31,6 +33,7 @@ public class Easel {
 
     private Easel(Location location, boolean hasBeenSpawned) {
         this.location = location;
+        this.chunk = new ChunkLocation(location.getChunk());
         user = null;
         spawned = new AtomicBoolean(hasBeenSpawned);
     }
@@ -251,6 +254,10 @@ public class Easel {
      */
     public boolean hasItem() {
         return frame.get() != null && frame.get().getItem().getType() != Material.AIR;
+    }
+
+    public ChunkLocation getChunk() {
+        return chunk;
     }
 
     class WeakEntity<T extends Entity> {
