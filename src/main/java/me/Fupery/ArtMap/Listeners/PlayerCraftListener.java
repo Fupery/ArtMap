@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
@@ -54,13 +55,20 @@ class PlayerCraftListener implements RegisteredListener {
                     break;
                 }
             }
-            for (ItemStack ingredient : event.getInventory().getMatrix()) {
-                if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
-                    ArtDye dye = ArtItem.DyeBucket.getColour(ArtMap.getColourPalette(), ingredient);
-                    if (dye == null) continue;
-                    ItemStack previousDye = dye.toItem();
-                    if (kitItem) previousDye = ItemUtils.addKey(previousDye, ArtItem.KIT_KEY);
-                    ItemUtils.giveItem((Player) event.getWhoClicked(), previousDye);
+            boolean craftSuccess = true;
+            if (event.getClick() == ClickType.NUMBER_KEY) {
+                ItemStack slot = event.getWhoClicked().getInventory().getContents()[event.getHotbarButton()];
+                craftSuccess = (slot == null || slot.getType() == Material.AIR);
+            }
+            if (craftSuccess) {
+                for (ItemStack ingredient : event.getInventory().getMatrix()) {
+                    if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
+                        ArtDye dye = ArtItem.DyeBucket.getColour(ArtMap.getColourPalette(), ingredient);
+                        if (dye == null) continue;
+                        ItemStack previousDye = dye.toItem();
+                        if (kitItem) previousDye = ItemUtils.addKey(previousDye, ArtItem.KIT_KEY);
+                        ItemUtils.giveItem((Player) event.getWhoClicked(), previousDye);
+                    }
                 }
             }
             if (kitItem) {
