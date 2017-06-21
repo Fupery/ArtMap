@@ -129,6 +129,10 @@ public class CanvasRenderer extends MapRenderer {
         cursor = null;
     }
 
+    public Pixel getPixelAt(int x, int y) {
+        return new Pixel(this, x, y);
+    }
+
     boolean isDirty() {
         return dirtyPixels.size() > 0;
     }
