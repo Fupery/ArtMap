@@ -32,6 +32,7 @@ public final class MenuHandler {
 
     public void openMenu(Player viewer, CacheableMenu menu) {
         if (openMenus.containsKey(viewer.getUniqueId())) closeMenu(viewer, MenuCloseReason.SWITCH);
+        else viewer.closeInventory();//todo check if this works
         openMenus.put(viewer.getUniqueId(), menu);
         menu.open(viewer);
     }
