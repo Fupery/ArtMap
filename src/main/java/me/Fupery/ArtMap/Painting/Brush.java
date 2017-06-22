@@ -33,6 +33,10 @@ public abstract class Brush {
         return canvas.getCurrentPixel();
     }
 
+    protected Pixel getPixelAt(int x, int y) {
+        return canvas.getPixelAt(x, y);
+    }
+
     protected boolean isOffCanvas() {
         return canvas.isOffCanvas();
     }

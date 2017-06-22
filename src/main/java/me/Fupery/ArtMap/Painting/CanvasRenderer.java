@@ -130,7 +130,7 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     public Pixel getPixelAt(int x, int y) {
-        return new Pixel(this, x, y);
+        return new Pixel(this, x, y, getPixel(x, y));
     }
 
     boolean isDirty() {

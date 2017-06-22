@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.DyeType;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
@@ -22,7 +23,7 @@ public class DyeMenu extends BasicMenu implements ChildMenu {
     @Override
     public Button[] getButtons() {
         Button[] buttons = new Button[27];
-        ArtDye[] dyes = ArtMap.getColourPalette().getDyes();
+        ArtDye[] dyes = ArtMap.getDyePalette().getDyes(DyeType.DYE);
         buttons[0] = new StaticButton(Material.SIGN, Lang.Array.INFO_DYES.get());
         buttons[26] = new CloseButton();
 

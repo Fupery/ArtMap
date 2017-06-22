@@ -1,13 +1,13 @@
 package me.Fupery.ArtMap.Colour;
 
+import me.Fupery.ArtMap.Painting.Pixel;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class ArtDye {
+public abstract class ArtDye {
     private final String name;
-    private final byte colour;
     private final ChatColor chatColour;
     private Material material;
     private short durability;
@@ -15,21 +15,20 @@ public class ArtDye {
     /**
      * Durability value of -1 indicates that items of any durability will be accepted
      */
-    protected ArtDye(String name, int colour, ChatColor chatColor, Material material, int durability) {
+    protected ArtDye(String name, ChatColor chatColor, Material material, int durability) {
         this.name = name;
-        this.colour = (byte) colour;
         this.chatColour = chatColor;
         this.material = material;
         this.durability = (short) durability;
     }
 
-    protected ArtDye(String name, int colour, ChatColor chatColour, Material material) {
-        this(name, colour, chatColour, material, -1);
+    protected ArtDye(String name, ChatColor chatColour, Material material) {
+        this(name, chatColour, material, -1);
     }
 
-    public byte getColour() {
-        return colour;
-    }
+    public abstract void apply(Pixel pixel);
+
+    public abstract byte getDyeColour(byte currentPixelColour);
 
     public String name() {
         return chatColour + name;

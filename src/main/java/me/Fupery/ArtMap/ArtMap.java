@@ -47,7 +47,7 @@ public class ArtMap extends JavaPlugin {
     private EventManager eventManager;
     private PreviewManager previewManager;
     private EaselMap easels;
-    private Palette palette;
+    private Palette dyePalette;
     private boolean recipesLoaded = false;
 
     public static Database getArtDatabase() {
@@ -97,12 +97,12 @@ public class ArtMap extends JavaPlugin {
         return instance().protocolHandler;
     }
 
-    public static Palette getColourPalette() {
-        return instance().palette;
+    public static Palette getDyePalette() {
+        return instance().dyePalette;
     }
 
     public void setColourPalette(Palette palette) {
-        this.palette = palette;
+        this.dyePalette = palette;
     }
 
     public static PreviewManager getPreviewManager() {
@@ -129,7 +129,7 @@ public class ArtMap extends JavaPlugin {
         artistHandler = new ArtistHandler();
         cacheManager = new ChannelCacheManager();
         Lang.load(this, config);
-        palette = new BasicPalette();
+        dyePalette = new BasicPalette();
         if ((database = Database.build(this)) == null) {
             getPluginLoader().disablePlugin(this);
             return;

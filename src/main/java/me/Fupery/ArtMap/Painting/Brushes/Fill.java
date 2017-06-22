@@ -12,9 +12,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 
 public class Fill extends Brush {
-    private final ArrayList<Pixel> lastFill;
+    private final ArrayList<CachedPixel> lastFill;
     private int axisLength;
-    private Palette palette = ArtMap.getColourPalette();
 
     public Fill(CanvasRenderer renderer) {
         super(renderer);
@@ -32,23 +31,23 @@ public class Fill extends Brush {
             if (!meta.hasLore()) {
                 return;
             }
-            ArtDye colour = ArtItem.DyeBucket.getColour(palette, bucket);
+            ArtDye colour = ArtItem.DyeBucket.getColour(bucket);
 
             if (colour != null) {
                 clean();
-                fillPixel(colour.getColour());
+                fillPixel(colour);
             }
 
         } else if (lastFill.size() > 0) {
-            for (Pixel pixel : lastFill) {
-                addPixel(pixel.x, pixel.y, pixel.colour);
+            for (CachedPixel cachedPixel : lastFill) {
+                addPixel(cachedPixel.x, cachedPixel.y, cachedPixel.colour);
             }
         }
     }
 
     @Override
     public boolean checkMaterial(ItemStack bucket) {
-        return ArtItem.DyeBucket.getColour(palette, bucket) != null;
+        return ArtItem.DyeBucket.getColour(bucket) != null;
     }
 
     @Override
@@ -56,20 +55,20 @@ public class Fill extends Brush {
         lastFill.clear();
     }
 
-    private void fillPixel(byte colour) {
+    private void fillPixel(ArtDye colour) {
         final byte[] pixel = getCurrentPixel();
 
         if (pixel != null) {
 
             final boolean[][] coloured = new boolean[axisLength][axisLength];
             final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
-            final byte setColour = colour;
+            final byte setColour = colour.getDyeColour(clickedColour);
 
             ArtMap.getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
     }
 
-    private void fillBucket(boolean[][] coloured, int x, int y, byte source, byte target) {
+    private void fillBucket(boolean[][] coloured, int x, int y, byte sourceColour, byte newColour) {
         if (x < 0 || y < 0) {
             return;
         }
@@ -81,24 +80,24 @@ public class Fill extends Brush {
             return;
         }
 
-        if (getPixelBuffer()[x][y] != source) {
+        if (getPixelBuffer()[x][y] != sourceColour) {
             return;
         }
-        addPixel(x, y, target);
+        addPixel(x, y, newColour);
         coloured[x][y] = true;
-        lastFill.add(new Pixel(x, y, source));
+        lastFill.add(new CachedPixel(x, y, sourceColour));
 
-        fillBucket(coloured, x - 1, y, source, target);
-        fillBucket(coloured, x + 1, y, source, target);
-        fillBucket(coloured, x, y - 1, source, target);
-        fillBucket(coloured, x, y + 1, source, target);
+        fillBucket(coloured, x - 1, y, sourceColour, newColour);
+        fillBucket(coloured, x + 1, y, sourceColour, newColour);
+        fillBucket(coloured, x, y - 1, sourceColour, newColour);
+        fillBucket(coloured, x, y + 1, sourceColour, newColour);
     }
 
-    private static class Pixel {
+    private static class CachedPixel {
         final int x, y;
         final byte colour;
 
-        Pixel(int x, int y, byte colour) {
+        CachedPixel(int x, int y, byte colour) {
             this.x = x;
             this.y = y;
             this.colour = colour;
@@ -106,9 +105,9 @@ public class Fill extends Brush {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Pixel)) return false;
-            Pixel pixel = (Pixel) obj;
-            return pixel.x == x && pixel.y == y && pixel.colour == colour;
+            if (!(obj instanceof CachedPixel)) return false;
+            CachedPixel cachedPixel = (CachedPixel) obj;
+            return cachedPixel.x == x && cachedPixel.y == y && cachedPixel.colour == colour;
         }
     }
 }

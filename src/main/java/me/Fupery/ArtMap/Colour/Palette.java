@@ -13,7 +13,7 @@ public interface Palette {
     /**
      * @return a list of all possible dyes in this palette
      */
-    ArtDye[] getDyes();
+    ArtDye[] getDyes(DyeType dyeType);
 
-    ArtDye getDefaultColour();
+    BasicDye getDefaultColour();
 }

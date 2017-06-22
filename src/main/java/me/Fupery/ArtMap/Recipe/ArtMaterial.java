@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.DyeType;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +32,7 @@ public enum ArtMaterial {
         PAINT_BUCKET.artItem = new ArtItem.DyeBucket(null) {
             @Override
             public void addRecipe() {
-                for (ArtDye d : ArtMap.getColourPalette().getDyes()) {
+                for (ArtDye d : ArtMap.getDyePalette().getDyes(DyeType.ALL)) {
                     new ArtItem.DyeBucket(d).addRecipe();
                 }
             }

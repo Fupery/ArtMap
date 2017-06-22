@@ -8,7 +8,6 @@ import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Painting.Brushes.Dye;
 import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
-import me.Fupery.ArtMap.Painting.Brushes.Shade;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
@@ -22,7 +21,6 @@ public class ArtSession {
     private final CanvasRenderer canvas;
     private final Brush DYE;
     private final Brush FILL;
-    private final Brush SHADE;
     private final Brush FLIP;
     private final Easel easel;
     private final Map map;
@@ -39,7 +37,6 @@ public class ArtSession {
         lastStroke = System.currentTimeMillis();
         DYE = new Dye(canvas);
         FILL = new Fill(canvas);
-        SHADE = new Shade(canvas);
         FLIP = new Flip(canvas);
         this.map = map;
     }
@@ -81,7 +78,7 @@ public class ArtSession {
     }
 
     private Brush getBrushType(ItemStack item) {
-        for (Brush brush : new Brush[]{DYE, FILL, SHADE, FLIP}) {
+        for (Brush brush : new Brush[]{DYE, FILL, FLIP}) {
             if (brush.checkMaterial(item)) {
                 return brush;
             }

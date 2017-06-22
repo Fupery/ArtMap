@@ -34,7 +34,7 @@ public class Map {
 
     private static byte[] getBlankMap() {
         byte[] mapOutput = new byte[Size.MAX.value];
-        Arrays.fill(mapOutput, ArtMap.getColourPalette().getDefaultColour().getColour());
+        Arrays.fill(mapOutput, ArtMap.getDyePalette().getDefaultColour().getColour());
         return mapOutput;
     }
 

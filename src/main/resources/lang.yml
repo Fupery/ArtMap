@@ -197,6 +197,8 @@ DYE_AQUA: "Aqua"
 DYE_GRASS: "Grass"
 DYE_GOLD: "Gold"
 DYE_VOID: "Transparent"
+DYE_COAL: "Coal"
+DYE_FEATHER: "Feather"
 
 #-------------------------------------[Artwork Title Filter]-------------------------------------#
 #Words in the following list are filtered from artwork titles:

@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.DyeType;
 import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Utils.ItemUtils;
@@ -33,12 +34,12 @@ public class ArtItem {
 
     public static ItemStack[] getArtKit() {
         if (kitReference != null && kitReference.get() != null) return kitReference.get().clone();
-        Palette palette = ArtMap.getColourPalette();
+        Palette palette = ArtMap.getDyePalette();
         ItemStack[] itemStack = new ItemStack[36];
         Arrays.fill(itemStack, new ItemStack(Material.AIR));
 
         for (int i = 0; i < 25; i++) {
-            ArtDye dye = palette.getDyes()[i];
+            ArtDye dye = palette.getDyes(DyeType.DYE)[i];
             itemStack[i] = ItemUtils.addKey(dye.toItem(), KIT_KEY);
         }
         itemStack[25] = new KitItem(Material.FEATHER, "§lFeather").toItemStack();
@@ -69,7 +70,7 @@ public class ArtItem {
     public static class DyeBucket extends CustomItem {
         DyeBucket(ArtDye dye) {
             super(Material.BUCKET, bucketKey(dye));
-            if (dye == null) dye = ArtMap.getColourPalette().getDefaultColour();
+            if (dye == null) dye = ArtMap.getDyePalette().getDefaultColour();
             name(bucketName(dye));
             tooltip(RECIPE_PAINTBUCKET.get());
             flag(ItemFlag.HIDE_ENCHANTS);
@@ -79,12 +80,12 @@ public class ArtItem {
                     .add(new Ingredient.WrappedItem(dye.toItem())));
         }
 
-        public static ArtDye getColour(Palette palette, ItemStack bucket) {
+        public static ArtDye getColour(ItemStack bucket) {
             if (bucket.getType() == Material.BUCKET && bucket.hasItemMeta() && bucket.getItemMeta().hasLore()) {
                 ItemMeta meta = bucket.getItemMeta();
                 String key = meta.getLore().get(0);
 
-                for (ArtDye dye : palette.getDyes()) {
+                for (ArtDye dye : ArtMap.getDyePalette().getDyes(DyeType.ALL)) {
                     if (key.equals(bucketKey(dye))) {
                         return dye;
                     }

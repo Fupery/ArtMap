@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.BasicDye;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
 import me.Fupery.ArtMap.IO.MapArt;
@@ -63,7 +64,7 @@ class PlayerCraftListener implements RegisteredListener {
             if (craftSuccess) {
                 for (ItemStack ingredient : event.getInventory().getMatrix()) {
                     if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
-                        ArtDye dye = ArtItem.DyeBucket.getColour(ArtMap.getColourPalette(), ingredient);
+                        ArtDye dye = ArtItem.DyeBucket.getColour(ingredient);
                         if (dye == null) continue;
                         ItemStack previousDye = dye.toItem();
                         if (kitItem) previousDye = ItemUtils.addKey(previousDye, ArtItem.KIT_KEY);
