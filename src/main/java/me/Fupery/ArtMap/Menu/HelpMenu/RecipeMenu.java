@@ -10,6 +10,7 @@ import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ import java.util.List;
 public class RecipeMenu extends BasicMenu implements ChildMenu {
 
     private boolean adminMenu;
+    private boolean version_1_12 = ArtMap.getBukkitVersion().getVersion().isEqualTo(VersionHandler.BukkitVersion.v1_12);
 
     public RecipeMenu(boolean adminMenu) {
         super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), InventoryType.HOPPER);
@@ -64,10 +66,18 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
         public void onClick(Player player, ClickType clickType) {
             if (adminMenu) {
                 if (clickType == ClickType.LEFT) {
-                    ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
+                    openRecipePreview(player);
                 } else if (clickType == ClickType.RIGHT) {
                     ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
                 }
+            } else {
+                openRecipePreview(player);
+            }
+        }
+
+        private void openRecipePreview(Player player) {
+            if (version_1_12) {
+                ArtMap.getMenuHandler().openMenu(player, new RecipePreview_1_12(recipe));
             } else {
                 ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
             }
