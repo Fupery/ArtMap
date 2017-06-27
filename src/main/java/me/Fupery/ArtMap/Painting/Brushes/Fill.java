@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Painting.Brushes;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Recipe.ArtItem;

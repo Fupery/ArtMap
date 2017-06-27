@@ -101,10 +101,6 @@ public class ArtMap extends JavaPlugin {
         return instance().dyePalette;
     }
 
-    public void setColourPalette(Palette palette) {
-        this.dyePalette = palette;
-    }
-
     public static PreviewManager getPreviewManager() {
         return instance().previewManager;
     }
@@ -115,6 +111,10 @@ public class ArtMap extends JavaPlugin {
 
     public static PixelTableManager getPixelTable() {
         return instance().pixelTable;
+    }
+
+    public void setColourPalette(Palette palette) {
+        this.dyePalette = palette;
     }
 
     @Override

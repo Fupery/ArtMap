@@ -2,7 +2,6 @@ package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.BasicDye;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
 import me.Fupery.ArtMap.IO.MapArt;
