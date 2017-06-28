@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Compatability;
 
 import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.engine.EngineMain;
+import com.massivecraft.factions.engine.EnginePermBuild;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.massivecore.MassiveCore;
@@ -16,7 +16,7 @@ class FactionsCompat implements RegionHandler {
 
     FactionsCompat() {
         Factions.get();
-        EngineMain.get();
+        EnginePermBuild.get();
         MassiveCore.get();
         loaded = true;
     }
@@ -25,14 +25,14 @@ class FactionsCompat implements RegionHandler {
     public boolean checkBuildAllowed(Player player, Location location) {
         PS loc = PS.valueOf(location);
         Faction hostFaction = BoardColl.get().getTerritoryAccessAt(loc).getHostFaction();
-        return hostFaction == null || EngineMain.canPlayerBuildAt(player, loc, true);
+        return hostFaction == null || EnginePermBuild.canPlayerBuildAt(player, loc, true);
     }
 
     @Override
     public boolean checkInteractAllowed(Player player, Entity entity, EaselEvent.ClickType click) {
         PS loc = PS.valueOf(entity.getLocation());
         Faction hostFaction = BoardColl.get().getTerritoryAccessAt(loc).getHostFaction();
-        return hostFaction == null || EngineMain.canPlayerUseEntity(player, entity, true);
+        return hostFaction == null || EnginePermBuild.canPlayerUseEntity(player, entity, true);
     }
 
     @Override
