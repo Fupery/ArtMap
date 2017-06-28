@@ -14,6 +14,7 @@ import static org.bukkit.Bukkit.getScheduler;
 import static org.bukkit.Bukkit.isPrimaryThread;
 
 public class Scheduler {
+    //todo add checks that ArtMap isn't disabled
     private final ArtMap plugin;
     public final TaskScheduler SYNC = new TaskScheduler() {
         @Override

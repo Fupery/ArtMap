@@ -49,6 +49,7 @@ public class ArtMap extends JavaPlugin {
     private EaselMap easels;
     private Palette dyePalette;
     private boolean recipesLoaded = false;
+    private boolean disabled;
 
     public static Database getArtDatabase() {
         return instance().database;
@@ -113,6 +114,10 @@ public class ArtMap extends JavaPlugin {
         return instance().pixelTable;
     }
 
+    public static boolean isDisabled() {
+        return instance().disabled;
+    }
+
     public void setColourPalette(Palette palette) {
         this.dyePalette = palette;
     }
@@ -150,10 +155,12 @@ public class ArtMap extends JavaPlugin {
         previewManager = new PreviewManager();
         menuHandler = new MenuHandler(this);
         getCommand("artmap").setExecutor(new CommandHandler());
+        disabled = false;
     }
 
     @Override
     public void onDisable() {
+        disabled = true;
         previewManager.endAllPreviews();
         artistHandler.stop();
         menuHandler.closeAll();

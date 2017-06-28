@@ -195,7 +195,7 @@ public final class Database {
 
     private void accessSQL(Runnable runnable) {
         SQLAccessor accessor = new SQLAccessor(runnable);
-        if (Bukkit.isPrimaryThread()) {
+        if (Bukkit.isPrimaryThread() && !ArtMap.isDisabled()) {
             ArtMap.getScheduler().ASYNC.run(accessor);
         } else {
             accessor.run();
