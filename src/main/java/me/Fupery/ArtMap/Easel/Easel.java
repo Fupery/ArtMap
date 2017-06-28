@@ -242,7 +242,7 @@ public class Easel {
      * @return The item currently mounted on the easel, or null if there is none.
      */
     public ItemStack getItem() {
-        return (frame.get() != null) ? frame.get().getItem() : null;
+        return (frame.get() != null) ? frame.get().getItem() : new ItemStack(Material.AIR);
     }
 
     public void setItem(ItemStack itemStack) {
