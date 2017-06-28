@@ -96,7 +96,8 @@ public class ArtSession {
         if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
             ItemStack leftOver = inventory.addItem(inventory.getItemInOffHand()).get(0);
             inventory.setItemInOffHand(new ItemStack(Material.AIR));
-            if (leftOver != null) player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+            if (leftOver != null && leftOver.getType() != Material.AIR) 
+                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
             this.inventory = inventory.getStorageContents().clone();
             inventory.setStorageContents(ArtItem.getArtKit());
         } else {
