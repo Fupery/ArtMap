@@ -13,7 +13,7 @@ class ChunkUnloadListener implements RegisteredListener {
     @EventHandler
     public void onChunkUnload(final ChunkUnloadEvent event) {
         EaselMap easels = ArtMap.getEasels();
-        if (!easels.isEmpty()) {
+        if (!easels.isEmpty() && event.getChunk() != null) {
             ChunkLocation chunk = new ChunkLocation(event.getChunk());
             ArtMap.getScheduler().ASYNC.run(() -> {
                 for (Location location : easels.keySet()) {
