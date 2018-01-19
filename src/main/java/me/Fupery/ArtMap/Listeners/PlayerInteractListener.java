@@ -85,9 +85,9 @@ class PlayerInteractListener implements RegisteredListener {
         Easel easel = Easel.spawnEasel(easelLocation, facing);
         ItemStack item;
         if(e.getHand().equals(EquipmentSlot.HAND)){
-            item = player.getItemInHand().clone();
+            item = player.getInventory().getItemInMainHand().clone();
         }else if(e.getHand().equals(EquipmentSlot.OFF_HAND)){
-            item = player.getItemInOffHand().clone();
+            item = player.getInventory().getItemInOffHand().clone();
         }
         item.setAmount(1);
         player.getInventory().removeItem(item);
